@@ -36,6 +36,7 @@
   "dependencies": {
     "@playwright/test": "^1.14.1",
     "autoprefixer": "^10.2.5",
+    "emailjs-com": "^3.2.0",
     "execa": "^5.0.0",
     "fs-extra": "^9.1.0",
     "globby": "^11.0.3",
