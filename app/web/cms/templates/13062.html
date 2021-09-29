@@ -1,7 +1,10 @@
 <>
   <effect
     meta={{
-      state: { showPassword: false },
+      togglePass() {
+        this.showPass = !this.showPass;
+        console.log(this.showPass);
+      },
     }}
     run={async () => {}}
   />
@@ -99,21 +102,15 @@
                       style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
                     />
                     <input
-                      type={meta.state.showPassword ? "text" : "password"}
+                      type={meta.showPass ? "text" : "password"}
                       autoComplete="current-password"
                       required
                       placeholder="Masukkan Kata sandi anda ..."
                       class="text-base tracking-wide leading-normal focus:outline-none text-coolGray-500"
                       style="width: 325px; min-width: 325px; max-width: 325px; height: 24px; min-height: 24px; max-height: 24px;"
                     />
-                    <button
-                      onClick={() =>
-                        meta.state({
-                          showPassword: true,
-                        })
-                      }
-                    >
-                      {meta.state.showPassword ? <eye-icon /> : <eye-slash />}
+                    <button onClick={meta.togglePass}>
+                      {meta.showPass ? <eye-icon /> : <eye-slash />}
                     </button>
                   </div>
                 </div>
