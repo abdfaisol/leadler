@@ -1,5 +1,14 @@
 <>
-  <effect meta={{}} run={async () => {}} />
+  <effect
+    meta={{
+      showModal: false,
+      toggleModal() {
+        this.showModal = !this.showModal;
+        console.log(this.showModal);
+      },
+    }}
+    run={async () => {}}
+  />
   <div class={`flex flex-col items-center justify-center bg-white m-auto`}>
     <div class="flex flex-col items-center justify-center m-auto">
       <div class="flex flex-1 self-stretch flex-col items-center justify-center border rounded border-coolGray-300 py-20 px-20">
@@ -50,7 +59,7 @@
                       <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
                         <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
                           <img
-                            src="/fimgs/I205_201_18_20.x3.png"
+                            src="/fimgs/I205_201_18_21.x3.png"
                             style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-7f26b390a09bdf75f8aad23d0059860be6c55013');background-size:100% 100%;background-repeat:no-repeat;"
                           />
                         </div>
@@ -61,6 +70,7 @@
                         type="email"
                         placeholder="Masukkan Email Anda"
                         autocomplete="off"
+                        required="required"
                         class="text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
                       />
                     </div>
@@ -68,6 +78,7 @@
                 </div>
               </div>
               <button
+                onClick={meta.toggleModal}
                 class="flex flex-1 self-stretch flex-col items-start justify-start"
                 style="width: 413px; min-width: 413px; max-width: 413px; height: 40px; min-height: 40px; max-height: 40px;"
               >
@@ -83,5 +94,32 @@
       </div>
     </div>
   </div>
+  {meta.showModal ? (
+    <>
+      <div class="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto my-6 mx-auto max-w-3xl">
+          {/*content*/}
+          <div class="border-0 rounded-lg shadow-lg relative flex flex-col p-14 w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="flex flex-1 flex-col text-center pb-8 flex-auto">
+              Check Your Email Address
+            </div>
+            <div class="m-auto">
+              <button
+                class="items-center justify-center"
+                onClick={meta.toggleModal}
+              >
+                <div class="items-center justify-center px-8 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                  <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                    Check It
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
 </>
-    
