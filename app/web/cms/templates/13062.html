@@ -1,5 +1,10 @@
 <>
-  <effect meta={{}} run={async () => {}} />
+  <effect
+    meta={{
+      state: { showPassword: false },
+    }}
+    run={async () => {}}
+  />
   <div class="flex items-start justify-start bg-white">
     <div class="flex self-stretch items-start justify-start">
       <div class="flex flex-1 self-stretch flex-col space-y-44 items-start justify-start px-16 py-28 bg-indigo-800">
@@ -72,13 +77,9 @@
                       autoComplete="email"
                       required
                       placeholder="Email address"
-                      class="text-base tracking-wide leading-normal text-coolGray-500"
+                      class="text-base tracking-wide leading-normal focus:outline-none text-coolGray-500"
                       style="width: 325px; min-width: 325px; max-width: 325px; height: 24px; min-height: 24px; max-height: 24px;"
                     />
-                    {/*<img*/}
-                    {/*src="/fimgs/I159_393_18_22.x1.svg"*/}
-                    {/*style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-ef3488923855607fdda3b615deaf86593bda50fb');background-size:100% 100%;background-repeat:no-repeat;"*/}
-                    {/*/>*/}
                   </div>
                 </div>
               </div>
@@ -98,14 +99,22 @@
                       style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
                     />
                     <input
-                      type="password"
+                      type={meta.state.showPassword ? "text" : "password"}
                       autoComplete="current-password"
                       required
                       placeholder="Masukkan Kata sandi anda ..."
-                      class="text-base tracking-wide leading-normal text-coolGray-500"
+                      class="text-base tracking-wide leading-normal focus:outline-none text-coolGray-500"
                       style="width: 325px; min-width: 325px; max-width: 325px; height: 24px; min-height: 24px; max-height: 24px;"
                     />
-                    <button style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-023bedad52ab48ad687814f628b1cfb91fab786c');background-size:100% 100%;background-repeat:no-repeat;" />
+                    <button
+                      onClick={() =>
+                        meta.state({
+                          showPassword: true,
+                        })
+                      }
+                    >
+                      {meta.state.showPassword ? <eye-icon /> : <eye-slash />}
+                    </button>
                   </div>
                 </div>
               </div>
