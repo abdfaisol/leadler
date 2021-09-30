@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {},
   "dependencies": {
-    "emailjs-com": "^3.2.0"
+    "crypto-js": "^4.1.1",
+    "emailjs-com": "^3.2.0",
+    "md5": "^2.3.0"
   },
   "types": "./src/index.ts",
   "main": "./build/index.js"

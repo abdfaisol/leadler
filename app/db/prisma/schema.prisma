@@ -5,34 +5,48 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://magang:magang123$%^@db.plansys.co:5432/magang4?schema=public"
+  url      = "postgresql://postgres:andromedia123oke@db.plansys.co:5432/magang6?schema=public&pool_timeout=0"
 }
 
-model albums {
-  AlbumId  Int     @id @default(autoincrement())
-  Title    String
-  ArtistId Int
-  artists  artists @relation(fields: [ArtistId], references: [ArtistId])
-  songs    songs[]
+model mtask {
+  id           Int            @id @default(autoincrement())
+  iduser       Int
+  name         String         @db.VarChar(250)
+  muser        muser          @relation(fields: [iduser], references: [id])
+  mtask_detail mtask_detail[]
 }
 
-model artists {
-  ArtistId   Int        @id @default(autoincrement())
-  Name       String
-  CoutriesId Int?
-  countries  countries? @relation(fields: [CoutriesId], references: [id])
-  albums     albums[]
+model mtask_detail {
+  id      Int      @id @default(autoincrement())
+  idtask  Int
+  name    String   @db.VarChar(250)
+  duedate DateTime @db.Timestamp(6)
+  mtask   mtask    @relation(fields: [idtask], references: [id])
 }
 
-model countries {
-  id      Int       @id @default(autoincrement())
-  name    String    @db.VarChar(45)
-  artists artists[]
+model muser {
+  id                    Int                     @id @default(autoincrement())
+  username              String                  @unique @db.VarChar(15)
+  email                 String                  @unique @db.VarChar(250)
+  password              String                  @db.VarChar(250)
+  idUserRole            Int?
+  idDepartment          Int?
+  muser_role            muser_role?             @relation(fields: [idUserRole], references: [id])
+  mtask                 mtask[]
+  muser_forget_password muser_forget_password[]
 }
 
-model songs {
-  id       Int    @id @default(autoincrement())
-  song     String @db.VarChar(45)
-  albumsId Int
-  albums   albums @relation(fields: [albumsId], references: [AlbumId])
+model muser_forget_password {
+  id      Int      @id @default(autoincrement())
+  iduser  Int
+  token   String   @db.VarChar(250)
+  expired DateTime @db.Date
+  active  Boolean  @default(true)
+  muser   muser    @relation(fields: [iduser], references: [id])
+}
+
+model muser_role {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(255)
+  muser muser[]
 }
