@@ -2,9 +2,25 @@
   <effect
     meta={{
       dataAll: db.muser_role.findMany(),
-      state: { username: "kosong" },
+      state: { email: "", password: "" },
       handleSubmit(event) {
-        console.log("A name was submitted: " + this.state.username);
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.state),
+        };
+        fetch(window.location.origin + "/api/login", requestOptions).then(
+          (response) => {
+            response.json().then((e) => {
+              console.log(e);
+            });
+          }
+        );
+        fetch(window.location.origin + "/api/user").then((response) => {
+          response.json().then((e) => {
+            console.log(e);
+          });
+        });
         event.preventDefault();
       },
       ubahNilai(e) {
@@ -32,18 +48,33 @@
         <div class="mb-4">
           <label
             class="block text-gray-700 text-sm font-bold mb-2"
-            for="username"
+            for="password"
           >
-            Username
+            Password
           </label>
           <input
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="username"
+            id="email"
             type="text"
-            name="username"
-            placeholder="Username"
+            name="email"
+            placeholder="Email"
             onChange={meta.ubahNilai}
-            // value={meta.state.tamu}
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 text-sm font-bold mb-2"
+            for="password"
+          >
+            Pssword
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="password"
+            type="text"
+            name="password"
+            placeholder="Password"
+            onChange={meta.ubahNilai}
           />
         </div>
         <div class="flex items-center justify-between">
@@ -51,11 +82,10 @@
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit"
           >
-            Add Data
+            Login
           </button>
         </div>
       </form>
     </div>
   </div>
-</>/div>
 </>
