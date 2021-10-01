@@ -3,13 +3,45 @@
     meta={{
       showModal: false,
       showPass: false,
+      state: { token: params.token, password: "" },
+      handleSubmit(event) {
+        console.log(this.state);
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.state),
+        };
+        fetch(
+          window.location.origin + "/api/reset-password",
+          requestOptions
+        ).then((response) => {
+          response.json().then((e) => {
+            console.log(e);
+          });
+        });
+        // window.location.replace(window.location.origin);
+        event.preventDefault();
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        // console.log(name);
+      },
+      handleInputChange(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        console.log(name + "   " + e.target.value);
+        this.state[name] = nilai;
+        // console.log(this.state.username);
+      },
       toggleModal() {
         this.showModal = !this.showModal;
-        console.log(this.showModal);
+        // console.log(this.showModal);
       },
       togglePass() {
         this.showPass = !this.showPass;
-        console.log(this.showPass);
+        // console.log(this.showPass);
       },
     }}
     run={async () => {}}
@@ -38,7 +70,10 @@
                 </button>
               </div>
             </div>
-            <div class="flex self-stretch flex-col space-y-10 items-start justify-start">
+            <form
+              class="flex self-stretch flex-col space-y-10 items-start justify-start"
+              onSubmit={meta.handleSubmit}
+            >
               <div class="flex self-stretch flex-col space-y-1.5 items-start justify-start">
                 <div class="flex self-stretch items-start justify-start">
                   <div class="text-2xl font-semibold tracking-wide leading-loose text-coolGray-800">
@@ -76,13 +111,15 @@
                           required
                           placeholder="Masukkan kata sandi baru anda"
                           class="text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                          name="password"
+                          onChange={meta.ubahNilai}
                         />
                         <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
                           <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
-                            <button
+                            <i
                               onClick={meta.togglePass}
                               style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-023bedad52ab48ad687814f628b1cfb91fab786c');background-size:100% 100%;background-repeat:no-repeat;"
-                            />
+                            ></i>
                           </div>
                         </div>
                       </div>
@@ -110,13 +147,15 @@
                           required
                           placeholder="Konfirmasi kata sandi anda"
                           class="text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                          name="password"
+                          onChange={meta.ubahNilai}
                         />
                         <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
                           <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
-                            <button
+                            <i
                               onClick={meta.togglePass}
                               style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-023bedad52ab48ad687814f628b1cfb91fab786c');background-size:100% 100%;background-repeat:no-repeat;"
-                            />
+                            ></i>
                           </div>
                         </div>
                       </div>
@@ -125,6 +164,7 @@
                 </div>
               </div>
               <button
+                type="submit"
                 onClick={meta.toggleModal}
                 class="flex flex-1 self-stretch flex-col items-start justify-start"
                 style="width: 413px; min-width: 413px; max-width: 413px; height: 40px; min-height: 40px; max-height: 40px;"
@@ -135,7 +175,7 @@
                   </div>
                 </div>
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>

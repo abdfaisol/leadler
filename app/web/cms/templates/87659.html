@@ -2,6 +2,36 @@
   <effect
     meta={{
       showModal: false,
+      state: { email: "" },
+      handleSubmit(event) {
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.state),
+        };
+        fetch(window.location.origin + "/api/email-reset", requestOptions).then(
+          (response) => {
+            response.json().then((e) => {
+              console.log(e);
+              console.log(this.state.email);
+            });
+          }
+        );
+        event.preventDefault();
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        // console.log(name);
+      },
+      handleInputChange(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        console.log(name + "   " + e.target.value);
+        this.state[name] = nilai;
+        // console.log(this.state.username);
+      },
       toggleModal() {
         this.showModal = !this.showModal;
         console.log(this.showModal);
@@ -33,7 +63,10 @@
                 </button>
               </div>
             </div>
-            <div class="flex self-stretch flex-col space-y-10 items-start justify-start">
+            <form
+              class="flex self-stretch flex-col space-y-10 items-start justify-start"
+              onSubmit={meta.handleSubmit}
+            >
               <div class="flex self-stretch flex-col space-y-1.5 items-start justify-start">
                 <div class="flex self-stretch items-start justify-start">
                   <div class="text-2xl font-semibold tracking-wide leading-loose text-coolGray-800">
@@ -66,29 +99,30 @@
                       </div>
                       <input
                         id="name"
-                        name="name"
+                        name="email"
                         type="email"
                         placeholder="Masukkan Email Anda"
-                        autocomplete="off"
-                        required="required"
+                        required
                         class="text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                        onChange={meta.ubahNilai}
                       />
                     </div>
                   </div>
                 </div>
               </div>
               <button
+                type="submit"
                 onClick={meta.toggleModal}
                 class="flex flex-1 self-stretch flex-col items-start justify-start"
                 style="width: 413px; min-width: 413px; max-width: 413px; height: 40px; min-height: 40px; max-height: 40px;"
               >
                 <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
                   <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-                    Masuk
+                    Kirim
                   </div>
                 </div>
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>

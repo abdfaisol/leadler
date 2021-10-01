@@ -1,0 +1,19 @@
+<>
+  <effect
+    meta={{
+      state: { user_role: "" },
+    }}
+    run={async () => {
+      fetch(window.location.origin + "/api/user").then((response) => {
+        response.json().then((e) => {
+          // console.log(e);
+          console.log(e.data_act);
+          meta.state.user_role = e.data_act.muser_role.name;
+        });
+      });
+    }}
+  />
+  <div>
+    <p>{meta.state.user_role}</p>
+  </div>
+</>
