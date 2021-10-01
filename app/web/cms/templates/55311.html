@@ -19,7 +19,17 @@
             console.log(e);
           });
         });
-        // window.location.replace(window.location.origin);
+        //window.location.replace(window.location.origin);
+        this.showModal = !this.showModal;
+        // console.log(this.showModal);
+        event.preventDefault();
+      },
+      handleSubmit1(event) {
+        window.location.replace(window.location.origin + "/lupa-pass");
+        event.preventDefault();
+      },
+      handleSubmit2(event) {
+        window.location.replace(window.location.origin);
         event.preventDefault();
       },
       ubahNilai(e) {
@@ -35,12 +45,12 @@
         this.state[name] = nilai;
         // console.log(this.state.username);
       },
-      toggleModal() {
-        this.showModal = !this.showModal;
-        // console.log(this.showModal);
-      },
       togglePass() {
         this.showPass = !this.showPass;
+        // console.log(this.showPass);
+      },
+      togglePass2() {
+        this.showPass2 = !this.showPass2;
         // console.log(this.showPass);
       },
     }}
@@ -51,25 +61,30 @@
       <div class="flex flex-1 self-stretch flex-col items-center justify-center border rounded border-coolGray-300 py-20 px-20">
         <div class="flex self-stretch flex-col items-center justify-center">
           <div class="flex flex-col space-y-6 items-center justify-center">
-            <div
-              class={`flex flex-1 self-stretch flex-col items-start justify-start bg-white`}
+            <form
+              class="flex self-stretch flex-col space-y-10 items-start justify-start"
+              onSubmit={meta.handleSubmit1}
             >
-              <div class="flex self-stretch flex-col items-start justify-start">
-                <button class="flex space-x-2 items-start justify-start">
-                  <div class="flex flex-1 items-start justify-start">
-                    <img
-                      src="/fimgs/I205_215_201_147.x3.png"
-                      style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;background-image: url('/fimgs/bg-3ce3a3b71945e1763782c48530f736aac19630db');background-size:100% 100%;background-repeat:no-repeat;"
-                    />
-                  </div>
-                  <div class="flex items-start justify-start">
-                    <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
-                      Back
+              <div
+                class={`flex flex-1 self-stretch flex-col items-start justify-start bg-white`}
+              >
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <button class="flex space-x-2 items-start justify-start">
+                    <div class="flex flex-1 items-start justify-start">
+                      <img
+                        src="/fimgs/I205_215_201_147.x3.png"
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;background-image: url('/fimgs/bg-3ce3a3b71945e1763782c48530f736aac19630db');background-size:100% 100%;background-repeat:no-repeat;"
+                      />
                     </div>
-                  </div>
-                </button>
+                    <div class="flex items-start justify-start">
+                      <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+                        Back
+                      </div>
+                    </div>
+                  </button>
+                </div>
               </div>
-            </div>
+            </form>
             <form
               class="flex self-stretch flex-col space-y-10 items-start justify-start"
               onSubmit={meta.handleSubmit}
@@ -116,10 +131,12 @@
                         />
                         <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
                           <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
-                            <i
+                            <div
                               onClick={meta.togglePass}
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-023bedad52ab48ad687814f628b1cfb91fab786c');background-size:100% 100%;background-repeat:no-repeat;"
-                            ></i>
+                              class="cursor-pointer"
+                            >
+                              {meta.showPass ? <eye-icon /> : <eye-slash />}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -142,7 +159,7 @@
                           </div>
                         </div>
                         <input
-                          type={meta.showPass ? "text" : "password"}
+                          type={meta.showPass2 ? "text" : "password"}
                           autoComplete="current-password"
                           required
                           placeholder="Konfirmasi kata sandi anda"
@@ -152,10 +169,12 @@
                         />
                         <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
                           <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
-                            <i
-                              onClick={meta.togglePass}
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-023bedad52ab48ad687814f628b1cfb91fab786c');background-size:100% 100%;background-repeat:no-repeat;"
-                            ></i>
+                            <div
+                              onClick={meta.togglePass2}
+                              class="cursor-pointer"
+                            >
+                              {meta.showPass2 ? <eye-icon /> : <eye-slash />}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -165,7 +184,6 @@
               </div>
               <button
                 type="submit"
-                onClick={meta.toggleModal}
                 class="flex flex-1 self-stretch flex-col items-start justify-start"
                 style="width: 413px; min-width: 413px; max-width: 413px; height: 40px; min-height: 40px; max-height: 40px;"
               >
@@ -183,30 +201,32 @@
   </div>
   {meta.showModal ? (
     <>
-      <div class="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-        <div class="relative w-auto my-6 mx-auto max-w-3xl">
-          {/*content*/}
-          <div class="border-0 rounded-lg shadow-lg relative flex flex-col p-14 w-full bg-white outline-none focus:outline-none">
-            {/*body*/}
-            <div class="flex flex-1 flex-col text-center pb-8 flex-auto">
-              Reset Password Successful
-            </div>
-            <div class="m-auto">
-              <button
-                class="items-center justify-center"
-                onClick={meta.toggleModal}
-              >
-                <div class="items-center justify-center px-8 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
-                  <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-                    Back to login
+      <form
+        class="flex self-stretch flex-col space-y-10 items-start justify-start"
+        onSubmit={meta.handleSubmit2}
+      >
+        <div class="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+          <div class="relative w-auto my-6 mx-auto max-w-3xl">
+            {/*content*/}
+            <div class="border-0 rounded-lg shadow-lg relative flex flex-col p-14 w-full bg-white outline-none focus:outline-none">
+              {/*body*/}
+              <div class="flex flex-1 flex-col text-center pb-8 flex-auto">
+                Reset Password Successful
+              </div>
+              <div class="m-auto">
+                <button class="items-center justify-center">
+                  <div class="items-center justify-center px-8 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                      Back to login
+                    </div>
                   </div>
-                </div>
-              </button>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      </form>
     </>
   ) : null}
 </>
