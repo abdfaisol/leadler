@@ -153,10 +153,18 @@
                       name="password"
                       onChange={meta.ubahNilai}
                     />
-                    <button onClick={meta.togglePass}>
+                    <div onClick={meta.togglePass} class="cursor-pointer">
                       {meta.showPass ? <eye-icon /> : <eye-slash />}
-                    </button>
+                    </div>
                   </div>
+                </div>
+                <div className="text-sm flex self-stretch items-center justify-end">
+                  <a
+                    href="/lupa-pass"
+                    className="font-medium text-indigo-500 hover:text-indigo-700"
+                  >
+                    Lupa Password?
+                  </a>
                 </div>
               </div>
             </div>
