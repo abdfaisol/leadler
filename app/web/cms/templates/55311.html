@@ -3,6 +3,8 @@
     meta={{
       showModal: false,
       showPass: false,
+      input: {},
+      errors: {},
       state: { token: params.token, password: "" },
       handleSubmit(event) {
         console.log(this.state);
@@ -19,10 +21,39 @@
             console.log(e);
           });
         });
+        if (this.validate()) {
+          console.log(this);
+          let input = {};
+          input["password"] = "";
+          input["cpassword"] = "";
+          this.input = input;
+          this.showModal = !this.showModal;
+        }
         //window.location.replace(window.location.origin);
-        this.showModal = !this.showModal;
-        // console.log(this.showModal);
         event.preventDefault();
+      },
+      validate() {
+        let input = this.input;
+        let errors = {};
+        let isValid = true;
+
+        if (!input["password"]) {
+          isValid = false;
+          errors["password"] = "This field is required.";
+        }
+
+        if (!input["cpassword"]) {
+          isValid = false;
+          errors["cpassword"] = "This field is required.";
+        }
+
+        if (input["password"] !== input["cpassword"]) {
+          isValid = false;
+          errors["cpassword"] = "Password doesn't match.";
+        }
+
+        this.errors = errors;
+        return isValid;
       },
       handleSubmit1(event) {
         window.location.replace(window.location.origin + "/lupa-pass");
@@ -33,6 +64,10 @@
         event.preventDefault();
       },
       ubahNilai(e) {
+        let input = this.input;
+        input[e.target.name] = e.target.value;
+        this.input = input;
+
         let name = e.target.name;
         let nilai = e.target.value;
         this.state[name] = nilai;
@@ -61,30 +96,25 @@
       <div class="flex flex-1 self-stretch flex-col items-center justify-center border rounded border-coolGray-300 py-20 px-20">
         <div class="flex self-stretch flex-col items-center justify-center">
           <div class="flex flex-col space-y-6 items-center justify-center">
-            <form
-              class="flex self-stretch flex-col space-y-10 items-start justify-start"
-              onSubmit={meta.handleSubmit1}
+            <div
+              class={`flex flex-1 self-stretch flex-col items-start justify-start bg-white`}
             >
-              <div
-                class={`flex flex-1 self-stretch flex-col items-start justify-start bg-white`}
-              >
-                <div class="flex self-stretch flex-col items-start justify-start">
-                  <button class="flex space-x-2 items-start justify-start">
-                    <div class="flex flex-1 items-start justify-start">
-                      <img
-                        src="/fimgs/I205_215_201_147.x3.png"
-                        style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;background-image: url('/fimgs/bg-3ce3a3b71945e1763782c48530f736aac19630db');background-size:100% 100%;background-repeat:no-repeat;"
-                      />
+              <div class="flex self-stretch flex-col items-start justify-start">
+                <button class="flex space-x-2 items-start justify-start">
+                  <div class="flex flex-1 items-start justify-start">
+                    <img
+                      src="/fimgs/I205_215_201_147.x3.png"
+                      style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;background-image: url('/fimgs/bg-3ce3a3b71945e1763782c48530f736aac19630db');background-size:100% 100%;background-repeat:no-repeat;"
+                    />
+                  </div>
+                  <div class="flex items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+                      Back
                     </div>
-                    <div class="flex items-start justify-start">
-                      <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
-                        Back
-                      </div>
-                    </div>
-                  </button>
-                </div>
+                  </div>
+                </button>
               </div>
-            </form>
+            </div>
             <form
               class="flex self-stretch flex-col space-y-10 items-start justify-start"
               onSubmit={meta.handleSubmit}
@@ -104,8 +134,8 @@
 
               <div class="flex self-stretch flex-col space-y-10 items-start justify-start">
                 <div class="flex self-stretch flex-col space-y-10 items-start justify-center">
-                  <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
-                    <div class="flex self-stretch items-start justify-start">
+                  <div class="flex self-stretch flex-col space-y-1 items-start justify-start">
+                    <div class="flex self-stretch pb-4 items-start justify-start">
                       <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
                         Create New Password
                       </div>
@@ -123,10 +153,14 @@
                         <input
                           type={meta.showPass ? "text" : "password"}
                           autoComplete="current-password"
-                          required
                           placeholder="Masukkan kata sandi baru anda"
-                          class="text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                          class={
+                            meta.errors.password
+                              ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                              : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                          }
                           name="password"
+                          value={meta.input.password}
                           onChange={meta.ubahNilai}
                         />
                         <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
@@ -141,9 +175,12 @@
                         </div>
                       </div>
                     </div>
+                    <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                      {meta.errors.password}
+                    </div>
                   </div>
-                  <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
-                    <div class="flex self-stretch items-start justify-start">
+                  <div class="flex self-stretch flex-col space-y-1 items-start justify-start">
+                    <div class="flex self-stretch pb-4 items-start justify-start">
                       <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
                         Confirm Password
                       </div>
@@ -161,10 +198,14 @@
                         <input
                           type={meta.showPass2 ? "text" : "password"}
                           autoComplete="current-password"
-                          required
                           placeholder="Konfirmasi kata sandi anda"
-                          class="text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
-                          name="password"
+                          class={
+                            meta.errors.cpassword
+                              ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                              : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                          }
+                          name="cpassword"
+                          value={meta.input.cpassword}
                           onChange={meta.ubahNilai}
                         />
                         <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
@@ -178,6 +219,9 @@
                           </div>
                         </div>
                       </div>
+                    </div>
+                    <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                      {meta.errors.cpassword}
                     </div>
                   </div>
                 </div>
@@ -201,10 +245,7 @@
   </div>
   {meta.showModal ? (
     <>
-      <form
-        class="flex self-stretch flex-col space-y-10 items-start justify-start"
-        onSubmit={meta.handleSubmit2}
-      >
+      <form onSubmit={meta.handleSubmit2}>
         <div class="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
           <div class="relative w-auto my-6 mx-auto max-w-3xl">
             {/*content*/}
