@@ -2,7 +2,10 @@
   <effect
     meta={{
       showModal: false,
+      input: {},
+      errors: {},
       state: { email: "" },
+
       handleSubmit(event) {
         const requestOptions = {
           method: "POST",
@@ -17,9 +20,36 @@
             });
           }
         );
-        this.showModal = !this.showModal;
-        console.log(this.showModal);
+        if (this.validate()) {
+          console.log(this);
+          let input = {};
+          input["email"] = "";
+          this.input = input;
+          this.showModal = !this.showModal;
+        }
+        //console.log(this.showModal);
         event.preventDefault();
+      },
+      validate() {
+        let input = this.input;
+        let errors = {};
+        let isValid = true;
+
+        if (!input["email"]) {
+          isValid = false;
+          errors["email"] = "This field is required.";
+        }
+
+        if (typeof input["email"] !== "undefined") {
+          let pattern = RegExp(/^[a-zA-Z0-9._]+@gmail+.com+$/);
+
+          if (!pattern.test(input["email"])) {
+            isValid = false;
+            errors["email"] = "Email address doesn't valid.";
+          }
+        }
+        this.errors = errors;
+        return isValid;
       },
       handleSubmit1(event) {
         window.location.replace(window.location.origin);
@@ -30,6 +60,10 @@
         event.preventDefault();
       },
       ubahNilai(e) {
+        let input = this.input;
+        input[e.target.name] = e.target.value;
+        this.input = input;
+
         let name = e.target.name;
         let nilai = e.target.value;
         this.state[name] = nilai;
@@ -92,8 +126,8 @@
               </div>
 
               <div class="flex self-stretch flex-col space-y-10 items-start justify-start">
-                <div class="flex self-stretch flex-col space-y-4 items-start justify-center">
-                  <div class="flex self-stretch items-start justify-start">
+                <div class="flex self-stretch flex-col space-y-1 items-start justify-center">
+                  <div class="flex self-stretch pb-4 items-start justify-start">
                     <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
                       Email Address
                     </div>
@@ -113,11 +147,18 @@
                         name="email"
                         type="email"
                         placeholder="Masukkan Email Anda"
-                        required
-                        class="text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                        class={
+                          meta.errors.email
+                            ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                            : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                        }
+                        value={meta.input.email}
                         onChange={meta.ubahNilai}
                       />
                     </div>
+                  </div>
+                  <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                    {meta.errors.email}
                   </div>
                 </div>
               </div>
@@ -140,10 +181,7 @@
   </div>
   {meta.showModal ? (
     <>
-      <form
-        class="flex self-stretch flex-col space-y-10 items-start justify-start"
-        onSubmit={meta.handleSubmit2}
-      >
+      <form onSubmit={meta.handleSubmit2}>
         <div class="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
           <div class="relative w-auto my-6 mx-auto max-w-3xl">
             {/*content*/}
