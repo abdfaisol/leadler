@@ -41,7 +41,7 @@
         }
 
         if (typeof input["email"] !== "undefined") {
-          let pattern = RegExp(/^[a-zA-Z0-9._]+@gmail+.com+$/);
+          let pattern = RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
 
           if (!pattern.test(input["email"])) {
             isValid = false;
