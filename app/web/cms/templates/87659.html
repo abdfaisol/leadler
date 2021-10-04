@@ -5,6 +5,7 @@
       input: {},
       errors: {},
       state: { email: "" },
+      state1: { print: false },
 
       handleSubmit(event) {
         const requestOptions = {
@@ -27,6 +28,9 @@
           this.input = input;
           this.showModal = !this.showModal;
         }
+
+        this.state1.print = true;
+        console.log(this.state1.print);
         //console.log(this.showModal);
         event.preventDefault();
       },
@@ -42,7 +46,7 @@
 
         if (typeof input["email"] !== "undefined") {
           let pattern = RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
-
+          ///^[a-zA-Z0-9._]+@[a-zA-Z]+(?:\.[a-zA-Z0-9-]+)*$/
           if (!pattern.test(input["email"])) {
             isValid = false;
             errors["email"] = "Email address doesn't valid.";
@@ -56,7 +60,7 @@
         event.preventDefault();
       },
       handleSubmit2(event) {
-        window.location.replace("https://www.gmail.com");
+        window.location.replace(window.location.origin);
         event.preventDefault();
       },
       ubahNilai(e) {
@@ -67,6 +71,7 @@
         let name = e.target.name;
         let nilai = e.target.value;
         this.state[name] = nilai;
+        this.state1.print = false;
         // console.log(name);
       },
       handleInputChange(e) {
@@ -187,14 +192,17 @@
             {/*content*/}
             <div class="border-0 rounded-lg shadow-lg relative flex flex-col p-14 w-full bg-white outline-none focus:outline-none">
               {/*body*/}
-              <div class="flex flex-1 flex-col text-center pb-8 flex-auto">
-                Check Your Email Address
+              <div class="flex flex-1 flex-col text-center pb-4 flex-auto">
+                Check Your Email Address:
+              </div>
+              <div class="flex flex-1 flex-col text-center text-xl font-semibold text-indigo-500 pb-6 flex-auto">
+                {meta.state1.print ? <div>{meta.state.email}</div> : null}
               </div>
               <div class="m-auto">
                 <button class="items-center justify-center">
                   <div class="items-center justify-center px-8 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
                     <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-                      Check It
+                      Back to login
                     </div>
                   </div>
                 </button>
@@ -207,5 +215,3 @@
     </>
   ) : null}
 </>
-
-
