@@ -2,7 +2,11 @@
   <effect
     meta={{
       state: { email: "", password: "" },
+      input: {},
+      errors: {},
+
       handleSubmit(event) {
+        let errors = {};
         const requestOptions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -13,9 +17,12 @@
             response.json().then((e) => {
               if (e.status == true || e.status == "true") {
                 window.location.replace(window.location.origin + "/app");
+              } else {
+                console.log("user is not signed in to retrive username");
+                console.log(e.status);
+                console.log(e);
+                errors = "User is not signed in to retrive username.";
               }
-              console.log(e.status);
-              console.log(e);
             });
           }
         );
@@ -25,6 +32,28 @@
         //   });
         // });
         event.preventDefault();
+        this.errors = errors;
+      },
+      validate() {
+        let input = this.input;
+        let errors = {};
+        let isValid = true;
+
+        if (!input["email"]) {
+          isValid = false;
+          errors["email"] = "This field is required.";
+        }
+
+        if (typeof input["email"] !== "undefined") {
+          let pattern = RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+          ///^[a-zA-Z0-9._]+@[a-zA-Z]+(?:\.[a-zA-Z0-9-]+)*$/
+          if (!pattern.test(input["email"])) {
+            isValid = false;
+            errors["email"] = "Email address doesn't valid.";
+          }
+        }
+        this.errors = errors;
+        return isValid;
       },
       ubahNilai(e) {
         let name = e.target.name;
@@ -108,24 +137,38 @@
                     Email Address
                   </div>
                 </div>
-                <div class="flex self-stretch items-center justify-start p-3 bg-white border rounded border-coolGray-300">
-                  <div class="flex flex-1 space-x-3 justify-start">
-                    <img
-                      src="/fimgs/I159_393_18_20.x3.png"
-                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-ef3488923855607fdda3b615deaf86593bda50fb');background-size:100% 100%;background-repeat:no-repeat;"
-                    />
+                <div class="flex self-stretch items-center justify-start">
+                  <div class="relative flex flex-1 items-center justify-start">
+                    <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                      <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                        <img
+                          src="/fimgs/I159_393_18_20.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-ef3488923855607fdda3b615deaf86593bda50fb');background-size:100% 100%;background-repeat:no-repeat;"
+                        />
+                      </div>
+                    </div>
                     <input
                       id="email-address"
                       name="email"
                       type="email"
                       autoComplete="email"
                       required
-                      placeholder="Email address"
-                      class="text-base tracking-wide leading-normal focus:outline-none text-coolGray-500"
-                      style="width: 325px; min-width: 325px; max-width: 325px; height: 24px; min-height: 24px; max-height: 24px;"
+                      placeholder="Masukkan Email Anda"
+                      class={
+                        meta.errors.email
+                          ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                          : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      }
+                      value={meta.input.email}
                       onChange={meta.ubahNilai}
                     />
                   </div>
+                </div>
+                <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                  {meta.errors.email}
+                </div>
+                <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                  {meta.errors.password}
                 </div>
               </div>
               <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
@@ -134,30 +177,40 @@
                     Password
                   </div>
                 </div>
-                <div class="flex self-stretch items-center justify-start p-3 bg-white border rounded border-coolGray-300">
-                  <div
-                    class="flex flex-1 space-x-3 items-center justify-center"
-                    style="width: 389px; min-width: 389px; max-width: 389px; height: 24px; min-height: 24px; max-height: 24px;"
-                  >
-                    <img
-                      src="/fimgs/I159_397_18_30.x3.png"
-                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
-                    />
+
+                <div class="flex self-stretch items-center justify-start">
+                  <div class="relative flex flex-1 items-center justify-start">
+                    <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                      <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                        <img
+                          src="/fimgs/I159_397_18_30.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+                        />
+                      </div>
+                    </div>
                     <input
                       type={meta.showPass ? "text" : "password"}
                       autoComplete="current-password"
-                      required
-                      placeholder="Masukkan Kata sandi anda ..."
-                      class="text-base tracking-wide leading-normal focus:outline-none text-coolGray-500"
-                      style="width: 325px; min-width: 325px; max-width: 325px; height: 24px; min-height: 24px; max-height: 24px;"
+                      placeholder="Masukkan kata sandi baru anda"
+                      class={
+                        meta.errors.password
+                          ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                          : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      }
                       name="password"
+                      value={meta.input.password}
                       onChange={meta.ubahNilai}
                     />
-                    <div onClick={meta.togglePass} class="cursor-pointer">
-                      {meta.showPass ? <eye-icon /> : <eye-slash />}
+                    <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                      <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
+                        <div onClick={meta.togglePass} class="cursor-pointer">
+                          {meta.showPass ? <eye-icon /> : <eye-slash />}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
+
                 <div className="text-sm flex self-stretch items-center justify-end">
                   <a
                     href="/lupa-pass"
