@@ -18,10 +18,10 @@
                 window.location.replace(window.location.origin + "/app");
               } else {
                 this.showErrorMessage = !this.showErrorMessage;
-                console.log("user is not signed in to retrive username");
-                console.log(e.status);
-                console.log(e);
-                errors = "User is not signed in to retrive username.";
+                // console.log("user is not signed in to retrive username");
+                // console.log(e.status);
+                // console.log(e);
+                // errors = "User is not signed in to retrive username.";
               }
             });
           }
@@ -185,7 +185,7 @@
                   }
                 >
                   {meta.showErrorMessage ? (
-                    <div class="font-medium text-red-500">
+                    <div class="font-normal text-red-500">
                       Email/Password anda salah, Silahkan coba lagi!
                     </div>
                   ) : null}
@@ -215,10 +215,4 @@
       </div>
     </div>
   </div>
-
-  {/*{meta.showErrorMessage ? (*/}
-  {/*<>*/}
-  {/*<errormessage />*/}
-  {/*</>*/}
-  {/*) : null}*/}
 </>
