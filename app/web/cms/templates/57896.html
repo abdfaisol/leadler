@@ -1,5 +1,12 @@
 <>
-  <effect meta={{}} run={async () => {}} />
+  <effect
+    meta={{
+      toggleAnalytics() {
+        this.showAnalytics = !this.showAnalytics;
+      },
+    }}
+    run={async () => {}}
+  />
   <div
     class="flex flex-col items-start justify-start bg-coolGray-50"
     style="width: 1440px; min-width: 1440px; max-width: 1440px; height: 1024px; min-height: 1024px; max-height: 1024px;"
@@ -21,6 +28,7 @@
             style="width: 158px; min-width: 158px; max-width: 158px; height: 40px; min-height: 40px; max-height: 40px;"
           >
             <div
+              onClick={meta.toggleAnalytics}
               class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 bg-violet-100 rounded cursor-pointer"
               style="width: 158px; min-width: 158px; max-width: 158px; height: 40px; min-height: 40px; max-height: 40px;"
             >
@@ -44,11 +52,12 @@
             style="width: 158px; min-width: 158px; max-width: 158px; height: 40px; min-height: 40px; max-height: 40px;"
           >
             <div
+              onClick={meta.toggleAnalytics}
               class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
               style="width: 158px; min-width: 158px; max-width: 158px; height: 40px; min-height: 40px; max-height: 40px;"
             >
               <img
-                src="/fimgs/I609_800_45_102.x3.png"
+                src="/fimgs/45_103.x3.png"
                 class="flex items-start justify-start"
                 style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
               />
@@ -87,6 +96,7 @@
           </div>
         </div>
       </div>
+
       <div
         class="flex flex-col space-y-10 items-start justify-start"
         style="width: 968px; min-width: 968px; max-width: 968px; height: 865px; min-height: 865px; max-height: 865px;"
@@ -97,7 +107,7 @@
         >
           <div class="flex items-start justify-start">
             <div class="text-2xl font-medium tracking-wide leading-loose text-coolGray-900">
-              Analytics
+              {meta.showAnalytics ? "Projects" : "Analytics"}
             </div>
           </div>
           <div class="flex space-x-20 items-center justify-start">
@@ -164,100 +174,8 @@
             </div>
           </div>
         </div>
-        <div class="flex self-stretch flex-col space-y-14 items-start justify-start">
-          <div
-            class="flex self-stretch space-x-14 items-start justify-start"
-            style="width: 968px; min-width: 968px; max-width: 968px; height: 107px; min-height: 107px; max-height: 107px;"
-          >
-            <div
-              class="flex flex-1 space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
-              style="width: 200px; min-width: 200px; max-width: 200px; height: 107px; min-height: 107px; max-height: 107px;"
-            >
-              <img
-                src="/fimgs/609_829.x3.png"
-                class="flex items-center justify-center p-1.5 bg-blue-700 rounded-full"
-                style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
-              />
-              <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                    New Project
-                  </div>
-                </div>
-                <div class="flex self-stretch flex-col items-start justify-start">
-                  <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
-                    25
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="flex flex-1 space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
-              style="width: 200px; min-width: 200px; max-width: 200px; height: 107px; min-height: 107px; max-height: 107px;"
-            >
-              <img
-                src="/fimgs/609_837.x3.png"
-                class="flex items-center justify-center p-1.5 bg-orange-400 rounded-full"
-                style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
-              />
-              <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                    In Progress
-                  </div>
-                </div>
-                <div class="flex self-stretch flex-col items-start justify-start">
-                  <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
-                    25
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="flex flex-1 space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
-              style="width: 200px; min-width: 200px; max-width: 200px; height: 107px; min-height: 107px; max-height: 107px;"
-            >
-              <img
-                src="/fimgs/609_845.x3.png"
-                class="flex items-center justify-center p-1.5 bg-green-500 rounded-full"
-                style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
-              />
-              <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                    Complete
-                  </div>
-                </div>
-                <div class="flex self-stretch flex-col items-start justify-start">
-                  <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
-                    25
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="flex flex-1 space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
-              style="width: 200px; min-width: 200px; max-width: 200px; height: 107px; min-height: 107px; max-height: 107px;"
-            >
-              <img
-                src="/fimgs/609_853.x3.png"
-                class="flex items-center justify-center p-1.5 bg-red-500 rounded-full"
-                style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
-              />
-              <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                    Unfinish
-                  </div>
-                </div>
-                <div class="flex self-stretch flex-col items-start justify-start">
-                  <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
-                    25
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
+        {meta.showAnalytics ? (
           <div
             class="flex self-stretch flex-col space-y-10 items-start justify-start"
             style="width: 968px; min-width: 968px; max-width: 968px; height: 622px; min-height: 622px; max-height: 622px;"
@@ -267,15 +185,17 @@
               style="width: 968px; min-width: 968px; max-width: 968px; height: 59px; min-height: 59px; max-height: 59px;"
             >
               <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
-                    Important Project
+                <div
+                  class="flex space-x-1 items-center justify-center px-4 py-2 border rounded border-indigo-500"
+                  style="width: 135px; min-width: 135px; max-width: 135px; height: 40px; min-height: 40px; max-height: 40px;"
+                >
+                  <div class="text-base tracking-wide leading-normal text-center text-indigo-500">
+                    All Project
                   </div>
-                </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                    You can add important projects here
-                  </div>
+                  <img
+                    src="/fimgs/I55_494_55_487.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-09b5b972072bcfc098c06e90d718895dbb4e537a');background-size:100% 100%;background-repeat:no-repeat;"
+                  />
                 </div>
               </div>
               <div class="flex flex-col items-start justify-start">
@@ -291,7 +211,7 @@
                     class="text-base font-medium tracking-wide leading-normal text-center text-white"
                     style="width: 176px; min-width: 176px; max-width: 176px; height: 24px; min-height: 24px; max-height: 24px;"
                   >
-                    Add ImportantProject
+                    Create New Project
                   </div>
                 </button>
               </div>
@@ -353,161 +273,298 @@
                     </div>
                   </div>
                 </div>
-                <div
-                  class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
-                  style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
-                >
-                  <div
-                    class="flex self-stretch flex-col space-y-8 items-start justify-start"
-                    style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
-                  >
-                    <div
-                      class="flex self-stretch items-start justify-between"
-                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
-                    >
-                      <div class="flex items-center justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
-                          Tim 8
-                        </div>
-                      </div>
-                      <img
-                        src="/fimgs/609_893.x3.png"
-                        class="flex items-start justify-start"
-                        style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
-                      />
-                    </div>
-                    <div
-                      class="flex self-stretch flex-col space-y-6 items-start justify-start"
-                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
-                    >
-                      <div class="flex self-stretch items-start justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                          Pengembangan Website Company Profile
-                        </div>
-                      </div>
-                      <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                        <img
-                          src="/fimgs/609_899.x3.png"
-                          class="flex self-stretch flex-col items-start justify-start"
-                          style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
-                        />
-                        <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                            15 Task Done
-                          </div>
-                        </div>
-                        <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight">
-                            Due Date: 29/09/2021
-                          </div>
-                        </div>
-                      </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div class="flex self-stretch flex-col space-y-14 items-start justify-start">
+            <div
+              class="flex self-stretch space-x-14 items-start justify-start"
+              style="width: 968px; min-width: 968px; max-width: 968px; height: 107px; min-height: 107px; max-height: 107px;"
+            >
+              <div
+                class="flex flex-1 space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
+                style="width: 200px; min-width: 200px; max-width: 200px; height: 107px; min-height: 107px; max-height: 107px;"
+              >
+                <img
+                  src="/fimgs/609_829.x3.png"
+                  class="flex items-center justify-center p-1.5 bg-blue-700 rounded-full"
+                  style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                />
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                      New Project
                     </div>
                   </div>
-                </div>
-                <div
-                  class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
-                  style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
-                >
-                  <div
-                    class="flex self-stretch flex-col space-y-8 items-start justify-start"
-                    style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
-                  >
-                    <div
-                      class="flex self-stretch items-start justify-between"
-                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
-                    >
-                      <div class="flex items-center justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
-                          Tim 1
-                        </div>
-                      </div>
-                      <img
-                        src="/fimgs/609_910.x3.png"
-                        class="flex items-start justify-start"
-                        style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
-                      />
-                    </div>
-                    <div
-                      class="flex self-stretch flex-col space-y-6 items-start justify-start"
-                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
-                    >
-                      <div class="flex self-stretch items-start justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                          Pengembangan Aplikasi Ojek Sepeda Pemkot Magelang
-                        </div>
-                      </div>
-                      <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                        <img
-                          src="/fimgs/609_916.x3.png"
-                          class="flex self-stretch flex-col items-start justify-start"
-                          style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
-                        />
-                        <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                            20 Task Done
-                          </div>
-                        </div>
-                        <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight">
-                            Due Date: 27/09/2021
-                          </div>
-                        </div>
-                      </div>
+                  <div class="flex self-stretch flex-col items-start justify-start">
+                    <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
+                      25
                     </div>
                   </div>
                 </div>
               </div>
               <div
-                class="flex self-stretch space-x-8 items-start justify-start"
-                style="width: 968px; min-width: 968px; max-width: 968px; height: 244px; min-height: 244px; max-height: 244px;"
+                class="flex flex-1 space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
+                style="width: 200px; min-width: 200px; max-width: 200px; height: 107px; min-height: 107px; max-height: 107px;"
               >
+                <img
+                  src="/fimgs/609_837.x3.png"
+                  class="flex items-center justify-center p-1.5 bg-orange-400 rounded-full"
+                  style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                />
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                      In Progress
+                    </div>
+                  </div>
+                  <div class="flex self-stretch flex-col items-start justify-start">
+                    <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
+                      25
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="flex flex-1 space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
+                style="width: 200px; min-width: 200px; max-width: 200px; height: 107px; min-height: 107px; max-height: 107px;"
+              >
+                <img
+                  src="/fimgs/609_845.x3.png"
+                  class="flex items-center justify-center p-1.5 bg-green-500 rounded-full"
+                  style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                />
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                      Complete
+                    </div>
+                  </div>
+                  <div class="flex self-stretch flex-col items-start justify-start">
+                    <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
+                      25
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="flex flex-1 space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
+                style="width: 200px; min-width: 200px; max-width: 200px; height: 107px; min-height: 107px; max-height: 107px;"
+              >
+                <img
+                  src="/fimgs/609_853.x3.png"
+                  class="flex items-center justify-center p-1.5 bg-red-500 rounded-full"
+                  style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                />
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                      Unfinish
+                    </div>
+                  </div>
+                  <div class="flex self-stretch flex-col items-start justify-start">
+                    <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
+                      25
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex self-stretch flex-col space-y-10 items-start justify-start"
+              style="width: 968px; min-width: 968px; max-width: 968px; height: 622px; min-height: 622px; max-height: 622px;"
+            >
+              <div
+                class="flex self-stretch space-x-96 items-start justify-start"
+                style="width: 968px; min-width: 968px; max-width: 968px; height: 59px; min-height: 59px; max-height: 59px;"
+              >
+                <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+                      Important Project
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                      You can add important projects here
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col items-start justify-start">
+                  <button
+                    class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+                    style="width: 236px; min-width: 236px; max-width: 236px; height: 40px; min-height: 40px; max-height: 40px;"
+                  >
+                    <img
+                      src="/fimgs/603_427.x3.png"
+                      style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                    />
+                    <div
+                      class="text-base font-medium tracking-wide leading-normal text-center text-white"
+                      style="width: 176px; min-width: 176px; max-width: 176px; height: 24px; min-height: 24px; max-height: 24px;"
+                    >
+                      Add ImportantProject
+                    </div>
+                  </button>
+                </div>
+              </div>
+              <div class="flex self-stretch flex-col space-y-9 items-start justify-start">
                 <div
-                  class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
-                  style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
+                  class="flex self-stretch space-x-8 items-start justify-start"
+                  style="width: 968px; min-width: 968px; max-width: 968px; height: 244px; min-height: 244px; max-height: 244px;"
                 >
                   <div
-                    class="flex self-stretch flex-col space-y-8 items-start justify-start"
-                    style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
+                    class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                    style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
                   >
                     <div
-                      class="flex self-stretch items-start justify-between"
-                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
+                      class="flex self-stretch flex-col space-y-8 items-start justify-start"
+                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
                     >
-                      <div class="flex items-center justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
-                          Tim 2
-                        </div>
-                      </div>
-                      <img
-                        src="/fimgs/609_928.x3.png"
-                        class="flex items-start justify-start"
-                        style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
-                      />
-                    </div>
-                    <div
-                      class="flex self-stretch flex-col space-y-6 items-start justify-start"
-                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
-                    >
-                      <div class="flex self-stretch items-start justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                          Pengembangan Aplikasi Akuntasi PT. Sido Maju
-                        </div>
-                      </div>
-                      <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                        <img
-                          src="/fimgs/609_934.x3.png"
-                          class="flex self-stretch flex-col items-start justify-start"
-                          style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
-                        />
-                        <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                            18 Task Done
+                      <div
+                        class="flex self-stretch items-start justify-between"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
+                      >
+                        <div class="flex items-center justify-start">
+                          <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                            Tim 6
                           </div>
                         </div>
+                        <img
+                          src="/fimgs/609_876.x3.png"
+                          class="flex items-start justify-start"
+                          style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      </div>
+                      <div
+                        class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
+                      >
                         <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight">
-                            Due Date: 30/09/2021
+                          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                            Pengembangan Aplikasi UMKM Kota Semarang
+                          </div>
+                        </div>
+                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                          <img
+                            src="/fimgs/609_882.x3.png"
+                            class="flex self-stretch flex-col items-start justify-start"
+                            style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
+                          />
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                              10 Task Done
+                            </div>
+                          </div>
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight">
+                              Due Date: 25/09/2021
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                    style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
+                  >
+                    <div
+                      class="flex self-stretch flex-col space-y-8 items-start justify-start"
+                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
+                    >
+                      <div
+                        class="flex self-stretch items-start justify-between"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
+                      >
+                        <div class="flex items-center justify-start">
+                          <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                            Tim 8
+                          </div>
+                        </div>
+                        <img
+                          src="/fimgs/609_893.x3.png"
+                          class="flex items-start justify-start"
+                          style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      </div>
+                      <div
+                        class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
+                      >
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                            Pengembangan Website Company Profile
+                          </div>
+                        </div>
+                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                          <img
+                            src="/fimgs/609_899.x3.png"
+                            class="flex self-stretch flex-col items-start justify-start"
+                            style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
+                          />
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                              15 Task Done
+                            </div>
+                          </div>
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight">
+                              Due Date: 29/09/2021
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                    style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
+                  >
+                    <div
+                      class="flex self-stretch flex-col space-y-8 items-start justify-start"
+                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
+                    >
+                      <div
+                        class="flex self-stretch items-start justify-between"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
+                      >
+                        <div class="flex items-center justify-start">
+                          <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                            Tim 1
+                          </div>
+                        </div>
+                        <img
+                          src="/fimgs/609_910.x3.png"
+                          class="flex items-start justify-start"
+                          style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      </div>
+                      <div
+                        class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
+                      >
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                            Pengembangan Aplikasi Ojek Sepeda Pemkot Magelang
+                          </div>
+                        </div>
+                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                          <img
+                            src="/fimgs/609_916.x3.png"
+                            class="flex self-stretch flex-col items-start justify-start"
+                            style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
+                          />
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                              20 Task Done
+                            </div>
+                          </div>
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight">
+                              Due Date: 27/09/2021
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -515,103 +572,160 @@
                   </div>
                 </div>
                 <div
-                  class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
-                  style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
+                  class="flex self-stretch space-x-8 items-start justify-start"
+                  style="width: 968px; min-width: 968px; max-width: 968px; height: 244px; min-height: 244px; max-height: 244px;"
                 >
                   <div
-                    class="flex self-stretch flex-col space-y-8 items-start justify-start"
-                    style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
+                    class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                    style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
                   >
                     <div
-                      class="flex self-stretch items-start justify-between"
-                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
+                      class="flex self-stretch flex-col space-y-8 items-start justify-start"
+                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
                     >
-                      <div class="flex items-center justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
-                          Tim 3
-                        </div>
-                      </div>
-                      <img
-                        src="/fimgs/609_945.x3.png"
-                        class="flex items-start justify-start"
-                        style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
-                      />
-                    </div>
-                    <div
-                      class="flex self-stretch flex-col space-y-6 items-start justify-start"
-                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
-                    >
-                      <div class="flex self-stretch items-start justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                          Pengembangan Aplikasi LSM SMA Negeri 1 Yogyakarta
-                        </div>
-                      </div>
-                      <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                        <img
-                          src="/fimgs/609_951.x3.png"
-                          class="flex self-stretch flex-col items-start justify-start"
-                          style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
-                        />
-                        <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                            10 Task Done
+                      <div
+                        class="flex self-stretch items-start justify-between"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
+                      >
+                        <div class="flex items-center justify-start">
+                          <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                            Tim 2
                           </div>
                         </div>
+                        <img
+                          src="/fimgs/609_928.x3.png"
+                          class="flex items-start justify-start"
+                          style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      </div>
+                      <div
+                        class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
+                      >
                         <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight">
-                            Due Date: 28/09/2021
+                          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                            Pengembangan Aplikasi Akuntasi PT. Sido Maju
+                          </div>
+                        </div>
+                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                          <img
+                            src="/fimgs/609_934.x3.png"
+                            class="flex self-stretch flex-col items-start justify-start"
+                            style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
+                          />
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                              18 Task Done
+                            </div>
+                          </div>
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight">
+                              Due Date: 30/09/2021
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div
-                  class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
-                  style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
-                >
                   <div
-                    class="flex self-stretch flex-col space-y-8 items-start justify-start"
-                    style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
+                    class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                    style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
                   >
                     <div
-                      class="flex self-stretch items-start justify-between"
-                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
+                      class="flex self-stretch flex-col space-y-8 items-start justify-start"
+                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
                     >
-                      <div class="flex items-center justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
-                          Tim 9
-                        </div>
-                      </div>
-                      <img
-                        src="/fimgs/609_962.x3.png"
-                        class="flex items-start justify-start"
-                        style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
-                      />
-                    </div>
-                    <div
-                      class="flex self-stretch flex-col space-y-6 items-start justify-start"
-                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
-                    >
-                      <div class="flex self-stretch items-start justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                          Pengembangan Aplikasi Mobile Rs. Adisucipto Solo
-                        </div>
-                      </div>
-                      <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                        <img
-                          src="/fimgs/609_968.x3.png"
-                          class="flex self-stretch flex-col items-start justify-start"
-                          style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
-                        />
-                        <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                            20 Task Done
+                      <div
+                        class="flex self-stretch items-start justify-between"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
+                      >
+                        <div class="flex items-center justify-start">
+                          <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                            Tim 3
                           </div>
                         </div>
+                        <img
+                          src="/fimgs/609_945.x3.png"
+                          class="flex items-start justify-start"
+                          style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      </div>
+                      <div
+                        class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
+                      >
                         <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight">
-                            Due Date: 26/09/2021
+                          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                            Pengembangan Aplikasi LSM SMA Negeri 1 Yogyakarta
+                          </div>
+                        </div>
+                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                          <img
+                            src="/fimgs/609_951.x3.png"
+                            class="flex self-stretch flex-col items-start justify-start"
+                            style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
+                          />
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                              10 Task Done
+                            </div>
+                          </div>
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight">
+                              Due Date: 28/09/2021
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                    style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
+                  >
+                    <div
+                      class="flex self-stretch flex-col space-y-8 items-start justify-start"
+                      style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
+                    >
+                      <div
+                        class="flex self-stretch items-start justify-between"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
+                      >
+                        <div class="flex items-center justify-start">
+                          <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                            Tim 9
+                          </div>
+                        </div>
+                        <img
+                          src="/fimgs/609_962.x3.png"
+                          class="flex items-start justify-start"
+                          style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      </div>
+                      <div
+                        class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
+                      >
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                            Pengembangan Aplikasi Mobile Rs. Adisucipto Solo
+                          </div>
+                        </div>
+                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                          <img
+                            src="/fimgs/609_968.x3.png"
+                            class="flex self-stretch flex-col items-start justify-start"
+                            style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
+                          />
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                              20 Task Done
+                            </div>
+                          </div>
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight">
+                              Due Date: 26/09/2021
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -621,7 +735,7 @@
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   </div>
