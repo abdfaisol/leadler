@@ -3,6 +3,7 @@
     meta={{
       filled() {
         this.isFilled = !this.isFilled;
+        this.showModal = !this.showModal;
       },
       toggleModal() {
         this.showModal = !this.showModal;
@@ -237,9 +238,9 @@
                         <tr>
                           <th
                             scope="col"
-                            class="px-6 py-3 tracking-wider text-start justify-start mr-auto"
+                            class="px-6 py-3 tracking-wider text-center justify-center mr-auto"
                           >
-                            <div class=" text-sm font-medium text-gray-500 text-left ">
+                            <div class=" text-sm font-medium text-gray-500 text-center ">
                               #ID
                             </div>
                           </th>
@@ -251,12 +252,13 @@
                               Departement Name
                             </th>
                           </div>
-
                           <th
                             scope="col"
-                            class="relative px-6 py-3 text-sm font-medium text-gray-500"
+                            class="relative px-6 py-3 text-sm text-left justify-start font-medium text-gray-500"
                           >
-                            <span class="sr-only">Action</span>
+                            <div class=" text-sm font-medium text-gray-500 text-start ">
+                              Action
+                            </div>
                           </th>
                         </tr>
                       </thead>
@@ -270,20 +272,17 @@
                               UIUX Designer
                             </div>
                           </td>
-
                           <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                            <div class="flex flex-1 space-x-8 items-center justify-center">
+                            <div class="flex flex-1 space-x-8 items-start justify-start">
                               <div class="cursor-pointer">
                                 <img
-                                  class="object-none object-center w-14 h-14"
-                                  style="height: 36px"
+                                  style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
                                   src="/fimgs/295_279.x3.png"
                                 />
                               </div>
                               <div class="cursor-pointer">
                                 <img
-                                  class="object-none object-center w-14 h-14"
-                                  style="height: 36px"
+                                  style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
                                   src="/fimgs/295_281.x3.png"
                                 />
                               </div>
@@ -299,20 +298,17 @@
                               Business Analyst
                             </div>
                           </td>
-
                           <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                            <div class="flex flex-1 space-x-8 items-center justify-center">
+                            <div class="flex flex-1 space-x-8 items-start justify-start">
                               <div class="cursor-pointer">
                                 <img
-                                  class="object-none object-center w-14 h-14"
-                                  style="height: 36px"
+                                  style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
                                   src="/fimgs/295_279.x3.png"
                                 />
                               </div>
                               <div class="cursor-pointer">
                                 <img
-                                  class="object-none object-center w-14 h-14"
-                                  style="height: 36px"
+                                  style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
                                   src="/fimgs/295_281.x3.png"
                                 />
                               </div>
