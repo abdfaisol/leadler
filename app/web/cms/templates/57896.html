@@ -1,11 +1,154 @@
 <>
   <effect
     meta={{
+      member: "",
+      team: "",
+      state: {
+        showModal: false,
+        showModal2: false,
+        showModal3: false,
+        showModal4: false,
+        showModal5: false,
+      },
+      state2: { title: "" },
+      add: { tekan: true },
+
+      toggleTekan() {
+        this.add.tekan = !this.add.tekan;
+      },
       toggleAnalytics() {
         this.showAnalytics = !this.showAnalytics;
       },
+      handleExit(e) {
+        this.state.showModal = false;
+        this.state.showModal2 = false;
+        this.state.showModal3 = false;
+        this.state.showModal4 = false;
+        this.state.showModal5 = false;
+        e.preventDefault();
+      },
+      handleSubmit(e) {
+        this.state.showModal = !this.state.showModal;
+        this.state.showModal2 = false;
+        this.state.showModal3 = false;
+        this.state.showModal4 = false;
+        this.state.showModal5 = false;
+        e.preventDefault();
+      },
+      handleSubmit2(e) {
+        this.state.showModal2 = !this.state.showModal2;
+        this.state.showModal = false;
+        this.state.showModal3 = false;
+        this.state.showModal4 = false;
+        this.state.showModal5 = false;
+        this.print = true;
+        e.preventDefault();
+      },
+      handleSubmit3(e) {
+        this.state.showModal3 = !this.state.showModal3;
+        this.state.showModal = false;
+        this.state.showModal2 = false;
+        this.state.showModal4 = false;
+        this.state.showModal5 = false;
+        this.print = true;
+        e.preventDefault();
+      },
+      handleSubmit4(e) {
+        this.state.showModal4 = !this.state.showModal4;
+        this.state.showModal = false;
+        this.state.showModal2 = false;
+        this.state.showModal3 = false;
+        this.state.showModal5 = false;
+        this.print = true;
+        e.preventDefault();
+      },
+      handleSubmit5(e) {
+        this.state.showModal5 = !this.state.showModal5;
+        this.state.showModal = false;
+        this.state.showModal2 = false;
+        this.state.showModal3 = false;
+        this.state.showModal4 = false;
+        this.print = true;
+        e.preventDefault();
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      ubahNilai2(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      ubahNilai3(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      ubahNilai4(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      ubahNilai5(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      ubahNilai6(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      dataUser(e) {
+        let userDetail = [];
+        api("/api/user").then((i) => {
+          i.data_act.map((res, index) => {
+            i.data_act[index] = { value: res.id, label: res.email };
+            userDetail.push(i.data_act[index]);
+          });
+        });
+        return userDetail;
+      },
+      submitData(event) {
+        api("/api/project/create", {
+          data: {
+            name: this.state2.title,
+            desc: this.state2.desc,
+            member: this.member,
+            team: this.team,
+          },
+        }).then((e) => {
+          console.log(e);
+        });
+        event.preventDefault();
+      },
     }}
-    run={async () => {}}
+    run={async () => {
+      meta.actionmember = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.member = e.map((x) => x.value);
+            meta.team = 0;
+          });
+        },
+      };
+      meta.actionteam = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.team = e.value;
+            meta.member = [];
+          });
+        },
+      };
+    }}
   />
   <div
     class="flex flex-col items-start justify-start bg-coolGray-50"
@@ -207,21 +350,23 @@
                 </div>
               </div>
               <div class="flex flex-col items-start justify-start">
-                <button
-                  class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
-                  style="width: 236px; min-width: 236px; max-width: 236px; height: 40px; min-height: 40px; max-height: 40px;"
-                >
-                  <img
-                    src="/fimgs/603_427.x3.png"
-                    style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                  />
-                  <div
-                    class="text-base font-medium tracking-wide leading-normal text-center text-white"
-                    style="width: 176px; min-width: 176px; max-width: 176px; height: 24px; min-height: 24px; max-height: 24px;"
+                <form onSubmit={meta.handleSubmit}>
+                  <button
+                    class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+                    style="width: 236px; min-width: 236px; max-width: 236px; height: 40px; min-height: 40px; max-height: 40px;"
                   >
-                    Create New Project
-                  </div>
-                </button>
+                    <img
+                      src="/fimgs/603_427.x3.png"
+                      style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                    />
+                    <div
+                      class="text-base font-medium tracking-wide leading-normal text-center text-white"
+                      style="width: 176px; min-width: 176px; max-width: 176px; height: 24px; min-height: 24px; max-height: 24px;"
+                    >
+                      Create New Project
+                    </div>
+                  </button>
+                </form>
               </div>
             </div>
             <div class="flex self-stretch flex-col space-y-9 items-start justify-start">
@@ -747,4 +892,569 @@
       </div>
     </div>
   </div>
+  {meta.state.showModal ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis overflow-hidden fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto mx-auto max-w-3xl">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col space-y-11 items-start justify-start px-11 py-6 bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col items-start justify-start p-6 -mt-6 -mx-11 bg-white shadow">
+                <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                  <div class="flex self-stretch items-center justify-between">
+                    <img
+                      src="/fimgs/515_384.x1.svg"
+                      class="flex flex-1 items-center justify-center"
+                      style="width: 534px; min-width: 534px; max-width: 534px; height: 30px; min-height: 30px; max-height: 30px;"
+                    />
+                    <form onSubmit={meta.handleExit}>
+                      <button class="flex flex-col items-start justify-start">
+                        <img
+                          src="/fimgs/517_574.x1.svg"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;background-image: url('/fimgs/bg-dceba00bb6d6f9f685dc798d0d2871f28da5cac8');background-size:100% 100%;background-repeat:no-repeat;"
+                        />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start pb-4 justify-start"
+                onSubmit={meta.handleSubmit2}
+              >
+                <div class="flex self-stretch flex-col space-y-9 items-center justify-start">
+                  <img
+                    src="/fimgs/515_389.x1.svg"
+                    class="flex flex-col items-center justify-center"
+                    style="width: 562px; min-width: 562px; max-width: 562px; height: 249px; min-height: 249px; max-height: 249px;"
+                  />
+                  <div class="flex self-stretch flex-col space-y-10 items-start justify-start">
+                    <div class="flex self-stretch flex-col space-y-2 items-start justify-center">
+                      <div class="flex self-stretch items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight text-center text-gray-500">
+                          Project Name
+                        </div>
+                      </div>
+
+                      <div class="flex self-stretch items-center justify-start">
+                        <div class="relative flex flex-1 items-center justify-start">
+                          <input
+                            id="name"
+                            name="title"
+                            type="text"
+                            placeholder="Project Title"
+                            value={meta.state2.title}
+                            onChange={meta.ubahNilai}
+                            class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Next
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.state.showModal2 ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis overflow-hidden fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto mx-auto max-w-3xl">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis overflow-hidden bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col items-start justify-start px-6 py-4 bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white">
+                  <form onSubmit={meta.handleSubmit}>
+                    <button>
+                      <img
+                        src="/fimgs/388_1042.x1.svg"
+                        class="flex space-x-2 items-start justify-start"
+                        style="width: 71px; min-width: 71px; max-width: 71px; height: 24px; min-height: 24px; max-height: 24px;"
+                      />
+                    </button>
+                  </form>
+                  <form onSubmit={meta.handleExit}>
+                    <button>
+                      <img
+                        src="/fimgs/517_574.x1.svg"
+                        class="flex flex-col items-start justify-start"
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                      />
+                    </button>
+                  </form>
+                </div>
+                <div class="flex self-stretch items-start justify-start bg-white">
+                  <div class="text-xl font-medium tracking-wide leading-loose text-gray-900">
+                    {meta.print ? (
+                      <div class="overflow-ellipsis break-words">
+                        {meta.state2.judul}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                onSubmit={meta.handleSubmit3}
+              >
+                <div class="flex self-stretch flex-col items-start justify-start p-11 -mt-2">
+                  <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                    <div class="flex self-stretch flex-col space-y-2 items-start justify-start pb-7">
+                      <div class="flex flex-col items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight text-gray-500">
+                          Project Description
+                        </div>
+                      </div>
+                      <textarea
+                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
+                        placeholder="Add project description"
+                        style="resize: none;"
+                        name="desc"
+                        value={meta.state2.desc}
+                        onChange={meta.ubahNilai2}
+                        rows={4}
+                        cols={50}
+                      ></textarea>
+                    </div>
+                    <button
+                      type="submit"
+                      class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    >
+                      <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                        <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                          Next
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.state.showModal3 ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis overflow-hidden fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto mx-auto max-w-3xl">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis overflow-hidden bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col items-start justify-start px-6 py-4  bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white">
+                  <form onSubmit={meta.handleSubmit2}>
+                    <button>
+                      <img
+                        src="/fimgs/388_1042.x1.svg"
+                        class="flex space-x-2 items-start justify-start"
+                        style="width: 71px; min-width: 71px; max-width: 71px; height: 24px; min-height: 24px; max-height: 24px;"
+                      />
+                    </button>
+                  </form>
+                  <form onSubmit={meta.handleExit}>
+                    <button>
+                      <img
+                        src="/fimgs/517_574.x1.svg"
+                        class="flex flex-col items-start justify-start"
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                      />
+                    </button>
+                  </form>
+                </div>
+                <div class="flex self-stretch items-start justify-start bg-white">
+                  <div class="text-xl font-medium tracking-wide leading-loose text-gray-900">
+                    {meta.print ? (
+                      <div class="overflow-ellipsis break-words">
+                        {meta.state2.judul}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                onSubmit={meta.handleSubmit4}
+              >
+                <div class="flex self-stretch flex-col space-y-4 items-start justify-start p-11 -mt-2">
+                  <div class="text-sm tracking-wide leading-tight text-gray-500">
+                    Project Create For
+                  </div>
+                  <div class="flex self-stretch items-center justify-start pb-2">
+                    <div class="relative flex flex-1 items-center justify-start">
+                      <input
+                        id="name"
+                        name="project"
+                        type="text"
+                        placeholder=""
+                        value={meta.state2.project}
+                        onChange={meta.ubahNilai3}
+                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
+                      />
+                    </div>
+                  </div>
+                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
+                  <div class="text-sm tracking-wide leading-tight text-gray-500">
+                    Start Project
+                  </div>
+                  <div class="flex self-stretch items-center justify-start">
+                    <div class="relative flex flex-1 items-center justify-start">
+                      <input
+                        id="name"
+                        name="start"
+                        type="date"
+                        placeholder=""
+                        value={meta.state2.start}
+                        onChange={meta.ubahNilai4}
+                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
+                      />
+                    </div>
+                  </div>
+                  <div class="text-sm tracking-wide leading-tight text-gray-500">
+                    Due Date
+                  </div>
+                  <div class="flex self-stretch items-center justify-start pb-5">
+                    <div class="relative flex flex-1 items-center justify-start">
+                      <input
+                        id="name"
+                        name="due"
+                        type="date"
+                        placeholder=""
+                        value={meta.state2.due}
+                        onChange={meta.ubahNilai5}
+                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Next
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.state.showModal4 ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto mx-auto max-w-3xl">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div
+              class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis  bg-gray-50"
+              style="min-width: 450px"
+            >
+              <div class="border-0 rounded-t flex self-stretch flex-col px-6 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white">
+                  <form onSubmit={meta.handleSubmit3}>
+                    <button>
+                      <img
+                        src="/fimgs/388_1042.x1.svg"
+                        class="flex space-x-2 items-start justify-start"
+                        style="width: 71px; min-width: 71px; max-width: 71px; height: 24px; min-height: 24px; max-height: 24px;"
+                      />
+                    </button>
+                  </form>
+                  <form onSubmit={meta.handleExit}>
+                    <button>
+                      <img
+                        src="/fimgs/517_574.x1.svg"
+                        class="flex flex-col items-start justify-start"
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                      />
+                    </button>
+                  </form>
+                </div>
+                <div class="flex self-stretch items-start justify-start bg-white">
+                  <div class="text-xl font-medium tracking-wide leading-loose text-gray-900">
+                    {meta.print ? (
+                      <div class="overflow-ellipsis break-words">
+                        {meta.state2.judul}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+              <div class="flex self-stretch flex-col space-y-9 items-start justify-start p-11 -mt-2">
+                <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                  <div class="text-base tracking-wide leading-normal text-gray-900">
+                    Add member or Team
+                  </div>
+                  <div class="flex self-stretch space-x-4 items-start justify-start">
+                    <div class="cursor-pointer" onClick={meta.toggleTekan}>
+                      {meta.add.tekan ? (
+                        <div class="cursor-pointer flex flex-col items-center space-y-2 justify-center bg-white border rounded border-indigo-500 px-3.5 py-3.5">
+                          <div class="flex items-start justify-start">
+                            <img
+                              src="/fimgs/560_382.x1.svg"
+                              class="flex items-start justify-start"
+                              style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
+                            />
+                          </div>
+                          <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                            Add Team
+                          </div>
+                        </div>
+                      ) : (
+                        <div class="cursor-pointer flex flex-col items-center space-y-2 justify-center bg-white border rounded border-gray-500 px-3.5 py-3.5">
+                          <div class="flex items-start justify-start">
+                            <img
+                              src="/fimgs/561_387.x1.svg"
+                              class="flex items-start justify-start"
+                              style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
+                            />
+                          </div>
+                          <div class="text-sm tracking-wide leading-tight text-gray-500">
+                            Add Team
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div class="cursor-pointer" onClick={meta.toggleTekan}>
+                      {meta.add.tekan ? (
+                        <div class="flex flex-col items-center space-y-2 justify-center bg-white border rounded border-gray-500 px-3 py-3.5">
+                          <div class="flex items-start justify-start">
+                            <img
+                              src="/fimgs/541_407.x1.svg"
+                              class="flex items-start justify-start"
+                              style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
+                            />
+                          </div>
+                          <div class="text-sm tracking-wide leading-tight text-gray-500">
+                            Add People
+                          </div>
+                        </div>
+                      ) : (
+                        <div class="flex flex-col items-center space-y-2 justify-center bg-white border rounded border-indigo-500 px-3 py-3.5">
+                          <div class="flex items-start justify-start">
+                            <img
+                              src="/fimgs/561_392.x1.svg"
+                              class="flex items-start justify-start"
+                              style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
+                            />
+                          </div>
+                          <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                            Add People
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div class="flex self-stretch flex-col space-y-9 items-start justify-start">
+                  {meta.add.tekan ? (
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.dataUser()}
+                          className="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
+                          classNamePrefix="select"
+                          name="member"
+                          onChange={(e) => {
+                            meta.actionteam.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.dataUser()}
+                          className="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
+                          classNamePrefix="select"
+                          isMulti
+                          name="member"
+                          onChange={(e) => {
+                            meta.actionmember.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <form
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    onSubmit={meta.handleSubmit5}
+                  >
+                    <button
+                      type="submit"
+                      class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    >
+                      <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                        <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                          Next
+                        </div>
+                      </div>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.state.showModal5 ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis overflow-hidden fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto mx-auto max-w-3xl">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis overflow-hidden bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col items-start justify-start px-6 py-4 bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white">
+                  <form onSubmit={meta.handleSubmit4}>
+                    <button>
+                      <img
+                        src="/fimgs/388_1042.x1.svg"
+                        class="flex space-x-2 items-start justify-start"
+                        style="width: 71px; min-width: 71px; max-width: 71px; height: 24px; min-height: 24px; max-height: 24px;"
+                      />
+                    </button>
+                  </form>
+                  <form onSubmit={meta.handleExit}>
+                    <button>
+                      <img
+                        src="/fimgs/517_574.x1.svg"
+                        class="flex flex-col items-start justify-start"
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                      />
+                    </button>
+                  </form>
+                </div>
+                <div class="flex self-stretch text-xl font-medium tracking-wide leading-loose text-center text-gray-900">
+                  Check Again
+                </div>
+                <div class="flex self-stretch text-sm tracking-wide leading-tight text-gray-500 py-2">
+                  Is the project information you added correct?
+                </div>
+              </div>
+              <div class="flex self-stretch flex-col space-y-9 items-center justify-center p-11 -mt-2">
+                <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white border rounded border-gray-300">
+                  <div class="flex self-stretch items-start justify-between px-4 pt-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Project Name
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.judul}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
+                  <div class="flex self-stretch items-start justify-between px-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Project Description
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.description}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
+                  <div class="flex self-stretch items-start justify-between px-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Project Create For
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.project}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
+                  <div class="flex self-stretch items-start justify-between px-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Start Project
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.start}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
+                  <div class="flex self-stretch items-start justify-between px-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Due Date
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.due}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
+                  <div class="flex self-stretch items-start justify-between px-4 pb-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Assigned
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.team}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+                <form
+                  class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  onSubmit={meta.submitData}
+                >
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Create Project
+                      </div>
+                    </div>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
 </>

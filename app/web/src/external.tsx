@@ -19,9 +19,17 @@ export default {
   admin: () => [import("web.crud/src/CRUD"), { c: "", s: "", h: "" }],
   qform: () => [import("web.crud/src/form/BaseForm"), { c: "", s: "", h: "" }],
   qlist: () => [import("web.crud/src/list/QBaseList"), { c: "", s: "", h: "" }],
-  "eye-icon": () => [import("./components/eye-icon"), { c: "", s: "", h: "" }],
-  "eye-slash": () => [
-    import("./components/eye-slash"),
+  ficon: () => [import("./components/FluentIcon"), { c: "", s: "", h: "" }],
+  faicon: () => [import("./components/FAIcon"), { c: "", s: "", h: "" }],
+  qrcode: () => [import("./components/qrcode"), { c: "", s: "", h: "" }],
+  dtable: () => [import("./components/DataTable"), { c: "", s: "", h: "" }],
+  "sample-component": () => [
+    import("./components/sample-component"),
+    { c: "", s: "", h: "" },
+  ],
+  test: () => [import("./components/test"), { c: "", s: "", h: "" }],
+  "multipleselect": () => [
+    import("./components/multiple-select"),
     { c: "", s: "", h: "" },
   ],
 };

@@ -1,8 +1,9 @@
 <>
   <effect
     meta={{
-      showErrorMessage: false,
       state: { email: "", password: "" },
+      input: {},
+      errors: {},
 
       handleSubmit(event) {
         let errors = {};
@@ -14,14 +15,16 @@
         fetch(window.location.origin + "/api/login", requestOptions).then(
           (response) => {
             response.json().then((e) => {
+              console.log(e);
               if (e.status == true || e.status == "true") {
-                window.location.replace(window.location.origin + "/app");
+                window.location.replace(
+                  window.location.origin + "/projectmanager"
+                );
               } else {
-                this.showErrorMessage = !this.showErrorMessage;
-                // console.log("user is not signed in to retrive username");
-                // console.log(e.status);
-                // console.log(e);
-                // errors = "User is not signed in to retrive username.";
+                console.log("user is not signed in to retrive username");
+                console.log(e.status);
+                console.log(e);
+                errors = "User is not signed in to retrive username.";
               }
             });
           }
@@ -33,6 +36,27 @@
         // });
         event.preventDefault();
         this.errors = errors;
+      },
+      validate() {
+        let input = this.input;
+        let errors = {};
+        let isValid = true;
+
+        if (!input["email"]) {
+          isValid = false;
+          errors["email"] = "This field is required.";
+        }
+
+        if (typeof input["email"] !== "undefined") {
+          let pattern = RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+          ///^[a-zA-Z0-9._]+@[a-zA-Z]+(?:\.[a-zA-Z0-9-]+)*$/
+          if (!pattern.test(input["email"])) {
+            isValid = false;
+            errors["email"] = "Email address doesn't valid.";
+          }
+        }
+        this.errors = errors;
+        return isValid;
       },
       ubahNilai(e) {
         let name = e.target.name;
@@ -52,14 +76,17 @@
         // console.log(this.showPass);
       },
     }}
-    run={async () => {}}
+    run={async () => {
+      fetch(window.location.origin + "/api/session").then((response) => {
+        response.json().then((e) => {
+          console.log(e);
+        });
+      });
+    }}
   />
   <div class="flex items-start justify-start bg-white">
     <div class="flex self-stretch items-start justify-start">
-      <div
-        class="flex flex-1 self-stretch flex-col space-y-44 items-start justify-start px-16 py-28"
-        style="background-image: url(fimgs/222_193.x3.png); height: 100%; background-position: center; background-repeat: no-repeat; background-size: cover;"
-      >
+      <div class="flex flex-1 self-stretch flex-col space-y-44 items-start justify-start px-16 py-28 bg-indigo-800">
         <div class="flex flex-col items-start justify-start">
           <div class="flex flex-col items-start justify-start">
             <div class="flex flex-col items-start justify-start">
@@ -136,10 +163,21 @@
                       autoComplete="email"
                       required
                       placeholder="Masukkan Email Anda"
-                      class="text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      class={
+                        meta.errors.email
+                          ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                          : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      }
+                      value={meta.input.email}
                       onChange={meta.ubahNilai}
                     />
                   </div>
+                </div>
+                <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                  {meta.errors.email}
+                </div>
+                <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                  {meta.errors.password}
                 </div>
               </div>
               <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
@@ -163,8 +201,13 @@
                       type={meta.showPass ? "text" : "password"}
                       autoComplete="current-password"
                       placeholder="Masukkan kata sandi baru anda"
-                      class="text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      class={
+                        meta.errors.password
+                          ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                          : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      }
                       name="password"
+                      value={meta.input.password}
                       onChange={meta.ubahNilai}
                     />
                     <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
@@ -177,18 +220,7 @@
                   </div>
                 </div>
 
-                <div
-                  className={
-                    meta.showErrorMessage
-                      ? "text-sm flex self-stretch items-center justify-between"
-                      : "text-sm flex self-stretch items-center justify-end"
-                  }
-                >
-                  {meta.showErrorMessage ? (
-                    <div class="font-normal text-red-500">
-                      Email/Password anda salah, Silahkan coba lagi!
-                    </div>
-                  ) : null}
+                <div className="text-sm flex self-stretch items-center justify-end">
                   <a
                     href="/lupa-pass"
                     className="font-medium text-indigo-500 hover:text-indigo-700"

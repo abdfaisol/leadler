@@ -4,7 +4,7 @@
       state: { user_role: "" },
     }}
     run={async () => {
-      fetch(window.location.origin + "/api/user").then((response) => {
+      fetch(window.location.origin + "/api/session").then((response) => {
         response.json().then((e) => {
           // console.log(e);
           console.log(e.data_act);
