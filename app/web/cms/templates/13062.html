@@ -17,9 +17,21 @@
             response.json().then((e) => {
               console.log(e);
               if (e.status == true || e.status == "true") {
-                window.location.replace(
-                  window.location.origin + "/projectmanager"
-                );
+                // console.log(e.data_act.muser_role.name.toLowerCase() == 'project manager');
+                if (
+                  e.data_act.muser_role.name.toLowerCase() == "project manager"
+                ) {
+                  window.location.replace(window.location.origin + "/pm");
+                } else if (
+                  e.data_act.muser_role.name.toLowerCase() == "admin"
+                ) {
+                  window.location.replace(window.location.origin + "/admin");
+                } else {
+                  window.location.replace(window.location.origin + "/app");
+                }
+                // window.location.replace(
+                //   window.location.origin + "/projectmanager"
+                // );
               } else {
                 console.log("user is not signed in to retrive username");
                 console.log(e.status);
@@ -29,11 +41,6 @@
             });
           }
         );
-        // fetch(window.location.origin + "/api/user").then((response) => {
-        //   response.json().then((e) => {
-        //     console.log(e);
-        //   });
-        // });
         event.preventDefault();
         this.errors = errors;
       },
@@ -77,10 +84,16 @@
       },
     }}
     run={async () => {
-      fetch(window.location.origin + "/api/session").then((response) => {
-        response.json().then((e) => {
-          console.log(e);
-        });
+      api("/api/session").then((e) => {
+        if (e.status == true || e.status == "true") {
+          if (e.data_act.muser_role.name.toLowerCase() == "project manager") {
+            window.location.replace(window.location.origin + "/pm");
+          } else if (e.data_act.muser_role.name.toLowerCase() == "admin") {
+            window.location.replace(window.location.origin + "/admin");
+          } else {
+            window.location.replace(window.location.origin + "/app");
+          }
+        }
       });
     }}
   />

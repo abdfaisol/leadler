@@ -1,12 +1,10 @@
 <>
   <effect
     meta={{
-      data_projek: "",
       in_gender: [
         { value: "M", label: "Male" },
         { value: "F", label: "Female" },
       ],
-      data_emp: [],
       state: {
         email: "",
         nik: "",
@@ -74,20 +72,17 @@
         });
         event.preventDefault();
       },
-      dataProjek() {
-        let result = [];
+      dataEmployee() {
+        var result = [];
         api("/api/employee").then((e) => {
-          result["result"] = e;
+          result.push(e.data_act);
+          this.emp = e.data_act;
         });
-        return result;
+        return this.emp;
       },
     }}
     run={async () => {
-      var data_i = meta.dataProjek();
-      api("/api/employee").then((e) => {
-        meta.data_projek = data_i.result.data_act;
-      });
-      console.log(data_i.result);
+      console.log(meta.in_gender[0].value);
       meta.actiongender = {
         onChange: (e) => {
           runInAction(() => {
@@ -387,7 +382,7 @@
                               class="relative px-6 py-3 text-sm text-left justify-start font-medium text-gray-500"
                             >
                               <div class=" text-sm font-medium text-gray-500 text-start ">
-                                Role
+                                Address
                               </div>
                             </th>
                             <th
@@ -400,53 +395,7 @@
                             </th>
                           </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                          {meta.data_projek.map((e, idx) => {
-                            return (
-                              <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                  <div class="text-sm text-gray-900">
-                                    {idx + 1}
-                                  </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-start">
-                                  <div class="text-sm text-gray-900">
-                                    {e.email}
-                                  </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-start">
-                                  <div class="text-sm text-gray-900">
-                                    UI/UX Designer
-                                  </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-start">
-                                  <div class="text-sm text-gray-900">phone</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-start">
-                                  <div class="text-sm text-gray-900">
-                                    {e.muser_role.name}
-                                  </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                  <div class="flex flex-1 space-x-8 items-start justify-start">
-                                    <div class="cursor-pointer">
-                                      <img
-                                        style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
-                                        src="/fimgs/295_279.x3.png"
-                                      />
-                                    </div>
-                                    <div class="cursor-pointer">
-                                      <img
-                                        style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
-                                        src="/fimgs/295_281.x3.png"
-                                      />
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
+                        <tbody class="bg-white divide-y divide-gray-200"></tbody>
                       </table>
                     </div>
                   </div>

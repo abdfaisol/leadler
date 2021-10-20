@@ -2,65 +2,28 @@
   <effect
     meta={{
       value: "",
-      dataUser(e) {
-        let data = [
-          { value: "chocolate", label: "Chocolate" },
-          { value: "strawberry", label: "Strawberry" },
-          { value: "vanilla", label: "Vanilla" },
-        ];
-        let userDetail = [];
-        api("/api/user").then((i) => {
-          i.data_act.map((res, index) => {
-            i.data_act[index] = { value: res.id, label: res.email };
-            userDetail.push(i.data_act[index]);
-          });
-        });
-        return userDetail;
-      },
-      configSelect() {
-        const customStyles = {
-          control: (_, { selectProps: { width } }) => ({
-            width: width,
-          }),
-
-          singleValue: (provided, state) => {
-            const opacity = state.isDisabled ? 0.5 : 1;
-            const transition = "opacity 300ms";
-
-            return { ...provided, opacity, transition };
-          },
-        };
-        return customStyles;
-      },
+      in_data: [
+        { value: "chocolate", label: "Chocolate" },
+        { value: "strawberry", label: "Strawberry" },
+        { value: "vanilla", label: "Vanilla" },
+      ],
     }}
     run={async () => {
-      api("/api/user").then((i) => {
-        i.data_act.map((res, index) => {
-          // console.log(i.data_act[index]);
-          i.data_act[index] = { value: res.id, label: res.email };
-          // console.log(i.data_act[index]);
-        });
-        // console.log(i.data_act);
-      });
-      console.log("tes");
       meta.action = {
         onChange: (e) => {
           runInAction(() => {
-            console.log(e);
-            meta.value = e.map((x) => x.value);
+            // console.log(e);
+            // meta.value = e.value;
             console.log(meta.value);
           });
         },
       };
     }}
   />
-  {meta.value}
-  {meta.dataUser()}
   <multipleselect
-    options={meta.dataUser()}
+    options={meta.in_data}
     className="basic-multi-select"
     classNamePrefix="select"
-    isMulti
     name="colors"
     onChange={(e) => {
       meta.action.onChange(e);
