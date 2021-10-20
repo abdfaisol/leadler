@@ -1,8 +1,6 @@
 <>
   <effect
     meta={{
-      member: "",
-      team: "",
       state: {
         showModal: false,
         showModal2: false,
@@ -10,9 +8,8 @@
         showModal4: false,
         showModal5: false,
       },
-      state2: { title: "" },
+      state2: { judul: "" },
       add: { tekan: true },
-
       toggleTekan() {
         this.add.tekan = !this.add.tekan;
       },
@@ -104,48 +101,8 @@
         this.state2[name] = nilai;
         console.log(name);
       },
-      dataUser(e) {
-        let userDetail = [];
-        api("/api/user").then((i) => {
-          i.data_act.map((res, index) => {
-            i.data_act[index] = { value: res.id, label: res.email };
-            userDetail.push(i.data_act[index]);
-          });
-        });
-        return userDetail;
-      },
-      submitData(event) {
-        api("/api/project/create", {
-          data: {
-            name: this.state2.title,
-            desc: this.state2.desc,
-            member: this.member,
-            team: this.team,
-          },
-        }).then((e) => {
-          console.log(e);
-        });
-        event.preventDefault();
-      },
     }}
-    run={async () => {
-      meta.actionmember = {
-        onChange: (e) => {
-          runInAction(() => {
-            meta.member = e.map((x) => x.value);
-            meta.team = 0;
-          });
-        },
-      };
-      meta.actionteam = {
-        onChange: (e) => {
-          runInAction(() => {
-            meta.team = e.value;
-            meta.member = [];
-          });
-        },
-      };
-    }}
+    run={async () => {}}
   />
   <form onSubmit={meta.handleSubmit}>
     <button
@@ -209,10 +166,10 @@
                         <div class="relative flex flex-1 items-center justify-start">
                           <input
                             id="name"
-                            name="title"
+                            name="judul"
                             type="text"
                             placeholder="Project Title"
-                            value={meta.state2.title}
+                            value={meta.state2.judul}
                             onChange={meta.ubahNilai}
                             class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
                           />
@@ -295,8 +252,8 @@
                         class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
                         placeholder="Add project description"
                         style="resize: none;"
-                        name="desc"
-                        value={meta.state2.desc}
+                        name="description"
+                        value={meta.state2.description}
                         onChange={meta.ubahNilai2}
                         rows={4}
                         cols={50}
@@ -436,15 +393,12 @@
   ) : null}
   {meta.state.showModal4 ? (
     <>
-      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+      <div class="flex justify-center items-center overflow-ellipsis overflow-hidden fixed inset-0 z-50 outline-none focus:outline-none">
         <div class="relative w-auto mx-auto max-w-3xl">
           {/*content*/}
           <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*body*/}
-            <div
-              class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis  bg-gray-50"
-              style="min-width: 450px"
-            >
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis overflow-hidden bg-gray-50">
               <div class="border-0 rounded-t flex self-stretch flex-col px-6 py-4 items-start justify-start bg-white shadow">
                 <div class="flex self-stretch items-center justify-between bg-white">
                   <form onSubmit={meta.handleSubmit3}>
@@ -546,30 +500,40 @@
                   {meta.add.tekan ? (
                     <div class="flex self-stretch items-center justify-start">
                       <div class="relative flex flex-1 items-center justify-start">
-                        <multipleselect
-                          options={meta.dataUser()}
-                          className="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                          classNamePrefix="select"
-                          name="member"
-                          onChange={(e) => {
-                            meta.actionteam.onChange(e);
-                          }}
+                        <input
+                          id="name"
+                          name="team"
+                          type="text"
+                          placeholder="Team Name"
+                          value={meta.state2.team}
+                          onChange={meta.ubahNilai6}
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
                         />
                       </div>
                     </div>
                   ) : (
                     <div class="flex self-stretch items-center justify-start">
                       <div class="relative flex flex-1 items-center justify-start">
-                        <multipleselect
-                          options={meta.dataUser()}
-                          className="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                          classNamePrefix="select"
-                          isMulti
-                          name="member"
-                          onChange={(e) => {
-                            meta.actionmember.onChange(e);
-                          }}
+                        <input
+                          id="name"
+                          name="team"
+                          type="text"
+                          placeholder="Search"
+                          value={meta.state2.team}
+                          onChange={meta.ubahNilai6}
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
                         />
+                        <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                          <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
+                            <div class="cursor-pointer">
+                              <img
+                                src="/fimgs/369_477.x1.svg"
+                                class="flex items-start justify-start"
+                                style="width: 24.25px; min-width: 24.25px; max-width: 24.25px; height: 21.46px; min-height: 21.46px; max-height: 21.46px;"
+                              />
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -704,7 +668,7 @@
                 </div>
                 <form
                   class="flex flex-1 self-stretch flex-col items-start justify-start"
-                  onSubmit={meta.submitData}
+                  onSubmit={meta.handleExit}
                 >
                   <button
                     type="submit"
