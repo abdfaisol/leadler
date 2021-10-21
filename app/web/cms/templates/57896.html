@@ -3,6 +3,7 @@
     meta={{
       data_projek: "",
       member: "",
+      name: "",
       team: "",
       state: {
         showModal: false,
@@ -13,12 +14,29 @@
       },
       state2: { title: "" },
       add: { tekan: true },
+      pilih: {
+        showAnalytics: true,
+        showProject: false,
+        showTeam: false,
+      },
 
       toggleTekan() {
         this.add.tekan = !this.add.tekan;
       },
       toggleAnalytics() {
-        this.showAnalytics = !this.showAnalytics;
+        this.pilih.showAnalytics = true;
+        this.pilih.showProject = false;
+        this.pilih.showTeam = false;
+      },
+      toggleProject() {
+        this.pilih.showProject = true;
+        this.pilih.showAnalytics = false;
+        this.pilih.showTeam = false;
+      },
+      toggleTeam() {
+        this.pilih.showTeam = true;
+        this.pilih.showProject = false;
+        this.pilih.showAnalytics = false;
       },
       handleExit(e) {
         this.state.showModal = false;
@@ -196,14 +214,18 @@
             <div
               onClick={meta.toggleAnalytics}
               class={
-                meta.showAnalytics
-                  ? "flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
-                  : "flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 bg-violet-100 rounded cursor-pointer"
+                meta.pilih.showAnalytics
+                  ? "flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 bg-violet-100 rounded cursor-pointer"
+                  : "flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
               }
               style="width: 158px; min-width: 158px; max-width: 158px; height: 40px; min-height: 40px; max-height: 40px;"
             >
               <img
-                src="/fimgs/I609_798_45_98.x3.png"
+                src={
+                  meta.pilih.showAnalytics
+                    ? "/fimgs/45_98.x3.png"
+                    : "/fimgs/45_102.x3.png"
+                }
                 class="flex items-start justify-start"
                 style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
               />
@@ -211,7 +233,13 @@
                 class="flex flex-1 items-start justify-start"
                 style="width: 74px; min-width: 74px; max-width: 74px; height: 24px; min-height: 24px; max-height: 24px;"
               >
-                <div class="text-base tracking-wide leading-normal text-blue-700">
+                <div
+                  class={
+                    meta.pilih.showAnalytics
+                      ? "text-base tracking-wide leading-normal text-blue-700"
+                      : "text-base tracking-wide leading-normal text-coolGray-500"
+                  }
+                >
                   Analytics
                 </div>
               </div>
@@ -222,16 +250,20 @@
             style="width: 158px; min-width: 158px; max-width: 158px; height: 40px; min-height: 40px; max-height: 40px;"
           >
             <div
-              onClick={meta.toggleAnalytics}
+              onClick={meta.toggleProject}
               class={
-                meta.showAnalytics
+                meta.pilih.showProject
                   ? "flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 bg-violet-100 rounded cursor-pointer"
                   : "flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10  rounded cursor-pointer"
               }
               style="width: 158px; min-width: 158px; max-width: 158px; height: 40px; min-height: 40px; max-height: 40px;"
             >
               <img
-                src="/fimgs/45_103.x3.png"
+                src={
+                  meta.pilih.showProject
+                    ? "/fimgs/45_104.x3.png"
+                    : "/fimgs/45_103.x3.png"
+                }
                 class="flex items-start justify-start"
                 style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
               />
@@ -239,7 +271,13 @@
                 class="flex flex-1 items-start justify-start"
                 style="width: 74px; min-width: 74px; max-width: 74px; height: 24px; min-height: 24px; max-height: 24px;"
               >
-                <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                <div
+                  class={
+                    meta.pilih.showProject
+                      ? "text-base tracking-wide leading-normal text-blue-700"
+                      : "text-base tracking-wide leading-normal text-coolGray-500"
+                  }
+                >
                   Projects
                 </div>
               </div>
@@ -250,11 +288,20 @@
             style="width: 158px; min-width: 158px; max-width: 158px; height: 40px; min-height: 40px; max-height: 40px;"
           >
             <div
-              class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
+              onClick={meta.toggleTeam}
+              class={
+                meta.pilih.showTeam
+                  ? "flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 bg-violet-100 rounded cursor-pointer"
+                  : "flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
+              }
               style="width: 158px; min-width: 158px; max-width: 158px; height: 40px; min-height: 40px; max-height: 40px;"
             >
               <img
-                src="/fimgs/603_428.x3.png"
+                src={
+                  meta.pilih.showTeam
+                    ? "/fimgs/452_1103.x3.png"
+                    : "/fimgs/603_428.x3.png"
+                }
                 class="flex items-start justify-start"
                 style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
               />
@@ -262,7 +309,13 @@
                 class="flex flex-1 items-start justify-start"
                 style="width: 74px; min-width: 74px; max-width: 74px; height: 24px; min-height: 24px; max-height: 24px;"
               >
-                <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                <div
+                  class={
+                    meta.pilih.showTeam
+                      ? "text-base tracking-wide leading-normal text-blue-700"
+                      : "text-base tracking-wide leading-normal text-coolGray-500"
+                  }
+                >
                   Teams
                 </div>
               </div>
@@ -281,7 +334,9 @@
         >
           <div class="flex items-start justify-start">
             <div class="text-2xl font-medium tracking-wide leading-loose text-coolGray-900">
-              {meta.showAnalytics ? "Projects" : "Analytics"}
+              {meta.pilih.showAnalytics ? "Analytics" : null}
+              {meta.pilih.showProject ? "Project" : null}
+              {meta.pilih.showTeam ? "Team" : null}
             </div>
           </div>
           <div class="flex space-x-20 items-center justify-start">
@@ -349,114 +404,7 @@
           </div>
         </div>
 
-        {meta.showAnalytics ? (
-          <div
-            class="flex self-stretch flex-col space-y-10 items-start justify-start"
-            style="width: 968px; min-width: 968px; max-width: 968px; height: 622px; min-height: 622px; max-height: 622px;"
-          >
-            <div
-              class="flex self-stretch space-x-96 items-start justify-start"
-              style="width: 968px; min-width: 968px; max-width: 968px; height: 59px; min-height: 59px; max-height: 59px;"
-            >
-              <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
-                <div
-                  class="flex space-x-1 items-center justify-center px-4 py-2 border rounded border-indigo-500"
-                  style="width: 135px; min-width: 135px; max-width: 135px; height: 40px; min-height: 40px; max-height: 40px;"
-                >
-                  <div class="text-base tracking-wide leading-normal text-center text-indigo-500">
-                    All Project
-                  </div>
-                  <img
-                    src="/fimgs/I55_494_55_487.x3.png"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-09b5b972072bcfc098c06e90d718895dbb4e537a');background-size:100% 100%;background-repeat:no-repeat;"
-                  />
-                </div>
-              </div>
-              <div class="flex flex-col items-start justify-start">
-                <form onSubmit={meta.handleSubmit}>
-                  <button
-                    class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
-                    style="width: 236px; min-width: 236px; max-width: 236px; height: 40px; min-height: 40px; max-height: 40px;"
-                  >
-                    <img
-                      src="/fimgs/603_427.x3.png"
-                      style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                    />
-                    <div
-                      class="text-base font-medium tracking-wide leading-normal text-center text-white"
-                      style="width: 176px; min-width: 176px; max-width: 176px; height: 24px; min-height: 24px; max-height: 24px;"
-                    >
-                      Create New Project
-                    </div>
-                  </button>
-                </form>
-              </div>
-            </div>
-            <div class="flex self-stretch flex-wrap space-y-9 items-start justify-start">
-              <div
-                class="flex self-stretch space-x-8 flex-wrap items-start justify-start"
-                style="width: 968px; min-width: 968px; max-width: 968px; height: 244px; min-height: 244px; max-height: 244px;"
-              >
-                {meta.data_projek.map((e) => {
-                  return (
-                    <div
-                      class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
-                      style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
-                    >
-                      <div
-                        class="flex self-stretch flex-col space-y-8 items-start justify-start"
-                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
-                      >
-                        <div
-                          class="flex self-stretch items-start justify-between"
-                          style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
-                        >
-                          <div class="flex items-center justify-start">
-                            <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
-                              Tim 6
-                            </div>
-                          </div>
-                          <img
-                            src="/fimgs/609_876.x3.png"
-                            class="flex items-start justify-start"
-                            style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
-                          />
-                        </div>
-                        <div
-                          class="flex self-stretch flex-col space-y-6 items-start justify-start"
-                          style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
-                        >
-                          <div class="flex self-stretch items-start justify-start">
-                            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                              {e.name}
-                            </div>
-                          </div>
-                          <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                            <img
-                              src="/fimgs/609_882.x3.png"
-                              class="flex self-stretch flex-col items-start justify-start"
-                              style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
-                            />
-                            <div class="flex self-stretch items-start justify-start">
-                              <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                                10 Task Done
-                              </div>
-                            </div>
-                            <div class="flex self-stretch items-start justify-start">
-                              <div class="text-sm tracking-wide leading-tight">
-                                Due Date: 25/09/2021
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        ) : (
+        {meta.pilih.showAnalytics ? (
           <div class="flex self-stretch flex-col space-y-14 items-start justify-start">
             <div
               class="flex self-stretch space-x-14 items-start justify-start"
@@ -584,7 +532,7 @@
                       class="text-base font-medium tracking-wide leading-normal text-center text-white"
                       style="width: 176px; min-width: 176px; max-width: 176px; height: 24px; min-height: 24px; max-height: 24px;"
                     >
-                      Add ImportantProject
+                      Add Important Project
                     </div>
                   </button>
                 </div>
@@ -655,7 +603,115 @@
               </div>
             </div>
           </div>
-        )}
+        ) : null}
+        {meta.pilih.showProject ? (
+          <div
+            class="flex self-stretch flex-col space-y-10 items-start justify-start"
+            style="width: 968px; min-width: 968px; max-width: 968px; height: 622px; min-height: 622px; max-height: 622px;"
+          >
+            <div
+              class="flex self-stretch space-x-96 items-start justify-start"
+              style="width: 968px; min-width: 968px; max-width: 968px; height: 59px; min-height: 59px; max-height: 59px;"
+            >
+              <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
+                <div
+                  class="flex space-x-1 items-center justify-center px-4 py-2 border rounded border-indigo-500"
+                  style="width: 135px; min-width: 135px; max-width: 135px; height: 40px; min-height: 40px; max-height: 40px;"
+                >
+                  <div class="text-base tracking-wide leading-normal text-center text-indigo-500">
+                    All Project
+                  </div>
+                  <img
+                    src="/fimgs/I55_494_55_487.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-09b5b972072bcfc098c06e90d718895dbb4e537a');background-size:100% 100%;background-repeat:no-repeat;"
+                  />
+                </div>
+              </div>
+              <div class="flex flex-col items-start justify-start">
+                <form onSubmit={meta.handleSubmit}>
+                  <button
+                    class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+                    style="width: 236px; min-width: 236px; max-width: 236px; height: 40px; min-height: 40px; max-height: 40px;"
+                  >
+                    <img
+                      src="/fimgs/603_427.x3.png"
+                      style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                    />
+                    <div
+                      class="text-base font-medium tracking-wide leading-normal text-center text-white"
+                      style="width: 176px; min-width: 176px; max-width: 176px; height: 24px; min-height: 24px; max-height: 24px;"
+                    >
+                      Create New Project
+                    </div>
+                  </button>
+                </form>
+              </div>
+            </div>
+            <div class="flex self-stretch flex-wrap space-y-9 items-start justify-start">
+              <div
+                class="flex self-stretch space-x-8 flex-wrap items-start justify-start"
+                style="width: 968px; min-width: 968px; max-width: 968px; height: 244px; min-height: 244px; max-height: 244px;"
+              >
+                {meta.data_projek.map((e) => {
+                  return (
+                    <div
+                      class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                      style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
+                    >
+                      <div
+                        class="flex self-stretch flex-col space-y-8 items-start justify-start"
+                        style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
+                      >
+                        <div
+                          class="flex self-stretch items-start justify-between"
+                          style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
+                        >
+                          <div class="flex items-center justify-start">
+                            <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                              Tim 6
+                            </div>
+                          </div>
+                          <img
+                            src="/fimgs/609_876.x3.png"
+                            class="flex items-start justify-start"
+                            style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        </div>
+                        <div
+                          class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                          style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
+                        >
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                              {e.name}
+                            </div>
+                          </div>
+                          <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                            <img
+                              src="/fimgs/609_882.x3.png"
+                              class="flex self-stretch flex-col items-start justify-start"
+                              style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
+                            />
+                            <div class="flex self-stretch items-start justify-start">
+                              <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                                10 Task Done
+                              </div>
+                            </div>
+                            <div class="flex self-stretch items-start justify-start">
+                              <div class="text-sm tracking-wide leading-tight">
+                                Due Date: 25/09/2021
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   </div>
@@ -772,7 +828,7 @@
                   <div class="text-xl font-medium tracking-wide leading-loose text-gray-900">
                     {meta.print ? (
                       <div class="overflow-ellipsis break-words">
-                        {meta.state2.judul}
+                        {meta.state2.title}
                       </div>
                     ) : null}
                   </div>
@@ -824,7 +880,7 @@
   {meta.state.showModal3 ? (
     <>
       <div class="flex justify-center items-center overflow-ellipsis overflow-hidden fixed inset-0 z-50 outline-none focus:outline-none">
-        <div class="relative w-auto mx-auto max-w-3xl">
+        <div class="relative w-auto mx-auto max-w-3xl" style="width: 480px;">
           {/*content*/}
           <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*body*/}
@@ -854,7 +910,7 @@
                   <div class="text-xl font-medium tracking-wide leading-loose text-gray-900">
                     {meta.print ? (
                       <div class="overflow-ellipsis break-words">
-                        {meta.state2.judul}
+                        {meta.state2.title}
                       </div>
                     ) : null}
                   </div>
@@ -936,7 +992,7 @@
   {meta.state.showModal4 ? (
     <>
       <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
-        <div class="relative w-auto mx-auto max-w-3xl">
+        <div class="relative w-auto mx-auto max-w-3xl" style="width: 480px;">
           {/*content*/}
           <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*body*/}
@@ -969,7 +1025,7 @@
                   <div class="text-xl font-medium tracking-wide leading-loose text-gray-900">
                     {meta.print ? (
                       <div class="overflow-ellipsis break-words">
-                        {meta.state2.judul}
+                        {meta.state2.title}
                       </div>
                     ) : null}
                   </div>
@@ -1047,9 +1103,10 @@
                       <div class="relative flex flex-1 items-center justify-start">
                         <multipleselect
                           options={meta.dataTeam()}
+                          value={meta.state2.team}
                           className="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
                           classNamePrefix="select"
-                          name="member"
+                          name="team"
                           onChange={(e) => {
                             meta.actionteam.onChange(e);
                           }}
@@ -1100,7 +1157,7 @@
   {meta.state.showModal5 ? (
     <>
       <div class="flex justify-center items-center overflow-ellipsis overflow-hidden fixed inset-0 z-50 outline-none focus:outline-none">
-        <div class="relative w-auto mx-auto max-w-3xl">
+        <div class="relative w-auto mx-auto max-w-3xl" style="width: 640px;">
           {/*content*/}
           <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*body*/}
