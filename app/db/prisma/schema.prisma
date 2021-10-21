@@ -8,9 +8,38 @@ datasource db {
   url      = "postgresql://postgres:andromedia123oke@db.plansys.co:5432/magang6?schema=public&pool_timeout=0"
 }
 
+model muser {
+  id                    Int                     @id @default(autoincrement())
+  email                 String                  @unique @db.VarChar(250)
+  password              String                  @db.VarChar(250)
+  iduserrole            Int?
+  muser_role            muser_role?             @relation(fields: [iduserrole], references: [id])
+  muser_detail          muser_detail?
+  muser_forget_password muser_forget_password[]
+  muser_has_mproject    muser_has_mproject[]
+  muser_team            muser_team[]
+  muser_team_role       muser_team_role[]
+}
+
+model muser_forget_password {
+  id      Int      @id @default(autoincrement())
+  iduser  Int
+  token   String   @unique @db.VarChar(250)
+  expired DateTime @db.Date
+  active  Boolean  @default(true)
+  muser   muser    @relation(fields: [iduser], references: [id])
+}
+
+model muser_role {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique @db.VarChar(255)
+  muser        muser[]
+  muser_access muser_access[]
+}
+
 model mdepartment {
   id           Int            @id @default(autoincrement())
-  name         String         @db.VarChar(45)
+  name         String         @unique @db.VarChar(45)
   desc         String?        @db.VarChar(255)
   muser_detail muser_detail[]
 }
@@ -31,10 +60,10 @@ model mmenu {
 
 model mproject {
   id                                                            Int                  @id @default(autoincrement())
-  idUserProject                                                 Int
+  iduserproject                                                 Int?
   name                                                          String               @db.VarChar(45)
   desc                                                          String?              @db.VarChar(255)
-  muser_has_mproject_mproject_idUserProjectTomuser_has_mproject muser_has_mproject   @relation("mproject_idUserProjectTomuser_has_mproject", fields: [idUserProject], references: [id])
+  muser_has_mproject_mproject_iduserprojectTomuser_has_mproject muser_has_mproject?  @relation("mproject_iduserprojectTomuser_has_mproject", fields: [iduserproject], references: [id])
   mproject_detail                                               mproject_detail[]
   muser_has_mproject_mprojectTomuser_has_mproject_idproject     muser_has_mproject[] @relation("mprojectTomuser_has_mproject_idproject")
 }
@@ -63,31 +92,20 @@ model mproject_status {
 
 model mproject_task_user {
   id                 Int                @id @default(autoincrement())
-  idUserProjek       Int
-  idProjekDetail     Int
-  mproject_detail    mproject_detail    @relation(fields: [idProjekDetail], references: [id])
-  muser_has_mproject muser_has_mproject @relation(fields: [idUserProjek], references: [id])
+  iduserprojek       Int
+  idprojekdetail     Int
+  mproject_detail    mproject_detail    @relation(fields: [idprojekdetail], references: [id])
+  muser_has_mproject muser_has_mproject @relation(fields: [iduserprojek], references: [id])
 
-  @@unique([idUserProjek, idProjekDetail], name: "mproject_task_user_idUserProjek_idProjekDetail")
+  @@unique([iduserprojek, idprojekdetail], name: "mproject_task_user_idUserProjek_idProjekDetail")
 }
 
 model mproject_upload {
   id              Int             @id @default(autoincrement())
   name            String          @db.VarChar(45)
   url             String          @db.VarChar(250)
-  idProjectDetail Int
-  mproject_detail mproject_detail @relation(fields: [idProjectDetail], references: [id])
-}
-
-model muser {
-  id                    Int                     @id @default(autoincrement())
-  email                 String                  @unique @db.VarChar(250)
-  password              String                  @db.VarChar(250)
-  idUserRole            Int?
-  muser_role            muser_role?             @relation(fields: [idUserRole], references: [id])
-  muser_detail          muser_detail?
-  muser_forget_password muser_forget_password[]
-  muser_has_mproject    muser_has_mproject[]
+  idprojectdetail Int
+  mproject_detail mproject_detail @relation(fields: [idprojectdetail], references: [id])
 }
 
 model muser_access {
@@ -117,30 +135,34 @@ model muser_detail {
   muser       muser        @relation(fields: [iduser], references: [id])
 }
 
-model muser_forget_password {
-  id      Int      @id @default(autoincrement())
-  iduser  Int
-  token   String   @unique @db.VarChar(250)
-  expired DateTime @db.Date
-  active  Boolean  @default(true)
-  muser   muser    @relation(fields: [iduser], references: [id])
-}
-
 model muser_has_mproject {
   id                                                  Int                  @id @default(autoincrement())
   iduser                                              Int
   idproject                                           Int
   mproject_mprojectTomuser_has_mproject_idproject     mproject             @relation("mprojectTomuser_has_mproject_idproject", fields: [idproject], references: [id])
   muser                                               muser                @relation(fields: [iduser], references: [id])
-  mproject_mproject_idUserProjectTomuser_has_mproject mproject[]           @relation("mproject_idUserProjectTomuser_has_mproject")
+  mproject_mproject_iduserprojectTomuser_has_mproject mproject[]           @relation("mproject_iduserprojectTomuser_has_mproject")
   mproject_task_user                                  mproject_task_user[]
 
   @@unique([iduser, idproject], name: "muser_has_mproject_iduser_idproject")
 }
 
-model muser_role {
-  id           Int            @id @default(autoincrement())
-  name         String         @unique @db.VarChar(255)
-  muser        muser[]
-  muser_access muser_access[]
+model muser_team {
+  id              Int               @id @default(autoincrement())
+  iduser          Int
+  name            String            @db.VarChar(50)
+  muser           muser             @relation(fields: [iduser], references: [id])
+  muser_team_role muser_team_role[]
+
+  @@unique([iduser, name], name: "muser_team_idAuthor_idUser")
+}
+
+model muser_team_role {
+  id         Int        @id @default(autoincrement())
+  idteam     Int
+  iduser     Int
+  muser_team muser_team @relation(fields: [idteam], references: [id])
+  muser      muser      @relation(fields: [iduser], references: [id])
+
+  @@unique([idteam, iduser], name: "muser_team_role_idteam_iduser")
 }

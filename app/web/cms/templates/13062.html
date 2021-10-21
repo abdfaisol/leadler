@@ -2,9 +2,12 @@
   <effect
     meta={{
       state: { email: "", password: "" },
+      input: {},
+      errors: {},
       showErrorMessage: false,
 
       handleSubmit(event) {
+        let errors = {};
         const requestOptions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -23,7 +26,9 @@
                 } else if (
                   e.data_act.muser_role.name.toLowerCase() == "admin"
                 ) {
-                  window.location.replace(window.location.origin + "/admin");
+                  window.location.replace(
+                    window.location.origin + "/admin/employee"
+                  );
                 } else {
                   window.location.replace(window.location.origin + "/app");
                 }
@@ -35,11 +40,13 @@
                 console.log("user is not signed in to retrive username");
                 console.log(e.status);
                 console.log(e);
+                errors = "User is not signed in to retrive username.";
               }
             });
           }
         );
         event.preventDefault();
+        this.errors = errors;
       },
       validate() {
         let input = this.input;
@@ -83,13 +90,13 @@
     run={async () => {
       api("/api/session").then((e) => {
         if (e.status == true || e.status == "true") {
-          if (e.data_act.muser_role.name.toLowerCase() == "project manager") {
-            window.location.replace(window.location.origin + "/pm");
-          } else if (e.data_act.muser_role.name.toLowerCase() == "admin") {
-            window.location.replace(window.location.origin + "/admin");
-          } else {
-            window.location.replace(window.location.origin + "/app");
-          }
+          // if (e.data_act.muser_role.name.toLowerCase() == "project manager") {
+          //   window.location.replace(window.location.origin + "/pm");
+          // } else if (e.data_act.muser_role.name.toLowerCase() == "admin") {
+          //   window.location.replace(window.location.origin + "/admin");
+          // } else {
+          //   window.location.replace(window.location.origin + "/app");
+          // }
         }
       });
     }}
@@ -173,10 +180,21 @@
                       autoComplete="email"
                       required
                       placeholder="Masukkan Email Anda"
-                      class="text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      class={
+                        meta.errors.email
+                          ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                          : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      }
+                      value={meta.input.email}
                       onChange={meta.ubahNilai}
                     />
                   </div>
+                </div>
+                <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                  {meta.errors.email}
+                </div>
+                <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                  {meta.errors.password}
                 </div>
               </div>
               <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
@@ -200,8 +218,13 @@
                       type={meta.showPass ? "text" : "password"}
                       autoComplete="current-password"
                       placeholder="Masukkan kata sandi baru anda"
-                      class="text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      class={
+                        meta.errors.password
+                          ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                          : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      }
                       name="password"
+                      value={meta.input.password}
                       onChange={meta.ubahNilai}
                     />
                     <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
