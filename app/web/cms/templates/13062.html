@@ -2,12 +2,9 @@
   <effect
     meta={{
       state: { email: "", password: "" },
-      input: {},
-      errors: {},
       showErrorMessage: false,
 
       handleSubmit(event) {
-        let errors = {};
         const requestOptions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -40,13 +37,11 @@
                 console.log("user is not signed in to retrive username");
                 console.log(e.status);
                 console.log(e);
-                errors = "User is not signed in to retrive username.";
               }
             });
           }
         );
         event.preventDefault();
-        this.errors = errors;
       },
       validate() {
         let input = this.input;
@@ -181,20 +176,13 @@
                       required
                       placeholder="Masukkan Email Anda"
                       class={
-                        meta.errors.email
+                        meta.showErrorMessage
                           ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
                           : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
                       }
-                      value={meta.input.email}
                       onChange={meta.ubahNilai}
                     />
                   </div>
-                </div>
-                <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
-                  {meta.errors.email}
-                </div>
-                <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
-                  {meta.errors.password}
                 </div>
               </div>
               <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
@@ -219,12 +207,11 @@
                       autoComplete="current-password"
                       placeholder="Masukkan kata sandi baru anda"
                       class={
-                        meta.errors.password
+                        meta.showErrorMessage
                           ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
                           : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
                       }
                       name="password"
-                      value={meta.input.password}
                       onChange={meta.ubahNilai}
                     />
                     <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
@@ -237,7 +224,7 @@
                   </div>
                 </div>
 
-                <div className="text-sm flex self-stretch items-center justify-end">
+                <div className="text-sm flex self-stretch items-center justify-between">
                   <div
                     className={
                       meta.showErrorMessage
