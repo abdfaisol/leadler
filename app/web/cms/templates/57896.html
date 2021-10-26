@@ -5,6 +5,9 @@
       member: "",
       name: "",
       team: "",
+      toggleProfile() {
+        this.showProfile = !this.showProfile;
+      },
       state: {
         showModal: false,
         showModal2: false,
@@ -375,32 +378,69 @@
                   style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
                 />
               </div>
-              <div
-                class="flex flex-1 space-x-4 items-center justify-center"
-                style="width: 191px; min-width: 191px; max-width: 191px; height: 39px; min-height: 39px; max-height: 39px;"
-              >
-                <img
-                  src="/fimgs/609_817.x3.png"
-                  class="flex items-start justify-start"
-                  style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                />
-                <div class="flex flex-1 flex-col items-start justify-start">
-                  <div class="flex self-stretch items-start justify-start">
-                    <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
-                      Gabriel Mikael
+              <div>
+                <div
+                  onClick={meta.toggleProfile}
+                  class="flex flex-1 space-x-4 items-center justify-center cursor-pointer"
+                  style="width: 191px; min-width: 191px; max-width: 191px; height: 39px; min-height: 39px; max-height: 39px;"
+                >
+                  <img
+                    src="/fimgs/609_817.x3.png"
+                    class="flex items-start justify-start"
+                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                  />
+                  <div class="flex flex-1 flex-col items-start justify-start">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
+                        Gabriel Mikael
+                      </div>
+                    </div>
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                        Project Manager
+                      </div>
                     </div>
                   </div>
-                  <div class="flex self-stretch items-start justify-start">
-                    <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                      Project Manager
-                    </div>
-                  </div>
+                  <img
+                    src="/fimgs/609_824.x3.png"
+                    class="flex items-start justify-start"
+                    style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                  />
                 </div>
-                <img
-                  src="/fimgs/609_824.x3.png"
-                  class="flex items-start justify-start cursor-pointer"
-                  style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                />
+                {meta.showProfile ? (
+                  <div
+                    id="myProfil"
+                    class="origin-top-right absolute right-1 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  >
+                    <a
+                      href="#"
+                      class="block px-4 py-2 text-sm text-gray-700"
+                      role="menuitem"
+                      id="user-menu-item-0"
+                    >
+                      <i class="fas fa-user mr-2"></i>
+                      Your Profile
+                    </a>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 text-sm text-gray-700"
+                      role="menuitem"
+                      id="user-menu-item-1"
+                    >
+                      <i class="fas fa-cog mr-2"></i>
+                      Settings
+                    </a>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 text-sm text-gray-700"
+                      role="menuitem"
+                      id="user-menu-item-2"
+                    >
+                      <i class="fas fa-sign-out-alt mr-2"></i>
+                      Sign out
+                    </a>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
