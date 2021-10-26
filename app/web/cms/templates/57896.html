@@ -407,14 +407,14 @@
                     style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
                   />
                 </div>
-                {meta.showProfile ? (
+                {meta.showProfile && (
                   <div
                     id="myProfil"
-                    class="origin-top-right absolute right-1 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    class="origin-top-right absolute right-2 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
                   >
                     <a
                       href="#"
-                      class="block px-4 py-2 text-sm text-gray-700"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:underline"
                       role="menuitem"
                       id="user-menu-item-0"
                     >
@@ -423,7 +423,7 @@
                     </a>
                     <a
                       href="#"
-                      class="block px-4 py-2 text-sm text-gray-700"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:underline"
                       role="menuitem"
                       id="user-menu-item-1"
                     >
@@ -432,7 +432,7 @@
                     </a>
                     <a
                       href="#"
-                      class="block px-4 py-2 text-sm text-gray-700"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:underline"
                       role="menuitem"
                       id="user-menu-item-2"
                     >
@@ -440,7 +440,7 @@
                       Sign out
                     </a>
                   </div>
-                ) : null}
+                )}
               </div>
             </div>
           </div>
@@ -619,11 +619,7 @@
                               </div>
                             </div>
                             <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                              <img
-                                src="/fimgs/609_882.x3.png"
-                                class="flex self-stretch flex-col items-start justify-start"
-                                style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 10px; min-height: 10px; max-height: 10px;"
-                              />
+                              <bar />
                               <div class="flex self-stretch items-start justify-start">
                                 <div class="text-sm tracking-wide leading-tight text-coolGray-500">
                                   10 Task Done
