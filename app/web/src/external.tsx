@@ -32,15 +32,12 @@ export default {
     import("./components/multiple-select"),
     { c: "", s: "", h: "" },
   ],
-  comment: () => [import("./components/comment"), { c: "", s: "", h: "" }],
   testc: () => [import("./components/test"), { c: "", s: "", h: "" }],
-  header: () => [import("./components/header"), { c: "", s: "", h: "" }],
   "eye-icon": () => [import("./components/eye-icon"), { c: "", s: "", h: "" }],
   "eye-slash": () => [
     import("./components/eye-slash"),
     { c: "", s: "", h: "" },
   ],
-  menu: () => [import("./components/menu"), { c: "", s: "", h: "" }],
   bar: () => [import("./components/bar"), { c: "", s: "", h: "" }],
   "sidebar-pm": () => [
     import("./components/sidebar-pm"),
