@@ -116,14 +116,14 @@
         <div class="flex flex-col items-end justify-end">
           <button
             onClick={meta.toggleModal}
-            class="flex space-x-3 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
-            style="width: 229px; min-width: 229px; max-width: 229px; height: 40px; min-height: 40px; max-height: 40px;"
+            class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+            style="width: 172px; min-width: 172px; max-width: 172px; height: 40px; min-height: 40px; max-height: 40px;"
           >
             <img
               src="/fimgs/603_427.x3.png"
-              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
             />
-            <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+            <div class="text-base font-medium tracking-wide leading-normal text-right text-white pl-1">
               New Employee
             </div>
           </button>
@@ -259,24 +259,21 @@
       </div>
     </>
   ) : (
-    <div
-      class="flex flex-1 self-stretch flex-col items-center justify-center  px-96 py-96"
-      style="width: 968px; min-width: 968px; max-width: 1105px; height: 413px; min-height: 413px; max-height: 713px;"
-    >
+    <div class="flex flex-1 self-stretch flex-col items-center justify-center">
       <div class="flex flex-col space-y-6 items-center justify-center">
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Employee is still empty
         </div>
         <button
           onClick={meta.toggleModal}
-          class="flex space-x-3 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
-          style="width: 229px; min-width: 229px; max-width: 229px; height: 40px; min-height: 40px; max-height: 40px;"
+          class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+          style="width: 172px; min-width: 172px; max-width: 172px; height: 40px; min-height: 40px; max-height: 40px;"
         >
           <img
             src="/fimgs/603_427.x3.png"
-            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
           />
-          <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+          <div class="text-base font-medium tracking-wide leading-normal text-right text-white pl-1">
             New Employee
           </div>
         </button>
