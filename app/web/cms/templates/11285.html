@@ -287,166 +287,172 @@
             <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
               {/*body*/}
               <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis overflow-hidden bg-gray-50">
-                <div class="flex self-stretch space-x-40 items-center justify-center pl-52 pr-8 py-5 bg-white rounded-md">
-                  <div class="flex items-start justify-start">
-                    <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900 ml-97">
-                      Add New Employee
+                <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                  <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                    <div class="flex self-stretch items-center justify-between">
+                      <div class="flex items-start justify-start pl-52">
+                        <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                          Add New Employee
+                        </div>
+                      </div>
+                      <form onSubmit={meta.toggleModal}>
+                        <button class="flex flex-col items-start justify-start">
+                          <img
+                            src="/fimgs/517_574.x1.svg"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;background-image: url('/fimgs/bg-dceba00bb6d6f9f685dc798d0d2871f28da5cac8');background-size:100% 100%;background-repeat:no-repeat;"
+                          />
+                        </button>
+                      </form>
                     </div>
-                  </div>
-                  <div
-                    class="flex items-start justify-end"
-                    style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                  >
-                    <img
-                      onClick={meta.toggleModal}
-                      src="/fimgs/264_170.x3.png"
-                      class="cursor-pointer"
-                    />
-                    <div />
                   </div>
                 </div>
-                <div class="flex self-stretch flex-col space-y-4 items-start justify-start p-11 -mt-2">
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    Full Name
-                  </div>
-                  <div class="flex self-stretch items-center justify-start">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <input
-                        id="name"
-                        name="fullname"
-                        onChange={meta.ubahNilai}
-                        type="text"
-                        placeholder=""
-                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                      />
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-1.5 items-start justify-center">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Full Name
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2.5">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="fullname"
+                          onChange={meta.ubahNilai}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Role
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2.5">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.dataUser()}
+                          defaultValue={meta.dataUser()[0]}
+                          className="w-full"
+                          classNamePrefix="select"
+                          name="role"
+                          onChange={(e) => {
+                            meta.actionrole.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Email Address
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2.5">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="email"
+                          onChange={meta.ubahNilai}
+                          type="email"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Phone
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2.5">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="phone"
+                          onChange={meta.ubahNilai}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      NIK
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2.5">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="nik"
+                          onChange={meta.ubahNilai}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Birth Place
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2.5">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="birthplace"
+                          onChange={meta.ubahNilai}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Birth Date
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2.5">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="birthdate"
+                          onChange={meta.ubahNilai}
+                          type="date"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Gender
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2.5">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.in_gender}
+                          defaultValue={meta.in_gender[0]}
+                          className="w-full"
+                          classNamePrefix="select"
+                          name="gender"
+                          onChange={(e) => {
+                            meta.actiongender.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Password
+                    </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="password"
+                          onChange={meta.ubahNilai}
+                          type="password"
+                          placeholder=""
+                          required
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    Role
-                  </div>
-                  <div class="flex self-stretch items-center justify-start">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <multipleselect
-                        options={meta.dataUser()}
-                        defaultValue={meta.dataUser()[0]}
-                        className="text-base bg-white relative w-full border rounded placeholder-gray-400 border-gray-300 text-gray-500 focus:border-indigo-400 focus:outline-none py-4 px-3"
-                        classNamePrefix="select"
-                        name="role"
-                        onChange={(e) => {
-                          meta.actionrole.onChange(e);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    Email Address
-                  </div>
-                  <div class="flex self-stretch items-center justify-start">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <input
-                        id="name"
-                        name="email"
-                        onChange={meta.ubahNilai}
-                        type="email"
-                        placeholder=""
-                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                      />
-                    </div>
-                  </div>
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    Phone
-                  </div>
-                  <div class="flex self-stretch items-center justify-start">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <input
-                        id="name"
-                        name="phone"
-                        onChange={meta.ubahNilai}
-                        type="text"
-                        placeholder=""
-                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                      />
-                    </div>
-                  </div>
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    NIK
-                  </div>
-                  <div class="flex self-stretch items-center justify-start">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <input
-                        id="name"
-                        name="nik"
-                        onChange={meta.ubahNilai}
-                        type="text"
-                        placeholder=""
-                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                      />
-                    </div>
-                  </div>
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    Birth Place
-                  </div>
-                  <div class="flex self-stretch items-center justify-start pb-5">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <input
-                        id="name"
-                        name="birthplace"
-                        onChange={meta.ubahNilai}
-                        type="text"
-                        placeholder=""
-                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                      />
-                    </div>
-                  </div>
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    Birth Date
-                  </div>
-                  <div class="flex self-stretch items-center justify-start pb-5">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <input
-                        id="name"
-                        name="birthdate"
-                        onChange={meta.ubahNilai}
-                        type="date"
-                        placeholder=""
-                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                      />
-                    </div>
-                  </div>
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    Gender
-                  </div>
-                  <div class="flex self-stretch items-center justify-start">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <multipleselect
-                        options={meta.in_gender}
-                        defaultValue={meta.in_gender[0]}
-                        className="text-base bg-white relative w-full border rounded placeholder-gray-400 border-gray-300 text-gray-500 focus:border-indigo-400 focus:outline-none py-4 px-3"
-                        classNamePrefix="select"
-                        name="gender"
-                        onChange={(e) => {
-                          meta.actiongender.onChange(e);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    Password
-                  </div>
-                  <div class="flex self-stretch items-center justify-start pb-5">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <input
-                        id="name"
-                        name="password"
-                        onChange={meta.ubahNilai}
-                        type="password"
-                        placeholder=""
-                        required
-                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                      />
-                    </div>
-                  </div>
-                  <form onSubmit={meta.submitData}>
+                  <form
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    onSubmit={meta.submitData}
+                  >
                     <button
                       type="submit"
                       class="flex flex-1 self-stretch flex-col items-start justify-start"

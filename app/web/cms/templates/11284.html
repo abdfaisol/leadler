@@ -171,52 +171,36 @@
     }}
   />
   <div class="flex flex-col self-stretch space-y-10 p-12 w-auto">
-    <div class="flex self-stretch w-full items-start justify-start px-6 py-6 bg-white rounded">
-      <div class="flex items-center justify-start space-x-8">
-        <div class="flex items-center justify-center px-4 py-2 rounded bg-violet-100">
-          <div class="text-base font-normal tracking-wide leading-normal text-center text-indigo-500">
+    <div class="flex self-stretch w-full items-start justify-start">
+      <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
+        <div
+          class="flex space-x-1 items-center justify-center px-4 py-2 border rounded border-indigo-500"
+          style="width: 135px; min-width: 135px; max-width: 135px; height: 40px; min-height: 40px; max-height: 40px;"
+        >
+          <div class="text-base tracking-wide leading-normal text-center text-indigo-500">
             All Project
           </div>
+          <img
+            src="/fimgs/I55_494_55_487.x3.png"
+            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-09b5b972072bcfc098c06e90d718895dbb4e537a');background-size:100% 100%;background-repeat:no-repeat;"
+          />
         </div>
-        <div class="flex items-center justify-center px-4 py-2 rounded">
-          <div class="text-base font-normal tracking-wide leading-normal text-center text-gray-500">
-            In Progress
-          </div>
-        </div>
-        <div class="flex items-center justify-center px-4 py-2 rounded">
-          <div class="text-base font-normal tracking-wide leading-normal text-center text-gray-500">
-            Complete
-          </div>
-        </div>
-        <div class="flex items-center justify-center px-4 py-2 rounded">
-          <div class="text-base font-normal tracking-wide leading-normal text-center text-gray-500">
-            Unfinish
-          </div>
-        </div>
-        <div class="flex items-center justify-center px-4 py-2 rounded">
-          <div class="text-base font-normal tracking-wide leading-normal text-center text-gray-500">
-            Next Project
-          </div>
-        </div>
-        <div class="flex flex-col items-start justify-start">
-          <form onSubmit={meta.handleSubmit}>
-            <button
-              class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
-              style="width: 206px; min-width: 206px; max-width: 206px; height: 40px; min-height: 40px; max-height: 40px;"
-            >
-              <img
-                src="/fimgs/603_427.x3.png"
-                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-              />
-              <div
-                class="text-base font-medium tracking-wide leading-normal text-right text-white"
-                style="width: 156px; min-width: 156px; max-width: 156px; height: 24px; min-height: 24px; max-height: 24px;"
-              >
-                Create New Project
-              </div>
-            </button>
-          </form>
-        </div>
+      </div>
+      <div class="flex flex-col items-start justify-start">
+        <form onSubmit={meta.handleSubmit}>
+          <button
+            class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+            style="width: 208px; min-width: 208px; max-width: 208px; height: 40px; min-height: 40px; max-height: 40px;"
+          >
+            <img
+              src="/fimgs/603_427.x3.png"
+              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+            />
+            <div class="text-base font-medium tracking-wide leading-normal text-right text-white pl-1">
+              Create New Project
+            </div>
+          </button>
+        </form>
       </div>
     </div>
     <div class="flex self-stretch flex-wrap space-y-9 items-start justify-start">
