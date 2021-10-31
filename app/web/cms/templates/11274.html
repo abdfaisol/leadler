@@ -281,20 +281,20 @@
   </div>
   {meta.state.showModal ? (
     <>
-      <div class="flex justify-center items-center overflow-ellipsis overflow-hidden fixed inset-0 z-50 outline-none focus:outline-none">
-        <div class="relative w-auto mx-auto max-w-3xl">
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto mx-auto max-w-3xl" style="width: 480px;">
           {/*content*/}
           <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*body*/}
-            <div class="border-0 rounded flex flex-col space-y-11 items-start justify-start px-11 py-6 bg-gray-50">
-              <div class="border-0 rounded-t flex self-stretch flex-col items-start justify-start p-6 -mt-6 -mx-11 bg-white shadow">
-                <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col items-start justify-start px-7 py-4 bg-white shadow">
+                <div class="flex self-stretch flex-col items-start justify-start">
                   <div class="flex self-stretch items-center justify-between">
-                    <img
-                      src="/fimgs/515_384.x1.svg"
-                      class="flex flex-1 items-center justify-center"
-                      style="width: 534px; min-width: 534px; max-width: 534px; height: 30px; min-height: 30px; max-height: 30px;"
-                    />
+                    <div class="flex items-start justify-start pl-28">
+                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                        Create New Project
+                      </div>
+                    </div>
                     <form onSubmit={meta.handleExit}>
                       <button class="flex flex-col items-start justify-start">
                         <img
@@ -307,39 +307,36 @@
                 </div>
               </div>
               <form
-                class="flex flex-1 self-stretch flex-col items-start pb-4 justify-start"
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
                 onSubmit={meta.handleSubmit2}
               >
-                <div class="flex self-stretch flex-col space-y-9 items-center justify-start">
+                <div class="flex self-stretch flex-col space-y-8 items-center justify-start p-8">
                   <img
-                    src="/fimgs/515_389.x1.svg"
+                    src="/fimgs/643_553.x3.png"
                     class="flex flex-col items-center justify-center"
-                    style="width: 562px; min-width: 562px; max-width: 562px; height: 249px; min-height: 249px; max-height: 249px;"
+                    style="width: 223px; min-width: 223px; max-width: 223px; height: 137px; min-height: 137px; max-height: 137px;"
                   />
-                  <div class="flex self-stretch flex-col space-y-10 items-start justify-start">
-                    <div class="flex self-stretch flex-col space-y-2 items-start justify-center">
-                      <div class="flex self-stretch items-start justify-start">
-                        <div class="text-sm tracking-wide leading-tight text-center text-gray-500">
-                          Project Name
-                        </div>
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        Project Name
                       </div>
+                    </div>
 
-                      <div class="flex self-stretch items-center justify-start">
-                        <div class="relative flex flex-1 items-center justify-start">
-                          <input
-                            id="name"
-                            name="title"
-                            type="text"
-                            placeholder="Project Title"
-                            value={meta.state2.title}
-                            onChange={meta.ubahNilai}
-                            class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
-                          />
-                        </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="title"
+                          type="text"
+                          placeholder="Project Title"
+                          value={meta.state2.title}
+                          onChange={meta.ubahNilai}
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
                       </div>
                     </div>
                   </div>
-
                   <button
                     type="submit"
                     class="flex flex-1 self-stretch flex-col items-start justify-start"
@@ -361,14 +358,14 @@
   ) : null}
   {meta.state.showModal2 ? (
     <>
-      <div class="flex justify-center items-center overflow-ellipsis overflow-hidden fixed inset-0 z-50 outline-none focus:outline-none">
-        <div class="relative w-auto mx-auto max-w-3xl">
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto mx-auto max-w-3xl" style="width: 480px;">
           {/*content*/}
           <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*body*/}
             <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis overflow-hidden bg-gray-50">
-              <div class="border-0 rounded-t flex self-stretch flex-col items-start justify-start px-6 py-4 bg-white shadow">
-                <div class="flex self-stretch items-center justify-between bg-white">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white -ml-1">
                   <form onSubmit={meta.handleSubmit}>
                     <button>
                       <img
@@ -388,10 +385,10 @@
                     </button>
                   </form>
                 </div>
-                <div class="flex self-stretch items-start justify-start bg-white">
-                  <div class="text-xl font-medium tracking-wide leading-loose text-gray-900">
+                <div class="flex self-stretch items-start justify-start overflow-ellipsis overflow-hidden bg-white mx-1 pb-1.5 pt-0.5">
+                  <div class="text-xl font-medium tracking-wide leading-tight text-gray-900">
                     {meta.print ? (
-                      <div class="overflow-ellipsis break-words">
+                      <div class="soverflow-ellipsis break-words">
                         {meta.state2.title}
                       </div>
                     ) : null}
@@ -402,36 +399,34 @@
                 class="flex flex-1 self-stretch flex-col items-start justify-start"
                 onSubmit={meta.handleSubmit3}
               >
-                <div class="flex self-stretch flex-col items-start justify-start p-11 -mt-2">
-                  <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                    <div class="flex self-stretch flex-col space-y-2 items-start justify-start pb-7">
-                      <div class="flex flex-col items-start justify-start">
-                        <div class="text-sm tracking-wide leading-tight text-gray-500">
-                          Project Description
-                        </div>
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex flex-col items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-gray-500">
+                        Project Description
                       </div>
-                      <textarea
-                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                        placeholder="Add project description"
-                        style="resize: none;"
-                        name="desc"
-                        value={meta.state2.desc}
-                        onChange={meta.ubahNilai2}
-                        rows={4}
-                        cols={50}
-                      ></textarea>
                     </div>
-                    <button
-                      type="submit"
-                      class="flex flex-1 self-stretch flex-col items-start justify-start"
-                    >
-                      <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
-                        <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-                          Next
-                        </div>
-                      </div>
-                    </button>
+                    <textarea
+                      class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                      placeholder="Add project description"
+                      style="resize: none;"
+                      name="desc"
+                      value={meta.state2.desc}
+                      onChange={meta.ubahNilai2}
+                      rows={4}
+                      cols={50}
+                    ></textarea>
                   </div>
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Next
+                      </div>
+                    </div>
+                  </button>
                 </div>
               </form>
             </div>
@@ -443,14 +438,14 @@
   ) : null}
   {meta.state.showModal3 ? (
     <>
-      <div class="flex justify-center items-center overflow-ellipsis overflow-hidden fixed inset-0 z-50 outline-none focus:outline-none">
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
         <div class="relative w-auto mx-auto max-w-3xl" style="width: 480px;">
           {/*content*/}
           <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*body*/}
             <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis overflow-hidden bg-gray-50">
-              <div class="border-0 rounded-t flex self-stretch flex-col items-start justify-start px-6 py-4  bg-white shadow">
-                <div class="flex self-stretch items-center justify-between bg-white">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white -ml-1">
                   <form onSubmit={meta.handleSubmit2}>
                     <button>
                       <img
@@ -470,10 +465,10 @@
                     </button>
                   </form>
                 </div>
-                <div class="flex self-stretch items-start justify-start bg-white">
-                  <div class="text-xl font-medium tracking-wide leading-loose text-gray-900">
+                <div class="flex self-stretch items-start justify-start overflow-ellipsis overflow-hidden bg-white mx-1 pb-1.5 pt-0.5">
+                  <div class="text-xl font-medium tracking-wide leading-tight text-gray-900">
                     {meta.print ? (
-                      <div class="overflow-ellipsis break-words">
+                      <div class="soverflow-ellipsis break-words">
                         {meta.state2.title}
                       </div>
                     ) : null}
@@ -484,54 +479,59 @@
                 class="flex flex-1 self-stretch flex-col items-start justify-start"
                 onSubmit={meta.handleSubmit4}
               >
-                <div class="flex self-stretch flex-col space-y-4 items-start justify-start p-11 -mt-2">
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    Project Create For
-                  </div>
-                  <div class="flex self-stretch items-center justify-start pb-2">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <input
-                        id="name"
-                        name="project"
-                        type="text"
-                        placeholder=""
-                        value={meta.state2.project}
-                        onChange={meta.ubahNilai3}
-                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                      />
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Project Create For
                     </div>
-                  </div>
-                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    Start Project
-                  </div>
-                  <div class="flex self-stretch items-center justify-start">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <input
-                        id="name"
-                        name="start"
-                        type="date"
-                        placeholder=""
-                        value={meta.state2.start}
-                        onChange={meta.ubahNilai4}
-                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                      />
+                    <div class="flex self-stretch items-center justify-start pb-2.5">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="project"
+                          type="text"
+                          placeholder=""
+                          value={meta.state2.project}
+                          onChange={meta.ubahNilai3}
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div class="text-sm tracking-wide leading-tight text-gray-500">
-                    Due Date
-                  </div>
-                  <div class="flex self-stretch items-center justify-start pb-5">
-                    <div class="relative flex flex-1 items-center justify-start">
-                      <input
-                        id="name"
-                        name="due"
-                        type="date"
-                        placeholder=""
-                        value={meta.state2.due}
-                        onChange={meta.ubahNilai5}
-                        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                      />
+                    <hr
+                      class="border-gray-300 pb-2.5 my-auto"
+                      style="width: 100%;"
+                    ></hr>
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Start Project
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="start"
+                          type="date"
+                          placeholder=""
+                          value={meta.state2.start}
+                          onChange={meta.ubahNilai4}
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Due Date
+                    </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="due"
+                          type="date"
+                          placeholder=""
+                          value={meta.state2.due}
+                          onChange={meta.ubahNilai5}
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
                     </div>
                   </div>
                   <button
@@ -560,12 +560,9 @@
           {/*content*/}
           <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*body*/}
-            <div
-              class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis  bg-gray-50"
-              style="min-width: 450px"
-            >
-              <div class="border-0 rounded-t flex self-stretch flex-col px-6 py-4 items-start justify-start bg-white shadow">
-                <div class="flex self-stretch items-center justify-between bg-white">
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis  overflow-hidden bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white -ml-1">
                   <form onSubmit={meta.handleSubmit3}>
                     <button>
                       <img
@@ -585,19 +582,19 @@
                     </button>
                   </form>
                 </div>
-                <div class="flex self-stretch items-start justify-start bg-white">
-                  <div class="text-xl font-medium tracking-wide leading-loose text-gray-900">
+                <div class="flex self-stretch items-start justify-start overflow-ellipsis overflow-hidden bg-white mx-1 pb-1.5 pt-0.5">
+                  <div class="text-xl font-medium tracking-wide leading-tight text-gray-900">
                     {meta.print ? (
-                      <div class="overflow-ellipsis break-words">
+                      <div class="soverflow-ellipsis break-words">
                         {meta.state2.title}
                       </div>
                     ) : null}
                   </div>
                 </div>
               </div>
-              <div class="flex self-stretch flex-col space-y-9 items-start justify-start p-11 -mt-2">
-                <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
-                  <div class="text-base tracking-wide leading-normal text-gray-900">
+              <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                  <div class="text-base tracking-wide leading-none text-gray-900">
                     Add member or Team
                   </div>
                   <div class="flex self-stretch space-x-4 items-start justify-start">
@@ -616,7 +613,7 @@
                           </div>
                         </div>
                       ) : (
-                        <div class="cursor-pointer flex flex-col items-center space-y-2 justify-center bg-white border rounded border-gray-500 px-3.5 py-3.5">
+                        <div class="cursor-pointer flex flex-col items-center space-y-2 justify-center bg-white border rounded border-gray-300 px-3.5 py-3.5">
                           <div class="flex items-start justify-start">
                             <img
                               src="/fimgs/561_387.x1.svg"
@@ -632,7 +629,7 @@
                     </div>
                     <div class="cursor-pointer" onClick={meta.toggleTekan}>
                       {meta.add.tekan ? (
-                        <div class="flex flex-col items-center space-y-2 justify-center bg-white border rounded border-gray-500 px-3 py-3.5">
+                        <div class="flex flex-col items-center space-y-2 justify-center bg-white border rounded border-gray-300 px-3 py-3.5">
                           <div class="flex items-start justify-start">
                             <img
                               src="/fimgs/541_407.x1.svg"
@@ -661,55 +658,54 @@
                     </div>
                   </div>
                 </div>
-                <div class="flex self-stretch flex-col space-y-9 items-start justify-start">
-                  {meta.add.tekan ? (
-                    <div class="flex self-stretch items-center justify-start">
-                      <div class="relative flex flex-1 items-center justify-start">
-                        <multipleselect
-                          options={meta.dataTeam()}
-                          value={meta.state2.team}
-                          className="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                          classNamePrefix="select"
-                          name="team"
-                          onChange={(e) => {
-                            meta.actionteam.onChange(e);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <div class="flex self-stretch items-center justify-start">
-                      <div class="relative flex flex-1 items-center justify-start">
-                        <multipleselect
-                          options={meta.dataUser()}
-                          className="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-3 px-3"
-                          classNamePrefix="select"
-                          isMulti
-                          name="member"
-                          onChange={(e) => {
-                            meta.actionmember.onChange(e);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
 
-                  <form
+                {meta.add.tekan ? (
+                  <div class="flex self-stretch items-center justify-start">
+                    <div class="relative flex flex-1 items-center justify-start">
+                      <multipleselect
+                        options={meta.dataTeam()}
+                        value={meta.state2.team}
+                        className="w-full"
+                        classNamePrefix="select"
+                        name="team"
+                        onChange={(e) => {
+                          meta.actionteam.onChange(e);
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div class="flex self-stretch items-center justify-start">
+                    <div class="relative flex flex-1 items-center justify-start">
+                      <multipleselect
+                        options={meta.dataUser()}
+                        className="w-full"
+                        classNamePrefix="select"
+                        isMulti
+                        name="member"
+                        onChange={(e) => {
+                          meta.actionmember.onChange(e);
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <form
+                  class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  onSubmit={meta.handleSubmit5}
+                >
+                  <button
+                    type="submit"
                     class="flex flex-1 self-stretch flex-col items-start justify-start"
-                    onSubmit={meta.handleSubmit5}
                   >
-                    <button
-                      type="submit"
-                      class="flex flex-1 self-stretch flex-col items-start justify-start"
-                    >
-                      <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
-                        <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-                          Next
-                        </div>
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Next
                       </div>
-                    </button>
-                  </form>
-                </div>
+                    </div>
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -720,14 +716,17 @@
   ) : null}
   {meta.state.showModal5 ? (
     <>
-      <div class="flex justify-center items-center overflow-ellipsis overflow-hidden fixed inset-0 z-50 outline-none focus:outline-none">
-        <div class="relative w-auto mx-auto max-w-3xl" style="width: 640px;">
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="width: 640px; max-width: 640px;"
+        >
           {/*content*/}
           <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*body*/}
             <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis overflow-hidden bg-gray-50">
-              <div class="border-0 rounded-t flex self-stretch flex-col items-start justify-start px-6 py-4 bg-white shadow">
-                <div class="flex self-stretch items-center justify-between bg-white">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white -ml-1">
                   <form onSubmit={meta.handleSubmit4}>
                     <button>
                       <img
@@ -747,14 +746,16 @@
                     </button>
                   </form>
                 </div>
-                <div class="flex self-stretch text-xl font-medium tracking-wide leading-loose text-center text-gray-900">
-                  Check Again
-                </div>
-                <div class="flex self-stretch text-sm tracking-wide leading-tight text-gray-500 py-2">
-                  Is the project information you added correct?
+                <div class="flex self-stretch flex-col space-y-2 items-start justify-start overflow-ellipsis overflow-hidden bg-white mx-1 pb-2 pt-0.5">
+                  <div class="flex self-stretch text-xl font-medium tracking-wide leading-tight text-center text-gray-900">
+                    Check Again
+                  </div>
+                  <div class="flex self-stretch text-sm tracking-wide leading-tight text-gray-500">
+                    Is the project information you added correct?
+                  </div>
                 </div>
               </div>
-              <div class="flex self-stretch flex-col space-y-9 items-center justify-center p-11 -mt-2">
+              <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
                 <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white border rounded border-gray-300">
                   <div class="flex self-stretch items-start justify-between px-4 pt-4">
                     <div class="text-sm tracking-wide leading-tight text-gray-500">
