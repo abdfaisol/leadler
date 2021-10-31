@@ -14,6 +14,28 @@
       },
       state2: { title: "" },
       add: { tekan: true },
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
       toggleTekan() {
         this.add.tekan = !this.add.tekan;
       },
@@ -560,7 +582,7 @@
           {/*content*/}
           <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*body*/}
-            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis  overflow-hidden bg-gray-50">
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
               <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
                 <div class="flex self-stretch items-center justify-between bg-white -ml-1">
                   <form onSubmit={meta.handleSubmit3}>
@@ -665,6 +687,15 @@
                       <multipleselect
                         options={meta.dataTeam()}
                         value={meta.state2.team}
+                        theme={(theme) => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#F3F4F6",
+                            primary: "#6366F1",
+                          },
+                        })}
+                        styles={meta.styles}
                         className="w-full"
                         classNamePrefix="select"
                         name="team"
@@ -679,6 +710,15 @@
                     <div class="relative flex flex-1 items-center justify-start">
                       <multipleselect
                         options={meta.dataUser()}
+                        theme={(theme) => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#F3F4F6",
+                            primary: "#6366F1",
+                          },
+                        })}
+                        styles={meta.styles}
                         className="w-full"
                         classNamePrefix="select"
                         isMulti

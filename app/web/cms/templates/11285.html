@@ -24,6 +24,28 @@
         address: "",
       },
       isFilled: true,
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
       filled() {
         this.isFilled = this.isFilled;
         this.showModal = !this.showModal;
@@ -34,7 +56,6 @@
       toggleDrop() {
         this.showDrop = !this.showDrop;
       },
-
       ubahNilai(e) {
         let name = e.target.name;
         let nilai = e.target.value;
@@ -331,6 +352,15 @@
                         <multipleselect
                           options={meta.dataUser()}
                           defaultValue={meta.dataUser()[0]}
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
                           className="w-full"
                           classNamePrefix="select"
                           name="role"
@@ -423,6 +453,15 @@
                         <multipleselect
                           options={meta.in_gender}
                           defaultValue={meta.in_gender[0]}
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
                           className="w-full"
                           classNamePrefix="select"
                           name="gender"
