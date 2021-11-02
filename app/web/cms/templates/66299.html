@@ -82,9 +82,11 @@
                 </a>
               </div>
               <div
-                class={`${meta.isActive(
-                  "/pm/projects"
-                )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
+                class={`${
+                  meta.isActive("/pm/projects") ||
+                  meta.isActive("/pm/projects/projectdetails") ||
+                  meta.isActive("/pm/projects/task")
+                } flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
                 style="width: 158px; min-width: 158px; max-width: 158px; height: 40px; min-height: 40px; max-height: 40px;"
               >
                 <a
@@ -94,7 +96,8 @@
                 >
                   <img
                     src={
-                      meta.isActive("/pm/projects")
+                      meta.isActive("/pm/projects") ||
+                      "/pm/projects/projectdetails"
                         ? "/fimgs/45_104.x3.png"
                         : "/fimgs/45_103.x3.png"
                     }
@@ -107,7 +110,8 @@
                   >
                     <div
                       class={
-                        meta.isActive("/pm/projects")
+                        meta.isActive("/pm/projects") ||
+                        "/pm/projects/projectdetails"
                           ? "text-base tracking-wide leading-normal text-blue-700"
                           : "text-base tracking-wide leading-normal text-coolGray-500"
                       }
@@ -274,7 +278,9 @@
                 </div>
               </div>
             </div>
-          ) : (
+          ) : null}
+
+          {meta.isActive("/pm/teams") && (
             <div
               class="flex self-stretch w-full space-x-60 px-12 items-center justify-between bg-white shadow shadow-b"
               style="height: 70px; min-height: 70px; max-height: 70px;"
@@ -298,6 +304,101 @@
                       Add Team
                     </div>
                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {meta.isActive("/pm/projects/projectdetails") && (
+            <div
+              class="flex self-stretch space-x-32 w-full px-12 items-center justify-between bg-white shadow shadow-b"
+              style="height: 70px; min-height: 70px; max-height: 70px;"
+            >
+              <div class="flex items-center justify-start">
+                <div class="text-2xl font-medium capitalize tracking-wide leading-loose text-coolGray-900">
+                  <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                    <div class="flex items-center justify-start">
+                      <div class="flex items-start justify-start">
+                        <img
+                          src="/fimgs/5_49.x3.png"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 25px; min-height: 25px; max-height: 25px;"
+                        />
+                      </div>
+                    </div>
+                    <div class="flex flex-1 items-center justify-start">
+                      <div class="text-xl font-medium tracking-wide leading-loose text-indigo-500">
+                        Back
+                      </div>
+                    </div>
+                  </div>
+                  {/*{meta.isActive("/pm") ? meta.titleNavA() : meta.titleNav()}*/}
+                </div>
+              </div>
+              <div class="flex space-x-14 items-center justify-end">
+                <div
+                  class="flex items-center justify-between px-4 py-2 bg-coolGray-50 rounded-full"
+                  style="width: 50%; min-width: 30%; max-width: 50%; height: 40px; min-height: 40px; max-height: 40px;"
+                >
+                  <div
+                    class="flex flex-1 items-start justify-start"
+                    style="height: 24px; min-height: 24px; max-height: 24px;"
+                  >
+                    <input
+                      placeholder="Search..."
+                      class="text-base tracking-wide leading-normal text-coolGray-500 w-full bg-coolGray-50 placeholder-gray-400 focus:outline-none"
+                    />
+                  </div>
+                  <img
+                    src="/fimgs/609_809.x3.png"
+                    class="flex items-start justify-start cursor-pointer"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                </div>
+                <div
+                  class="flex items-start justify-between"
+                  style="width: 104px; min-width: 104px; max-width: 104px; height: 36px; min-height: 36px; max-height: 36px;"
+                >
+                  <img
+                    src="/fimgs/604_1119.x3.png"
+                    class="flex items-center justify-center p-2 bg-coolGray-50 rounded-full cursor-pointer"
+                    style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
+                  />
+                  <img
+                    src="/fimgs/609_814.x3.png"
+                    class="flex items-center justify-center p-2 bg-coolGray-50 rounded-full cursor-pointer"
+                    style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
+                  />
+                </div>
+                <div>
+                  <div
+                    onClick={meta.toggleProfile}
+                    class="flex flex-1 space-x-4 items-center justify-center cursor-pointer"
+                    style="width: 191px; min-width: 191px; max-width: 191px; height: 39px; min-height: 39px; max-height: 39px;"
+                  >
+                    <img
+                      src="/fimgs/609_817.x3.png"
+                      class="flex items-start justify-start"
+                      style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                    />
+                    <div class="flex flex-1 flex-col items-start justify-start">
+                      <div class="flex self-stretch items-start justify-start">
+                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
+                          Gabriel Mikael
+                        </div>
+                      </div>
+                      <div class="flex self-stretch items-start justify-start">
+                        <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                          Project Manager
+                        </div>
+                      </div>
+                    </div>
+                    <img
+                      src="/fimgs/609_824.x3.png"
+                      class="flex items-start justify-start"
+                      style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                    />
+                  </div>
+                  {meta.showProfile && <showprofile />}
                 </div>
               </div>
             </div>
