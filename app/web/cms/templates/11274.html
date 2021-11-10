@@ -246,9 +246,11 @@
         class="flex self-stretch space-x-8 flex-wrap items-start justify-start"
         style="height: 244px; min-height: 244px; max-height: 244px;"
       >
-        {meta.data_projek.map((e) => {
+        {meta.data_projek?.map((e) => {
+          let urlproject = "projects/" + e.id + "/detail";
           return (
-            <div
+            <a
+              href={urlproject}
               class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
               style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
             >
@@ -295,7 +297,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </a>
           );
         })}
       </div>

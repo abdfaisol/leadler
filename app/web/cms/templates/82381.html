@@ -1,12 +1,39 @@
 <>
-  <effect meta={{}} run={async () => {}} />
+  <effect
+    meta={{
+      state: {
+        judul: "Loading",
+        deskripsi: "Loading",
+        label: "Loading",
+        startdate: "26/09/2021",
+        duedate: "26/09/2021",
+      },
+      link: {
+        team: "#",
+        task: "#",
+        timeline: "#",
+      },
+    }}
+    run={async () => {
+      api("/api/project/show/" + params.id).then((e) => {
+        console.log(e);
+        if (e.status == true) {
+          meta.state.judul = e.data_act.project.name;
+          meta.state.deskripsi = e.data_act.project.desc;
+          meta.state.label = e.data_act.project.label;
+          meta.state.startdate = e.data_act.project.startdate;
+          meta.state.dudate = e.data_act.project.duedate;
+        }
+      });
+    }}
+  />
   <div class="flex flex-col items-start justify-start px-8 py-6">
     <div class="flex flex-col space-y-8 items-start justify-start">
       <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
         <div class="flex space-x-72 items-start justify-start">
           <div class="flex items-start justify-start">
             <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
-              Pengembangan Aplikasi UMKM Kota Semarang
+              {meta.state.judul}
             </div>
           </div>
           <div class="flex flex-col space-y-2 items-start justify-start">
@@ -33,7 +60,7 @@
           </div>
           <div class="flex flex-col items-start justify-start">
             <a
-              href="/pm/projects/task"
+              href={meta.link.task}
               class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
             >
               <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
@@ -69,23 +96,7 @@
               </div>
               <div class="flex self-stretch items-start justify-start">
                 <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                  Pengembangan Aplikasi UMKM Kota Semarang dibuat untuk
-                  memberikan kemudahan bagi masyarakat yang bergerak di bidang
-                  bisnis terutama pada UMKM. Hal ini didasarkan pada masih
-                  banyak masyarakat yang belum memanfaatkan teknologi pemasaran
-                  seperti E-commerce dan lainnya. Penelitian ini menggunakan
-                  model pengembangan SDLC. Model analisisnya menggunakan Use
-                  Case, Activity, Class Diagram, E-R Diagram dan kamus data.
-                  Manfaatnya dapat memberikan kemudahan dalam memasarkan produk
-                  UMKM kota semarang agar lebih dikenal oleh masyarakat lokal
-                  maupun luar daerah. Dalam Aplikasi ini masyarakat dapat
-                  menjual produk UMKM melalui bantuan teknologi. Kemudian
-                  aplikasi ini dapat membantu pelaku usaha UMKM dalam hal
-                  pencatatan keuangan, sehingga pelaku usaha kini lebih efesien
-                  menganalisa bisnis dalam hal pencatatan keuangan. Aplikasi ini
-                  berbentuk mobile application dan juga web service dengan
-                  bahasa pemrograman untuk mobile application JAVA dan SQLITE
-                  sebagai database, web service PHP dan MYSQL sebagai database.
+                  {meta.state.deskripsi}
                 </div>
               </div>
             </div>
@@ -107,7 +118,7 @@
                 </div>
                 <div class="flex self-stretch items-start justify-start">
                   <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
-                    Pemkot Semarang
+                    {meta.state.label}
                   </div>
                 </div>
               </div>
@@ -127,7 +138,7 @@
                 </div>
                 <div class="flex self-stretch items-start justify-start">
                   <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
-                    26/09/2021
+                    {meta.state.startdate}
                   </div>
                 </div>
               </div>
@@ -147,7 +158,7 @@
                 </div>
                 <div class="flex self-stretch items-start justify-start">
                   <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
-                    26/11/2021
+                    {meta.state.duedate}
                   </div>
                 </div>
               </div>

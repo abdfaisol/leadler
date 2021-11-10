@@ -85,13 +85,13 @@
     run={async () => {
       api("/api/session").then((e) => {
         if (e.status == true || e.status == "true") {
-          // if (e.data_act.muser_role.name.toLowerCase() == "project manager") {
-          //   window.location.replace(window.location.origin + "/pm");
-          // } else if (e.data_act.muser_role.name.toLowerCase() == "admin") {
-          //   window.location.replace(window.location.origin + "/admin");
-          // } else {
-          //   window.location.replace(window.location.origin + "/app");
-          // }
+          if (e.data_act.muser_role.name.toLowerCase() == "project manager") {
+            window.location.replace(window.location.origin + "/pm");
+          } else if (e.data_act.muser_role.name.toLowerCase() == "admin") {
+            window.location.replace(window.location.origin + "/admin");
+          } else {
+            window.location.replace(window.location.origin + "/app");
+          }
         }
       });
     }}
