@@ -36,6 +36,48 @@
           },
         }),
       },
+      pilih: {
+        allproject: true,
+        inprogress: false,
+        complete: false,
+        unfinish: false,
+        nextproject: false,
+      },
+      toggleAllproject() {
+        this.pilih.allproject = true;
+        this.pilih.inprogress = false;
+        this.pilih.complete = false;
+        this.pilih.unfinish = false;
+        this.pilih.nextproject = false;
+      },
+      toggleInprogress() {
+        this.pilih.allproject = false;
+        this.pilih.inprogress = true;
+        this.pilih.complete = false;
+        this.pilih.unfinish = false;
+        this.pilih.nextproject = false;
+      },
+      toggleComplete() {
+        this.pilih.allproject = false;
+        this.pilih.inprogress = false;
+        this.pilih.complete = true;
+        this.pilih.unfinish = false;
+        this.pilih.nextproject = false;
+      },
+      toggleUnfinish() {
+        this.pilih.allproject = false;
+        this.pilih.inprogress = false;
+        this.pilih.complete = false;
+        this.pilih.unfinish = true;
+        this.pilih.nextproject = false;
+      },
+      toggleNextproject() {
+        this.pilih.allproject = false;
+        this.pilih.inprogress = false;
+        this.pilih.complete = false;
+        this.pilih.unfinish = false;
+        this.pilih.nextproject = true;
+      },
       toggleTekan() {
         this.add.tekan = !this.add.tekan;
       },
@@ -193,36 +235,117 @@
     }}
   />
   <div class="flex flex-col self-stretch space-y-10 p-12 w-auto">
-    <div class="flex self-stretch w-full items-start justify-start">
-      <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
+    <div class="flex self-stretch w-full items-start justify-start px-6 py-6 bg-white rounded">
+      <div class="flex self-stretch w-full items-center justify-start space-x-8">
         <div
-          class="flex space-x-1 items-center justify-center px-4 py-2 border rounded border-indigo-500"
-          style="width: 135px; min-width: 135px; max-width: 135px; height: 40px; min-height: 40px; max-height: 40px;"
+          onClick={meta.toggleAllproject}
+          class={
+            meta.pilih.allproject
+              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+          }
         >
-          <div class="text-base tracking-wide leading-normal text-center text-indigo-500">
+          <div
+            class={
+              meta.pilih.allproject
+                ? "text-base font-normal tracking-wide leading-normal text-indigo-500"
+                : "text-base font-normal tracking-wide leading-normal text-coolGray-500"
+            }
+          >
             All Project
           </div>
-          <img
-            src="/fimgs/I55_494_55_487.x3.png"
-            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-09b5b972072bcfc098c06e90d718895dbb4e537a');background-size:100% 100%;background-repeat:no-repeat;"
-          />
         </div>
-      </div>
-      <div class="flex flex-col items-start justify-start">
-        <form onSubmit={meta.handleSubmit}>
-          <button
-            class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
-            style="width: 208px; min-width: 208px; max-width: 208px; height: 40px; min-height: 40px; max-height: 40px;"
+        <div
+          onClick={meta.toggleInprogress}
+          class={
+            meta.pilih.inprogress
+              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+          }
+        >
+          <div
+            class={
+              meta.pilih.inprogress
+                ? "text-base font-normal tracking-wide leading-normal text-indigo-500"
+                : "text-base font-normal tracking-wide leading-normal text-coolGray-500"
+            }
           >
-            <img
-              src="/fimgs/603_427.x3.png"
-              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-            />
-            <div class="text-base font-medium tracking-wide leading-normal text-right text-white pl-1">
-              Create New Project
-            </div>
-          </button>
-        </form>
+            In Progress
+          </div>
+        </div>
+        <div
+          onClick={meta.toggleComplete}
+          class={
+            meta.pilih.complete
+              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+          }
+        >
+          <div
+            class={
+              meta.pilih.complete
+                ? "text-base font-normal tracking-wide leading-normal text-indigo-500"
+                : "text-base font-normal tracking-wide leading-normal text-coolGray-500"
+            }
+          >
+            Complete
+          </div>
+        </div>
+        <div
+          onClick={meta.toggleUnfinish}
+          class={
+            meta.pilih.unfinish
+              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+          }
+        >
+          <div
+            class={
+              meta.pilih.unfinish
+                ? "text-base font-normal tracking-wide leading-normal text-indigo-500"
+                : "text-base font-normal tracking-wide leading-normal text-coolGray-500"
+            }
+          >
+            Unfinish
+          </div>
+        </div>
+        <div
+          onClick={meta.toggleNextproject}
+          class={
+            meta.pilih.nextproject
+              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+          }
+        >
+          <div
+            class={
+              meta.pilih.nextproject
+                ? "text-base font-normal tracking-wide leading-normal text-indigo-500"
+                : "text-base font-normal tracking-wide leading-normal text-coolGray-500"
+            }
+          >
+            Next Project
+          </div>
+        </div>
+        <div class="flex flex-col items-start justify-start">
+          <form onSubmit={meta.handleSubmit}>
+            <button
+              class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+              style="width: 206px; min-width: 206px; max-width: 206px; height: 40px; min-height: 40px; max-height: 40px;"
+            >
+              <img
+                src="/fimgs/603_427.x3.png"
+                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+              />
+              <div
+                class="text-base font-medium tracking-wide leading-normal text-right text-white"
+                style="width: 156px; min-width: 156px; max-width: 156px; height: 24px; min-height: 24px; max-height: 24px;"
+              >
+                Create New Project
+              </div>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
     <div class="flex self-stretch flex-wrap space-y-9 items-start justify-start">
@@ -782,10 +905,10 @@
               <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
                 <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white border rounded border-gray-300">
                   <div class="flex self-stretch items-start justify-between px-4 pt-4">
-                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500 w-1/2">
                       Project Name
                     </div>
-                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 w-1/2">
                       {meta.print ? (
                         <div class="truncate">{meta.state2.title}</div>
                       ) : null}
@@ -793,10 +916,10 @@
                   </div>
                   <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
                   <div class="flex self-stretch items-start justify-between px-4">
-                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500 w-1/2">
                       Project Description
                     </div>
-                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 w-1/2">
                       {meta.print ? (
                         <div class="truncate">{meta.state2.desc}</div>
                       ) : null}
@@ -804,10 +927,10 @@
                   </div>
                   <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
                   <div class="flex self-stretch items-start justify-between px-4">
-                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500 w-1/2">
                       Project Create For
                     </div>
-                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 w-1/2">
                       {meta.print ? (
                         <div class="truncate">{meta.state2.project}</div>
                       ) : null}
@@ -815,10 +938,10 @@
                   </div>
                   <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
                   <div class="flex self-stretch items-start justify-between px-4">
-                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500 w-1/2">
                       Start Project
                     </div>
-                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 w-1/2">
                       {meta.print ? (
                         <div class="truncate">{meta.state2.start}</div>
                       ) : null}
@@ -826,10 +949,10 @@
                   </div>
                   <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
                   <div class="flex self-stretch items-start justify-between px-4">
-                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500 w-1/2">
                       Due Date
                     </div>
-                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 w-1/2">
                       {meta.print ? (
                         <div class="truncate">{meta.state2.due}</div>
                       ) : null}
@@ -840,7 +963,7 @@
                     <div class="text-sm tracking-wide leading-tight text-gray-500">
                       Assigned
                     </div>
-                    <div class="text-sm tracking-wide leading-tight text-gray-900 truncate">
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 truncate">
                       {meta.print ? (
                         <div class="truncate">{meta.state2.team}</div>
                       ) : null}
