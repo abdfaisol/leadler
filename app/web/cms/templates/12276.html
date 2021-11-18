@@ -5,6 +5,7 @@
       member: "",
       name: "",
       team: "",
+      data_timeline: [],
       show: {
         tim1: false,
         tim2: false,
@@ -29,7 +30,24 @@
         this.show.tim2 = !this.show.tim2;
       },
     }}
-    run={async () => {}}
+    run={async () => {
+      console.log("Mendapatkan data timeline : loading");
+      api("/api/project/task/timeline", {
+        data: {
+          idproject: params.id,
+          month: "11",
+          year: "2021",
+        },
+      }).then((e) => {
+        console.log(e);
+        if (e.status == true) {
+          meta.data_timeline = e.data_act.timeline;
+          console.log(e);
+        }
+      });
+
+      console.log("Akhir:");
+    }}
   />
   <div class="flex flex-col self-stretch space-y-6 p-12 w-auto">
     <div class="rounded">
@@ -44,10 +62,9 @@
             name="employee"
             class="text-sm bg-white rounded-l py-3 outline-none"
           >
-            <option value="volvo">All Team</option>
-            <option value="saab">Tim 4</option>
-            <option value="fiat">Tim 5</option>
-            <option value="audi">Tim 6</option>
+            <option value="volvo">UI/UX Designer</option>
+            <option value="saab">Business Analyst</option>
+            <option value="fiat">Full Stack Developer</option>
           </select>
         </div>
         <div class="flex space-x-2 items-center justify-center">
@@ -94,7 +111,7 @@
                   class="relative px-3 py-2 justify-center mr-auto border-r border-b border-coolGray-300"
                 >
                   <div class=" text-sm font-medium text-gray-500 text-center">
-                    Project Name
+                    Task Name
                   </div>
                 </td>
                 <td
@@ -130,38 +147,47 @@
               </tr>
               <tr class="border-b border-coolGray-300">
                 <td class="px-3 py-4 whitespace-normal text-left">
-                  <div class="text-sm text-gray-900">
-                    Pengembangan Aplikasi UMKM Kota Semarang
-                  </div>
+                  <div class="text-sm text-gray-900">Analisa Data</div>
                 </td>
                 <td
                   class="flex-grow bg-orange-300 border border-coolGray-300"
                   style="width: 18%; min-width: 18%; max-width: 18%;"
                 ></td>
                 <td
-                  class="flex-grow bg-orange-300 border border-coolGray-300"
+                  class="flex-grow border border-coolGray-300"
                   style="width: 18%; min-width: 18%; max-width: 18%;"
                 ></td>
                 <td
-                  class="flex-grow bg-orange-300 border border-coolGray-300"
+                  class="flex-grow border border-coolGray-300"
                   style="width: 18%; min-width: 18%; max-width: 18%;"
                 ></td>
                 <td
-                  class="flex-grow bg-orange-300"
+                  class="flex-grow"
                   style="width: 18%; min-width: 18%; max-width: 18%;"
                 ></td>
               </tr>
               <tr class="border-b border-coolGray-300">
                 <td class="px-3 py-4 whitespace-normal text-left">
-                  <div class="text-sm text-gray-900">
-                    Pengembangan Aplikasi UMKM Kota Jakarta
-                  </div>
+                  <div class="text-sm text-gray-900">Brainstorming</div>
                 </td>
+                <td class="flex-grow border border-coolGray-300"></td>
                 <td class="flex-grow bg-blue-300 border border-coolGray-300"></td>
-                <td class="flex-grow bg-blue-300 border border-coolGray-300"></td>
-                <td class="flex-grow bg-blue-300 border border-coolGray-300"></td>
-                <td class="flex-grow bg-blue-300"></td>
+                <td class="flex-grow border border-coolGray-300"></td>
+                <td class="flex-grow"></td>
               </tr>
+              {meta.data_timeline.map((e) => {
+                return (
+                  <tr class="border-b border-coolGray-300">
+                    <td class="px-3 py-4 whitespace-normal text-left">
+                      <div class="text-sm text-gray-900">{e.name}</div>
+                    </td>
+                    <td class="flex-grow bg-blue-300 border border-coolGray-300"></td>
+                    <td class="flex-grow bg-blue-300 border border-coolGray-300"></td>
+                    <td class="flex-grow bg-blue-300 border border-coolGray-300"></td>
+                    <td class="flex-grow bg-blue-300"></td>
+                  </tr>
+                );
+              })}
             </table>
           </div>
         </div>
