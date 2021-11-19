@@ -17,12 +17,17 @@
       },
       titleNavA() {
         var title = "Analytics";
-        title = title.replace("/pm", "");
+        title = title.replace("/division", "");
+        return title;
+      },
+      titleNavPM() {
+        var title = "Project Manager";
+        title = title.replace("/division/pm", "");
         return title;
       },
       titleNav() {
         var title = window.location.pathname;
-        title = title.replace("/pm/", "");
+        title = title.replace("/division/", "");
         return title;
       },
     }}
@@ -32,7 +37,7 @@
     <div class="flex flex-col h-full w-full items-start justify-start bg-coolGray-50">
       <div class="flex flex-1 h-full w-full self-stretch items-center justify-start">
         {/*Sidebar*/}
-        <div class="flex self-stretch flex-col items-start justify-start pl-8 pr-16  bg-white shadow shadow-r z-10">
+        <div class="flex self-stretch flex-col items-start justify-start pl-8 pr-16 bg-white shadow shadow-r z-10">
           <div class="flex flex-col items-start justify-start">
             <div class="mb-20" style="margin-bottom: 59px; margin-top: 20px;">
               <img
@@ -47,16 +52,16 @@
             >
               <div
                 class={`${meta.isActive(
-                  "/pm"
+                  "/division"
                 )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
               >
                 <a
-                  href="/pm"
+                  href="/division"
                   class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
                 >
                   <img
                     src={
-                      meta.isActive("/pm")
+                      meta.isActive("/division")
                         ? "/fimgs/45_98.x3.png"
                         : "/fimgs/45_102.x3.png"
                     }
@@ -66,7 +71,7 @@
                   <div class="flex flex-1 items-start justify-start">
                     <div
                       class={
-                        meta.isActive("/pm")
+                        meta.isActive("/division")
                           ? "text-base tracking-wide leading-normal text-blue-700"
                           : "text-base tracking-wide leading-normal text-coolGray-500"
                       }
@@ -78,16 +83,16 @@
               </div>
               <div
                 class={`${meta.isActive(
-                  "/pm/projects"
+                  "/division/projects"
                 )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
               >
                 <a
-                  href="/pm/projects"
+                  href="/division/projects"
                   class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
                 >
                   <img
                     src={
-                      meta.isActive("/pm/projects")
+                      meta.isActive("/division/projects")
                         ? "/fimgs/45_104.x3.png"
                         : "/fimgs/45_103.x3.png"
                     }
@@ -97,7 +102,7 @@
                   <div class="flex flex-1 items-start justify-start">
                     <div
                       class={
-                        meta.isActive("/pm/projects")
+                        meta.isActive("/division/projects")
                           ? "text-base tracking-wide leading-normal text-blue-700"
                           : "text-base tracking-wide leading-normal text-coolGray-500"
                       }
@@ -109,47 +114,16 @@
               </div>
               <div
                 class={`${meta.isActive(
-                  "/pm/teams"
+                  "/division/timeline"
                 )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
               >
                 <a
-                  href="/pm/teams"
-                  class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 cursor-pointer"
-                >
-                  <img
-                    src={
-                      meta.isActive("/pm/teams")
-                        ? "/fimgs/603_429.x3.png"
-                        : "/fimgs/603_428.x3.png"
-                    }
-                    class="flex items-start justify-start"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex flex-1 items-start justify-start">
-                    <div
-                      class={
-                        meta.isActive("/pm/teams")
-                          ? "text-base tracking-wide leading-normal text-blue-700"
-                          : "text-base tracking-wide leading-normal text-coolGray-500"
-                      }
-                    >
-                      Teams
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div
-                class={`${meta.isActive(
-                  "/pm/timeline"
-                )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
-              >
-                <a
-                  href="/pm/timeline"
+                  href="/division/timeline"
                   class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
                 >
                   <img
                     src={
-                      meta.isActive("/pm/timeline")
+                      meta.isActive("/division/timeline")
                         ? "/fimgs/621_455.x3.png"
                         : "/fimgs/621_453.x3.png"
                     }
@@ -159,7 +133,7 @@
                   <div class="flex flex-1 items-start justify-start">
                     <div
                       class={
-                        meta.isActive("/pm/timeline")
+                        meta.isActive("/division/timeline")
                           ? "text-base tracking-wide leading-normal text-blue-700"
                           : "text-base tracking-wide leading-normal text-coolGray-500"
                       }
@@ -169,21 +143,60 @@
                   </div>
                 </a>
               </div>
+              <div
+                class={`${meta.isActive(
+                  "/division/pm"
+                )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
+              >
+                <a
+                  href="/division/pm"
+                  class="flex self-stretch space-x-4 items-center justify-center py-2 px-2 cursor-pointer"
+                >
+                  <img
+                    src={
+                      meta.isActive("/division/pm")
+                        ? "/fimgs/603_429.x3.png"
+                        : "/fimgs/603_428.x3.png"
+                    }
+                    class="flex items-start justify-start"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                  <div class="flex flex-1 items-start justify-start">
+                    <div
+                      class={
+                        meta.isActive("/division/pm")
+                          ? "text-base tracking-wide leading-normal text-blue-700"
+                          : "text-base tracking-wide leading-normal text-coolGray-500"
+                      }
+                    >
+                      Project Manager
+                    </div>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="flex flex-col h-full w-full items-start justify-start">
-          {meta.isActive("/pm") ||
-          meta.isActive("/pm/projects") ||
-          meta.isActive("/pm/timeline") ? (
+          {meta.isActive("/division") ||
+          meta.isActive("/division/projects") ||
+          meta.isActive("/division/timeline") ||
+          meta.isActive("/division/pm") ? (
             <div
               class="flex self-stretch space-x-32 w-full px-12 items-center justify-between bg-white shadow shadow-b"
               style="height: 70px; min-height: 70px; max-height: 70px;"
             >
-              <div class="flex items-center justify-start">
-                <div class="text-2xl font-medium capitalize tracking-wide leading-loose text-coolGray-900">
-                  {meta.isActive("/pm") ? meta.titleNavA() : meta.titleNav()}
+              <div
+                class="flex items-center justify-start"
+                style="width: 190px; min-width: 190px; max-width: 190px;"
+              >
+                <div class="text-2xl font-medium capitalize tracking-wide leading-loose text-coolGray-900 ">
+                  {meta.isActive("/division")
+                    ? meta.titleNavA()
+                    : meta.isActive("/division/pm")
+                    ? meta.titleNavPM()
+                    : meta.titleNav()}
                 </div>
               </div>
               <div class="flex space-x-14 items-center justify-end">
@@ -255,130 +268,6 @@
               </div>
             </div>
           ) : null}
-
-          {meta.isActive("/pm/teams") && (
-            <div
-              class="flex self-stretch w-full space-x-60 px-12 items-center justify-between bg-white shadow shadow-b"
-              style="height: 70px; min-height: 70px; max-height: 70px;"
-            >
-              <div class="flex items-start justify-start">
-                <div class="text-2xl font-medium tracking-wide leading-loose text-coolGray-900">
-                  Team
-                </div>
-              </div>
-              <div class="flex space-x-14 items-center justify-start">
-                <div class="flex flex-col items-start justify-start">
-                  <button
-                    class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
-                    style="width: 133px; min-width: 133px; max-width: 133px; height: 40px; min-height: 40px; max-height: 40px;"
-                  >
-                    <img
-                      src="/fimgs/603_427.x3.png"
-                      style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                    />
-                    <div class="text-base font-medium tracking-wide leading-normal text-right text-white pl-1">
-                      Add Team
-                    </div>
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {meta.isActive("/pm/projects/[id]/detail") && (
-            <div
-              class="flex self-stretch space-x-32 w-full px-12 items-center justify-between bg-white shadow shadow-b"
-              style="height: 70px; min-height: 70px; max-height: 70px;"
-            >
-              <div class="flex items-center justify-start">
-                <div class="text-2xl font-medium capitalize tracking-wide leading-loose text-coolGray-900">
-                  <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
-                    <div class="flex items-center justify-start">
-                      <div class="flex items-start justify-start">
-                        <img
-                          src="/fimgs/5_49.x3.png"
-                          style="width: 24px; min-width: 24px; max-width: 24px; height: 25px; min-height: 25px; max-height: 25px;"
-                        />
-                      </div>
-                    </div>
-                    <div class="flex flex-1 items-center justify-start">
-                      <div class="text-xl font-medium tracking-wide leading-loose text-indigo-500">
-                        Back
-                      </div>
-                    </div>
-                  </div>
-                  {/*{meta.isActive("/pm") ? meta.titleNavA() : meta.titleNav()}*/}
-                </div>
-              </div>
-              <div class="flex space-x-14 items-center justify-end">
-                <div
-                  class="flex items-center justify-between px-4 py-2 bg-coolGray-50 rounded-full"
-                  style="width: 50%; min-width: 30%; max-width: 50%; height: 40px; min-height: 40px; max-height: 40px;"
-                >
-                  <div
-                    class="flex flex-1 items-start justify-start"
-                    style="height: 24px; min-height: 24px; max-height: 24px;"
-                  >
-                    <input
-                      placeholder="Search..."
-                      class="text-base tracking-wide leading-normal text-coolGray-500 w-full bg-coolGray-50 placeholder-gray-400 focus:outline-none"
-                    />
-                  </div>
-                  <img
-                    src="/fimgs/609_809.x3.png"
-                    class="flex items-start justify-start cursor-pointer"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                </div>
-                <div
-                  class="flex items-start justify-between"
-                  style="width: 104px; min-width: 104px; max-width: 104px; height: 36px; min-height: 36px; max-height: 36px;"
-                >
-                  <img
-                    src="/fimgs/604_1119.x3.png"
-                    class="flex items-center justify-center p-2 bg-coolGray-50 rounded-full cursor-pointer"
-                    style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
-                  />
-                  <img
-                    src="/fimgs/609_814.x3.png"
-                    class="flex items-center justify-center p-2 bg-coolGray-50 rounded-full cursor-pointer"
-                    style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
-                  />
-                </div>
-                <div>
-                  <div
-                    onClick={meta.toggleProfile}
-                    class="flex flex-1 space-x-4 items-center justify-center cursor-pointer"
-                    style="width: 191px; min-width: 191px; max-width: 191px; height: 39px; min-height: 39px; max-height: 39px;"
-                  >
-                    <img
-                      src="/fimgs/609_817.x3.png"
-                      class="flex items-start justify-start"
-                      style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                    />
-                    <div class="flex flex-1 flex-col items-start justify-start">
-                      <div class="flex self-stretch items-start justify-start">
-                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
-                          Gabriel Mikael
-                        </div>
-                      </div>
-                      <div class="flex self-stretch items-start justify-start">
-                        <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                          Project Manager
-                        </div>
-                      </div>
-                    </div>
-                    <img
-                      src="/fimgs/609_824.x3.png"
-                      class="flex items-start justify-start"
-                      style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                    />
-                  </div>
-                  {meta.showProfile && <showprofile />}
-                </div>
-              </div>
-            </div>
-          )}
 
           <div class="flex self-stretch flex-col h-full items-start justify-start">
             {children}
