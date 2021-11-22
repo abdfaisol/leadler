@@ -85,7 +85,8 @@
                 class={`${
                   meta.isActive("/pm/projects") ||
                   meta.isActive("/pm/projects/projectdetails") ||
-                  meta.isActive("/pm/projects/task")
+                  meta.isActive("/pm/projects/task") ||
+                  meta.isActive("/pm/projects/planning")
                 } flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
                 style="width: 158px; min-width: 158px; max-width: 158px; height: 40px; min-height: 40px; max-height: 40px;"
               >
@@ -97,7 +98,7 @@
                   <img
                     src={
                       meta.isActive("/pm/projects") ||
-                      "/pm/projects/projectdetails"
+                      meta.isActive("/pm/projects/projectdetails")
                         ? "/fimgs/45_104.x3.png"
                         : "/fimgs/45_103.x3.png"
                     }
@@ -111,7 +112,7 @@
                     <div
                       class={
                         meta.isActive("/pm/projects") ||
-                        "/pm/projects/projectdetails"
+                        meta.isActive("/pm/projects/projectdetails")
                           ? "text-base tracking-wide leading-normal text-blue-700"
                           : "text-base tracking-wide leading-normal text-coolGray-500"
                       }
@@ -309,7 +310,12 @@
             </div>
           )}
 
-          {meta.isActive("/pm/projects/projectdetails") && (
+          {meta.isActive("/pm/projects/projectdetails") ||
+          meta.isActive("/pm/projects/task") ||
+          meta.isActive("/pm/projects/planning") ||
+          meta.isActive("/pm/projects/timeline") ||
+          meta.isActive("/pm/projects/filemanagement") ||
+          meta.isActive("/pm/projects/team") ? (
             <div
               class="flex self-stretch space-x-32 w-full px-12 items-center justify-between bg-white shadow shadow-b"
               style="height: 70px; min-height: 70px; max-height: 70px;"
@@ -402,7 +408,7 @@
                 </div>
               </div>
             </div>
-          )}
+          ) : null}
 
           <div class="flex self-stretch flex-col h-full items-start justify-start">
             {children}
