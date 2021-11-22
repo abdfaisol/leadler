@@ -6,6 +6,7 @@
         startdate: "",
         duedate: "",
         status: "",
+        cstatus: "",
         effort: "",
         priority: "",
         iddivision: "",
@@ -13,12 +14,17 @@
         description: "",
         cost: "0",
       },
+      print: true,
       data_task: [],
       status: [
-        { value: "3", label: "TODO" },
-        { value: "2", label: "IN PROGRESS" },
-        { value: "6", label: "SUBMITTED" },
-        { value: "1", label: "COMPLETE" },
+        { value: "1", label: "TODO", color: "#4ADE80" },
+        {
+          value: "2",
+          label: "IN PROGRESS",
+          color: "#888DF1",
+        },
+        { value: "3", label: "SUBMITTED", color: "#2D34E6" },
+        { value: "4", label: "COMPLETE", color: "#F1B459" },
       ],
       priority: [
         { value: "L", label: "Low" },
@@ -30,6 +36,31 @@
         { value: "2", label: "2" },
         { value: "3", label: "3" },
       ],
+      statusx: [
+        { value: "1", label: "TODO", color: "#4ADE80" },
+        {
+          value: "2",
+          label: "IN PROGRESS",
+          color: "#888DF1",
+        },
+        { value: "3", label: "SUBMITTED", color: "#2D34E6" },
+        { value: "4", label: "COMPLETE", color: "#F1B459" },
+      ],
+      isStatus() {
+        if (this.statusx[0]) {
+          console.log("tes");
+          return "w-40 bg-blue-300";
+        } else if (this.statusx[1]) {
+          console.log("tes2");
+          return "w-40 bg-orange-300";
+        } else if (this.statusx[2]) {
+          console.log("tes3");
+          return "w-40 bg-red-300";
+        } else {
+          console.log("tes4");
+          return "w-40 bg-green-300";
+        }
+      },
       styles: {
         control: (base, state) => ({
           ...base,
@@ -51,6 +82,37 @@
               : "#F3F4F6",
           },
         }),
+      },
+      stylesx: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "2px",
+          paddingBottom: "2px",
+          border: "none",
+          boxShadow: "none",
+          backgroundColor: "transparent",
+        }),
+        input: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        singleValue: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        option: (styles, { data }) => {
+          return {
+            ...styles,
+            backgroundColor: data.color,
+            "&:hover": {
+              backgroundColor: data.isDisabled
+                ? "#F3F4F6"
+                : data.isSelected
+                ? null
+                : "#F3F4F6",
+            },
+          };
+        },
       },
       ubahNilai(e) {
         let name = e.target.name;
@@ -122,6 +184,14 @@
           });
         },
       };
+      meta.actioncstatus = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.cstatus = e.color;
+            console.log(meta.state.cstatus);
+          });
+        },
+      };
       meta.actioneffort = {
         onChange: (e) => {
           runInAction(() => {
@@ -140,8 +210,8 @@
       };
     }}
   />
-  <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
-    <div class="flex space-x-72 items-start justify-start">
+  <div class="flex w-full self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
+    <div class="flex w-full items-start justify-between">
       <div class="flex items-start justify-start">
         <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
           Pengembangan Aplikasi UMKM Kota Semarang
@@ -161,35 +231,31 @@
         </div>
       </div>
     </div>
-    <div class="flex space-x-8 items-center justify-start">
-      <div class="flex items-start justify-start">
-        <a
-          href="/pm/projects/projectdetails"
-          class="flex items-center justify-center px-4 py-2 rounded"
-        >
-          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-            Project Detail
-          </div>
-        </a>
-      </div>
-      <div class="flex flex-col items-start justify-start">
-        <a class="flex items-center justify-center px-4 py-2 bg-coolGray-50 rounded">
-          <div class="text-base font-medium tracking-wide leading-normal text-indigo-500 ">
-            Task
-          </div>
-        </a>
-      </div>
-      <a class="flex items-center justify-center px-4 py-2 rounded">
+    <div class="flex w-full space-x-8 items-center justify-between">
+      <a
+        href="/pm/projects/projectdetails"
+        class="flex flex-grow items-center justify-center p-2 rounded"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+          Project Detail
+        </div>
+      </a>
+      <a class="flex flex-grow items-center justify-center p-2 bg-coolGray-50 rounded">
+        <div class="text-base font-medium tracking-wide leading-normal text-indigo-500 ">
+          Task
+        </div>
+      </a>
+      <a class="flex flex-grow items-center justify-center p-2 rounded">
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Planning
         </div>
       </a>
-      <a class="flex items-center justify-center px-4 py-2 rounded">
+      <a class="flex flex-grow items-center justify-center p-2 rounded">
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Timeline
         </div>
       </a>
-      <a class="flex items-center justify-center px-4 py-2 rounded">
+      <a class="flex flex-grow items-center justify-center p-2 rounded">
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Team
         </div>
@@ -232,14 +298,14 @@
         <div class="flex flex-col items-end justify-end pt-10 pb-6">
           <div class="flex flex-col items-start justify-start">
             <button
-              class="flex space-x-3 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+              class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
               onClick={meta.toggleModal}
             >
               <img
                 src="/fimgs/603_427.x3.png"
-                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
               />
-              <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+              <div class="text-base font-medium tracking-wide leading-normal text-right text-white pl-1">
                 Task
               </div>
             </button>
@@ -247,9 +313,9 @@
         </div>
       </div>
       <div class="overflow-x-auto">
-        <div class="px-6 pb-6 align-middle inline-block min-w-full">
+        <div class="w-full px-6 pb-6 align-middle inline-block">
           <div class="overflow-hidden">
-            <table class="min-w-full divide-y-4 divide-gray-50">
+            <table class="w-full divide-y-4 divide-gray-50">
               <thead class="bg-white">
                 <tr>
                   <th
@@ -284,7 +350,7 @@
 
                   <th
                     scope="col"
-                    class="relative px-6 py-3 text-sm text-left justify-start"
+                    class="relative px-6 py-3 text-sm text-center justify-start"
                   >
                     <div class="text-sm font-medium text-coolGray-500 text-start">
                       Status
@@ -292,65 +358,98 @@
                   </th>
                   <th
                     scope="col"
-                    class="relative px-6 py-3 text-sm text-left justify-start"
+                    class="relative px-6 py-3 text-sm text-center justify-start"
                   >
                     <div class="text-sm font-medium text-coolGray-500 text-start">
-                      Files
+                      Priority
                     </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative px-6 py-3 text-sm text-center justify-start"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-start">
+                      Task Value
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative px-6 py-3 text-sm text-center justify-start"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-start"></div>
                   </th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y-4 divide-gray-50">
                 <tr>
                   <td
-                    class="px-6 py-3 whitespace-nowrap text-start cursor-pointer"
+                    class="px-6 py-2 whitespace-nowrap text-start cursor-pointer"
                     onClick={meta.toggleModal2}
                   >
                     <div class="text-sm text-gray-900">Analisa Data</div>
                   </td>
-                  <td class="px-6 py-3 whitespace-nowrap text-start">
+                  <td class="px-6 py-2 whitespace-nowrap text-start">
                     <div class="text-xs tracking-wide leading-none text-green-500">
                       Sep, 10 2021
                     </div>
                   </td>
-                  <td class="px-6 py-3 whitespace-nowrap text-start">
+                  <td class="px-6 py-2 whitespace-nowrap text-start">
                     <div class="text-xs tracking-wide leading-none text-red-500">
                       Sep, 12 2021
                     </div>
                   </td>
-                  <td class="text-start py-0">
-                    <div class="flex items-center justify-center px-2 py-3">
-                      <select
-                        id="employee"
-                        name="employee"
-                        class="bg-orange-300 text-white rounded-l outline-none"
-                      >
-                        <option class="bg-white text-coolGray-500" value="saab">
-                          COMPLETE
-                        </option>
-                        <option class="bg-white text-coolGray-500" value="fiat">
-                          TODO
-                        </option>
-                        <option class="bg-white text-coolGray-500" value="audi">
-                          IN PROGRESS
-                        </option>
-                      </select>
+                  <td class="whitespace-nowrap text-center">
+                    <div class="flex items-center justify-center">
+                      <multipleselect
+                        options={meta.statusx}
+                        defaultValue={meta.statusx[0]}
+                        menuPortalTarget={document.body}
+                        theme={(theme) => ({
+                          ...theme,
+                          borderRadius: 0,
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#F3F4F6",
+                            primary: "#6366F1",
+                          },
+                        })}
+                        styles={meta.stylesx}
+                        style={
+                          meta.state.status == 1
+                            ? "background-color: #4ADE80;"
+                            : meta.state.status == 2
+                            ? "background-color: #888DF1;"
+                            : meta.state.status == 3
+                            ? "background-color: #2D34E6;"
+                            : meta.state.status == 4
+                            ? "background-color: #F1B459;"
+                            : "background-color: #4ADE80;"
+                        }
+                        className="w-40"
+                        classNamePrefix="select"
+                        name="status"
+                        onChange={(e) => {
+                          meta.actionstatus.onChange(e);
+                        }}
+                      />
                     </div>
                   </td>
-                  <td class="px-6 whitespace-nowrap text-center text-sm font-medium">
-                    <div class="flex flex-1 space-x-4 items-start justify-between">
-                      <div class="cursor-pointer">
-                        <img
-                          style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                          src="/fimgs/5_47.x3.png"
-                        />
-                      </div>
-                      <div class="cursor-pointer">
-                        <img
-                          style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                          src="/fimgs/5_48.x3.png"
-                        />
-                      </div>
+                  <td class="px-6 py-2 whitespace-nowrap text-center">
+                    <div class="text-sm tracking-wide leading-none text-gray-900">
+                      Medium
+                    </div>
+                  </td>
+                  <td class="px-6 py-2 whitespace-nowrap text-center">
+                    <div class="text-sm tracking-wide leading-none text-gray-900">
+                      5
+                    </div>
+                  </td>
+                  <td class="px-6 py-2 whitespace-nowrap text-center">
+                    <div class="flex items-center justify-center">
+                      <img
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                        src="/fimgs/5_48.x3.png"
+                      />
                     </div>
                   </td>
                 </tr>
@@ -373,48 +472,58 @@
                           {e.duedate}
                         </div>
                       </td>
-                      <td class="text-start py-0">
-                        <div class="flex items-center justify-center px-2 py-3 bg-orange-300">
-                          <select
-                            id="employee"
-                            name="employee"
-                            class="bg-orange-300 text-white rounded-l outline-none"
-                          >
-                            <option
-                              class="bg-white text-coolGray-500"
-                              value="saab"
-                            >
-                              COMPLETE
-                            </option>
-                            <option
-                              class="bg-white text-coolGray-500"
-                              value="fiat"
-                            >
-                              TODO
-                            </option>
-                            <option
-                              class="bg-white text-coolGray-500"
-                              value="audi"
-                            >
-                              IN PROGRESS
-                            </option>
-                          </select>
+                      <td class="text-center py-0">
+                        <div class="flex items-center justify-center">
+                          <multipleselect
+                            options={meta.statusx}
+                            defaultValue={meta.statusx[0]}
+                            menuPortalTarget={document.body}
+                            theme={(theme) => ({
+                              ...theme,
+                              borderRadius: 0,
+                              colors: {
+                                ...theme.colors,
+                                primary25: "#F3F4F6",
+                                primary: "#6366F1",
+                              },
+                            })}
+                            styles={meta.stylesx}
+                            style={
+                              meta.state.status == 1
+                                ? "background-color: #4ADE80;"
+                                : meta.state.status == 2
+                                ? "background-color: #888DF1;"
+                                : meta.state.status == 3
+                                ? "background-color: #2D34E6;"
+                                : meta.state.status == 4
+                                ? "background-color: #F1B459;"
+                                : "background-color: #4ADE80;"
+                            }
+                            className="w-40"
+                            classNamePrefix="select"
+                            name="status"
+                            onChange={(e) => {
+                              meta.actionstatus.onChange(e);
+                            }}
+                          />
                         </div>
                       </td>
-                      <td class="px-6 whitespace-nowrap text-center text-sm font-medium">
-                        <div class="flex flex-1 space-x-4 items-start justify-between">
-                          <div class="cursor-pointer">
-                            <img
-                              style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                              src="/fimgs/5_47.x3.png"
-                            />
-                          </div>
-                          <div class="cursor-pointer">
-                            <img
-                              style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                              src="/fimgs/5_48.x3.png"
-                            />
-                          </div>
+                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-900">
+                          Medium
+                        </div>
+                      </td>
+                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-900">
+                          5
+                        </div>
+                      </td>
+                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                        <div class="flex items-center justify-center">
+                          <img
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                            src="/fimgs/5_48.x3.png"
+                          />
                         </div>
                       </td>
                     </tr>
