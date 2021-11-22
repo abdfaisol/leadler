@@ -29,13 +29,6 @@
         { value: "1", label: "1" },
         { value: "2", label: "2" },
         { value: "3", label: "3" },
-        { value: "4", label: "4" },
-        { value: "5", label: "5" },
-        { value: "6", label: "6" },
-        { value: "7", label: "7" },
-        { value: "8", label: "8" },
-        { value: "9", label: "9" },
-        { value: "10", label: "10" },
       ],
       styles: {
         control: (base, state) => ({
@@ -71,9 +64,6 @@
       },
       toggleModal2() {
         this.showModal2 = !this.showModal2;
-      },
-      toggleSubtask() {
-        this.showSubtask = !this.showSubtask;
       },
       toggleAdd() {
         this.showAdd = !this.showAdd;
@@ -305,7 +295,7 @@
                     class="relative px-6 py-3 text-sm text-left justify-start"
                   >
                     <div class="text-sm font-medium text-coolGray-500 text-start">
-                      Priority
+                      Files
                     </div>
                   </th>
                 </tr>
@@ -316,9 +306,7 @@
                     class="px-6 py-3 whitespace-nowrap text-start cursor-pointer"
                     onClick={meta.toggleModal2}
                   >
-                    <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
-                      Analisa Data
-                    </div>
+                    <div class="text-sm text-gray-900">Analisa Data</div>
                   </td>
                   <td class="px-6 py-3 whitespace-nowrap text-start">
                     <div class="text-xs tracking-wide leading-none text-green-500">
@@ -350,16 +338,12 @@
                     </div>
                   </td>
                   <td class="px-6 whitespace-nowrap text-center text-sm font-medium">
-                    <div class="flex flex-1 space-x-4 items-center justify-between">
-                      <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
-                        <div class="text-xs tracking-wide leading-none text-center text-white">
-                          Medium
-                        </div>
-                      </div>
-                      <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
-                        <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
-                          5
-                        </div>
+                    <div class="flex flex-1 space-x-4 items-start justify-between">
+                      <div class="cursor-pointer">
+                        <img
+                          style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                          src="/fimgs/5_47.x3.png"
+                        />
                       </div>
                       <div class="cursor-pointer">
                         <img
@@ -370,211 +354,6 @@
                     </div>
                   </td>
                 </tr>
-                <tr>
-                  <td
-                    class="px-6 py-3 whitespace-nowrap text-start cursor-pointer"
-                    onClick={meta.toggleSubtask}
-                  >
-                    <div class="flex items-start justify-start">
-                      <div class="flex items-start justify-start">
-                        <img
-                          src="/fimgs/441_2231.x3.png"
-                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-09b5b972072bcfc098c06e90d718895dbb4e537a');background-size:100% 100%;background-repeat:no-repeat;"
-                        />
-                      </div>
-                      <div class="flex flex-1 items-start justify-start">
-                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
-                          Wireframe
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-3 whitespace-nowrap text-start">
-                    <div class="text-xs tracking-wide leading-none text-green-500">
-                      Sep, 10 2021
-                    </div>
-                  </td>
-                  <td class="px-6 py-3 whitespace-nowrap text-start">
-                    <div class="text-xs tracking-wide leading-none text-red-500">
-                      Sep, 12 2021
-                    </div>
-                  </td>
-                  <td class="text-start py-0">
-                    <div class="flex items-center justify-center px-2 py-3 bg-orange-300">
-                      <select
-                        id="employee"
-                        name="employee"
-                        class="bg-orange-300 text-white rounded-l outline-none"
-                      >
-                        <option class="bg-white text-coolGray-500" value="saab">
-                          COMPLETE
-                        </option>
-                        <option class="bg-white text-coolGray-500" value="fiat">
-                          TODO
-                        </option>
-                        <option class="bg-white text-coolGray-500" value="audi">
-                          IN PROGRESS
-                        </option>
-                      </select>
-                    </div>
-                  </td>
-                  <td class="px-6 whitespace-nowrap text-center text-sm font-medium">
-                    <div class="flex flex-1 space-x-4 items-center justify-between">
-                      <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
-                        <div class="text-xs tracking-wide leading-none text-center text-white">
-                          Medium
-                        </div>
-                      </div>
-                      <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
-                        <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
-                          5
-                        </div>
-                      </div>
-                      <div class="cursor-pointer">
-                        <img
-                          style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                          src="/fimgs/5_48.x3.png"
-                        />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-                {meta.showSubtask && (
-                  <>
-                    <tr>
-                      <td
-                        class="pl-8 py-3 whitespace-nowrap text-start cursor-pointer"
-                        onClick={meta.toggleModal2}
-                      >
-                        <div class="text-sm text-gray-900">Landing Page</div>
-                      </td>
-                      <td class="px-6 py-3 whitespace-nowrap text-start">
-                        <div class="text-xs tracking-wide leading-none text-green-500">
-                          Sep, 10 2021
-                        </div>
-                      </td>
-                      <td class="px-6 py-3 whitespace-nowrap text-start">
-                        <div class="text-xs tracking-wide leading-none text-red-500">
-                          Sep, 12 2021
-                        </div>
-                      </td>
-                      <td class="text-start py-0">
-                        <div class="flex items-center justify-center px-2 py-3 bg-orange-300">
-                          <select
-                            id="employee"
-                            name="employee"
-                            class="bg-orange-300 text-white rounded-l outline-none"
-                          >
-                            <option
-                              class="bg-white text-coolGray-500"
-                              value="saab"
-                            >
-                              COMPLETE
-                            </option>
-                            <option
-                              class="bg-white text-coolGray-500"
-                              value="fiat"
-                            >
-                              TODO
-                            </option>
-                            <option
-                              class="bg-white text-coolGray-500"
-                              value="audi"
-                            >
-                              IN PROGRESS
-                            </option>
-                          </select>
-                        </div>
-                      </td>
-                      <td class="px-6 whitespace-nowrap text-center text-sm font-medium">
-                        <div class="flex flex-1 space-x-4 items-center justify-between">
-                          <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
-                            <div class="text-xs tracking-wide leading-none text-center text-white">
-                              Medium
-                            </div>
-                          </div>
-                          <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
-                            <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
-                              5
-                            </div>
-                          </div>
-                          <div class="cursor-pointer">
-                            <img
-                              style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                              src="/fimgs/5_48.x3.png"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        class="pl-8 py-3 whitespace-nowrap text-start cursor-pointer"
-                        onClick={meta.toggleModal2}
-                      >
-                        <div class="text-sm text-gray-900">Register Page</div>
-                      </td>
-                      <td class="px-6 py-3 whitespace-nowrap text-start">
-                        <div class="text-xs tracking-wide leading-none text-green-500">
-                          Sep, 10 2021
-                        </div>
-                      </td>
-                      <td class="px-6 py-3 whitespace-nowrap text-start">
-                        <div class="text-xs tracking-wide leading-none text-red-500">
-                          Sep, 12 2021
-                        </div>
-                      </td>
-                      <td class="text-start py-0">
-                        <div class="flex items-center justify-center px-2 py-3 bg-orange-300">
-                          <select
-                            id="employee"
-                            name="employee"
-                            class="bg-orange-300 text-white rounded-l outline-none"
-                          >
-                            <option
-                              class="bg-white text-coolGray-500"
-                              value="saab"
-                            >
-                              COMPLETE
-                            </option>
-                            <option
-                              class="bg-white text-coolGray-500"
-                              value="fiat"
-                            >
-                              TODO
-                            </option>
-                            <option
-                              class="bg-white text-coolGray-500"
-                              value="audi"
-                            >
-                              IN PROGRESS
-                            </option>
-                          </select>
-                        </div>
-                      </td>
-                      <td class="px-6 whitespace-nowrap text-center text-sm font-medium">
-                        <div class="flex flex-1 space-x-4 items-center justify-between">
-                          <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
-                            <div class="text-xs tracking-wide leading-none text-center text-white">
-                              Medium
-                            </div>
-                          </div>
-                          <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
-                            <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
-                              5
-                            </div>
-                          </div>
-                          <div class="cursor-pointer">
-                            <img
-                              style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                              src="/fimgs/5_48.x3.png"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </>
-                )}
                 {meta.data_task.map((e) => {
                   return (
                     <tr>
@@ -624,15 +403,11 @@
                       </td>
                       <td class="px-6 whitespace-nowrap text-center text-sm font-medium">
                         <div class="flex flex-1 space-x-4 items-start justify-between">
-                          <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
-                            <div class="text-xs tracking-wide leading-none text-center text-white">
-                              Medium
-                            </div>
-                          </div>
-                          <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
-                            <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
-                              5
-                            </div>
+                          <div class="cursor-pointer">
+                            <img
+                              style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                              src="/fimgs/5_47.x3.png"
+                            />
                           </div>
                           <div class="cursor-pointer">
                             <img
@@ -844,6 +619,96 @@
                             style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
                           />
                         )}
+                      </div>
+                    </div>
+                    <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
+                      <div class="flex self-stretch flex-col items-center justify-start py-3.5 px-3.5 rounded">
+                        <div class="flex w-full space-x-6 items-center justify-between">
+                          <div class="flex flex-1 items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight">
+                              Landing Page
+                            </div>
+                          </div>
+                          <div class="flex space-x-5 items-start justify-start">
+                            <div class="flex items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none text-green-400">
+                                14/09/2021
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none text-red-400">
+                                15/09/2021
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                IN PROGRESS
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                Medium
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                5
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded">
+                        <div class="flex w-full space-x-6 items-center justify-start">
+                          <div class="flex flex-1 items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight">
+                              Landing Page
+                            </div>
+                          </div>
+                          <div class="flex space-x-5 items-start justify-start">
+                            <img
+                              src="/fimgs/656_779.x3.png"
+                              class="flex items-start justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                            <img
+                              src="/fimgs/656_782.x3.png"
+                              class="flex items-start justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                            <img
+                              src="/fimgs/656_785.x3.png"
+                              class="flex items-start justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                            <img
+                              src="/fimgs/656_788.x3.png"
+                              class="flex items-start justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                            <img
+                              src="/fimgs/656_791.x3.png"
+                              class="flex items-start justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                            <img
+                              src="/fimgs/656_794.x3.png"
+                              class="flex items-center justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch items-center justify-start">
+                        <div class="relative flex flex-1 items-center justify-start">
+                          <input
+                            id="name"
+                            name="taskname"
+                            type="text"
+                            placeholder="Create Subtask"
+                            class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1085,6 +950,182 @@
                             style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
                           />
                         )}
+                      </div>
+                    </div>
+                    <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
+                      <div class="flex self-stretch flex-col items-center justify-start py-3.5 px-3.5 rounded">
+                        <div class="flex w-full space-x-6 items-center justify-between">
+                          <div class="flex flex-1 items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight">
+                              Landing Page
+                            </div>
+                          </div>
+                          <div class="flex space-x-5 items-start justify-start">
+                            <div class="flex items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none text-green-400">
+                                14/09/2021
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none text-red-400">
+                                15/09/2021
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                IN PROGRESS
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                Medium
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                5
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded">
+                        <div class="flex w-full space-x-6 items-center justify-start">
+                          <div class="flex flex-1 items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight">
+                              Landing Page
+                            </div>
+                          </div>
+                          <div class="flex space-x-5 items-start justify-start">
+                            <img
+                              src="/fimgs/656_779.x3.png"
+                              class="flex items-start justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                            <img
+                              src="/fimgs/656_782.x3.png"
+                              class="flex items-start justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                            <img
+                              src="/fimgs/656_785.x3.png"
+                              class="flex items-start justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                            <img
+                              src="/fimgs/656_788.x3.png"
+                              class="flex items-start justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                            <img
+                              src="/fimgs/656_791.x3.png"
+                              class="flex items-start justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                            <img
+                              src="/fimgs/656_794.x3.png"
+                              class="flex items-center justify-start"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch items-center justify-start pb-6">
+                        <div class="relative flex flex-1 items-center justify-start">
+                          <input
+                            id="name"
+                            name="taskname"
+                            type="text"
+                            placeholder="Create Subtask"
+                            class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w-full flex flex-col space-y-6 items-start justify-start">
+                      <div class="flex items-start justify-start">
+                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
+                          Progress Task
+                        </div>
+                      </div>
+                      <div class="align-middle inline-block w-full truncate">
+                        <table class="w-full divide-y-4 divide-gray-50">
+                          <thead class="bg-white">
+                            <tr>
+                              <th
+                                scope="col"
+                                class="pr-6 tracking-wider text-center justify-center mr-auto"
+                              >
+                                <div class="flex items-center justify-start ">
+                                  <div class="text-sm tracking-wide px-6 py-3 bg-green-400 leading-tight text-center text-white">
+                                    TODO
+                                  </div>
+                                  <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
+                                    2 Task
+                                  </div>
+                                </div>
+                              </th>
+                              <th
+                                scope="col"
+                                class="relative px-6 py-3 text-sm text-left justify-start"
+                              >
+                                <div class="text-sm font-medium text-coolGray-500 text-center">
+                                  Status
+                                </div>
+                              </th>
+                              <th
+                                scope="col"
+                                class="relative px-6 py-3 text-sm text-left justify-start"
+                              >
+                                <div class="text-sm font-medium text-coolGray-500 text-start">
+                                  Information
+                                </div>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody class="w-full bg-white divide-y-4 divide-gray-50">
+                            <tr>
+                              <td class="px-6 py-3 text-start cursor-pointer">
+                                <div class="text-sm text-gray-900">
+                                  Register Page
+                                </div>
+                              </td>
+                              <td class="text-start py-0">
+                                <div class="flex items-center justify-center px-2 py-3 bg-orange-300">
+                                  <select
+                                    id="employee"
+                                    name="employee"
+                                    class="bg-orange-300 text-white rounded-l outline-none"
+                                  >
+                                    <option
+                                      class="bg-white text-coolGray-500"
+                                      value="saab"
+                                    >
+                                      COMPLETE
+                                    </option>
+                                    <option
+                                      class="bg-white text-coolGray-500"
+                                      value="fiat"
+                                    >
+                                      TODO
+                                    </option>
+                                    <option
+                                      class="bg-white text-coolGray-500"
+                                      value="audi"
+                                    >
+                                      IN PROGRESS
+                                    </option>
+                                  </select>
+                                </div>
+                              </td>
+                              <td class="px-6 py-3 text-start cursor-pointer">
+                                <div class="truncate text-sm text-gray-900">
+                                  -
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>

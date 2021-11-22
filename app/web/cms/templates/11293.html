@@ -1,0 +1,330 @@
+<>
+  <effect
+    meta={{
+      data_projek: "",
+      member: "",
+      name: "",
+      team: "",
+
+      dataUser(e) {
+        let userDetail = [];
+        api("/api/user").then((i) => {
+          i.data_act.map((res, index) => {
+            i.data_act[index] = { value: res.id, label: res.email };
+            userDetail.push(i.data_act[index]);
+          });
+        });
+        return userDetail;
+      },
+      dataTeam(e) {
+        let result = [];
+        api("/api/team").then((i) => {
+          i.data_act.map((res, index) => {
+            i.data_act[index] = { value: res.id, label: res.name };
+            result.push(i.data_act[index]);
+          });
+        });
+        return result;
+      },
+      dataProjek() {
+        let result = [];
+        api("/api/project").then((e) => {
+          result["result"] = e;
+        });
+        return result;
+      },
+      submitData(event) {
+        api("/api/project/create", {
+          data: {
+            name: this.state2.title,
+            desc: this.state2.desc,
+            member: this.member,
+            team: this.team,
+          },
+        }).then((e) => {
+          console.log(e);
+        });
+        event.preventDefault();
+      },
+    }}
+    run={async () => {
+      var data_i = meta.dataProjek();
+      api("/api/project").then((e) => {
+        meta.data_projek = data_i.result.data_act;
+      });
+      console.log(data_i.iresult);
+      meta.actionmember = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.member = e.map((x) => x.value);
+            meta.team = 0;
+          });
+        },
+      };
+      meta.actionteam = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.team = e.value;
+            meta.member = [];
+          });
+        },
+      };
+    }}
+  />
+  <div class="flex flex-col self-stretch space-y-10 p-12 w-auto">
+    <div class="flex self-stretch w-full space-x-8 items-start justify-start">
+      <div
+        class="flex flex-1 flex-grow space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
+        style="height: 107px; min-height: 107px; max-height: 107px;"
+      >
+        <img
+          src="/fimgs/609_829.x3.png"
+          class="flex items-center justify-center p-1.5 bg-blue-700 rounded-full"
+          style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+        />
+        <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+          <div class="flex self-stretch items-start justify-start mr-6">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+              New Project
+            </div>
+          </div>
+          <div class="flex self-stretch flex-col items-start justify-start">
+            <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
+              25
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex flex-1 flex-grow space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
+        style="height: 107px; min-height: 107px; max-height: 107px;"
+      >
+        <img
+          src="/fimgs/609_837.x3.png"
+          class="flex items-center justify-center p-1.5 bg-orange-400 rounded-full"
+          style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+        />
+        <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+          <div class="flex self-stretch items-start justify-start mr-6">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+              In Progress
+            </div>
+          </div>
+          <div class="flex self-stretch flex-col items-start justify-start">
+            <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
+              25
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex flex-1 flex-grow space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
+        style="height: 107px; min-height: 107px; max-height: 107px;"
+      >
+        <img
+          src="/fimgs/609_845.x3.png"
+          class="flex items-center justify-center p-1.5 bg-green-500 rounded-full"
+          style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+        />
+        <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+          <div class="flex self-stretch items-start justify-start mr-6">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+              Complete
+            </div>
+          </div>
+          <div class="flex self-stretch flex-col items-start justify-start">
+            <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
+              25
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex flex-1 flex-grow space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
+        style="height: 107px; min-height: 107px; max-height: 107px;"
+      >
+        <img
+          src="/fimgs/609_853.x3.png"
+          class="flex items-center justify-center p-1.5 bg-red-500 rounded-full"
+          style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+        />
+        <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+          <div class="flex self-stretch items-start justify-start mr-6">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+              Unfinish
+            </div>
+          </div>
+          <div class="flex self-stretch flex-col items-start justify-start">
+            <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
+              25
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex self-stretch flex-col w-full items-start justify-between">
+      <div class="flex self-stretch space-x-6 w-full items-start justify-between">
+        <div class="flex flex-col self-stretch w-full space-y-2 items-start justify-start">
+          <div class="text-2xl font-medium tracking-wide leading-loose text-coolGray-900">
+            My Task
+          </div>
+          <div class="w-full align-middle inline-block">
+            <table class="w-full divide-y-4 divide-gray-50">
+              <thead class="bg-white">
+                <tr>
+                  <th
+                    scope="col"
+                    class="pr-6 tracking-wider text-center justify-center mr-auto"
+                  >
+                    <div class="flex items-center justify-start ">
+                      <div class="text-sm tracking-wide px-6 py-3 bg-green-400 leading-tight text-center text-white">
+                        TODO
+                      </div>
+                      <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
+                        4 Task
+                      </div>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative px-6 py-3 text-sm text-center justify-start"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-start">
+                      Status
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative px-6 py-3 text-sm text-center justify-start"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-start">
+                      Files
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative px-6 py-3 text-sm text-left justify-start"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-start"></div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y-4 divide-gray-50">
+                <tr>
+                  <td class="px-6 py-2 whitespace-nowrap text-start cursor-pointer">
+                    <div class="text-sm text-gray-900">Analisa Data</div>
+                  </td>
+                  <td class="text-start py-0">
+                    <div class="flex items-center justify-center">
+                      <select
+                        id="employee"
+                        name="employee"
+                        class="bg-orange-300 px-2 py-2 text-white rounded-l outline-none"
+                      >
+                        <option class="bg-white text-coolGray-500" value="saab">
+                          COMPLETE
+                        </option>
+                        <option class="bg-white text-coolGray-500" value="fiat">
+                          TODO
+                        </option>
+                        <option class="bg-white text-coolGray-500" value="audi">
+                          IN PROGRESS
+                        </option>
+                      </select>
+                    </div>
+                  </td>
+                  <td class="px-6 py-2 whitespace-nowrap items-center">
+                    <div class="flex space-x-2 items-center justify-center">
+                      <div class="text-sm text-gray-900">4 Files</div>
+                      <div class="cursor-pointer">
+                        <img
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                          src="/fimgs/662_869.x3.png"
+                        />
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-2 whitespace-nowrap text-center">
+                    <div class="flex items-center justify-center">
+                      <img
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                        src="/fimgs/5_48.x3.png"
+                      />
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="flex flex-col self-stretch space-y-2 w-1/2 items-start justify-start">
+          <div class="text-2xl font-medium tracking-wide leading-loose text-coolGray-900">
+            Complete Projects
+          </div>
+          <div class="flex flex-col w-full space-y-4 px-4 pb-4 pt-2 items-start justify-start bg-white">
+            <div class="flex flex-col space-y-3 items-start justify-center bg-white">
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-base tracking-wide leading-snug text-coolGray-900">
+                  Pengembangan Website Company Profile PT. Menara Indonesia
+                </div>
+              </div>
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                  Finished On: 23/10/2021
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col space-y-2 items-start justify-center bg-white">
+              <div class="flex items-start justify-start">
+                <div class="text-base tracking-wide leading-snug text-coolGray-900">
+                  Pengembangan Aplikasi Ojek Online Pemkot Magelang
+                </div>
+              </div>
+              <div class="flex items-start justify-start">
+                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                  Finished On: 23/10/2021
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col space-y-2 items-start justify-center bg-white">
+              <div class="flex items-start justify-start">
+                <div class="text-base tracking-wide leading-snug text-coolGray-900">
+                  Pengembangan Website Akutansi PT> Sido Maju
+                </div>
+              </div>
+              <div class="flex items-start justify-start">
+                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                  Finished On: 23/10/2021
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col space-y-2 items-start justify-center bg-white">
+              <div class="flex items-start justify-start">
+                <div class="text-base tracking-wide leading-snug text-coolGray-900">
+                  Pengembangan Website Akutansi PT> Sido Maju
+                </div>
+              </div>
+              <div class="flex items-start justify-start">
+                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                  Finished On: 23/10/2021
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col space-y-2 items-start justify-center bg-white">
+              <div class="flex items-start justify-start">
+                <div class="text-base tracking-wide leading-snug text-coolGray-900">
+                  Pengembangan Website Akutansi PT> Sido Maju
+                </div>
+              </div>
+              <div class="flex items-start justify-start">
+                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                  Finished On: 23/10/2021
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</>
