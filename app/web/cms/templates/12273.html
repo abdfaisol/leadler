@@ -35,150 +35,146 @@
       });
     }}
   />
-  <div class="flex flex-col items-start justify-start px-8 py-6">
-    <div class="flex flex-col space-y-8 items-start justify-start">
-      <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
-        <div class="flex space-x-72 items-start justify-start">
-          <div class="flex items-start justify-start">
-            <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
-              {meta.state.judul}
-            </div>
-          </div>
-          <div class="flex flex-col space-y-2 items-start justify-start">
-            <div
-              class="flex flex-col items-start justify-start"
-              style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
-            >
-              <bar />
-            </div>
-            <div class="flex items-start justify-start">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                10 Task Done
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex space-x-8 items-center justify-start">
-          <div class="flex items-start justify-start">
-            <div class="flex items-center justify-center px-4 py-2 bg-coolGray-50 rounded cursor-pointer">
-              <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
-                Project Detail
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-col items-start justify-start">
-            <a
-              href={meta.link.task}
-              target="_blank"
-              class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
-            >
-              <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-                Task
-              </div>
-            </a>
-          </div>
-          <a
-            href={meta.link.planning}
-            class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
-          >
-            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-              Planning
-            </div>
-          </a>
-          <a
-            href={meta.link.timeline}
-            class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
-          >
-            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-              Timeline
-            </div>
-          </a>
-          <a
-            href={meta.link.team}
-            class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
-          >
-            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-              Team
-            </div>
-          </a>
+  <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
+    <div class="flex self-stretch space-x-72 items-start justify-between">
+      <div class="flex items-start justify-start">
+        <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+          {meta.state.judul}
         </div>
       </div>
-      <div class="flex self-stretch flex-col items-start justify-start px-8 py-6 bg-white rounded">
-        <div class="flex flex-col space-y-8 items-start justify-start">
-          <div class="flex self-stretch flex-col space-y-6 items-start justify-start pb-7 border-b">
-            <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
-                  Project Description
-                </div>
-              </div>
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                  {meta.state.deskripsi}
-                </div>
-              </div>
-            </div>
-            {/*<img src="/fimgs/306_398.x3.png" />*/}
+      <div class="flex flex-col space-y-2 items-start justify-start">
+        <div
+          class="flex flex-col items-start justify-start"
+          style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
+        >
+          <bar />
+        </div>
+        <div class="flex items-start justify-start">
+          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+            10 Task Done
           </div>
-          <div class="flex self-stretch space-x-8 items-start justify-start">
-            <div class="flex space-x-4 items-start justify-start">
-              <div class="flex items-start justify-start p-2.5 bg-violet-100 rounded-full">
-                <img
-                  src="/fimgs/306_403.x3.png"
-                  style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                />
-              </div>
-              <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-justify text-coolGray-500">
-                    Project Create For
-                  </div>
-                </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
-                    {meta.state.label}
-                  </div>
-                </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex space-x-8 items-center justify-start">
+      <div class="flex items-start justify-start">
+        <div class="flex items-center justify-center px-4 py-2 bg-coolGray-50 rounded cursor-pointer">
+          <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+            Project Detail
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-start">
+        <a
+          href={meta.link.task}
+          target="_blank"
+          class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Task
+          </div>
+        </a>
+      </div>
+      <a
+        href={meta.link.planning}
+        class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+          Planning
+        </div>
+      </a>
+      <a
+        href={meta.link.timeline}
+        class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+          Timeline
+        </div>
+      </a>
+      <a
+        href={meta.link.team}
+        class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+          Team
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="flex self-stretch flex-col items-start justify-start px-8 py-6 bg-white rounded">
+    <div class="flex flex-col space-y-8 items-start justify-start">
+      <div class="flex self-stretch flex-col space-y-6 items-start justify-start pb-7 border-b">
+        <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+          <div class="flex self-stretch items-start justify-start">
+            <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+              Project Description
+            </div>
+          </div>
+          <div class="flex self-stretch items-start justify-start">
+            <div class="text-base tracking-wide leading-normal text-coolGray-500">
+              {meta.state.deskripsi}
+            </div>
+          </div>
+        </div>
+        {/*<img src="/fimgs/306_398.x3.png" />*/}
+      </div>
+      <div class="flex self-stretch space-x-8 items-start justify-start">
+        <div class="flex space-x-4 items-start justify-start">
+          <div class="flex items-start justify-start p-2.5 bg-violet-100 rounded-full">
+            <img
+              src="/fimgs/306_403.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
+          <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-justify text-coolGray-500">
+                Project Create For
               </div>
             </div>
-            <div class="flex space-x-4 items-start justify-start">
-              <div class="flex items-start justify-start p-2.5 bg-violet-100 rounded-full">
-                <img
-                  src="/fimgs/306_411.x3.png"
-                  style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                />
-              </div>
-              <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-justify text-coolGray-500">
-                    Start Project
-                  </div>
-                </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
-                    {meta.state.startdate}
-                  </div>
-                </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
+                {meta.state.label}
               </div>
             </div>
-            <div class="flex space-x-4 items-start justify-start">
-              <div class="flex items-start justify-start p-2.5 bg-violet-100 rounded-full">
-                <img
-                  src="/fimgs/306_419.x3.png"
-                  style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                />
+          </div>
+        </div>
+        <div class="flex space-x-4 items-start justify-start">
+          <div class="flex items-start justify-start p-2.5 bg-violet-100 rounded-full">
+            <img
+              src="/fimgs/306_411.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
+          <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-justify text-coolGray-500">
+                Start Project
               </div>
-              <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-justify text-coolGray-500">
-                    Due Date
-                  </div>
-                </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
-                    {meta.state.duedate}
-                  </div>
-                </div>
+            </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
+                {meta.state.startdate}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex space-x-4 items-start justify-start">
+          <div class="flex items-start justify-start p-2.5 bg-violet-100 rounded-full">
+            <img
+              src="/fimgs/306_419.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
+          <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-justify text-coolGray-500">
+                Due Date
+              </div>
+            </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
+                {meta.state.duedate}
               </div>
             </div>
           </div>
