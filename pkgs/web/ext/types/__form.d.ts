@@ -50,6 +50,7 @@ export interface IBaseFieldContext {
     Component?: React.FC<IBaseFieldMainProps>
     props?: IBaseFieldMainProps
   }) => React.ReactElement
+  fieldProps: any
 }
 
 type IFormTabs = (
@@ -171,7 +172,7 @@ export type IFormLayout = (
       row: any
       watch: (fields: string[]) => void
       update: (row: any) => void
-      layout: (layout: any) => React.ReactElement
+      layout: (layout: any) => React.ReactElement | null
       state: IBaseFormContext
     }) => React.ReactElement)
   | IFormLayout
