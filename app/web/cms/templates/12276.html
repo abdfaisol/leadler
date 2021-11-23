@@ -6,6 +6,19 @@
       name: "",
       team: "",
       data_timeline: [],
+      state: {
+        judul: "Loading",
+        deskripsi: "Loading",
+        label: "Loading",
+        startdate: "26/09/2021",
+        duedate: "26/09/2021",
+      },
+      link: {
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+      },
       show: {
         tim1: false,
         tim2: false,
@@ -31,6 +44,23 @@
       },
     }}
     run={async () => {
+      api("/api/project/show/" + params.id).then((e) => {
+        console.log(e);
+        if (e.status == true) {
+          meta.state.judul = e.data_act.project.name;
+          meta.state.deskripsi = e.data_act.project.desc;
+          meta.state.label = e.data_act.project.label;
+          meta.state.startdate = e.data_act.project.startdate;
+          meta.state.dudate = e.data_act.project.duedate;
+          meta.link.team = "/pm/projects/" + e.data_act.project.id + "/team";
+          meta.link.task = "/pm/projects/" + e.data_act.project.id + "/task";
+          meta.link.timeline =
+            "/pm/projects/" + e.data_act.project.id + "/timeline";
+          meta.link.planning =
+            "/pm/projects/" + e.data_act.project.id + "/planning";
+        }
+      });
+
       console.log("Mendapatkan data timeline : loading");
       api("/api/project/task/timeline", {
         data: {
@@ -49,6 +79,73 @@
       console.log("Akhir:");
     }}
   />
+  <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
+    <div class="flex self-stretch space-x-72 items-start justify-between">
+      <div class="flex items-start justify-start">
+        <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+          {meta.state.judul}
+        </div>
+      </div>
+      <div class="flex flex-col space-y-2 items-start justify-start">
+        <div
+          class="flex flex-col items-start justify-start"
+          style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
+        >
+          <bar />
+        </div>
+        <div class="flex items-start justify-start">
+          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+            10 Task Done
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex space-x-8 items-center justify-start">
+      <div class="flex items-start justify-start">
+        <div class="flex items-center justify-center px-4 py-2 rounded cursor-pointer">
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Project Detail
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-start">
+        <a
+          href={meta.link.task}
+          target="_blank"
+          class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Task
+          </div>
+        </a>
+      </div>
+      <a
+        href={meta.link.planning}
+        class="flex items-center justify-center px-4 py-2 rounded bg-coolGray-50 cursor-pointer"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+          Planning
+        </div>
+      </a>
+      <a
+        href={meta.link.timeline}
+        class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+          Timeline
+        </div>
+      </a>
+      <a
+        href={meta.link.team}
+        class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+          Team
+        </div>
+      </a>
+    </div>
+  </div>
+
   <div class="flex flex-col self-stretch space-y-6 p-12 w-auto">
     <div class="rounded">
       <div
