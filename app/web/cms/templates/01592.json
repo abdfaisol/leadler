@@ -1,1 +1,1 @@
-{"title":"pm-projects-team","type":"cms-template","lang":"","status":"SYSTEM","parent_id":"66299","content":{"type":"Page","structure":"","figma":{}},"slug":"pm/projects/team","site":"*","domain":"","id":"01592"}
+{"content":{"type":"Page","structure":"","figma":{}},"title":"pm-projects-team","type":"cms-template","lang":"","status":"SYSTEM","parent_id":"66299","slug":"/pm/projects/[id]/team","site":"*","domain":"","id":"01592"}

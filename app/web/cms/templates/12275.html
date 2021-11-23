@@ -1,5 +1,46 @@
 <>
-  <effect meta={{}} run={async () => {}} />
+  <effect
+    meta={{
+      state: {
+        name: "",
+        startdate: "",
+        duedate: "",
+        status: "",
+        cstatus: "",
+        effort: "",
+        priority: "",
+        iddivision: "",
+        idtask: "",
+        description: "",
+        cost: "0",
+      },
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      data_task: [],
+    }}
+    run={async () => {
+      console.log("mendapatkan data: loading");
+      api("/api/project/show/" + params.id).then((e) => {
+        console.log(e);
+        if (e.status == true) {
+          console.log(e.data_act.project_task);
+          meta.data_task = e.data_act.project_task;
+          meta.link.detail = "/pm/projects/" + params.id + "/detail";
+          meta.link.team = "/pm/projects/" + params.id + "/team";
+          meta.link.task = "/pm/projects/" + params.id + "/task";
+          meta.link.timeline = "/pm/projects/" + params.id + "/timeline";
+          meta.link.planning = "/pm/projects/" + params.id + "/planning";
+          meta.link.file = "/pm/projects/" + params.id + "/file-management";
+        }
+      });
+    }}
+  />
   <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
     <div class="flex space-x-72 items-start justify-start">
       <div class="flex items-start justify-start">
@@ -24,7 +65,7 @@
     <div class="flex space-x-8 items-center justify-start">
       <div class="flex items-start justify-start">
         <a
-          href="/pm/projects/projectdetails"
+          href={meta.link.detail}
           class="flex items-center justify-center px-4 py-2 rounded"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
@@ -33,28 +74,43 @@
         </a>
       </div>
       <div class="flex flex-col items-start justify-start">
-        <a class="flex items-center justify-center px-4 py-2 rounded">
+        <a
+          href={meta.link.task}
+          class="flex items-center justify-center px-4 py-2 rounded"
+        >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Task
           </div>
         </a>
       </div>
-      <a class="flex items-center justify-center px-4 bg-coolGray-50 py-2 rounded">
+      <a
+        href={meta.link.planning}
+        class="flex items-center justify-center px-4 bg-coolGray-50 py-2 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
           Planning
         </div>
       </a>
-      <a class="flex items-center justify-center px-4 py-2 rounded">
+      <a
+        href={meta.link.timeline}
+        class="flex items-center justify-center px-4 py-2 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Timeline
         </div>
       </a>
-      <a class="flex items-center justify-center px-4 py-2 rounded">
+      <a
+        href={meta.link.file}
+        class="flex items-center justify-center px-4 py-2 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           File Management
         </div>
       </a>
-      <a class="flex items-center justify-center px-4 py-2 rounded">
+      <a
+        href={meta.link.team}
+        class="flex items-center justify-center px-4 py-2 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Team
         </div>
@@ -71,9 +127,9 @@
             name="employee"
             class="bg-white rounded-l outline-none"
           >
-            <option value="saab">UI/UX Designer</option>
-            <option value="fiat">Business Analyst</option>
-            <option value="audi">Full Stack Developer</option>
+            <option value="1">UI/UX Designer</option>
+            <option value="2">Business Analyst</option>
+            <option value="3">Full Stack Developer</option>
           </select>
         </div>
         <div class="flex items-start justify-start">
@@ -87,7 +143,7 @@
             <div class="flex items-start justify-start">
               <img
                 src="/fimgs/320_715.x3.png"
-                style="width: 14px; min-width: 14px; max-width: 14px; height: 14px; min-height: 14px; max-height: 14px;background-image: url('/fimgs/bg-73e6c53226cf9e177674d4b42cdebde4ef14f8e5');background-size:100% 100%;background-repeat:no-repeat;"
+                style="width: 14px; min-width: 14px; max-width: 14px; height: 14px; min-height: 14px; max-height: 14px"
               />
             </div>
           </div>
@@ -125,109 +181,67 @@
                       </div>
                     </div>
                   </div>
-                  <div class="flex self-stretch flex-col items-start justify-start">
-                    <div class="flex flex-1 self-stretch flex-col items-start justify-start p-4 bg-white">
-                      <div class="flex items-start justify-start">
-                        <div class="flex flex-col space-y-6 items-start justify-start">
-                          <div class="flex flex-col space-y-2 items-start justify-start">
-                            <div class="flex space-x-1 items-center justify-center">
-                              <div class="flex items-start justify-start">
-                                <img
-                                  src="/fimgs/426_927.x3.png"
-                                  class="bg-indigo-500 rounded-full"
-                                  style="width: 8px; min-width: 8px; max-width: 8px; height: 8px; min-height: 8px; max-height: 8px;"
-                                />
+                  {meta.data_task.map((e) => {
+                    return (
+                      <div class="flex self-stretch flex-col items-start justify-start">
+                        <div class="flex flex-1 self-stretch flex-col items-start justify-start p-4 bg-white">
+                          <div class="flex items-start justify-start">
+                            <div class="flex flex-col space-y-6 items-start justify-start">
+                              <div class="flex flex-col space-y-2 items-start justify-start">
+                                <div class="flex space-x-1 items-center justify-center">
+                                  <div class="flex items-start justify-start">
+                                    <img
+                                      src="/fimgs/426_927.x3.png"
+                                      class="bg-indigo-500 rounded-full"
+                                      style="width: 8px; min-width: 8px; max-width: 8px; height: 8px; min-height: 8px; max-height: 8px;"
+                                    />
+                                  </div>
+                                  <div class="flex items-start justify-start">
+                                    <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                                      UIUX Designer
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="flex items-start justify-start">
+                                  <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                                    {e.name}
+                                  </div>
+                                </div>
                               </div>
-                              <div class="flex items-start justify-start">
-                                <div class="text-sm tracking-wide leading-tight text-indigo-500">
-                                  UIUX Designer
+                              <div class="flex flex-col space-y-2 items-start justify-start">
+                                <div class="flex items-start justify-start">
+                                  <div class="text-xs tracking-wide leading-none">
+                                    {e.startdate} -{" "}
+                                    <span class="text-red-500">
+                                      {" "}
+                                      {e.duedate}{" "}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div class="flex space-x-1 items-start justify-start">
+                                  <img
+                                    src="/fimgs/426_933.x2.png"
+                                    class="flex items-start justify-start"
+                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                  />
+                                  <div class="flex items-start justify-start">
+                                    <div class="text-xs tracking-wide leading-none text-center text-indigo-500">
+                                      4 Files
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                            <div class="flex items-start justify-start">
-                              <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                                Wireframe
-                              </div>
-                            </div>
                           </div>
-                          <div class="flex flex-col space-y-2 items-start justify-start">
-                            <div class="flex items-start justify-start">
-                              <div class="text-xs tracking-wide leading-none">
-                                Sep, 14 -{" "}
-                                <span class="text-red-500"> Sep 19 </span>
-                              </div>
-                            </div>
-                            <div class="flex space-x-1 items-start justify-start">
-                              <img
-                                src="/fimgs/426_933.x2.png"
-                                class="flex items-start justify-start"
-                                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                              />
-                              <div class="flex items-start justify-start">
-                                <div class="text-xs tracking-wide leading-none text-center text-indigo-500">
-                                  4 Files
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <img
-                        src="/fimgs/426_1010.x3.png"
-                        class="flex items-start justify-end"
-                        style="width: 177px; min-width: 177px; max-width: 177px; height: 24px; min-height: 24px; max-height: 24px;"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="flex self-stretch flex-col items-start justify-start p-4 bg-white">
-                  <div class="flex flex-col space-y-6 items-start justify-start">
-                    <div class="flex flex-col space-y-2 items-start justify-start">
-                      <div class="flex space-x-1 items-center justify-center">
-                        <div class="flex items-start justify-start">
                           <img
-                            src="/fimgs/426_906.x3.png"
-                            class="bg-indigo-500 rounded-full"
-                            style="width: 8px; min-width: 8px; max-width: 8px; height: 8px; min-height: 8px; max-height: 8px;"
+                            src="/fimgs/426_1010.x3.png"
+                            class="flex items-start justify-end"
+                            style="width: 177px; min-width: 177px; max-width: 177px; height: 24px; min-height: 24px; max-height: 24px;"
                           />
                         </div>
-                        <div class="flex items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight text-indigo-500">
-                            UIUX Designer
-                          </div>
-                        </div>
                       </div>
-                      <div class="flex items-start justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                          Testing
-                        </div>
-                      </div>
-                    </div>
-                    <div class="flex flex-col space-y-2 items-start justify-start">
-                      <div class="flex items-start justify-start">
-                        <div class="text-xs tracking-wide leading-none">
-                          Sep, 25 - <span class="text-red-500"> Sep 27 </span>
-                        </div>
-                      </div>
-                      <div class="flex space-x-1 items-start justify-start">
-                        <img
-                          src="/fimgs/426_1020.x3.png"
-                          class="flex items-start justify-start"
-                          style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                        />
-                        <div class="flex items-start justify-start">
-                          <div class="text-xs tracking-wide leading-none text-center text-indigo-500">
-                            4 Files
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <img
-                    src="/fimgs/426_1030.x3.png"
-                    class="flex items-start justify-end"
-                    style="width: 178px; min-width: 178px; max-width: 178px; height: 24px; min-height: 24px; max-height: 24px;"
-                  />
+                    );
+                  })}
                 </div>
               </div>
               {meta.showModal1 ? (
@@ -241,7 +255,7 @@
                         <div class="flex flex-1 space-x-2 items-center justify-start">
                           <img
                             src="/fimgs/404_669.x3.png"
-                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;background-image: url('/fimgs/bg-6edf9199ab3e8b9ab02b66e2045a2996dc7ffa87');background-size:100% 100%;background-repeat:no-repeat;"
+                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
                           />
                           <div class="flex flex-1 items-start justify-start">
                             <div class="text-base tracking-wide leading-normal text-coolGray-500">
@@ -254,7 +268,7 @@
                         <div class="flex flex-1 space-x-2 items-center justify-start">
                           <img
                             src="/fimgs/404_674.x3.png"
-                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;background-image: url('/fimgs/bg-985a0d623da115dd3d740eedb236267059d354ae');background-size:100% 100%;background-repeat:no-repeat;"
+                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
                           />
                           <div class="flex flex-1 items-start justify-start">
                             <div class="text-base tracking-wide leading-normal text-coolGray-500">
@@ -268,7 +282,7 @@
                         <div class="flex flex-1 space-x-2 items-center justify-start">
                           <img
                             src="/fimgs/404_679.x3.png"
-                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;background-image: url('/fimgs/bg-2e538722ae406117a4aac769b1e8771571edfbd5');background-size:100% 100%;background-repeat:no-repeat;"
+                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
                           />
                           <div class="flex flex-1 items-start justify-start">
                             <div class="text-base tracking-wide leading-normal text-coolGray-500">

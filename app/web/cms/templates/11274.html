@@ -215,7 +215,7 @@
       api("/api/project").then((e) => {
         meta.data_projek = data_i.result.data_act;
       });
-      console.log(data_i.iresult);
+      // console.log(data_i.iresult);
       meta.actionmember = {
         onChange: (e) => {
           runInAction(() => {
@@ -350,8 +350,8 @@
         class="flex self-stretch space-x-8 flex-wrap items-start justify-start"
         style="height: 244px; min-height: 244px; max-height: 244px;"
       >
-        {meta.data_projek?.map((e) => {
-          let urlproject = "projects/" + e.id + "/detail";
+        {Object.keys(meta.data_projek).map((e) => {
+          var urlproject = "/pm/projects/" + meta.data_projek[e].id + "/detail";
           return (
             <a
               href={urlproject}
@@ -383,7 +383,7 @@
                 >
                   <div class="flex self-stretch items-start justify-start">
                     <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                      {e.name}
+                      {meta.data_projek[e].name}
                     </div>
                   </div>
                   <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
@@ -395,7 +395,7 @@
                     </div>
                     <div class="flex self-stretch items-start justify-start">
                       <div class="text-sm tracking-wide leading-tight">
-                        Due Date: 25/09/2021
+                        Due Date: {meta.data_projek[e].duedate}
                       </div>
                     </div>
                   </div>

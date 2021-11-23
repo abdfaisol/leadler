@@ -14,6 +14,13 @@
         description: "",
         cost: "0",
       },
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+      },
       print: true,
       data_task: [],
       status: [
@@ -173,6 +180,11 @@
         if (e.status == true) {
           console.log(e.data_act.project_task);
           meta.data_task = e.data_act.project_task;
+          meta.link.detail = "/pm/projects/" + params.id + "/detail";
+          meta.link.team = "/pm/projects/" + params.id + "/team";
+          meta.link.task = "/pm/projects/" + params.id + "/task";
+          meta.link.timeline = "/pm/projects/" + params.id + "/timeline";
+          meta.link.planning = "/pm/projects/" + params.id + "/planning";
         }
       });
       meta.state.iddivision = document.getElementById("employee").value;
@@ -233,29 +245,41 @@
     </div>
     <div class="flex w-full space-x-8 items-center justify-between">
       <a
-        href="/pm/projects/projectdetails"
+        href={meta.link.detail}
         class="flex flex-grow items-center justify-center p-2 rounded"
       >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Project Detail
         </div>
       </a>
-      <a class="flex flex-grow items-center justify-center p-2 bg-coolGray-50 rounded">
+      <a
+        href={meta.link.task}
+        class="flex flex-grow items-center justify-center p-2 bg-coolGray-50 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-indigo-500 ">
           Task
         </div>
       </a>
-      <a class="flex flex-grow items-center justify-center p-2 rounded">
+      <a
+        href={meta.link.planning}
+        class="flex flex-grow items-center justify-center p-2 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Planning
         </div>
       </a>
-      <a class="flex flex-grow items-center justify-center p-2 rounded">
+      <a
+        href={meta.link.timeline}
+        class="flex flex-grow items-center justify-center p-2 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Timeline
         </div>
       </a>
-      <a class="flex flex-grow items-center justify-center p-2 rounded">
+      <a
+        href={meta.link.team}
+        class="flex flex-grow items-center justify-center p-2 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Team
         </div>
@@ -560,7 +584,7 @@
                         <button class="flex flex-col items-start justify-start">
                           <img
                             src="/fimgs/517_574.x1.svg"
-                            style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;background-image: url('/fimgs/bg-dceba00bb6d6f9f685dc798d0d2871f28da5cac8');background-size:100% 100%;background-repeat:no-repeat;"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
                           />
                         </button>
                       </form>
@@ -869,7 +893,7 @@
                         <button class="flex flex-col items-start justify-start">
                           <img
                             src="/fimgs/517_574.x1.svg"
-                            style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;background-image: url('/fimgs/bg-dceba00bb6d6f9f685dc798d0d2871f28da5cac8');background-size:100% 100%;background-repeat:no-repeat;"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
                           />
                         </button>
                       </form>

@@ -1,14 +1,49 @@
 <>
   <effect
     meta={{
+      responseUpload: "",
+      upload: async (file) => {
+        const formData = _FormData();
+
+        formData.append("path", "users\\" + params.id);
+        formData.append("file", file);
+
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        console.log(await response.json());
+        // return await response.json();
+      },
       toggleModal() {
         this.showModal = !this.showModal;
       },
       toggleModal1() {
         this.showModal1 = !this.showModal1;
       },
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
     }}
-    run={async () => {}}
+    run={async () => {
+      console.log("mendapatkan data: loading");
+      api("/api/project/show/" + params.id).then((e) => {
+        // console.log(e);
+        if (e.status == true) {
+          meta.link.detail = "/pm/projects/" + params.id + "/detail";
+          meta.link.team = "/pm/projects/" + params.id + "/team";
+          meta.link.task = "/pm/projects/" + params.id + "/task";
+          meta.link.timeline = "/pm/projects/" + params.id + "/timeline";
+          meta.link.planning = "/pm/projects/" + params.id + "/planning";
+          meta.link.file = "/pm/projects/" + params.id + "/file-management";
+        }
+      });
+    }}
   />
   <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
     <div class="flex space-x-72 items-start justify-start">
@@ -34,6 +69,7 @@
     <div class="flex space-x-8 items-center justify-start">
       <div class="flex items-start justify-start">
         <a
+          href={meta.link.detail}
           href="/pm/projects/projectdetails"
           class="flex items-center justify-center px-4 py-2 rounded"
         >
@@ -43,28 +79,43 @@
         </a>
       </div>
       <div class="flex flex-col items-start justify-start">
-        <a class="flex items-center justify-center px-4 py-2 rounded">
+        <a
+          href={meta.link.task}
+          class="flex items-center justify-center px-4 py-2 rounded"
+        >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Task
           </div>
         </a>
       </div>
-      <a class="flex items-center justify-center px-4 py-2 rounded">
+      <a
+        href={meta.link.planning}
+        class="flex items-center justify-center px-4 py-2 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Planning
         </div>
       </a>
-      <a class="flex items-center justify-center px-4 py-2 rounded">
+      <a
+        href={meta.link.timeline}
+        class="flex items-center justify-center px-4 py-2 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Timeline
         </div>
       </a>
-      <a class="flex items-center justify-center px-4 py-2 bg-coolGray-50 rounded">
+      <a
+        href={meta.link.file}
+        class="flex items-center justify-center px-4 py-2 bg-coolGray-50 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
           File Management
         </div>
       </a>
-      <a class="flex items-center justify-center px-4 py-2 rounded">
+      <a
+        href={meta.link.team}
+        class="flex items-center justify-center px-4 py-2 rounded"
+      >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Team
         </div>
@@ -81,9 +132,10 @@
             name="employee"
             class="bg-white rounded-l outline-none"
           >
-            <option value="saab">UI/UX Designer</option>
-            <option value="fiat">Business Analyst</option>
-            <option value="audi">Full Stack Developer</option>
+            <option value="1">Project Manager</option>
+            <option value="1">UI/UX Designer</option>
+            <option value="2">Business Analyst</option>
+            <option value="3">Full Stack Developer</option>
           </select>
         </div>
         <div class="flex items-start justify-start">
@@ -279,6 +331,16 @@
                           accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
                           id="file"
                           style="height: 0; overflow: hidden; width: 0;"
+                          onChange={(e) => {
+                            runInAction(async () => {
+                              console.log("upload file");
+                              console.log(e.target.files[0]);
+                              const upload = await meta.upload(
+                                e.target.files[0]
+                              );
+                              meta.responseUpload = upload;
+                            });
+                          }}
                         />
                         <label
                           for="file"

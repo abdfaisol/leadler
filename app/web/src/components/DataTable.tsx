@@ -1,7 +1,6 @@
-import { useEffect } from "react";
 import { BaseWindow } from "web.init/src/window";
 
-var $ = require('jquery');
+const $ = require('jquery');
 require('datatables.net')(window, $);
 declare const window: BaseWindow
 
