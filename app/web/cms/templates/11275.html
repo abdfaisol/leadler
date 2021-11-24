@@ -32,334 +32,98 @@
     run={async () => {}}
   />
   <div class="flex flex-col self-stretch space-y-6 p-12 w-auto">
-    <div class="flex flex-col self-stretch items-start justify-start px-8 py-2 bg-white">
-      <div class="flex self-stretch items-center justify-between">
-        <div class="flex self-stretch space-x-6 items-center justify-start">
-          <div class="flex flex-col items-start justify-start">
-            <div
-              onClick={meta.toggleTATeam}
-              class={
-                meta.pilih.showTATeam
-                  ? "flex items-center justify-center px-4 py-2 bg-coolGray-50 rounded cursor-pointer"
-                  : "flex items-center justify-center px-4 py-2rounded cursor-pointer"
-              }
-            >
-              <div
-                class={
-                  meta.pilih.showTATeam
-                    ? "text-base font-medium tracking-wide leading-normal text-indigo-500"
-                    : "text-base font-medium tracking-wide leading-normal text-coolGray-500"
-                }
-              >
-                All Team
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-col items-start justify-start">
-            <div
-              onClick={meta.toggleTTeam}
-              class={
-                meta.pilih.showTTeam
-                  ? "flex items-center justify-center px-4 py-2 bg-coolGray-50 rounded cursor-pointer"
-                  : "flex items-center justify-center px-4 py-2 rounded cursor-pointer"
-              }
-            >
-              <div
-                class={
-                  meta.pilih.showTTeam
-                    ? "text-base font-medium tracking-wide leading-normal text-indigo-500"
-                    : "text-base font-medium tracking-wide leading-normal text-coolGray-500"
-                }
-              >
-                Team
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex self-stretch items-start justify-end">
-          <div
-            class="flex items-center justify-between px-4 py-2 bg-coolGray-50 rounded-full"
-            style="width: 70%; min-width: 50%; max-width: 70%; height: 40px; min-height: 40px; max-height: 40px;"
-          >
-            <div
-              class="flex items-start justify-start"
-              style="height: 24px; min-height: 24px; max-height: 24px;"
-            >
-              <input
-                placeholder="Search Team"
-                class="text-base tracking-wide leading-normal text-coolGray-500 w-full bg-coolGray-50 placeholder-gray-400 focus:outline-none"
-              />
-            </div>
-            <img
-              src="/fimgs/609_809.x3.png"
-              class="flex items-start justify-start cursor-pointer"
-              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-            />
+    <div class="flex flex-col space-y-8 items-end justify-start">
+      <div class="flex flex-col items-start justify-start">
+        <div class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded">
+          <img
+            src="/fimgs/603_427.x3.png"
+            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+          />
+          <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+            New Team
           </div>
         </div>
       </div>
-    </div>
-    {meta.pilih.showTATeam ? (
-      <div class="overflow-x-auto">
-        <div class="align-middle inline-block min-w-full">
-          <div class="overflow-hidden">
-            <table class="min-w-full divide-y-4 divide-gray-50">
-              <thead class="bg-white">
-                <tr>
-                  <th
-                    scope="col"
-                    class="relative px-3 py-3 text-sm text-left justify-start"
-                  >
-                    <div class=" text-sm font-medium text-coolGray-500 text-center ">
-                      Photo
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="relative px-6 py-3 text-sm text-left justify-start"
-                  >
-                    <div class=" text-sm font-medium text-coolGray-500 text-start ">
-                      Employee Name
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="relative px-6 py-3 text-sm text-left justify-start"
-                  >
-                    <div class=" text-sm font-medium text-coolGray-500 text-start ">
-                      Email Address
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="relative px-6 py-3 text-sm text-left justify-start"
-                  >
-                    <div class=" text-sm font-medium text-coolGray-500 text-start ">
-                      Role
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="relative pl-6 pr-3 py-3 text-sm text-left justify-start"
-                  >
-                    <div class=" text-sm font-medium text-coolGray-500 text-start ">
-                      Team
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y-4 divide-gray-50">
-                <tr>
-                  <td class="px-2 py-4 whitespace-nowrap text-center">
-                    <div class="text-sm text-gray-900">01</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-start">
-                    <div class="text-sm text-gray-900">Afif Hanifudin</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-start">
-                    <div class="text-sm text-gray-900">
-                      uxninjaafif@gmail.com
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-start">
-                    <div class="text-sm text-gray-900">UI/UX Designer</div>
-                  </td>
-                  <td class="pl-6 pr-3 py-4 whitespace-nowrap text-start">
-                    <div class="text-sm text-gray-900">Tim 6</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-2 py-4 whitespace-nowrap text-center">
-                    <div class="text-sm text-gray-900">01</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-start">
-                    <div class="text-sm text-gray-900">Zaki Rahmanda</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-start">
-                    <div class="text-sm text-gray-900">
-                      zakirahmanda@gmail.com
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-start">
-                    <div class="text-sm text-gray-900">Business Analyst</div>
-                  </td>
-                  <td class="pl-6 pr-3 py-4 whitespace-nowrap text-start">
-                    <div class="text-sm text-gray-900">Tim 6</div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    ) : null}
-    {meta.pilih.showTTeam ? (
-      <div class="flex flex-col self-stretch space-y-4 items-start justify-start px-8 py-6 bg-white">
-        <div class="flex flex-col self-stretch space-y-2.5 items-start justify-start">
-          <div class="flex self-stretch items-start justify-between px-6 py-3 bg-coolGray-50 border rounded border-coolGray-300">
-            <div class="text-base tracking-wide leading-normal text-coolGray-900">
-              Team 1
-            </div>
-            <div class="flex items-start justify-start">
-              <div onClick={meta.toggleSTeam1} class="cursor-pointer">
-                {meta.show.tim1 ? (
-                  <img
-                    src="/fimgs/621_447.x3.png"
-                    class="flex items-start justify-start cursor-pointer"
-                    style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                  />
-                ) : (
-                  <img
-                    src="/fimgs/621_449.x3.png"
-                    class="flex items-start justify-start cursor-pointer"
-                    style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                  />
-                )}
+      <div class="flex self-stretch flex-col items-start justify-center pl-6 pr-8 pt-8 pb-10 bg-white rounded">
+        <div class="flex self-stretch flex-col space-y-8 items-start justify-start">
+          <div class="flex self-stretch items-start justify-start">
+            <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+                  Team List
+                </div>
+              </div>
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                  8 Total Team
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {meta.show.tim1 ? (
-          <div class="flex flex-col self-stretch space-y-6 items-start justify-start p-6 bg-white border rounded-sm border-coolGray-300">
-            <div class="flex flex-1 space-x-2 items-center justify-center">
-              <img
-                src="/fimgs/609_817.x3.png"
-                class="flex items-start justify-start"
-                style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-              />
-              <div class="flex flex-1 flex-col items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                    Royhan
+          <div class="flex self-stretch flex-col space-y-6 items-start justify-start">
+            <div class="flex self-stretch items-center justify-start px-6 py-3 bg-coolGray-50 rounded">
+              <div class="flex flex-1 space-x-3 items-center justify-center">
+                <div class="flex flex-1 items-start justify-start">
+                  <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                    Team 1
                   </div>
                 </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                    Full Stact Developer
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-1 space-x-2 items-center justify-center">
-              <img
-                src="/fimgs/609_817.x3.png"
-                class="flex items-start justify-start"
-                style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-              />
-              <div class="flex flex-1 flex-col items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                    Bukhari
-                  </div>
-                </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                    Full Stack Developer
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-1 space-x-2 items-center justify-center">
-              <img
-                src="/fimgs/609_817.x3.png"
-                class="flex items-start justify-start"
-                style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-              />
-              <div class="flex flex-1 flex-col items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                    Faisol
-                  </div>
-                </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                    Full Stack Developer
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-1 space-x-2 items-center justify-center">
-              <img
-                src="/fimgs/609_817.x3.png"
-                class="flex items-start justify-start"
-                style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-              />
-              <div class="flex flex-1 flex-col items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                    Afif
-                  </div>
-                </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                    UI/UX Designer
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-1 space-x-2 items-center justify-center">
-              <img
-                src="/fimgs/609_817.x3.png"
-                class="flex items-start justify-start"
-                style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-              />
-              <div class="flex flex-1 flex-col items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                    Zaki
-                  </div>
-                </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                    Business Analyst
-                  </div>
-                </div>
-              </div>
-            </div>
-            <button
-              class="flex space-x-1 items-center justify-center px-4 py-2 border rounded border-indigo-500"
-              style="width: 167px; min-width: 167px; max-width: 167px; height: 40px; min-height: 40px;"
-            >
-              <div class="flex items-start justify-start">
-                <img
-                  src="/fimgs/601_487.x3.png"
-                  style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                />
-              </div>
-              <div
-                class="text-base font-medium tracking-wide leading-normal text-right text-indigo-500"
-                style="width: 117px; min-width: 117px; max-width: 117px; height: 24px; min-height: 24px; max-height: 24px;"
-              >
-                Add Employee
-              </div>
-            </button>
-          </div>
-        ) : null}
-        <div class="flex flex-col self-stretch space-y-2.5 items-start justify-start">
-          <div class="flex self-stretch items-start justify-between px-6 py-3 bg-coolGray-50 border rounded border-coolGray-300">
-            <div class="text-base tracking-wide leading-normal text-coolGray-900">
-              Team 2
-            </div>
-            <div class="flex items-start justify-start">
-              <div onClick={meta.toggleSTeam2} class="cursor-pointer">
-                {meta.show.tim2 ? (
+                <div class="flex items-start justify-start">
                   <img
-                    src="/fimgs/621_447.x3.png"
-                    class="flex items-start justify-start cursor-pointer"
-                    style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                    src="/fimgs/457_1759.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
                   />
-                ) : (
+                </div>
+              </div>
+            </div>
+            <div class="flex self-stretch items-center justify-start px-6 py-3 bg-coolGray-50 rounded">
+              <div class="flex flex-1 space-x-3 items-center justify-center">
+                <div class="flex flex-1 items-start justify-start">
+                  <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                    Team 1
+                  </div>
+                </div>
+                <div class="flex items-start justify-start">
                   <img
-                    src="/fimgs/621_449.x3.png"
-                    class="flex items-start justify-start cursor-pointer"
-                    style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                    src="/fimgs/457_1759.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
                   />
-                )}
+                </div>
+              </div>
+            </div>
+            <div class="flex self-stretch items-center justify-start px-6 py-3 bg-coolGray-50 rounded">
+              <div class="flex flex-1 space-x-3 items-center justify-center">
+                <div class="flex flex-1 items-start justify-start">
+                  <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                    Team 1
+                  </div>
+                </div>
+                <div class="flex items-start justify-start">
+                  <img
+                    src="/fimgs/457_1759.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="flex self-stretch items-center justify-start px-6 py-3 bg-coolGray-50 rounded">
+              <div class="flex flex-1 space-x-3 items-center justify-center">
+                <div class="flex flex-1 items-start justify-start">
+                  <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                    Team 1
+                  </div>
+                </div>
+                <div class="flex items-start justify-start">
+                  <img
+                    src="/fimgs/457_1759.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    ) : null}
+    </div>
   </div>
 </>
