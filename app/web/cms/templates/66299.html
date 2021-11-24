@@ -182,7 +182,8 @@
         <div class="flex flex-col h-full w-full items-start justify-start">
           {meta.isActive("/pm") ||
           meta.isActive("/pm/projects") ||
-          meta.isActive("/pm/timeline") ? (
+          meta.isActive("/pm/timeline") ||
+          meta.isActive("/pm/teams") ? (
             <div
               class="flex self-stretch space-x-32 w-full px-12 items-center justify-between bg-white shadow shadow-b"
               style="height: 70px; min-height: 70px; max-height: 70px;"
@@ -261,35 +262,6 @@
               </div>
             </div>
           ) : null}
-
-          {meta.isActive("/pm/teams") && (
-            <div
-              class="flex self-stretch w-full space-x-60 px-12 items-center justify-between bg-white shadow shadow-b"
-              style="height: 70px; min-height: 70px; max-height: 70px;"
-            >
-              <div class="flex items-start justify-start">
-                <div class="text-2xl font-medium tracking-wide leading-loose text-coolGray-900">
-                  Team
-                </div>
-              </div>
-              <div class="flex space-x-14 items-center justify-start">
-                <div class="flex flex-col items-start justify-start">
-                  <button
-                    class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
-                    style="width: 133px; min-width: 133px; max-width: 133px; height: 40px; min-height: 40px; max-height: 40px;"
-                  >
-                    <img
-                      src="/fimgs/603_427.x3.png"
-                      style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                    />
-                    <div class="text-base font-medium tracking-wide leading-normal text-right text-white pl-1">
-                      Add Team
-                    </div>
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
 
           {meta.isActive("/pm/projects/projectdetails") ||
           meta.isActive("/pm/projects/task") ||
