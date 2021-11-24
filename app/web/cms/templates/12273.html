@@ -13,6 +13,7 @@
         task: "#",
         timeline: "#",
         planning: "#",
+        file: "#",
       },
     }}
     run={async () => {
@@ -31,6 +32,8 @@
             "/pm/projects/" + e.data_act.project.id + "/timeline";
           meta.link.planning =
             "/pm/projects/" + e.data_act.project.id + "/planning";
+          meta.link.file =
+            "/pm/projects/" + e.data_act.project.id + "/file-management";
         }
       });
     }}
@@ -57,27 +60,25 @@
       </div>
     </div>
     <div class="flex space-x-8 items-center justify-start">
-      <div class="flex items-start justify-start">
-        <div class="flex items-center justify-center px-4 py-2 bg-coolGray-50 rounded cursor-pointer">
-          <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
-            Project Detail
-          </div>
+      <a
+        href={meta.link.detail}
+        class="flex flex-grow items-center justify-center bg-coolGray-50 p-2 rounded"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+          Project Detail
         </div>
-      </div>
-      <div class="flex flex-col items-start justify-start">
-        <a
-          href={meta.link.task}
-          target="_blank"
-          class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
-        >
-          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-            Task
-          </div>
-        </a>
-      </div>
+      </a>
+      <a
+        href={meta.link.task}
+        class="flex flex-grow items-center justify-center p-2 rounded"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500 ">
+          Task
+        </div>
+      </a>
       <a
         href={meta.link.planning}
-        class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+        class="flex flex-grow items-center justify-center p-2 rounded"
       >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Planning
@@ -85,15 +86,23 @@
       </a>
       <a
         href={meta.link.timeline}
-        class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+        class="flex flex-grow items-center justify-center p-2 rounded"
       >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Timeline
         </div>
       </a>
       <a
+        href={meta.link.file}
+        class="flex items-center justify-center p-2 rounded"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+          File Management
+        </div>
+      </a>
+      <a
         href={meta.link.team}
-        class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+        class="flex flex-grow items-center justify-center p-2 rounded"
       >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Team

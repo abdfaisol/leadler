@@ -8,16 +8,13 @@
       data_timeline: [],
       state: {
         judul: "Loading",
-        deskripsi: "Loading",
-        label: "Loading",
-        startdate: "26/09/2021",
-        duedate: "26/09/2021",
       },
       link: {
         team: "#",
         task: "#",
         timeline: "#",
         planning: "#",
+        file: "#",
       },
       show: {
         tim1: false,
@@ -48,16 +45,14 @@
         console.log(e);
         if (e.status == true) {
           meta.state.judul = e.data_act.project.name;
-          meta.state.deskripsi = e.data_act.project.desc;
-          meta.state.label = e.data_act.project.label;
-          meta.state.startdate = e.data_act.project.startdate;
-          meta.state.dudate = e.data_act.project.duedate;
           meta.link.team = "/pm/projects/" + e.data_act.project.id + "/team";
           meta.link.task = "/pm/projects/" + e.data_act.project.id + "/task";
           meta.link.timeline =
             "/pm/projects/" + e.data_act.project.id + "/timeline";
           meta.link.planning =
             "/pm/projects/" + e.data_act.project.id + "/planning";
+          meta.link.file =
+            "/pm/projects/" + e.data_act.project.id + "/file-management";
         }
       });
 
@@ -101,27 +96,25 @@
       </div>
     </div>
     <div class="flex space-x-8 items-center justify-start">
-      <div class="flex items-start justify-start">
-        <div class="flex items-center justify-center px-4 py-2 rounded cursor-pointer">
-          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-            Project Detail
-          </div>
+      <a
+        href={meta.link.detail}
+        class="flex flex-grow items-center justify-center p-2 rounded"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+          Project Detail
         </div>
-      </div>
-      <div class="flex flex-col items-start justify-start">
-        <a
-          href={meta.link.task}
-          target="_blank"
-          class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
-        >
-          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-            Task
-          </div>
-        </a>
-      </div>
+      </a>
+      <a
+        href={meta.link.task}
+        class="flex flex-grow items-center justify-center p-2 rounded"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500 ">
+          Task
+        </div>
+      </a>
       <a
         href={meta.link.planning}
-        class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+        class="flex flex-grow items-center justify-center p-2 rounded"
       >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Planning
@@ -129,15 +122,23 @@
       </a>
       <a
         href={meta.link.timeline}
-        class="flex items-center justify-center px-4 py-2 rounded bg-coolGray-50 cursor-pointer"
+        class="flex flex-grow items-center justify-center bg-coolGray-50 p-2 rounded"
       >
         <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
           Timeline
         </div>
       </a>
       <a
+        href={meta.link.file}
+        class="flex items-center justify-center p-2 rounded"
+      >
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+          File Management
+        </div>
+      </a>
+      <a
         href={meta.link.team}
-        class="flex items-center justify-center px-4 py-2 rounded cursor-pointer"
+        class="flex flex-grow items-center justify-center p-2 rounded"
       >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Team
