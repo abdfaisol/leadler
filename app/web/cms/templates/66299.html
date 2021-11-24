@@ -229,10 +229,7 @@
         </div>
 
         <div class="flex flex-col h-full w-full items-start justify-start">
-          {meta.isActive("/pm") ||
-          meta.isActive("/pm/projects") ||
-          meta.isActive("/pm/timeline") ||
-          meta.isActive("/pm/teams") ? (
+          {meta.isActive("/pm") || meta.isActive("/pm/projects") ? (
             <div
               class="flex self-stretch space-x-32 w-full px-12 items-center justify-between bg-white shadow shadow-b"
               style="height: 70px; min-height: 70px; max-height: 70px;"
@@ -312,19 +309,22 @@
             </div>
           ) : null}
 
-          {meta.isActive("/pm/projects/projectdetails") ||
-          meta.isActive("/pm/projects/task") ||
-          meta.isActive("/pm/projects/planning") ||
-          meta.isActive("/pm/projects/timeline") ||
-          meta.isActive("/pm/projects/filemanagement") ||
-          meta.isActive("/pm/projects/team") ? (
+          {meta.isActive("/pm/projects/" + meta.state.id + "/detail") ||
+          meta.isActive("/pm/projects/" + meta.state.id + "/task") ||
+          meta.isActive("/pm/projects/" + meta.state.id + "/planning") ||
+          meta.isActive("/pm/projects/" + meta.state.id + "/timeline") ||
+          meta.isActive("/pm/projects/" + meta.state.id + "/file-management") ||
+          meta.isActive("/pm/projects/" + meta.state.id + "/team") ? (
             <div
               class="flex self-stretch space-x-32 w-full px-12 items-center justify-between bg-white shadow shadow-b"
               style="height: 70px; min-height: 70px; max-height: 70px;"
             >
               <div class="flex items-center justify-start">
                 <div class="text-2xl font-medium capitalize tracking-wide leading-loose text-coolGray-900">
-                  <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                  <a
+                    href="/pm/projects"
+                    class="flex flex-1 space-x-2 items-center justify-start cursor-pointer"
+                  >
                     <div class="flex items-center justify-start">
                       <div class="flex items-start justify-start">
                         <img
@@ -338,7 +338,7 @@
                         Back
                       </div>
                     </div>
-                  </div>
+                  </a>
                   {/*{meta.isActive("/pm") ? meta.titleNavA() : meta.titleNav()}*/}
                 </div>
               </div>
