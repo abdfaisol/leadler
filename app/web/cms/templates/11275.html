@@ -17,6 +17,9 @@
       toggleTTeam() {
         this.showTTeam = !this.showTTeam;
       },
+      togglePopup() {
+        this.showPopup = !this.showPopup;
+      },
     }}
     run={async () => {}}
   />
@@ -60,11 +63,52 @@
                     Team 1
                   </div>
                 </div>
-                <div class="flex items-start justify-start cursor-pointer">
+                <div
+                  class="flex items-start justify-start"
+                  onClick={meta.togglePopup}
+                >
                   <img
                     src="/fimgs/457_1759.x3.png"
+                    class="cursor-pointer"
                     style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
                   />
+                  {meta.showPopup && (
+                    <div class="absolute">
+                      <div
+                        class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none"
+                        style="margin-top: 20px;"
+                      >
+                        <div class="flex flex-col items-start justify-start py-4 bg-white rounded">
+                          <div class="flex items-center justify-start py-2 pl-4 rounded-bl rounded-br">
+                            <div class="flex flex-1 space-x-2 items-center justify-start">
+                              <img
+                                src="/fimgs/472_1431.x3.png"
+                                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                              />
+                              <div class="flex flex-1 items-start justify-start">
+                                <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                  Edit Team
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="flex items-center justify-start py-2 pl-4 rounded-bl rounded-br">
+                            <div class="flex flex-1 space-x-2 items-center justify-start">
+                              <img
+                                src="/fimgs/472_1436.x3.png"
+                                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                              />
+                              <div class="flex flex-1 items-start justify-start">
+                                <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                  Delete
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
