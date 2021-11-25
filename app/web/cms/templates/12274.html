@@ -13,7 +13,9 @@
         idtask: "",
         description: "",
         cost: "0",
+        taskname: "",
       },
+      dataSubTask: [],
       link: {
         detail: "#",
         team: "#",
@@ -125,17 +127,58 @@
         let name = e.target.name;
         let nilai = e.target.value;
         this.state[name] = nilai;
-        console.log(nilai);
+        // console.log(nilai);
       },
       toggleModal() {
         console.clear();
         this.showModal = !this.showModal;
+        this.dataSubTask = [];
       },
       toggleModal2() {
         this.showModal2 = !this.showModal2;
       },
       toggleAdd() {
         this.showAdd = !this.showAdd;
+      },
+      subtask(event) {
+        var elmSubtask = document.getElementById("listSubTask");
+        console.log("masuk pak eko");
+        if (this.state.taskname == "") {
+          console.log("tidak boleh kosong");
+        } else {
+          console.log(this.state.taskname);
+          elmSubtask.insertAdjacentHTML(
+            "beforeend",
+            '<div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded"> <div class="flex w-full space-x-6 items-center justify-start"> <div class="flex flex-1 items-start justify-start"> <div class="text-sm tracking-wide leading-tight">' +
+              this.state.taskname +
+              '</div> </div> <div class="flex space-x-5 items-start justify-start"> <img src="/fimgs/656_779.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> <img src="/fimgs/656_782.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> <img src="/fimgs/656_785.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> <img src="/fimgs/656_788.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> <img src="/fimgs/656_791.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> <img src="/fimgs/656_794.x3.png" class="flex items-center justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> </div> </div> </div>'
+          );
+          var dataSub = {
+            name: this.state.taskname,
+            startdate: "",
+            duedate: "",
+            status: "",
+            cstatus: "",
+            effort: "",
+            priority: "",
+            iddivision: "",
+            idtask: "",
+            description: "",
+            cost: "0",
+            taskname: "",
+          };
+          console.log(
+            "[before] panjang array dataSubTask =>" + this.dataSubTask.length
+          );
+          console.log("[proses] memasukkan data =>");
+          console.log(dataSub);
+          this.dataSubTask.push(dataSub);
+          console.log(
+            "[after] panjang array dataSubTask =>" + this.dataSubTask.length
+          );
+          console.log(this.dataSubTask);
+        }
+        event.preventDefault();
       },
       submitData(event) {
         let data = {
@@ -755,93 +798,104 @@
                       </div>
                     </div>
                     <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
-                      <div class="flex self-stretch flex-col items-center justify-start py-3.5 px-3.5 rounded">
-                        <div class="flex w-full space-x-6 items-center justify-between">
-                          <div class="flex flex-1 items-start justify-start">
-                            <div class="text-sm tracking-wide leading-tight">
-                              Landing Page
+                      <div
+                        id="listSubTask"
+                        class="flex self-stretch flex-col space-y-3 items-start justify-start"
+                      >
+                        <div class="flex self-stretch flex-col items-center justify-start py-3.5 px-3.5 rounded">
+                          <div class="flex w-full space-x-6 items-center justify-between">
+                            <div class="flex flex-1 items-start justify-start">
+                              <div class="text-sm tracking-wide leading-tight">
+                                Landing Page
+                              </div>
+                            </div>
+                            <div class="flex space-x-5 items-start justify-start">
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-green-400">
+                                  14/09/2021
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-red-400">
+                                  15/09/2021
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                  IN PROGRESS
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                  Medium
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                  5
+                                </div>
+                              </div>
                             </div>
                           </div>
-                          <div class="flex space-x-5 items-start justify-start">
-                            <div class="flex items-start justify-start">
-                              <div class="text-xs tracking-wide leading-none text-green-400">
-                                14/09/2021
+                        </div>
+                        <div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded">
+                          <div class="flex w-full space-x-6 items-center justify-start">
+                            <div class="flex flex-1 items-start justify-start">
+                              <div class="text-sm tracking-wide leading-tight">
+                                Landing Page
                               </div>
                             </div>
-                            <div class="flex items-start justify-start">
-                              <div class="text-xs tracking-wide leading-none text-red-400">
-                                15/09/2021
-                              </div>
-                            </div>
-                            <div class="flex items-start justify-start">
-                              <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                IN PROGRESS
-                              </div>
-                            </div>
-                            <div class="flex items-start justify-start">
-                              <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                Medium
-                              </div>
-                            </div>
-                            <div class="flex items-start justify-start">
-                              <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                5
-                              </div>
+                            <div class="flex space-x-5 items-start justify-start">
+                              <img
+                                src="/fimgs/656_779.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_782.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_785.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_788.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_791.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_794.x3.png"
+                                class="flex items-center justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded">
-                        <div class="flex w-full space-x-6 items-center justify-start">
-                          <div class="flex flex-1 items-start justify-start">
-                            <div class="text-sm tracking-wide leading-tight">
-                              Landing Page
-                            </div>
-                          </div>
-                          <div class="flex space-x-5 items-start justify-start">
-                            <img
-                              src="/fimgs/656_779.x3.png"
-                              class="flex items-start justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                            <img
-                              src="/fimgs/656_782.x3.png"
-                              class="flex items-start justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                            <img
-                              src="/fimgs/656_785.x3.png"
-                              class="flex items-start justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                            <img
-                              src="/fimgs/656_788.x3.png"
-                              class="flex items-start justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                            <img
-                              src="/fimgs/656_791.x3.png"
-                              class="flex items-start justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                            <img
-                              src="/fimgs/656_794.x3.png"
-                              class="flex items-center justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                          </div>
-                        </div>
-                      </div>
+
                       <div class="flex self-stretch items-center justify-start">
-                        <div class="relative flex flex-1 items-center justify-start">
+                        <form
+                          onSubmit={meta.subtask}
+                          class="relative flex flex-1 items-center justify-start"
+                        >
                           <input
                             id="name"
                             name="taskname"
                             type="text"
+                            onSubmit={meta.subtask}
                             placeholder="Create Subtask"
+                            onChange={meta.ubahNilai}
                             class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
                           />
-                        </div>
+                        </form>
                       </div>
                     </div>
                   </div>
@@ -1086,93 +1140,102 @@
                       </div>
                     </div>
                     <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
-                      <div class="flex self-stretch flex-col items-center justify-start py-3.5 px-3.5 rounded">
-                        <div class="flex w-full space-x-6 items-center justify-between">
-                          <div class="flex flex-1 items-start justify-start">
-                            <div class="text-sm tracking-wide leading-tight">
-                              Landing Page
-                            </div>
-                          </div>
-                          <div class="flex space-x-5 items-start justify-start">
-                            <div class="flex items-start justify-start">
-                              <div class="text-xs tracking-wide leading-none text-green-400">
-                                14/09/2021
+                      <div
+                        id="listSubtask"
+                        class="flex self-stretch flex-col space-y-3 items-start justify-start"
+                      >
+                        <div class="flex self-stretch flex-col items-center justify-start py-3.5 px-3.5 rounded">
+                          <div class="flex w-full space-x-6 items-center justify-between">
+                            <div class="flex flex-1 items-start justify-start">
+                              <div class="text-sm tracking-wide leading-tight">
+                                Landing Page
                               </div>
                             </div>
-                            <div class="flex items-start justify-start">
-                              <div class="text-xs tracking-wide leading-none text-red-400">
-                                15/09/2021
+                            <div class="flex space-x-5 items-start justify-start">
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-green-400">
+                                  14/09/2021
+                                </div>
                               </div>
-                            </div>
-                            <div class="flex items-start justify-start">
-                              <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                IN PROGRESS
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-red-400">
+                                  15/09/2021
+                                </div>
                               </div>
-                            </div>
-                            <div class="flex items-start justify-start">
-                              <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                Medium
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                  IN PROGRESS
+                                </div>
                               </div>
-                            </div>
-                            <div class="flex items-start justify-start">
-                              <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                5
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                  Medium
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                  5
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded">
-                        <div class="flex w-full space-x-6 items-center justify-start">
-                          <div class="flex flex-1 items-start justify-start">
-                            <div class="text-sm tracking-wide leading-tight">
-                              Landing Page
+                        <div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded">
+                          <div class="flex w-full space-x-6 items-center justify-start">
+                            <div class="flex flex-1 items-start justify-start">
+                              <div class="text-sm tracking-wide leading-tight">
+                                Landing Page
+                              </div>
                             </div>
-                          </div>
-                          <div class="flex space-x-5 items-start justify-start">
-                            <img
-                              src="/fimgs/656_779.x3.png"
-                              class="flex items-start justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                            <img
-                              src="/fimgs/656_782.x3.png"
-                              class="flex items-start justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                            <img
-                              src="/fimgs/656_785.x3.png"
-                              class="flex items-start justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                            <img
-                              src="/fimgs/656_788.x3.png"
-                              class="flex items-start justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                            <img
-                              src="/fimgs/656_791.x3.png"
-                              class="flex items-start justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                            <img
-                              src="/fimgs/656_794.x3.png"
-                              class="flex items-center justify-start"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
+                            <div class="flex space-x-5 items-start justify-start">
+                              <img
+                                src="/fimgs/656_779.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_782.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_785.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_788.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_791.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_794.x3.png"
+                                class="flex items-center justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div class="flex self-stretch items-center justify-start pb-6">
-                        <div class="relative flex flex-1 items-center justify-start">
+                        <form
+                          onSubmit={meta.subtask}
+                          class="relative flex flex-1 items-center justify-start"
+                        >
                           <input
-                            id="name"
+                            id="subtask"
                             name="taskname"
                             type="text"
                             placeholder="Create Subtask"
+                            onChange={meta.ubahNilai}
                             class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
                           />
-                        </div>
+                        </form>
                       </div>
                     </div>
                     <div class="w-full flex flex-col space-y-6 items-start justify-start">
