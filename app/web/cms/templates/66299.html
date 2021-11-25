@@ -229,7 +229,10 @@
         </div>
 
         <div class="flex flex-col h-full w-full items-start justify-start">
-          {meta.isActive("/pm") || meta.isActive("/pm/projects") ? (
+          {meta.isActive("/pm") ||
+          meta.isActive("/pm/projects") ||
+          meta.isActive("/pm/teams") ||
+          meta.isActive("/pm/timeline") ? (
             <div
               class="flex self-stretch space-x-32 w-full px-12 items-center justify-between bg-white shadow shadow-b"
               style="height: 70px; min-height: 70px; max-height: 70px;"
