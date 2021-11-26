@@ -28,9 +28,28 @@
           },
         }).then((e) => {
           if (e.status == false) {
+            console.log("gagal");
             console.log(e);
             this.isFilled = this.isFilled;
             this.showModal = !this.showModal;
+            event.preventDefault();
+          } else {
+            console.log(e);
+          }
+        });
+        // event.preventDefault();
+      },
+      deleteData(event, id) {
+        // ID Diisi dengan format integer
+        // console.log(id);
+        api("/api/department/delete", {
+          data: {
+            iddepartment: parseInt(id),
+          },
+        }).then((e) => {
+          if (e.status == false) {
+            console.log("gagal");
+            console.log(e);
             event.preventDefault();
           } else {
             console.log(e);
@@ -103,14 +122,17 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y-4 divide-gray-50">
-                  {meta.data_department?.map((e, idx) => {
+                  {Object.keys(meta.data_department).map((e, idx) => {
+                    let idData = meta.data_department[e].id;
                     return (
                       <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-start">
                           <div class="text-sm text-gray-900">{idx + 1}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-start">
-                          <div class="text-sm text-gray-900">{e.name}</div>
+                          <div class="text-sm text-gray-900">
+                            {meta.data_department[e].name}
+                          </div>
                         </td>
                         <td class="px-6 py-2 whitespace-nowrap text-center text-sm font-medium">
                           <div class="flex flex-1 space-x-4 items-start justify-start">
@@ -120,12 +142,19 @@
                                 src="/fimgs/295_279.x3.png"
                               />
                             </div>
-                            <div class="cursor-pointer">
-                              <img
-                                style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                                src="/fimgs/295_281.x3.png"
-                              />
-                            </div>
+                            <form
+                              onSubmit={(e) => {
+                                meta.deleteData(e, idData);
+                              }}
+                              class="cursor-pointer"
+                            >
+                              <button>
+                                <img
+                                  style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                                  src="/fimgs/295_281.x3.png"
+                                />
+                              </button>
+                            </form>
                           </div>
                         </td>
                       </tr>
@@ -193,7 +222,7 @@
               </div>
               <form
                 class="flex flex-1 self-stretch flex-col items-start justify-start"
-                onSubmit={meta.filled}
+                onSubmit={meta.submitData}
               >
                 <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
                   <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">

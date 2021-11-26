@@ -71,61 +71,66 @@
           month: "11",
           year: "2021",
         },
-      }).then((e) => {
-        // console.log(e);
-        if (e.status == true) {
-          e.data_act.timeline.map((e) => {
-            console.log(e);
-            console.log(
-              e.startdate.split("-")[0] + "-" + e.startdate.split("-")[1]
-            );
-            var startDateku = new Date(
-              e.startdate.split("-")[0],
-              parseInt(e.startdate.split("-")[1]) - 1
-            );
-            var dueDateku = new Date(
-              e.duedate.split("-")[0],
-              parseInt(e.duedate.split("-")[1]) - 1
-            );
-            var dateku = new Date(
-              meta.time.year,
-              parseInt(meta.time.month) - 1
-            );
-            console.log("tanggal mulai " + startDateku);
-            console.log("tanggal akhir " + dueDateku);
-            console.log("waktu yang dipilih " + dateku);
-            var label = [];
-            if (dateku >= startDateku) {
-              if (dateku < dueDateku) {
-                for (let i = 1; i <= 4; i++) {
-                  label[i] = "flex-grow bg-blue-300 border border-coolGray-300";
-                }
-              } else {
-                var startWeek = parseInt(e.startweeks);
-                var dueWeek = parseInt(e.dueweeks);
-                console.log(startWeek + " and " + dueWeek);
-                for (let i = 1; i <= 4; i++) {
-                  console.log(i);
-                  var tes = true;
-                  if (i >= startWeek && i <= dueWeek) {
+      })
+        .then((e) => {
+          // console.log(e);
+          if (e.status == true) {
+            e.data_act.timeline.map((e) => {
+              console.log(e);
+              console.log(
+                e.startdate.split("-")[0] + "-" + e.startdate.split("-")[1]
+              );
+              var startDateku = new Date(
+                e.startdate.split("-")[0],
+                parseInt(e.startdate.split("-")[1]) - 1
+              );
+              var dueDateku = new Date(
+                e.duedate.split("-")[0],
+                parseInt(e.duedate.split("-")[1]) - 1
+              );
+              var dateku = new Date(
+                meta.time.year,
+                parseInt(meta.time.month) - 1
+              );
+              console.log("tanggal mulai " + startDateku);
+              console.log("tanggal akhir " + dueDateku);
+              console.log("waktu yang dipilih " + dateku);
+              var label = [];
+              if (dateku >= startDateku) {
+                if (dateku < dueDateku) {
+                  for (let i = 1; i <= 4; i++) {
                     label[i] =
                       "flex-grow bg-blue-300 border border-coolGray-300";
-                  } else {
-                    tes = false;
-                    label[i] = "flex-grow border border-coolGray-300";
                   }
-                  console.log(tes);
+                } else {
+                  var startWeek = parseInt(e.startweeks);
+                  var dueWeek = parseInt(e.dueweeks);
+                  console.log(startWeek + " and " + dueWeek);
+                  for (let i = 1; i <= 4; i++) {
+                    console.log(i);
+                    var tes = true;
+                    if (i >= startWeek && i <= dueWeek) {
+                      label[i] =
+                        "flex-grow bg-blue-300 border border-coolGray-300";
+                    } else {
+                      tes = false;
+                      label[i] = "flex-grow border border-coolGray-300";
+                    }
+                    console.log(tes);
+                  }
                 }
+                e.labelTime = label;
+                console.log(label);
+                console.log(e);
               }
-              e.labelTime = label;
-              console.log(label);
-              console.log(e);
-            }
-          });
-          meta.data_timeline = e.data_act.timeline;
+            });
+            meta.data_timeline = e.data_act.timeline;
+            console.log(e);
+          }
+        })
+        .catch((e) => {
           console.log(e);
-        }
-      });
+        });
 
       console.log("Akhir:");
     }}

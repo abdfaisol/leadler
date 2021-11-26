@@ -90,13 +90,13 @@
         }).then((e) => {
           if (e.status == false) {
             console.log(e);
-            // this.isFilled = this.isFilled;
-            // this.showModal = !this.showModal;
+            this.isFilled = this.isFilled;
+            this.showModal = !this.showModal;
+            event.preventDefault();
           } else {
             console.log(e);
           }
         });
-        event.preventDefault();
       },
       dataProjek() {
         let result = [];
@@ -109,7 +109,8 @@
     run={async () => {
       var data_i = meta.dataProjek();
       api("/api/employee").then((e) => {
-        meta.data_projek = data_i.result.data_act;
+        console.log(e);
+        meta.data_projek = e.data_act;
       });
       console.log(data_i.result);
       meta.actiongender = {
@@ -225,14 +226,16 @@
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y-4 divide-gray-50">
-                    {meta.data_projek.map((e, idx) => {
+                    {Object.keys(meta.data_projek).map((e, idx) => {
                       return (
                         <tr>
                           <td class="px-6 py-4 whitespace-nowrap text-center">
                             <div class="text-sm text-gray-900">{idx + 1}</div>
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap text-start">
-                            <div class="text-sm text-gray-900">{e.email}</div>
+                            <div class="text-sm text-gray-900">
+                              {meta.data_projek[e].email}
+                            </div>
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap text-start">
                             <div class="text-sm text-gray-900">
@@ -244,7 +247,7 @@
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap text-start">
                             <div class="text-sm text-gray-900">
-                              {e.muser_role.name}
+                              {meta.data_projek[e].muser_role.name}
                             </div>
                           </td>
                           <td class="px-6 py-2 whitespace-nowrap text-center text-sm font-medium">
