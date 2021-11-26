@@ -20,6 +20,11 @@
         title = title.replace("/admin", "");
         return title;
       },
+      titleNavPM() {
+        var title = "Project Manager";
+        title = title.replace("/division/pm", "");
+        return title;
+      },
       titleNav() {
         var title = window.location.pathname;
         title = title.replace("/admin/", "");
@@ -140,16 +145,16 @@
               </div>
               <div
                 class={`${meta.isActive(
-                  "/admin/departements"
+                  "/admin/departement"
                 )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
               >
                 <a
-                  href="/admin/departements"
+                  href="/admin/departement"
                   class="flex self-stretch space-x-4 items-center justify-center py-2 px-2 rounded cursor-pointer"
                 >
                   <img
                     src={
-                      meta.isActive("/admin/departements")
+                      meta.isActive("/admin/departement")
                         ? "/fimgs/603_429.x3.png"
                         : "/fimgs/603_428.x3.png"
                     }
@@ -159,12 +164,74 @@
                   <div class="flex flex-1 items-start justify-start">
                     <div
                       class={
-                        meta.isActive("/admin/departements")
+                        meta.isActive("/admin/departement")
                           ? "text-base tracking-wide leading-normal text-blue-700"
                           : "text-base tracking-wide leading-normal text-coolGray-500"
                       }
                     >
-                      Departements
+                      Departement
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div
+                class={`${meta.isActive(
+                  "/admin/division"
+                )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
+              >
+                <a
+                  href="/admin/division"
+                  class="flex self-stretch space-x-4 items-center justify-center py-2 px-2 rounded cursor-pointer"
+                >
+                  <img
+                    src={
+                      meta.isActive("/admin/division")
+                        ? "/fimgs/603_429.x3.png"
+                        : "/fimgs/603_428.x3.png"
+                    }
+                    class="flex items-start justify-start"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                  <div class="flex flex-1 items-start justify-start">
+                    <div
+                      class={
+                        meta.isActive("/admin/division")
+                          ? "text-base tracking-wide leading-normal text-blue-700"
+                          : "text-base tracking-wide leading-normal text-coolGray-500"
+                      }
+                    >
+                      Division
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div
+                class={`${meta.isActive(
+                  "/admin/pm"
+                )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
+              >
+                <a
+                  href="/admin/pm"
+                  class="flex self-stretch space-x-4 items-center justify-center py-2 px-2 cursor-pointer"
+                >
+                  <img
+                    src={
+                      meta.isActive("/admin/pm")
+                        ? "/fimgs/603_429.x3.png"
+                        : "/fimgs/603_428.x3.png"
+                    }
+                    class="flex items-start justify-start"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                  <div class="flex flex-1 items-start justify-start">
+                    <div
+                      class={
+                        meta.isActive("/admin/pm")
+                          ? "text-base tracking-wide leading-normal text-blue-700"
+                          : "text-base tracking-wide leading-normal text-coolGray-500"
+                      }
+                    >
+                      Project Manager
                     </div>
                   </div>
                 </a>
@@ -180,7 +247,11 @@
           >
             <div class="flex items-center justify-start">
               <div class="text-2xl font-medium capitalize tracking-wide leading-loose text-coolGray-900">
-                {meta.isActive("/admin") ? meta.titleNavA() : meta.titleNav()}
+                {meta.isActive("/admin")
+                  ? meta.titleNavA()
+                  : meta.isActive("/admin/pm")
+                  ? meta.titleNavPM()
+                  : meta.titleNav()}
               </div>
             </div>
             <div class="flex space-x-14 items-center justify-end">
