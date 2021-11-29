@@ -9,28 +9,75 @@
         planning: "#",
         file: "#",
       },
+      listFile: [],
       state: {
         judul: "Loading",
+        name: "#",
+        file: {
+          status: false,
+          path: "#",
+        },
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        // console.log(nilai);
       },
       responseUpload: "",
       upload: async (file) => {
         const formData = _FormData();
-
         formData.append("path", "users\\" + params.id);
         formData.append("file", file);
-
         const response = await fetch("/api/upload", {
           method: "POST",
           body: formData,
         });
-        console.log(await response.json());
-        // return await response.json();
+        return await response.json();
       },
       toggleModal() {
         this.showModal = !this.showModal;
+        this.state.file.status = false;
       },
       toggleModal1() {
         this.showModal1 = !this.showModal1;
+      },
+      submitData(event) {
+        if (
+          this.state.file.status == false ||
+          this.state.file.status == "false"
+        ) {
+          console.log("upload gagal, silahkan upload ulang");
+        } else {
+          console.log("Upload berhasil");
+          let data = {
+            name: this.state.name,
+            url: this.state.file.path,
+            idproject: params.id,
+          };
+          console.log("bersiap upload data");
+          console.log(data);
+          console.log("upload data");
+          api("/api/project/upload/create", {
+            data: data,
+          }).then((e) => {
+            if (e.status == false) {
+              console.log("failed");
+              console.log(e);
+              console.log(data);
+            } else {
+              console.log("Success");
+              console.log(e);
+              console.log(data);
+              this.isFilled = this.isFilled;
+              this.showModal = !this.showModal;
+              location.reload();
+            }
+          });
+        }
+        this.state.file.status = false;
+
+        event.preventDefault();
       },
     }}
     run={async () => {
@@ -45,6 +92,18 @@
           meta.link.timeline = "/pm/projects/" + params.id + "/timeline";
           meta.link.planning = "/pm/projects/" + params.id + "/planning";
           meta.link.file = "/pm/projects/" + params.id + "/file-management";
+        }
+      });
+
+      api("/api/project/upload", {
+        data: {
+          idproject: params.id,
+          iddivision: 0,
+        },
+      }).then((e) => {
+        console.log(e);
+        if (e.status == true) {
+          meta.listFile = e.data_act;
         }
       });
     }}
@@ -252,6 +311,93 @@
             </>
           ) : null}
         </div>
+        {Object.keys(meta.listFile).map((e, idx) => {
+          var fileUrl = "/upload/" + meta.listFile[e].url;
+          return (
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col items-start justify-start border rounded border-coolGray-300">
+                <img
+                  src={fileUrl}
+                  style="width: 338px; min-width: 338px; max-width: 338px; height: 232px; min-height: 232px; max-height: 232px;"
+                />
+                <div class="flex self-stretch space-x-2.5 items-center justify-center p-4 bg-white shadow-inner rounded-bl rounded-br">
+                  <div class="flex flex-1 space-x-2.5 items-center justify-start">
+                    <img
+                      src="/fimgs/398_733.x3.png"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                    />
+                    <div class="flex flex-1 items-start justify-start">
+                      <div class="text-xs tracking-wide leading-none text-coolGray-900">
+                        {meta.listFile[e].name}
+                      </div>
+                    </div>
+                  </div>
+                  <img
+                    src="/fimgs/398_736.x3.png"
+                    onClick={meta.toggleModal1}
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                </div>
+              </div>
+              {meta.showModal1 ? (
+                <>
+                  <div
+                    class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative"
+                    style="width: 187px; min-width: 187px; max-width: 187px; height: 136px; min-height: 136px; max-height: 136px;"
+                  >
+                    <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
+                      <div class="flex items-center justify-start py-2 pl-4 rounded-tl rounded-tr">
+                        <div class="flex flex-1 space-x-2 items-center justify-start">
+                          <img
+                            src="/fimgs/404_669.x3.png"
+                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                          />
+                          <div class="flex flex-1 items-start justify-start">
+                            <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                              View Detail
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch items-center justify-start py-2 pl-4 bg-coolGray-50">
+                        <a
+                          href={fileUrl}
+                          target="_blank"
+                          class="flex flex-1 space-x-2 items-center justify-start"
+                        >
+                          <img
+                            src="/fimgs/404_674.x3.png"
+                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                          />
+                          <div class="flex flex-1 items-start justify-start">
+                            <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                              Download
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="border-coolGray-300" />
+                      <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br">
+                        <div class="flex flex-1 space-x-2 items-center justify-start">
+                          <img
+                            src="/fimgs/404_679.x3.png"
+                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                          />
+                          <div class="flex flex-1 items-start justify-start">
+                            <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                              Delete
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
+                </>
+              ) : null}
+            </div>
+          );
+        })}
       </div>
     </div>
   </div>
@@ -291,7 +437,7 @@
               </div>
               <form
                 class="flex flex-1 self-stretch flex-col items-start justify-start"
-                onSubmit={meta.filled}
+                onSubmit={meta.submitData}
               >
                 <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
                   <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
@@ -305,8 +451,9 @@
                       <div class="relative flex flex-1 items-center justify-start">
                         <input
                           id="name"
-                          name="title"
+                          name="name"
                           type="text"
+                          onChange={meta.ubahNilai}
                           placeholder="Landing Page"
                           class="text-base relative w-full border rounded placeholder-coolGray-900 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
                         />
@@ -337,7 +484,7 @@
                               const upload = await meta.upload(
                                 e.target.files[0]
                               );
-                              meta.responseUpload = upload;
+                              meta.state.file = upload;
                             });
                           }}
                         />
