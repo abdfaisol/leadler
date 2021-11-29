@@ -3,6 +3,6 @@ import "react-sweet-progress/lib/style.css";
 
 export default () => (
   <>
-    <Progress percent={69}/>
+    <Progress percent={69} style="z-index: 0;"/>
   </>
 );

@@ -241,8 +241,8 @@
           onClick={meta.toggleAllproject}
           class={
             meta.pilih.allproject
-              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
-              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+              ? "flex flex-grow items-center justify-center px-2 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-2 py-2 rounded cursor-pointer"
           }
         >
           <div
@@ -259,8 +259,8 @@
           onClick={meta.toggleInprogress}
           class={
             meta.pilih.inprogress
-              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
-              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+              ? "flex flex-grow items-center justify-center px-2 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-2 py-2 rounded cursor-pointer"
           }
         >
           <div
@@ -277,8 +277,8 @@
           onClick={meta.toggleComplete}
           class={
             meta.pilih.complete
-              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
-              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+              ? "flex flex-grow items-center justify-center px-2 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-2 py-2 rounded cursor-pointer"
           }
         >
           <div
@@ -295,8 +295,8 @@
           onClick={meta.toggleUnfinish}
           class={
             meta.pilih.unfinish
-              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
-              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+              ? "flex flex-grow items-center justify-center px-2 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-2 py-2 rounded cursor-pointer"
           }
         >
           <div
@@ -313,8 +313,8 @@
           onClick={meta.toggleNextproject}
           class={
             meta.pilih.nextproject
-              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
-              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+              ? "flex flex-grow items-center justify-center px-2 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-2 py-2 rounded cursor-pointer"
           }
         >
           <div
@@ -346,54 +346,44 @@
       </div>
     </div>
     <div class="flex self-stretch flex-wrap space-y-9 items-start justify-start">
-      <div
-        class="flex self-stretch space-x-8 flex-wrap items-start justify-start"
-        style="height: 244px; min-height: 244px; max-height: 244px;"
-      >
+      <div class="flex self-stretch flex-wrap items-start justify-start">
         {meta.data_projek.map((e) => {
           return (
-            <div
-              class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
-              style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
-            >
+            <div class="mb-8" style="margin-right: 22px;">
               <div
-                class="flex self-stretch flex-col space-y-8 items-start justify-start"
-                style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
+                class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                style="width: 293px; min-width: 293px; max-width: 293px; height: 244px; min-height: 244px; max-height: 244px;"
               >
-                <div
-                  class="flex self-stretch items-start justify-between"
-                  style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
-                >
-                  <div class="flex items-center justify-start">
-                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
-                      Tim 6
-                    </div>
-                  </div>
-                  <img
-                    src="/fimgs/609_876.x3.png"
-                    class="flex items-start justify-start"
-                    style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                </div>
-                <div
-                  class="flex self-stretch flex-col space-y-6 items-start justify-start"
-                  style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
-                >
-                  <div class="flex self-stretch items-start justify-start">
-                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                      {e.name}
-                    </div>
-                  </div>
-                  <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                    <bar />
-                    <div class="flex self-stretch items-start justify-start">
-                      <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                        10 Task Done
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-between">
+                    <div class="flex items-center justify-start">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                        Tim 6
                       </div>
                     </div>
+                    <img
+                      src="/fimgs/609_876.x3.png"
+                      class="flex items-start justify-start"
+                      style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                    />
+                  </div>
+                  <div class="flex self-stretch flex-col space-y-6 items-start justify-start">
                     <div class="flex self-stretch items-start justify-start">
-                      <div class="text-sm tracking-wide leading-tight">
-                        Due Date: 25/09/2021
+                      <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                        {e.name}
+                      </div>
+                    </div>
+                    <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                      <bar />
+                      <div class="flex self-stretch items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                          10 Task Done
+                        </div>
+                      </div>
+                      <div class="flex self-stretch items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight">
+                          Due Date: 25/09/2021
+                        </div>
                       </div>
                     </div>
                   </div>
