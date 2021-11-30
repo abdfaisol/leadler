@@ -30,6 +30,7 @@
         console.log(e);
         if (e.status == true) {
           console.log(e.data_act.project_task);
+          meta.state.judul = e.data_act.project.name;
           meta.data_task = e.data_act.project_task;
           meta.link.detail = "/pm/projects/" + params.id + "/detail";
           meta.link.team = "/pm/projects/" + params.id + "/team";
@@ -42,10 +43,10 @@
     }}
   />
   <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
-    <div class="flex space-x-72 items-start justify-start">
+    <div class="flex self-stretch space-x-72 items-start justify-between">
       <div class="flex items-start justify-start">
         <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
-          Pengembangan Aplikasi UMKM Kota Semarang
+          {meta.state.judul}
         </div>
       </div>
       <div class="flex flex-col space-y-2 items-start justify-start">
@@ -66,7 +67,7 @@
       <div class="flex items-start justify-start">
         <a
           href={meta.link.detail}
-          class="flex items-center justify-center px-4 py-2 rounded"
+          class="flex items-center justify-center p-2 rounded"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Project Detail
@@ -76,7 +77,7 @@
       <div class="flex flex-col items-start justify-start">
         <a
           href={meta.link.task}
-          class="flex items-center justify-center px-4 py-2 rounded"
+          class="flex items-center justify-center p-2 rounded"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Task
@@ -85,7 +86,7 @@
       </div>
       <a
         href={meta.link.planning}
-        class="flex items-center justify-center px-4 bg-coolGray-50 py-2 rounded"
+        class="flex items-center justify-center bg-coolGray-50 p-2 rounded"
       >
         <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
           Planning
@@ -93,7 +94,7 @@
       </a>
       <a
         href={meta.link.timeline}
-        class="flex items-center justify-center px-4 py-2 rounded"
+        class="flex items-center justify-center p-2 rounded"
       >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Timeline
@@ -101,7 +102,7 @@
       </a>
       <a
         href={meta.link.file}
-        class="flex items-center justify-center px-4 py-2 rounded"
+        class="flex items-center justify-center p-2 rounded"
       >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           File Management
@@ -109,7 +110,7 @@
       </a>
       <a
         href={meta.link.team}
-        class="flex items-center justify-center px-4 py-2 rounded"
+        class="flex items-center justify-center p-2 rounded"
       >
         <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
           Team
@@ -155,17 +156,6 @@
             <div class="flex items-center justify-between">
               <div class="flex flex-col space-y-6 items-start justify-start">
                 <div class="flex flex-col space-y-6 items-start justify-start">
-                  <div class="flex self-stretch flex-col items-end justify-end">
-                    <div
-                      class="flex self-stretch flex-col items-end justify-start"
-                      style="width: 35px; min-width: 35px; max-width: 35px; height: 35px; min-height: 35px; max-height: 35px;"
-                    >
-                      <img
-                        src="/fimgs/5_461.x3.png"
-                        class="flex items-start justify-start p-2.5 bg-indigo-500 rounded-full"
-                      />
-                    </div>
-                  </div>
                   <div class="flex self-stretch space-x-3 items-center justify-center px-4 py-4 bg-indigo-400">
                     <div class="flex items-start justify-start">
                       <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
@@ -218,15 +208,15 @@
                                     </span>
                                   </div>
                                 </div>
-                                <div class="flex space-x-1 items-start justify-start">
-                                  <img
-                                    src="/fimgs/426_933.x2.png"
-                                    class="flex items-start justify-start"
-                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                  />
-                                  <div class="flex items-start justify-start">
-                                    <div class="text-xs tracking-wide leading-none text-center text-indigo-500">
-                                      4 Files
+                                <div class="flex self-stretch space-x-4 items-start justify-start">
+                                  <div class="flex items-center justify-center px-1 bg-indigo-500 rounded-full">
+                                    <div class="text-xs tracking-wide leading-none text-center text-white">
+                                      Medium
+                                    </div>
+                                  </div>
+                                  <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
+                                    <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                      5
                                     </div>
                                   </div>
                                 </div>
