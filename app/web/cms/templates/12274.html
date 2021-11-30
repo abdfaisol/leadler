@@ -42,9 +42,9 @@
         { value: "H", label: "High" },
       ],
       taskv: [
-        { value: "1", label: "1" },
-        { value: "2", label: "2" },
-        { value: "3", label: "3" },
+        { value: "1", label: "1 (Easy)" },
+        { value: "2", label: "2 (Intermediate)" },
+        { value: "3", label: "3 (Hard)" },
       ],
       statusx: [
         { value: "1", label: "TODO", color: "#4ADE80" },
@@ -141,6 +141,15 @@
       toggleAdd() {
         this.showAdd = !this.showAdd;
       },
+      removeSubtask() {
+        var list = document.getElementById("fsubtask");
+        list.remove();
+      },
+      delete(id) {
+        this.setState((prevState) => ({
+          data: prevState.data.filter((el) => el != id),
+        }));
+      },
       subtask(event) {
         var elmSubtask = document.getElementById("listSubTask");
         console.log("masuk pak eko");
@@ -150,9 +159,18 @@
           console.log(this.state.taskname);
           elmSubtask.insertAdjacentHTML(
             "beforeend",
-            '<div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded"> <div class="flex w-full space-x-6 items-center justify-start"> <div class="flex flex-1 items-start justify-start"> <div class="text-sm tracking-wide leading-tight">' +
+            '<div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded" id="fsubtask"> <div class="flex w-full space-x-6 items-center justify-start"> <div class="flex flex-1 items-start justify-start"> <div class="text-sm tracking-wide leading-tight">' +
               this.state.taskname +
-              '</div> </div> <div class="flex space-x-5 items-start justify-start"> <img src="/fimgs/656_779.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> <img src="/fimgs/656_782.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> <img src="/fimgs/656_785.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> <img src="/fimgs/656_788.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> <img src="/fimgs/656_791.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> <img src="/fimgs/656_794.x3.png" class="flex items-center justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> </div> </div> </div>'
+              '</div> </div> <div class="flex space-x-5 items-start justify-start">' +
+              '<div class="cursor-pointer"' +
+              "onClick=" +
+              this.removeSubtask +
+              ">" +
+              '<img src="/fimgs/295_279.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> </div>' +
+              '<div class="cursor-pointer"' +
+              "onClick=" +
+              ">" +
+              '<img src="/fimgs/656_794.x3.png" class="flex items-center justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> </div> </div> </div> </div>'
           );
           var dataSub = {
             name: this.state.taskname,
@@ -812,85 +830,7 @@
                       <div
                         id="listSubTask"
                         class="flex self-stretch flex-col space-y-3 items-start justify-start"
-                      >
-                        <div class="flex self-stretch flex-col items-center justify-start py-3.5 px-3.5 rounded">
-                          <div class="flex w-full space-x-6 items-center justify-between">
-                            <div class="flex flex-1 items-start justify-start">
-                              <div class="text-sm tracking-wide leading-tight">
-                                Landing Page
-                              </div>
-                            </div>
-                            <div class="flex space-x-5 items-start justify-start">
-                              <div class="flex items-start justify-start">
-                                <div class="text-xs tracking-wide leading-none text-green-400">
-                                  14/09/2021
-                                </div>
-                              </div>
-                              <div class="flex items-start justify-start">
-                                <div class="text-xs tracking-wide leading-none text-red-400">
-                                  15/09/2021
-                                </div>
-                              </div>
-                              <div class="flex items-start justify-start">
-                                <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                  IN PROGRESS
-                                </div>
-                              </div>
-                              <div class="flex items-start justify-start">
-                                <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                  Medium
-                                </div>
-                              </div>
-                              <div class="flex items-start justify-start">
-                                <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                  5
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded">
-                          <div class="flex w-full space-x-6 items-center justify-start">
-                            <div class="flex flex-1 items-start justify-start">
-                              <div class="text-sm tracking-wide leading-tight">
-                                Landing Page
-                              </div>
-                            </div>
-                            <div class="flex space-x-5 items-start justify-start">
-                              <img
-                                src="/fimgs/656_779.x3.png"
-                                class="flex items-start justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                              />
-                              <img
-                                src="/fimgs/656_782.x3.png"
-                                class="flex items-start justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                              />
-                              <img
-                                src="/fimgs/656_785.x3.png"
-                                class="flex items-start justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                              />
-                              <img
-                                src="/fimgs/656_788.x3.png"
-                                class="flex items-start justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                              />
-                              <img
-                                src="/fimgs/656_791.x3.png"
-                                class="flex items-start justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                              />
-                              <img
-                                src="/fimgs/656_794.x3.png"
-                                class="flex items-center justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      ></div>
 
                       <div class="flex self-stretch items-center justify-start">
                         <form
