@@ -37,7 +37,7 @@
     <div class="flex flex-col h-full w-full items-start justify-start bg-coolGray-50">
       <div class="flex flex-1 h-full w-full self-stretch items-center justify-start">
         {/*Sidebar*/}
-        <div class="flex self-stretch flex-col items-start justify-start pl-8 pr-16  bg-white shadow shadow-r z-10">
+        <div class="flex self-stretch flex-col items-start justify-start pl-8 pr-10 bg-white shadow shadow-r z-10">
           <div class="flex flex-col items-start justify-start">
             <div class="mb-20" style="margin-bottom: 59px; margin-top: 20px;">
               <img
@@ -46,10 +46,7 @@
               />
             </div>
 
-            <div
-              class="flex flex-col space-y-10 items-start justify-start"
-              style="width: 172px; min-width: 172px; max-width: 172px; height: 120px; min-height: 120px; max-height: 120px;"
-            >
+            <div class="flex flex-col space-y-10 items-start justify-start">
               <div
                 class={`${meta.isActive(
                   "/admin"
@@ -208,7 +205,7 @@
               <div
                 class={`${meta.isActive(
                   "/admin/pm"
-                )} flex self-stretch flex-col items-start justify-start w-10 rounded hover:bg-violet-50`}
+                )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
               >
                 <a
                   href="/admin/pm"
@@ -223,7 +220,7 @@
                     class="flex items-start justify-start"
                     style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
                   />
-                  <div class="flex flex-1 items-start justify-start">
+                  <div class="flex flex-1 items-start justify-start w-32">
                     <div
                       class={
                         meta.isActive("/admin/pm")
