@@ -4,7 +4,9 @@
       data_projek: "",
       member: "",
       name: "",
+
       team: "",
+      selectedMonth: null,
       show: {
         tim1: false,
         tim2: false,
@@ -27,6 +29,70 @@
       },
       toggleSTeam2() {
         this.show.tim2 = !this.show.tim2;
+      },
+      setMonth(newMonth) {
+        if (this.selectedMonth == null) {
+          this.selectedMonth = new Date();
+          const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          var yyyy = this.selectedMonth.getFullYear();
+          this.selectedMonth =
+            months[this.selectedMonth.getMonth()] + " " + yyyy;
+        } else {
+          this.selectedMonth = newMonth;
+          const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          var yyyy = this.selectedMonth.getFullYear();
+
+          this.selectedMonth =
+            months[this.selectedMonth.getMonth()] + " " + yyyy;
+        }
+      },
+      getPreviousMonth() {
+        const currentMonthInMilli = new Date(this.selectedMonth).getTime();
+        const oneMonth = 1000 * 60 * 60 * 24 * 31;
+        const previousMonthInMilli = currentMonthInMilli - oneMonth;
+        const previousMonth = new Date(previousMonthInMilli);
+        this.setMonth(previousMonth);
+        console.log("test1");
+        console.log(currentMonthInMilli);
+        console.log(previousMonthInMilli);
+        console.log(previousMonth);
+      },
+      getNextMonth() {
+        const currentMonthInMilli = new Date(this.selectedMonth).getTime();
+        const oneMonth = 1000 * 60 * 60 * 24 * 31;
+        const nextMonthInMilli = currentMonthInMilli + oneMonth;
+        const nextMonth = new Date(nextMonthInMilli);
+        this.setMonth(nextMonth);
+        console.log("test1");
+        console.log(currentMonthInMilli);
+        console.log(nextMonthInMilli);
+        console.log(nextMonth);
       },
     }}
     run={async () => {}}
@@ -51,21 +117,28 @@
           </select>
         </div>
         <div class="flex space-x-2 items-center justify-center">
-          <img
-            class="cursor-pointer"
-            src="/fimgs/638_776.x3.png"
-            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-          />
+          <div id="prev" onClick={meta.getPreviousMonth}>
+            <img
+              class="cursor-pointer"
+              src="/fimgs/638_776.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
           <div class="flex flex-1 items-start justify-start">
-            <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
-              October
+            <div
+              class="text-base font-medium tracking-wide leading-normal text-indigo-500"
+              id="date"
+            >
+              {meta.selectedMonth}
             </div>
           </div>
-          <img
-            class="cursor-pointer"
-            src="/fimgs/638_779.x3.png"
-            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-          />
+          <div id="next" onClick={meta.getNextMonth}>
+            <img
+              class="cursor-pointer"
+              src="/fimgs/638_779.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
         </div>
         <div
           class="flex items-center justify-between px-4 py-2 bg-coolGray-50 rounded-full"
