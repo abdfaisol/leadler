@@ -269,8 +269,8 @@
                           style="width: 187px; min-width: 187px; max-width: 187px; height: 136px; min-height: 136px; max-height: 136px;"
                         >
                           <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
-                            <div class="flex items-center justify-start py-2 pl-4 rounded-tl rounded-tr">
-                              <div class="flex flex-1 space-x-2 items-center justify-start">
+                            <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                              <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
                                 <img
                                   src="/fimgs/404_669.x3.png"
                                   style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
@@ -282,8 +282,8 @@
                                 </div>
                               </div>
                             </div>
-                            <div class="flex self-stretch items-center justify-start py-2 pl-4 bg-coolGray-50">
-                              <div class="flex flex-1 space-x-2 items-center justify-start">
+                            <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                              <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
                                 <img
                                   src="/fimgs/404_674.x3.png"
                                   style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
@@ -296,8 +296,8 @@
                               </div>
                             </div>
                             <div class="border-coolGray-300" />
-                            <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br">
-                              <div class="flex flex-1 space-x-2 items-center justify-start">
+                            <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br hover:bg-violet-50">
+                              <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
                                 <img
                                   src="/fimgs/404_679.x3.png"
                                   style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
@@ -348,7 +348,7 @@
                       onClick={meta.toggleModal1}
                       style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
                     />
-                    {meta.showModal1 ? (
+                    {meta.showModal1 && (
                       <>
                         <div class="absolute">
                           <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
@@ -357,8 +357,8 @@
                               style="width: 187px; min-width: 187px; max-width: 187px; height: 136px; min-height: 136px; max-height: 136px;"
                             >
                               <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
-                                <div class="flex items-center justify-start py-2 pl-4 rounded-tl rounded-tr">
-                                  <div class="flex flex-1 space-x-2 items-center justify-start">
+                                <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                                  <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
                                     <img
                                       src="/fimgs/404_669.x3.png"
                                       style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
@@ -370,12 +370,8 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="flex self-stretch items-center justify-start py-2 pl-4 bg-coolGray-50">
-                                  <a
-                                    href={fileUrl}
-                                    target="_blank"
-                                    class="flex flex-1 space-x-2 items-center justify-start"
-                                  >
+                                <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                                  <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
                                     <img
                                       src="/fimgs/404_674.x3.png"
                                       style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
@@ -385,11 +381,11 @@
                                         Download
                                       </div>
                                     </div>
-                                  </a>
+                                  </div>
                                 </div>
                                 <div class="border-coolGray-300" />
-                                <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br">
-                                  <div class="flex flex-1 space-x-2 items-center justify-start">
+                                <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br hover:bg-violet-50">
+                                  <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
                                     <img
                                       src="/fimgs/404_679.x3.png"
                                       style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
@@ -407,7 +403,7 @@
                         </div>
                         {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
                       </>
-                    ) : null}
+                    )}
                   </div>
                 </div>
               </div>
