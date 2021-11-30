@@ -7,6 +7,7 @@
       team: "",
       state: {
         id: "",
+        showSidebar: true,
       },
       toggleProfile() {
         this.showProfile = !this.showProfile;
@@ -28,6 +29,9 @@
         title = title.replace("/pm/", "");
         return title;
       },
+      toggleSideBar() {
+        this.state.showSidebar = !this.state.showSidebar;
+      },
     }}
     run={async () => {
       api("/api/project/show/" + params.id).then((e) => {
@@ -42,99 +46,76 @@
     <div class="flex flex-col h-full w-full items-start justify-start bg-coolGray-50">
       <div class="flex flex-1 h-full w-full self-stretch items-center justify-start">
         {/*Sidebar*/}
-        <div class="flex self-stretch flex-col items-start justify-start pl-8 pr-16  bg-white shadow shadow-r z-10">
-          <div class="flex flex-col items-start justify-start">
-            <div class="mb-20" style="margin-bottom: 59px; margin-top: 20px;">
-              <img
-                src="/fimgs/158_349.x3.png"
-                style="width: 155px; min-width: 155px; max-width: 155px; height: 35px; min-height: 25px; max-height: 35px;"
-              />
-            </div>
-
-            <div
-              class="flex flex-col space-y-10 items-start justify-start"
-              style="width: 172px; min-width: 172px; max-width: 172px; height: 120px; min-height: 120px; max-height: 120px;"
-            >
-              <div
-                class={`${meta.isActive(
-                  "/pm"
-                )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
-              >
-                <a
-                  href="/pm"
-                  class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
-                >
-                  <img
-                    src={
-                      meta.isActive("/pm")
-                        ? "/fimgs/45_98.x3.png"
-                        : "/fimgs/45_102.x3.png"
-                    }
-                    class="flex items-start justify-start"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex flex-1 items-start justify-start">
-                    <div
-                      class={
-                        meta.isActive("/pm")
-                          ? "text-base tracking-wide leading-normal text-blue-700"
-                          : "text-base tracking-wide leading-normal text-coolGray-500"
-                      }
-                    >
-                      Analytics
-                    </div>
-                  </div>
-                </a>
+        {meta.state.showSidebar && (
+          <div class="flex self-stretch flex-col items-start justify-start pl-8 pr-10  bg-white shadow shadow-r z-10">
+            <div class="flex flex-col items-start justify-start">
+              <div class="mb-20" style="margin-bottom: 59px; margin-top: 20px;">
+                <img
+                  src="/fimgs/158_349.x3.png"
+                  style="width: 155px; min-width: 155px; max-width: 155px; height: 35px; min-height: 25px; max-height: 35px;"
+                />
               </div>
+
               <div
-                class={`${
-                  meta.isActive("/pm/projects") ||
-                  meta.isActive("/pm/projects/" + meta.state.id + "/detail") ||
-                  meta.isActive("/pm/projects/" + meta.state.id + "/task") ||
-                  meta.isActive(
-                    "/pm/projects/" + meta.state.id + "/planning"
-                  ) ||
-                  meta.isActive(
-                    "/pm/projects/" + meta.state.id + "/timeline"
-                  ) ||
-                  meta.isActive(
-                    "/pm/projects/" + meta.state.id + "/file-management"
-                  ) ||
-                  meta.isActive("/pm/projects/" + meta.state.id + "/team")
-                } flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
+                class="flex flex-col space-y-10 items-start justify-start"
+                style="width: 172px; min-width: 172px; max-width: 172px; height: 120px; min-height: 120px; max-height: 120px;"
               >
-                <a
-                  href="/pm/projects"
-                  class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
+                <div
+                  class={`${meta.isActive(
+                    "/pm"
+                  )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
                 >
-                  <img
-                    src={
-                      meta.isActive("/pm/projects") ||
-                      meta.isActive(
-                        "/pm/projects/" + meta.state.id + "/detail"
-                      ) ||
-                      meta.isActive(
-                        "/pm/projects/" + meta.state.id + "/task"
-                      ) ||
-                      meta.isActive(
-                        "/pm/projects/" + meta.state.id + "/planning"
-                      ) ||
-                      meta.isActive(
-                        "/pm/projects/" + meta.state.id + "/timeline"
-                      ) ||
-                      meta.isActive(
-                        "/pm/projects/" + meta.state.id + "/file-management"
-                      ) ||
-                      meta.isActive("/pm/projects/" + meta.state.id + "/team")
-                        ? "/fimgs/45_104.x3.png"
-                        : "/fimgs/45_103.x3.png"
-                    }
-                    class="flex items-start justify-start"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex flex-1 items-start justify-start">
-                    <div
-                      class={
+                  <a
+                    href="/pm"
+                    class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
+                  >
+                    <img
+                      src={
+                        meta.isActive("/pm")
+                          ? "/fimgs/45_98.x3.png"
+                          : "/fimgs/45_102.x3.png"
+                      }
+                      class="flex items-start justify-start"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                    />
+                    <div class="flex flex-1 items-start justify-start">
+                      <div
+                        class={
+                          meta.isActive("/pm")
+                            ? "text-base tracking-wide leading-normal text-blue-700"
+                            : "text-base tracking-wide leading-normal text-coolGray-500"
+                        }
+                      >
+                        Analytics
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <div
+                  class={`${
+                    meta.isActive("/pm/projects") ||
+                    meta.isActive(
+                      "/pm/projects/" + meta.state.id + "/detail"
+                    ) ||
+                    meta.isActive("/pm/projects/" + meta.state.id + "/task") ||
+                    meta.isActive(
+                      "/pm/projects/" + meta.state.id + "/planning"
+                    ) ||
+                    meta.isActive(
+                      "/pm/projects/" + meta.state.id + "/timeline"
+                    ) ||
+                    meta.isActive(
+                      "/pm/projects/" + meta.state.id + "/file-management"
+                    ) ||
+                    meta.isActive("/pm/projects/" + meta.state.id + "/team")
+                  } flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
+                >
+                  <a
+                    href="/pm/projects"
+                    class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
+                  >
+                    <img
+                      src={
                         meta.isActive("/pm/projects") ||
                         meta.isActive(
                           "/pm/projects/" + meta.state.id + "/detail"
@@ -152,80 +133,114 @@
                           "/pm/projects/" + meta.state.id + "/file-management"
                         ) ||
                         meta.isActive("/pm/projects/" + meta.state.id + "/team")
-                          ? "text-base tracking-wide leading-normal text-blue-700"
-                          : "text-base tracking-wide leading-normal text-coolGray-500"
+                          ? "/fimgs/45_104.x3.png"
+                          : "/fimgs/45_103.x3.png"
                       }
-                    >
-                      Projects
+                      class="flex items-start justify-start"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                    />
+                    <div class="flex flex-1 items-start justify-start">
+                      <div
+                        class={
+                          meta.isActive("/pm/projects") ||
+                          meta.isActive(
+                            "/pm/projects/" + meta.state.id + "/detail"
+                          ) ||
+                          meta.isActive(
+                            "/pm/projects/" + meta.state.id + "/task"
+                          ) ||
+                          meta.isActive(
+                            "/pm/projects/" + meta.state.id + "/planning"
+                          ) ||
+                          meta.isActive(
+                            "/pm/projects/" + meta.state.id + "/timeline"
+                          ) ||
+                          meta.isActive(
+                            "/pm/projects/" + meta.state.id + "/file-management"
+                          ) ||
+                          meta.isActive(
+                            "/pm/projects/" + meta.state.id + "/team"
+                          )
+                            ? "text-base tracking-wide leading-normal text-blue-700"
+                            : "text-base tracking-wide leading-normal text-coolGray-500"
+                        }
+                      >
+                        Projects
+                      </div>
                     </div>
-                  </div>
-                </a>
-              </div>
-              <div
-                class={`${meta.isActive(
-                  "/pm/teams"
-                )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
-              >
-                <a
-                  href="/pm/teams"
-                  class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 cursor-pointer"
+                  </a>
+                </div>
+                <div
+                  class={`${meta.isActive(
+                    "/pm/teams"
+                  )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
                 >
-                  <img
-                    src={
-                      meta.isActive("/pm/teams")
-                        ? "/fimgs/603_429.x3.png"
-                        : "/fimgs/603_428.x3.png"
-                    }
-                    class="flex items-start justify-start"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex flex-1 items-start justify-start">
-                    <div
-                      class={
+                  <a
+                    href="/pm/teams"
+                    class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 cursor-pointer"
+                  >
+                    <img
+                      src={
                         meta.isActive("/pm/teams")
-                          ? "text-base tracking-wide leading-normal text-blue-700"
-                          : "text-base tracking-wide leading-normal text-coolGray-500"
+                          ? "/fimgs/603_429.x3.png"
+                          : "/fimgs/603_428.x3.png"
                       }
-                    >
-                      Teams
+                      class="flex items-start justify-start"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                    />
+                    <div class="flex flex-1 items-start justify-start">
+                      <div
+                        class={
+                          meta.isActive("/pm/teams")
+                            ? "text-base tracking-wide leading-normal text-blue-700"
+                            : "text-base tracking-wide leading-normal text-coolGray-500"
+                        }
+                      >
+                        Teams
+                      </div>
                     </div>
-                  </div>
-                </a>
-              </div>
-              <div
-                class={`${meta.isActive(
-                  "/pm/timeline"
-                )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
-              >
-                <a
-                  href="/pm/timeline"
-                  class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
+                  </a>
+                </div>
+                <div
+                  class={`${meta.isActive(
+                    "/pm/timeline"
+                  )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
                 >
-                  <img
-                    src={
-                      meta.isActive("/pm/timeline")
-                        ? "/fimgs/621_455.x3.png"
-                        : "/fimgs/621_453.x3.png"
-                    }
-                    class="flex items-start justify-start"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex flex-1 items-start justify-start">
-                    <div
-                      class={
+                  <a
+                    href="/pm/timeline"
+                    class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
+                  >
+                    <img
+                      src={
                         meta.isActive("/pm/timeline")
-                          ? "text-base tracking-wide leading-normal text-blue-700"
-                          : "text-base tracking-wide leading-normal text-coolGray-500"
+                          ? "/fimgs/621_455.x3.png"
+                          : "/fimgs/621_453.x3.png"
                       }
-                    >
-                      Timeline
+                      class="flex items-start justify-start"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                    />
+                    <div class="flex flex-1 items-start justify-start">
+                      <div
+                        class={
+                          meta.isActive("/pm/timeline")
+                            ? "text-base tracking-wide leading-normal text-blue-700"
+                            : "text-base tracking-wide leading-normal text-coolGray-500"
+                        }
+                      >
+                        Timeline
+                      </div>
                     </div>
-                  </div>
-                </a>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+        <div
+          class="flex flex-col bg-violet-100 h-full cursor-pointer hover:bg-violet-300 z-10"
+          style="width: 6px; min-width: 6px; max-width: 6px;"
+          onClick={meta.toggleSideBar}
+        ></div>
 
         <div class="flex flex-col h-full w-full items-start justify-start">
           {meta.isActive("/pm") ||

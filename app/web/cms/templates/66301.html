@@ -5,6 +5,9 @@
       member: "",
       name: "",
       team: "",
+      state: {
+        showSidebar: true,
+      },
       toggleProfile() {
         this.showProfile = !this.showProfile;
       },
@@ -14,6 +17,9 @@
         } else {
           return null;
         }
+      },
+      toggleSideBar() {
+        this.state.showSidebar = !this.state.showSidebar;
       },
       titleNavA() {
         var title = "Analytics";
@@ -32,84 +38,91 @@
     <div class="flex flex-col h-full w-full items-start justify-start bg-coolGray-50">
       <div class="flex flex-1 h-full w-full self-stretch items-center justify-start">
         {/*Sidebar*/}
-        <div class="flex self-stretch flex-col items-start justify-start pl-8 pr-16  bg-white shadow shadow-r z-10">
-          <div class="flex flex-col items-start justify-start">
-            <div class="mb-20" style="margin-bottom: 59px; margin-top: 20px;">
-              <img
-                src="/fimgs/158_349.x3.png"
-                style="width: 155px; min-width: 155px; max-width: 155px; height: 35px; min-height: 25px; max-height: 35px;"
-              />
-            </div>
-
-            <div
-              class="flex flex-col space-y-10 items-start justify-start"
-              style="width: 172px; min-width: 172px; max-width: 172px; height: 120px; min-height: 120px; max-height: 120px;"
-            >
-              <div
-                class={`${meta.isActive(
-                  "/user"
-                )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
-              >
-                <a
-                  href="/user"
-                  class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
-                >
-                  <img
-                    src={
-                      meta.isActive("/user")
-                        ? "/fimgs/45_98.x3.png"
-                        : "/fimgs/45_102.x3.png"
-                    }
-                    class="flex items-start justify-start"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex flex-1 items-start justify-start">
-                    <div
-                      class={
-                        meta.isActive("/user")
-                          ? "text-base tracking-wide leading-normal text-blue-700"
-                          : "text-base tracking-wide leading-normal text-coolGray-500"
-                      }
-                    >
-                      Analytics
-                    </div>
-                  </div>
-                </a>
+        {meta.state.showSidebar && (
+          <div class="flex self-stretch flex-col items-start justify-start pl-8 pr-10  bg-white shadow shadow-r z-10">
+            <div class="flex flex-col items-start justify-start">
+              <div class="mb-20" style="margin-bottom: 59px; margin-top: 20px;">
+                <img
+                  src="/fimgs/158_349.x3.png"
+                  style="width: 155px; min-width: 155px; max-width: 155px; height: 35px; min-height: 25px; max-height: 35px;"
+                />
               </div>
+
               <div
-                class={`${meta.isActive(
-                  "/user/projects"
-                )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
+                class="flex flex-col space-y-10 items-start justify-start"
+                style="width: 172px; min-width: 172px; max-width: 172px; height: 120px; min-height: 120px; max-height: 120px;"
               >
-                <a
-                  href="/user/projects"
-                  class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
+                <div
+                  class={`${meta.isActive(
+                    "/user"
+                  )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
                 >
-                  <img
-                    src={
-                      meta.isActive("/user/projects")
-                        ? "/fimgs/45_104.x3.png"
-                        : "/fimgs/45_103.x3.png"
-                    }
-                    class="flex items-start justify-start"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex flex-1 items-start justify-start">
-                    <div
-                      class={
-                        meta.isActive("/user/projects")
-                          ? "text-base tracking-wide leading-normal text-blue-700"
-                          : "text-base tracking-wide leading-normal text-coolGray-500"
+                  <a
+                    href="/user"
+                    class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
+                  >
+                    <img
+                      src={
+                        meta.isActive("/user")
+                          ? "/fimgs/45_98.x3.png"
+                          : "/fimgs/45_102.x3.png"
                       }
-                    >
-                      Projects
+                      class="flex items-start justify-start"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                    />
+                    <div class="flex flex-1 items-start justify-start">
+                      <div
+                        class={
+                          meta.isActive("/user")
+                            ? "text-base tracking-wide leading-normal text-blue-700"
+                            : "text-base tracking-wide leading-normal text-coolGray-500"
+                        }
+                      >
+                        Analytics
+                      </div>
                     </div>
-                  </div>
-                </a>
+                  </a>
+                </div>
+                <div
+                  class={`${meta.isActive(
+                    "/user/projects"
+                  )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
+                >
+                  <a
+                    href="/user/projects"
+                    class="flex self-stretch space-x-4 items-center justify-center py-2 pl-2 pr-10 rounded cursor-pointer"
+                  >
+                    <img
+                      src={
+                        meta.isActive("/user/projects")
+                          ? "/fimgs/45_104.x3.png"
+                          : "/fimgs/45_103.x3.png"
+                      }
+                      class="flex items-start justify-start"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                    />
+                    <div class="flex flex-1 items-start justify-start">
+                      <div
+                        class={
+                          meta.isActive("/user/projects")
+                            ? "text-base tracking-wide leading-normal text-blue-700"
+                            : "text-base tracking-wide leading-normal text-coolGray-500"
+                        }
+                      >
+                        Projects
+                      </div>
+                    </div>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+        <div
+          class="flex flex-col bg-violet-100 h-full cursor-pointer hover:bg-violet-300 z-10"
+          style="width: 6px; min-width: 6px; max-width: 6px;"
+          onClick={meta.toggleSideBar}
+        ></div>
 
         <div class="flex flex-col h-full w-full items-start justify-start">
           {meta.isActive("/user") || meta.isActive("/user/projects") ? (
