@@ -24,6 +24,7 @@
         planning: "#",
         file: "#",
       },
+      cobaElement: [],
       print: true,
       data_task: [],
       status: [
@@ -141,9 +142,13 @@
       toggleAdd() {
         this.showAdd = !this.showAdd;
       },
-      removeSubtask() {
-        var list = document.getElementById("fsubtask");
+      removeSubtask(event, id) {
+        console.log(event);
+        var list = document.getElementById("subtask-" + id);
+        // console.log(list);
         list.remove();
+        delete this.dataSubTask[id];
+        console.log(this.dataSubTask.length);
       },
       delete(id) {
         this.setState((prevState) => ({
@@ -151,27 +156,11 @@
         }));
       },
       subtask(event) {
-        var elmSubtask = document.getElementById("listSubTask");
-        console.log("masuk pak eko");
+        // var elmSubtask = document.getElementById("listSubTask");
+        // console.log("masuk pak eko");
         if (this.state.taskname == "") {
           console.log("tidak boleh kosong");
         } else {
-          console.log(this.state.taskname);
-          elmSubtask.insertAdjacentHTML(
-            "beforeend",
-            '<div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded" id="fsubtask"> <div class="flex w-full space-x-6 items-center justify-start"> <div class="flex flex-1 items-start justify-start"> <div class="text-sm tracking-wide leading-tight">' +
-              this.state.taskname +
-              '</div> </div> <div class="flex space-x-5 items-start justify-start">' +
-              '<div class="cursor-pointer"' +
-              "onClick=" +
-              this.removeSubtask +
-              ">" +
-              '<img src="/fimgs/295_279.x3.png" class="flex items-start justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> </div>' +
-              '<div class="cursor-pointer"' +
-              "onClick=" +
-              ">" +
-              '<img src="/fimgs/656_794.x3.png" class="flex items-center justify-start" style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" /> </div> </div> </div> </div>'
-          );
           var dataSub = {
             name: this.state.taskname,
             startdate: "",
@@ -186,29 +175,30 @@
             cost: "0",
             taskname: "",
           };
-          console.log(
-            "[before] panjang array dataSubTask =>" + this.dataSubTask.length
-          );
-          console.log("[proses] memasukkan data =>");
-          console.log(dataSub);
-          this.dataSubTask.push(dataSub);
-          console.log(
-            "[after] panjang array dataSubTask =>" + this.dataSubTask.length
-          );
-          console.log(this.dataSubTask);
+          // console.log(
+          //   "[before] panjang array dataSubTask =>" + this.dataSubTask.length
+          // );
+          // console.log("[proses] memasukkan data =>");
+          // console.log(dataSub);
+          var length = this.dataSubTask.push(dataSub);
+          var idx = length - 1;
+          // console.log(length - 1);
+          // console.log(
+          //   "[after] panjang array dataSubTask =>" + this.dataSubTask.length
+          // );
+          this.cobaElement.push({ index: idx, name: this.state.taskname });
         }
         event.preventDefault();
       },
       submitData(event) {
         let data = {
-          idtask: this.state.idtask,
           desc: this.state.description,
           estimated_cost: parseInt(this.state.cost),
           idproject: params.id,
           name: this.state.name,
           startdate: this.state.startdate,
           duedate: this.state.duedate,
-          status: this.state.status,
+          idstatus: this.state.status,
           effort: this.state.effort,
           priority: this.state.priority,
           iddivision: this.state.iddivision,
@@ -230,6 +220,25 @@
             console.log(e);
             console.log("berhasil masuk");
             console.log(data);
+            if (this.dataSubTask.length > 0) {
+              this.dataSubTask.map((idx) => {
+                console.log("memasukkan subtask : ");
+                console.log(idx);
+                api("/api/project/subtask/create", {
+                  data: {
+                    idtask: e.data_act.id,
+                    idproject: params.id,
+                    name: idx.name,
+                    startdate: idx.startdate,
+                    duedate: idx.duedate,
+                    idstatus: "3",
+                  },
+                }).then((e) => {
+                  console.log(e);
+                });
+              });
+            }
+            // location.reload();
           }
         });
         event.preventDefault();
@@ -830,7 +839,46 @@
                       <div
                         id="listSubTask"
                         class="flex self-stretch flex-col space-y-3 items-start justify-start"
-                      ></div>
+                      >
+                        {meta.cobaElement.map((e) => {
+                          var idsubtask = "subtask-" + e.index;
+                          return (
+                            <div
+                              id={idsubtask}
+                              class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded"
+                            >
+                              <div class="flex w-full space-x-6 items-center justify-start">
+                                <div class="flex flex-1 items-start justify-start">
+                                  <div class="text-sm tracking-wide leading-tight">
+                                    {e.name}
+                                  </div>
+                                </div>
+                                <div class="flex space-x-5 items-start justify-start">
+                                  <div class="cursor-pointer">
+                                    <img
+                                      src="/fimgs/295_279.x3.png"
+                                      class="flex items-start justify-start"
+                                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                                    />
+                                  </div>
+                                  <div
+                                    class="cursor-pointer"
+                                    onClick={(event) => {
+                                      meta.removeSubtask(event, e.index);
+                                    }}
+                                  >
+                                    <img
+                                      src="/fimgs/656_794.x3.png"
+                                      class="flex items-center justify-start"
+                                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
 
                       <div class="flex self-stretch items-center justify-start">
                         <form

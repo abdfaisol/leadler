@@ -21,11 +21,11 @@
         month: "11",
       },
       data_timeline: [],
+      selectedMonth: null,
       show: {
         tim1: false,
         tim2: false,
       },
-      selectedMonth: null,
       add: { tekan: true },
       pilih: {
         showTATeam: true,
@@ -82,7 +82,6 @@
             "December",
           ];
           var yyyy = this.selectedMonth.getFullYear();
-
           this.selectedMonth =
             months[this.selectedMonth.getMonth()] + " " + yyyy;
         }
@@ -112,7 +111,7 @@
     }}
     run={async () => {
       api("/api/project/show/" + params.id).then((e) => {
-        console.log(e);
+        // console.log(e);
         if (e.status == true) {
           meta.state.judul = e.data_act.project.name;
           meta.state.deskripsi = e.data_act.project.desc;
@@ -138,10 +137,10 @@
         },
       })
         .then((e) => {
-          // console.log(e);
+          console.log(e);
           if (e.status == true) {
             e.data_act.timeline.map((e) => {
-              console.log(e);
+              // console.log(e);
               console.log(
                 e.startdate.split("-")[0] + "-" + e.startdate.split("-")[1]
               );
@@ -190,7 +189,7 @@
               }
             });
             meta.data_timeline = e.data_act.timeline;
-            console.log(e);
+            // console.log(e);
           }
         })
         .catch((e) => {
@@ -337,89 +336,93 @@
         <div class="align-middle inline-block min-w-full">
           <div class="overflow-hidden">
             <table class="min-w-full bg-white">
-              <tr>
-                <td
-                  rowSpan="2"
-                  class="relative px-3 py-2 justify-center mr-auto border-r border-b border-coolGray-300"
-                >
-                  <div class=" text-sm font-medium text-gray-500 text-center">
-                    Task Name
-                  </div>
-                </td>
-                <td
-                  colSpan="4"
-                  class="relative px-6 py-2 justify-center border-b border-coolGray-300"
-                >
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    Week
-                  </div>
-                </td>
-              </tr>
-              <tr class="border-b border-coolGray-300">
-                <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    1
-                  </div>
-                </td>
-                <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    2
-                  </div>
-                </td>
-                <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    3
-                  </div>
-                </td>
-                <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    4
-                  </div>
-                </td>
-              </tr>
-              <tr class="border-b border-coolGray-300">
-                <td class="px-3 py-4 whitespace-normal text-left">
-                  <div class="text-sm text-gray-900">Analisa Data</div>
-                </td>
-                <td
-                  class="flex-grow bg-orange-300 border border-coolGray-300"
-                  style="width: 18%; min-width: 18%; max-width: 18%;"
-                ></td>
-                <td
-                  class="flex-grow border border-coolGray-300"
-                  style="width: 18%; min-width: 18%; max-width: 18%;"
-                ></td>
-                <td
-                  class="flex-grow border border-coolGray-300"
-                  style="width: 18%; min-width: 18%; max-width: 18%;"
-                ></td>
-                <td
-                  class="flex-grow"
-                  style="width: 18%; min-width: 18%; max-width: 18%;"
-                ></td>
-              </tr>
-              <tr class="border-b border-coolGray-300">
-                <td class="px-3 py-4 whitespace-normal text-left">
-                  <div class="text-sm text-gray-900">Brainstorming</div>
-                </td>
-                <td class="flex-grow border border-coolGray-300"></td>
-                <td class="flex-grow bg-blue-300 border border-coolGray-300"></td>
-                <td class="flex-grow border border-coolGray-300"></td>
-                <td class="flex-grow"></td>
-              </tr>
-              {meta.data_timeline.map((e) => {
-                return (
-                  <tr class="border-b border-coolGray-300">
-                    <td class="px-3 py-4 whitespace-normal text-left">
-                      <div class="text-sm text-gray-900">{e.name}</div>
-                    </td>
-                    <td class={e.labelTime[1]}></td>
-                    <td class={e.labelTime[2]}></td>
-                    <td class={e.labelTime[3]}></td>
-                    <td class={e.labelTime[4]}></td>
-                  </tr>
-                );
-              })}
+              <thead>
+                <tr>
+                  <td
+                    rowSpan="2"
+                    class="relative px-3 py-2 justify-center mr-auto border-r border-b border-coolGray-300"
+                  >
+                    <div class=" text-sm font-medium text-gray-500 text-center">
+                      Task Name
+                    </div>
+                  </td>
+                  <td
+                    colSpan="4"
+                    class="relative px-6 py-2 justify-center border-b border-coolGray-300"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      Week
+                    </div>
+                  </td>
+                </tr>
+                <tr class="border-b border-coolGray-300">
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      1
+                    </div>
+                  </td>
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      2
+                    </div>
+                  </td>
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      3
+                    </div>
+                  </td>
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      4
+                    </div>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                {/*<tr class="border-b border-coolGray-300">*/}
+                {/*<td class="px-3 py-4 whitespace-normal text-left">*/}
+                {/*<div class="text-sm text-gray-900">Analisa Data</div>*/}
+                {/*</td>*/}
+                {/*<td*/}
+                {/*class="flex-grow bg-orange-300 border border-coolGray-300"*/}
+                {/*style="width: 18%; min-width: 18%; max-width: 18%;"*/}
+                {/*></td>*/}
+                {/*<td*/}
+                {/*class="flex-grow border border-coolGray-300"*/}
+                {/*style="width: 18%; min-width: 18%; max-width: 18%;"*/}
+                {/*></td>*/}
+                {/*<td*/}
+                {/*class="flex-grow border border-coolGray-300"*/}
+                {/*style="width: 18%; min-width: 18%; max-width: 18%;"*/}
+                {/*></td>*/}
+                {/*<td*/}
+                {/*class="flex-grow"*/}
+                {/*style="width: 18%; min-width: 18%; max-width: 18%;"*/}
+                {/*></td>*/}
+                {/*</tr>*/}
+                {/*<tr class="border-b border-coolGray-300">*/}
+                {/*<td class="px-3 py-4 whitespace-normal text-left">*/}
+                {/*<div class="text-sm text-gray-900">Brainstorming</div>*/}
+                {/*</td>*/}
+                {/*<td class="flex-grow border border-coolGray-300"></td>*/}
+                {/*<td class="flex-grow bg-blue-300 border border-coolGray-300"></td>*/}
+                {/*<td class="flex-grow border border-coolGray-300"></td>*/}
+                {/*<td class="flex-grow"></td>*/}
+                {/*</tr>*/}
+                {meta.data_timeline.map((e) => {
+                  return (
+                    <tr class="border-b border-coolGray-300">
+                      <td class="px-3 py-4 whitespace-normal text-left">
+                        <div class="text-sm text-gray-900">{e.name}</div>
+                      </td>
+                      <td class={e.labelTime[1]}></td>
+                      <td class={e.labelTime[2]}></td>
+                      <td class={e.labelTime[3]}></td>
+                      <td class={e.labelTime[4]}></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
             </table>
           </div>
         </div>

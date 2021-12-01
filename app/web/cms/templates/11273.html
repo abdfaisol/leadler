@@ -42,6 +42,9 @@
             team: this.team,
           },
         }).then((e) => {
+          if (e.status == true) {
+            location.reload();
+          }
           console.log(e);
         });
         event.preventDefault();
@@ -50,15 +53,17 @@
     run={async () => {
       var data_i = meta.dataProjek();
       api("/api/project").then((e) => {
-        meta.data_projek = data_i.result.data_act;
-        console.log(data_i.result.data_act);
-        console.log(data_i.result.data_act);
-        console.log(Object.keys(meta.data_projek));
-        Object.keys(meta.data_projek).map((e) => {
-          console.log(meta.data_projek[e]);
+        console.log(e);
+        e.data_act.map((idx) => {
+          api("/api/project/show/" + idx.id).then((e1) => {
+            if (e1.status == true) {
+              idx.task = e1.data_act.resultTask;
+              meta.data_projek = e.data_act;
+            }
+          });
         });
       });
-      console.log(data_i.iresult);
+      console.log(meta.data_projek);
       meta.actionmember = {
         onChange: (e) => {
           runInAction(() => {
@@ -242,7 +247,7 @@
                     </div>
                   </div>
                   <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                    <bar />
+                    <bar percent={meta.data_projek[e].task.completed} />
                     <div class="flex self-stretch items-start justify-start">
                       <div class="text-sm tracking-wide leading-tight text-coolGray-500">
                         10 Task Done
