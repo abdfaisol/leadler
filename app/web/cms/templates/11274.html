@@ -226,6 +226,7 @@
               // console.log(e);
               meta.data_projek = e.data_act;
             }
+            document.getElementById("loading").remove();
           });
         });
         // console.log(e);
@@ -248,6 +249,7 @@
       };
     }}
   />
+  {/*<div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20 bg-clip-padding bg-opacity-60 border border-gray-200" style="backdrop-filter: blur(20px);">*/}
   <div class="flex flex-col self-stretch space-y-10 p-12 w-auto">
     <div class="flex self-stretch w-full items-start justify-start px-6 py-6 bg-white rounded">
       <div class="flex self-stretch w-full items-center justify-start space-x-8">
@@ -361,7 +363,7 @@
     </div>
     <div class="flex self-stretch flex-wrap space-y-9 items-start justify-start">
       <div
-        class="flex self-stretch space-x-8 flex-wrap items-start justify-start"
+        class="flex self-stretch flex-wrap items-start justify-start space-x-9"
         style="height: 244px; min-height: 244px; max-height: 244px;"
       >
         {Object.keys(meta.data_projek).map((e) => {
@@ -369,7 +371,7 @@
           return (
             <a
               href={urlproject}
-              class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+              class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded m-6"
               style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
             >
               <div
@@ -405,7 +407,6 @@
                     <div class="flex self-stretch items-start justify-start">
                       <div class="text-sm tracking-wide leading-tight text-coolGray-500">
                         {meta.data_projek[e].task.taskComplete} Task Done
-                        {/*0 done*/}
                       </div>
                     </div>
                     <div class="flex self-stretch items-start justify-start">

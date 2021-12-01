@@ -214,6 +214,7 @@
       var data_i = meta.dataProjek();
       api("/api/project").then((e) => {
         meta.data_projek = data_i.result.data_act;
+        // document.getElementById("loading").remove();
       });
       console.log(data_i.iresult);
       meta.actionmember = {

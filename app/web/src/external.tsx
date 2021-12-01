@@ -48,4 +48,5 @@ export default {
     import("./components/showprofile"),
     { c: "", s: "", h: "" },
   ],
+  loadku: () => [import("./components/loadku"), { c: "", s: "", h: "" }],
 };

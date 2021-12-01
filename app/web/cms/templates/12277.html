@@ -93,6 +93,7 @@
           meta.link.planning = "/pm/projects/" + params.id + "/planning";
           meta.link.file = "/pm/projects/" + params.id + "/file-management";
         }
+        document.getElementById("loading").remove();
       });
 
       api("/api/project/upload", {
@@ -233,7 +234,7 @@
       </div>
       {/*file uploaded*/}
       <div class="flex self-stretch flex-wrap space-y-9 items-start justify-start">
-        <div class="flex self-stretch flex-wrap items-start justify-start">
+        <div class="flex self-stretch flex-wrap items-start justify-start space-y-9 space-x-9">
           <div
             class="flex flex-col items-start justify-start mb-8 border rounded border-coolGray-300"
             style="margin-right: 22px;"

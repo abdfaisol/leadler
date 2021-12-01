@@ -74,16 +74,16 @@ export const webFiles = {
     components: {},
   },
   public: {
-    'favicon.ico': [dirs.pkgs.main, 'favicon.ico'],
+    'leadler-logo.ico': [dirs.pkgs.main, 'leadler-logo.ico'],
     'index.html': `
   <!DOCTYPE html>
   <html lang="en">
   <head>
   <meta charset="UTF-8" /> 
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/leadler-logo.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Base</title>
+  <title>Leader</title>
   </head>
   <body>
       <div id="root"></div>
@@ -147,6 +147,7 @@ export default {
 }`,
     'index.tsx': `import { initApp } from 'web.init/src/initApp'
 import './index.css'
+import './index.css'
 initApp()   
 `,
     'index.css': `@tailwind base;
@@ -168,16 +169,16 @@ body,
 
 export const mobileFiles = {
   public: {
-    'favicon.ico': [dirs.pkgs.main, 'favicon.ico'],
+    'leadler-logo.ico': [dirs.pkgs.main, 'leadler-logo.ico'],
     'index.html': `
   <!DOCTYPE html>
   <html lang="en">
   <head>
   <meta charset="UTF-8" /> 
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/leadler-logo.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Base</title>
+  <title>Leader</title>
   </head>
   <body>
       <div id="root"></div>

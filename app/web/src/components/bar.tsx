@@ -1,8 +1,8 @@
-import { Progress } from 'react-sweet-progress';
-import "react-sweet-progress/lib/style.css";
+import { Progress } from 'react-sweet-progress'
+import 'react-sweet-progress/lib/style.css'
 
-export default () => (
+export default (props: any) => (
   <>
-    <Progress percent={69}/>
+    <Progress {...props} />
   </>
-);
+)
