@@ -5,7 +5,7 @@
         name: "",
         startdate: "",
         duedate: "",
-        status: "",
+        status: [],
         cstatus: "",
         effort: "",
         priority: "",
@@ -243,6 +243,18 @@
         });
         event.preventDefault();
       },
+      updateStatus(event, id, idx) {
+        // meta.state.iddepartment = e.value;
+        //     console.log(meta.state.iddepartment);
+        console.log(
+          "task dengan id : " +
+            id +
+            "berhasil diupdate dengan value : " +
+            event.value
+        );
+        console.log(this.data_task[idx].idstatus);
+        this.data_task[idx].idstatus = event.value;
+      },
     }}
     run={async () => {
       console.log("mendapatkan data: loading");
@@ -259,7 +271,6 @@
           meta.link.planning = "/pm/projects/" + params.id + "/planning";
           meta.link.file = "/pm/projects/" + params.id + "/file-management";
         }
-        document.getElementById("loading").remove();
       });
       meta.state.iddivision = document.getElementById("employee").value;
       meta.actionstatus = {
@@ -487,79 +498,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y-4 divide-gray-50">
-                <tr>
-                  <td
-                    class="px-6 py-2 whitespace-nowrap text-start cursor-pointer"
-                    onClick={meta.toggleModal2}
-                  >
-                    <div class="text-sm text-gray-900">Analisa Data</div>
-                  </td>
-                  <td class="px-6 py-2 whitespace-nowrap text-start">
-                    <div class="text-xs tracking-wide leading-none text-green-500">
-                      Sep, 10 2021
-                    </div>
-                  </td>
-                  <td class="px-6 py-2 whitespace-nowrap text-start">
-                    <div class="text-xs tracking-wide leading-none text-red-500">
-                      Sep, 12 2021
-                    </div>
-                  </td>
-                  <td class="whitespace-nowrap text-center">
-                    <div class="flex items-center justify-center">
-                      <multipleselect
-                        options={meta.statusx}
-                        defaultValue={meta.statusx[0]}
-                        menuPortalTarget={document.body}
-                        theme={(theme) => ({
-                          ...theme,
-                          borderRadius: 0,
-                          colors: {
-                            ...theme.colors,
-                            primary25: "#F3F4F6",
-                            primary: "#6366F1",
-                          },
-                        })}
-                        styles={meta.stylesx}
-                        style={
-                          meta.state.status == 1
-                            ? "background-color: #4ADE80;"
-                            : meta.state.status == 2
-                            ? "background-color: #888DF1;"
-                            : meta.state.status == 3
-                            ? "background-color: #2D34E6;"
-                            : meta.state.status == 4
-                            ? "background-color: #F1B459;"
-                            : "background-color: #4ADE80;"
-                        }
-                        className="w-40"
-                        classNamePrefix="select"
-                        name="status"
-                        onChange={(e) => {
-                          meta.actionstatus.onChange(e);
-                        }}
-                      />
-                    </div>
-                  </td>
-                  <td class="px-6 py-2 whitespace-nowrap text-center">
-                    <div class="text-sm tracking-wide leading-none text-gray-900">
-                      Medium
-                    </div>
-                  </td>
-                  <td class="px-6 py-2 whitespace-nowrap text-center">
-                    <div class="text-sm tracking-wide leading-none text-gray-900">
-                      5
-                    </div>
-                  </td>
-                  <td class="px-6 py-2 whitespace-nowrap text-center">
-                    <div class="flex items-center justify-center">
-                      <img
-                        style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                        src="/fimgs/5_48.x3.png"
-                      />
-                    </div>
-                  </td>
-                </tr>
-                {meta.data_task.map((e) => {
+                {meta.data_task.map((e, idx) => {
                   return (
                     <tr>
                       <td
@@ -581,6 +520,9 @@
                       <td class="text-center py-0">
                         <div class="flex items-center justify-center">
                           <multipleselect
+                            onChange={(event) => {
+                              meta.updateStatus(event, e.id, idx);
+                            }}
                             options={meta.statusx}
                             defaultValue={meta.statusx[0]}
                             menuPortalTarget={document.body}
@@ -595,22 +537,22 @@
                             })}
                             styles={meta.stylesx}
                             style={
-                              meta.state.status == 1
+                              e.idstatus == 1
                                 ? "background-color: #4ADE80;"
-                                : meta.state.status == 2
+                                : e.idstatus == 2
                                 ? "background-color: #888DF1;"
-                                : meta.state.status == 3
+                                : e.idstatus == 3
                                 ? "background-color: #2D34E6;"
-                                : meta.state.status == 4
+                                : e.idstatus == 4
                                 ? "background-color: #F1B459;"
                                 : "background-color: #4ADE80;"
                             }
                             className="w-40"
                             classNamePrefix="select"
                             name="status"
-                            onChange={(e) => {
-                              meta.actionstatus.onChange(e);
-                            }}
+                            // onChange={(e) => {
+                            //   meta.actionstatus.onChange(e);
+                            // }}
                           />
                         </div>
                       </td>
