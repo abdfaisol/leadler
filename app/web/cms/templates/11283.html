@@ -71,7 +71,7 @@
       };
     }}
   />
-  <div class="flex flex-col self-stretch space-y-10 p-12 w-auto">
+  <div class="flex flex-col self-stretch space-y-10 p-10 w-auto">
     <div class="flex self-stretch w-full space-x-8 items-start justify-start">
       <div
         class="flex flex-1 flex-grow space-x-3 items-start justify-start py-4 pl-4 bg-white rounded"
@@ -196,59 +196,57 @@
       </div>
     </div>
     {/* Content  */}
-    <div class="flex self-stretch flex-wrap space-y-9 items-start justify-start">
-      <div class="flex self-stretch flex-wrap items-start justify-start">
+    <div class="flex self-stretch flex-wrap items-start justify-start">
+      <div class="grid grid-cols-3 gap-8 flex-grow">
         {meta.data_projek?.map((e) => {
           return (
-            <div class="mb-8" style="margin-right: 22px;">
+            <div
+              class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+              style="height: 244px; min-height: 244px;"
+            >
               <div
-                class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
-                style="width: 293px; min-width: 293px; max-width: 293px; height: 244px; min-height: 244px; max-height: 244px;"
+                class="flex self-stretch flex-col space-y-8 items-start justify-start"
+                style="height: 196px; min-height: 196px; max-height: 196px;"
               >
                 <div
-                  class="flex self-stretch flex-col space-y-8 items-start justify-start"
-                  style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
+                  class="flex self-stretch items-start justify-between"
+                  style="height: 24px; min-height: 24px; max-height: 24px;"
                 >
-                  <div
-                    class="flex self-stretch items-start justify-between"
-                    style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
-                  >
-                    <div class="flex items-center justify-start">
-                      <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
-                        Tim 6
-                      </div>
+                  <div class="flex items-center justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                      Tim 6
                     </div>
-                    <img
-                      src="/fimgs/609_876.x3.png"
-                      class="flex items-start justify-start"
-                      style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
-                    />
                   </div>
-                  <div
-                    class="flex self-stretch flex-col space-y-6 items-start justify-start"
-                    style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
-                  >
+                  <img
+                    src="/fimgs/609_876.x3.png"
+                    class="flex items-start justify-start"
+                    style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                </div>
+                <div
+                  class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                  style="height: 140px; min-height: 140px; max-height: 140px;"
+                >
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                      {e.name}
+                    </div>
+                  </div>
+                  <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                    <bar />
                     <div class="flex self-stretch items-start justify-start">
-                      <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                        {e.name}
+                      <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                        10 Task Done
                       </div>
                     </div>
-                    <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                      <bar />
-                      <div class="flex self-stretch items-start justify-start">
-                        <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                          10 Task Done
-                        </div>
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-tight">
+                        Due Date: 25/09/2021
                       </div>
-                      <div class="flex self-stretch items-start justify-start">
-                        <div class="text-sm tracking-wide leading-tight">
-                          Due Date: 25/09/2021
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-center px-2 py-0.5 bg-orange-400 bg-opacity-70 rounded-sm">
-                        <div class="text-xs tracking-wide leading-none text-center text-white">
-                          In Progress
-                        </div>
+                    </div>
+                    <div class="flex items-center justify-center px-2 py-0.5 bg-orange-400 bg-opacity-70 rounded-sm">
+                      <div class="text-xs tracking-wide leading-none text-center text-white">
+                        In Progress
                       </div>
                     </div>
                   </div>
