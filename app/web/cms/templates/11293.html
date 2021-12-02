@@ -5,33 +5,60 @@
       member: "",
       name: "",
       team: "",
-
-      dataUser(e) {
-        let userDetail = [];
-        api("/api/user").then((i) => {
-          i.data_act.map((res, index) => {
-            i.data_act[index] = { value: res.id, label: res.email };
-            userDetail.push(i.data_act[index]);
-          });
-        });
-        return userDetail;
+      state: {
+        name: "",
+        startdate: "",
+        duedate: "",
+        status: "",
+        cstatus: "",
+        effort: "",
+        priority: "",
+        iddivision: "",
+        idtask: "",
+        description: "",
+        cost: "0",
+        taskname: "",
       },
-      dataTeam(e) {
-        let result = [];
-        api("/api/team").then((i) => {
-          i.data_act.map((res, index) => {
-            i.data_act[index] = { value: res.id, label: res.name };
-            result.push(i.data_act[index]);
-          });
-        });
-        return result;
-      },
-      dataProjek() {
-        let result = [];
-        api("/api/project").then((e) => {
-          result["result"] = e;
-        });
-        return result;
+      statusx: [
+        { value: "1", label: "TODO", color: "#4ADE80" },
+        {
+          value: "2",
+          label: "IN PROGRESS",
+          color: "#888DF1",
+        },
+        { value: "3", label: "SUBMITTED", color: "#2D34E6" },
+        { value: "4", label: "COMPLETE", color: "#F1B459" },
+      ],
+      stylesx: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "2px",
+          paddingBottom: "2px",
+          border: "none",
+          boxShadow: "none",
+          backgroundColor: "transparent",
+        }),
+        input: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        singleValue: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        option: (styles, { data }) => {
+          return {
+            ...styles,
+            backgroundColor: data.color,
+            "&:hover": {
+              backgroundColor: data.isDisabled
+                ? "#F3F4F6"
+                : data.isSelected
+                ? null
+                : "#F3F4F6",
+            },
+          };
+        },
       },
       submitData(event) {
         api("/api/project/create", {
@@ -48,24 +75,19 @@
       },
     }}
     run={async () => {
-      var data_i = meta.dataProjek();
-      api("/api/project").then((e) => {
-        meta.data_projek = data_i.result.data_act;
-      });
-      console.log(data_i.iresult);
-      meta.actionmember = {
+      meta.actionstatus = {
         onChange: (e) => {
           runInAction(() => {
-            meta.member = e.map((x) => x.value);
-            meta.team = 0;
+            meta.state.status = e.value;
+            console.log(meta.state.status);
           });
         },
       };
-      meta.actionteam = {
+      meta.actioncstatus = {
         onChange: (e) => {
           runInAction(() => {
-            meta.team = e.value;
-            meta.member = [];
+            meta.state.cstatus = e.color;
+            console.log(meta.state.cstatus);
           });
         },
       };
@@ -198,7 +220,7 @@
                     class="relative px-6 py-3 text-sm text-center justify-start"
                   >
                     <div class="text-sm font-medium text-coolGray-500 text-start">
-                      Files
+                      Priority
                     </div>
                   </th>
                   <th
@@ -214,33 +236,48 @@
                   <td class="px-6 py-2 whitespace-nowrap text-start cursor-pointer">
                     <div class="text-sm text-gray-900">Analisa Data</div>
                   </td>
-                  <td class="text-start py-0">
+                  <td class="text-center py-0">
                     <div class="flex items-center justify-center">
-                      <select
-                        id="employee"
-                        name="employee"
-                        class="bg-orange-300 px-2 py-2 text-white rounded-l outline-none"
-                      >
-                        <option class="bg-white text-coolGray-500" value="saab">
-                          COMPLETE
-                        </option>
-                        <option class="bg-white text-coolGray-500" value="fiat">
-                          TODO
-                        </option>
-                        <option class="bg-white text-coolGray-500" value="audi">
-                          IN PROGRESS
-                        </option>
-                      </select>
+                      <multipleselect
+                        options={meta.statusx}
+                        defaultValue={meta.statusx[0]}
+                        menuPortalTarget={document.body}
+                        theme={(theme) => ({
+                          ...theme,
+                          borderRadius: 0,
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#F3F4F6",
+                            primary: "#6366F1",
+                          },
+                        })}
+                        styles={meta.stylesx}
+                        style={
+                          meta.state.status == 1
+                            ? "background-color: #4ADE80;"
+                            : meta.state.status == 2
+                            ? "background-color: #888DF1;"
+                            : meta.state.status == 3
+                            ? "background-color: #2D34E6;"
+                            : meta.state.status == 4
+                            ? "background-color: #F1B459;"
+                            : "background-color: #4ADE80;"
+                        }
+                        className="w-40"
+                        classNamePrefix="select"
+                        name="status"
+                        onChange={(e) => {
+                          meta.actionstatus.onChange(e);
+                        }}
+                      />
                     </div>
                   </td>
                   <td class="px-6 py-2 whitespace-nowrap items-center">
-                    <div class="flex space-x-2 items-center justify-center">
-                      <div class="text-sm text-gray-900">4 Files</div>
-                      <div class="cursor-pointer">
-                        <img
-                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                          src="/fimgs/662_869.x3.png"
-                        />
+                    <div class="flex items-center justify-center">
+                      <div class="flex items-center justify-center px-1 py-0.5 bg-indigo-500 rounded-full">
+                        <div class="text-xs tracking-wide leading-none text-center text-white">
+                          Medium
+                        </div>
                       </div>
                     </div>
                   </td>
