@@ -8,6 +8,7 @@
       state: {
         id: "",
         showSidebar: true,
+        loadingku: true,
       },
       toggleProfile() {
         this.showProfile = !this.showProfile;
@@ -35,15 +36,20 @@
     }}
     run={async () => {
       api("/api/project/show/" + params.id).then((e) => {
-        console.log(e);
+        // console.log(e);
         if (e.status == true) {
           meta.state.id = e.data_act.project.id;
         }
+        meta.state.loadingku = !meta.state.loadingku;
       });
     }}
   />
+  {meta.state.loadingku ? (
+    <>
+      <loadku />
+    </>
+  ) : null}
 
-  <loadku />
   <div class="flex flex-1">
     <div class="flex flex-col h-full w-full items-start justify-start bg-coolGray-50">
       <div class="flex flex-1 h-full w-full self-stretch items-center justify-start">

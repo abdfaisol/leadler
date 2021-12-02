@@ -1,11 +1,11 @@
 <>
   <effect
     meta={{
-      data_projek: "",
+      data_projek: [],
       member: "",
       name: "",
       team: "",
-
+      isLoading: false,
       dataUser(e) {
         let userDetail = [];
         api("/api/user").then((i) => {
@@ -53,18 +53,21 @@
     run={async () => {
       var data_i = meta.dataProjek();
       api("/api/project").then((e) => {
-        console.log(e);
+        // console.log(e);
         e.data_act.map((idx) => {
           api("/api/project/show/" + idx.id).then((e1) => {
             if (e1.status == true) {
               idx.task = e1.data_act.resultTask;
-              meta.data_projek = e.data_act;
+              // idx.task = e1.data_act.resultTask;
+              meta.data_projek.push(idx);
+              meta.isLoading = true;
             }
-            document.getElementById("loading").remove();
+            console.log(meta.data_projek.length);
           });
         });
       });
-      console.log(meta.data_projek);
+
+      // console.log(meta.data_projek);
       meta.actionmember = {
         onChange: (e) => {
           runInAction(() => {
@@ -208,69 +211,132 @@
       </div>
     </div>
     {/* Content  */}
-    <div class="flex self-stretch flex-wrap w-full space-y-9 items-start justify-start">
-      <div
-        class="flex self-stretch space-x-8 flex-wrap items-start justify-start"
-        style="height: 244px; min-height: 244px; max-height: 244px;"
-      >
-        {Object.keys(meta.data_projek).map((e) => {
-          return (
+    {meta.isLoading ? (
+      <>
+        <div class="flex self-stretch flex-wrap items-start justify-start">
+          <div class="grid grid-cols-3 gap-3 flex-grow">
+            {meta.data_projek.map((e) => {
+              var urlproject = "/pm/projects/" + e.id + "/detail";
+              return (
+                <a
+                  href={urlproject}
+                  class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                  style="height: 244px; min-height: 244px;"
+                >
+                  <div
+                    class="flex self-stretch flex-col space-y-8 items-start justify-start"
+                    style="height: 196px; min-height: 196px; max-height: 196px;"
+                  >
+                    <div
+                      class="flex self-stretch items-start justify-between"
+                      style="height: 24px; min-height: 24px; max-height: 24px;"
+                    >
+                      <div class="flex items-center justify-start">
+                        <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                          Tim 6
+                        </div>
+                      </div>
+                      <img
+                        src="/fimgs/609_876.x3.png"
+                        class="flex items-start justify-start"
+                        style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                      />
+                    </div>
+                    <div
+                      class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                      style="height: 140px; min-height: 140px; max-height: 140px;"
+                    >
+                      <div class="flex self-stretch items-start justify-start">
+                        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                          {e.name}
+                        </div>
+                      </div>
+                      <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                        <bar percent={e.task.completed} />
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                            {e.task.taskComplete} Task Done
+                          </div>
+                        </div>
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight">
+                            Due Date: {e.duedate}
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-center px-2 py-0.5 bg-orange-400 bg-opacity-70 rounded-sm">
+                          <div class="text-xs tracking-wide leading-none text-center text-white">
+                            In Progress
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </>
+    ) : (
+      <div class="flex self-stretch flex-wrap items-center justify-center">
+        <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+          <div
+            class="loader-dots block relative w-22 h-6 mt-2"
+            style="width: 5rem;"
+          >
             <div
-              class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
-              style="width: 301.33px; min-width: 301.33px; max-width: 301.33px; height: 244px; min-height: 244px; max-height: 244px;"
-            >
-              <div
-                class="flex self-stretch flex-col space-y-8 items-start justify-start"
-                style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 196px; min-height: 196px; max-height: 196px;"
-              >
-                <div
-                  class="flex self-stretch items-start justify-between"
-                  style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 24px; min-height: 24px; max-height: 24px;"
-                >
-                  <div class="flex items-center justify-start">
-                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
-                      Tim 6
-                    </div>
-                  </div>
-                  <img
-                    src="/fimgs/609_876.x3.png"
-                    class="flex items-start justify-start"
-                    style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                </div>
-                <div
-                  class="flex self-stretch flex-col space-y-6 items-start justify-start"
-                  style="width: 267.33px; min-width: 267.33px; max-width: 267.33px; height: 140px; min-height: 140px; max-height: 140px;"
-                >
-                  <div class="flex self-stretch items-start justify-start">
-                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                      {meta.data_projek[e].name}
-                    </div>
-                  </div>
-                  <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                    <bar percent={meta.data_projek[e].task.completed} />
-                    <div class="flex self-stretch items-start justify-start">
-                      <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                        10 Task Done
-                      </div>
-                    </div>
-                    <div class="flex self-stretch items-start justify-start">
-                      <div class="text-sm tracking-wide leading-tight">
-                        Due Date: {meta.data_projek[e].duedate}
-                      </div>
-                    </div>
-                    <div class="flex items-center justify-center px-2 py-0.5 bg-orange-400 bg-opacity-70 rounded-sm">
-                      <div class="text-xs tracking-wide leading-none text-center text-white">
-                        In Progress
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; width: 0.75rem; height: 0.75rem;"
+            ></div>
+            <div
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+            ></div>
+            <div
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+            ></div>
+            <div
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+            ></div>
+          </div>
+        </div>
+        {/*start cadangan component load*/}
+        {/*<div class="grid grid-cols-3 gap-3 flex-grow">*/}
+        {/*<div class="bg-white p-2 sm:p-4 sm:h-64 rounded-2xl shadow-lg flex flex-col sm:flex-row gap-5 select-none ">*/}
+        {/*<div class="flex flex-col flex-1 gap-5 sm:p-2">*/}
+        {/*<div class="flex flex-1 flex-col gap-3">*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-10 rounded-2xl"></div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*<div class="bg-white p-2 sm:p-4 sm:h-64 rounded-2xl shadow-lg flex flex-col sm:flex-row gap-5 select-none ">*/}
+        {/*<div class="flex flex-col flex-1 gap-5 sm:p-2">*/}
+        {/*<div class="flex flex-1 flex-col gap-3">*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-10 rounded-2xl"></div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*<div class="bg-white p-2 sm:p-4 sm:h-64 rounded-2xl shadow-lg flex flex-col sm:flex-row gap-5 select-none ">*/}
+        {/*<div class="flex flex-col flex-1 gap-5 sm:p-2">*/}
+        {/*<div class="flex flex-1 flex-col gap-3">*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-10 rounded-2xl"></div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*end cadangan component load*/}
       </div>
-    </div>
+    )}
   </div>
 </>
