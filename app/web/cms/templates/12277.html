@@ -109,292 +109,292 @@
       });
     }}
   />
-  <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
-    <div class="flex self-stretch items-start justify-between">
-      <div class="flex items-start justify-start">
-        <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
-          {meta.state.judul}
-        </div>
-      </div>
-      <div class="flex flex-col space-y-2 items-start justify-start">
-        <div
-          class="flex flex-col items-start justify-start"
-          style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
-        >
-          <bar />
-        </div>
+  <div class="flex w-full self-stretch flex-col space-y-9 items-start justify-start px-10 pt-10">
+    <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
+      <div class="flex w-full items-start justify-between">
         <div class="flex items-start justify-start">
-          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-            10 Task Done
+          <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+            {meta.state.judul}
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2 items-start justify-start">
+          <div
+            class="flex flex-col items-start justify-start"
+            style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
+          >
+            <bar />
+          </div>
+          <div class="flex items-start justify-start">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+              10 Task Done
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="flex space-x-8 items-center justify-start">
-      <a
-        href={meta.link.detail}
-        class="flex flex-grow items-center justify-center p-2 rounded"
-      >
-        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-          Project Detail
-        </div>
-      </a>
-      <a
-        href={meta.link.task}
-        class="flex flex-grow items-center justify-center p-2 rounded"
-      >
-        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500 ">
-          Task
-        </div>
-      </a>
-      <a
-        href={meta.link.planning}
-        class="flex flex-grow items-center justify-center p-2 rounded"
-      >
-        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-          Planning
-        </div>
-      </a>
-      <a
-        href={meta.link.timeline}
-        class="flex flex-grow items-center justify-center p-2 rounded"
-      >
-        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-          Timeline
-        </div>
-      </a>
-      <a
-        href={meta.link.file}
-        class="flex items-center justify-center p-2 bg-coolGray-50 rounded"
-      >
-        <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
-          File Management
-        </div>
-      </a>
-      <a
-        href={meta.link.team}
-        class="flex flex-grow items-center justify-center p-2 rounded"
-      >
-        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
-          Team
-        </div>
-      </a>
+      <div class="flex space-x-8 items-center justify-start">
+        <a
+          href={meta.link.detail}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Project Detail
+          </div>
+        </a>
+        <a
+          href={meta.link.task}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Task
+          </div>
+        </a>
+        <a
+          href={meta.link.planning}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Planning
+          </div>
+        </a>
+        <a
+          href={meta.link.timeline}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Timeline
+          </div>
+        </a>
+        <a
+          href={meta.link.file}
+          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+            File Management
+          </div>
+        </a>
+        <a
+          href={meta.link.team}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Team
+          </div>
+        </a>
+      </div>
     </div>
   </div>
-  <div class="flex flex-col self-stretch space-y-8 px-8 py-16 w-auto">
-    <div>
-      <div class="flex self-stretch items-center justify-between px-6 py-2.5 bg-white rounded-t">
-        <div class="text-sm font-medium tracking-wide leading-tight text-center text-coolGray-900 rounded-l border-r border-coolGray-300 pr-3">
-          <label class="bg-white"></label>
-          <select
-            id="employee"
-            name="employee"
-            class="bg-white rounded-l outline-none"
-          >
-            <option value="1">Project Manager</option>
-            <option value="1">UI/UX Designer</option>
-            <option value="2">Business Analyst</option>
-            <option value="3">Full Stack Developer</option>
-          </select>
-        </div>
-        <div class="flex items-start justify-start">
-          <div class="flex items-center justify-between px-4 py-2 bg-coolGray-100 rounded w-48">
-            <div class="flex items-start justify-start">
-              <input
-                placeholder="Search Task"
-                class="text-xs tracking-wide leading-none text-start bg-coolGray-100 text-coolGray-500 focus:outline-none"
-              />
-            </div>
-            <div class="flex items-start justify-start">
-              <img
-                src="/fimgs/320_715.x3.png"
-                style="width: 14px; min-width: 14px; max-width: 14px; height: 14px; min-height: 14px; max-height: 14px;"
-              />
-            </div>
+  <div class="flex flex-col self-stretch space-y-8 p-10 w-auto">
+    <div class="flex self-stretch items-center justify-between px-6 py-2.5 bg-white rounded-t">
+      <div class="text-sm font-medium tracking-wide leading-tight text-center text-coolGray-900 rounded-l border-r border-coolGray-300 pr-3">
+        <label class="bg-white"></label>
+        <select
+          id="employee"
+          name="employee"
+          class="bg-white rounded-l outline-none"
+        >
+          <option value="1">Project Manager</option>
+          <option value="1">UI/UX Designer</option>
+          <option value="2">Business Analyst</option>
+          <option value="3">Full Stack Developer</option>
+        </select>
+      </div>
+      <div class="flex items-start justify-start">
+        <div class="flex items-center justify-between px-4 py-2 bg-coolGray-100 rounded w-48">
+          <div class="flex items-start justify-start">
+            <input
+              placeholder="Search Task"
+              class="text-xs tracking-wide leading-none text-start bg-coolGray-100 text-coolGray-500 focus:outline-none"
+            />
+          </div>
+          <div class="flex items-start justify-start">
+            <img
+              src="/fimgs/320_715.x3.png"
+              style="width: 14px; min-width: 14px; max-width: 14px; height: 14px; min-height: 14px; max-height: 14px;"
+            />
           </div>
         </div>
       </div>
-      <div class="flex self-stretch flex-col items-end justify-start px-6">
-        <div class="flex flex-col items-end justify-end pt-10 pb-6">
-          <div class="flex flex-col items-start justify-start">
-            <button
-              class="flex space-x-3 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
-              onClick={meta.toggleModal}
-            >
-              <img
-                src="/fimgs/5_50.x3.png"
-                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-              />
-              <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-                Upload File
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
-      {/*file uploaded*/}
-      <div class="flex self-stretch flex-wrap space-y-9 items-start justify-start">
-        <div class="flex self-stretch flex-wrap items-start justify-start space-y-9 space-x-9">
-          <div
-            class="flex flex-col items-start justify-start mb-8 border rounded border-coolGray-300"
-            style="margin-right: 22px;"
+    </div>
+    <div class="flex self-stretch flex-col items-end justify-start px-6">
+      <div class="flex flex-col items-end justify-end pt-10 pb-6">
+        <div class="flex flex-col items-start justify-start">
+          <button
+            class="flex space-x-3 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+            onClick={meta.toggleModal}
           >
             <img
-              src="/fimgs/398_730.x3.png"
-              style="width: 300px; min-width: 300px; max-width: 300px; height: 232px; min-height: 232px; max-height: 232px;"
+              src="/fimgs/5_50.x3.png"
+              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
             />
-            <div class="flex self-stretch space-x-2.5 items-center justify-center p-4 bg-white shadow-inner rounded-bl rounded-br">
-              <div class="flex flex-1 space-x-2.5 items-center justify-start">
-                <img
-                  src="/fimgs/398_733.x3.png"
-                  style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                />
-                <div class="flex flex-1 items-start justify-start">
-                  <div class="text-xs tracking-wide leading-none text-coolGray-900">
-                    Forgot Password Page
-                  </div>
+            <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+              Upload File
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+    {/*file uploaded*/}
+    <div class="flex self-stretch flex-wrap space-y-9 items-start justify-start">
+      <div class="flex self-stretch flex-wrap items-start justify-start space-y-9 space-x-9">
+        <div
+          class="flex flex-col items-start justify-start mb-8 border rounded border-coolGray-300"
+          style="margin-right: 22px;"
+        >
+          <img
+            src="/fimgs/398_730.x3.png"
+            style="width: 300px; min-width: 300px; max-width: 300px; height: 232px; min-height: 232px; max-height: 232px;"
+          />
+          <div class="flex self-stretch space-x-2.5 items-center justify-center p-4 bg-white shadow-inner rounded-bl rounded-br">
+            <div class="flex flex-1 space-x-2.5 items-center justify-start">
+              <img
+                src="/fimgs/398_733.x3.png"
+                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+              />
+              <div class="flex flex-1 items-start justify-start">
+                <div class="text-xs tracking-wide leading-none text-coolGray-900">
+                  Forgot Password Page
                 </div>
-              </div>
-              <div class="flex items-start">
-                <img
-                  src="/fimgs/398_736.x3.png"
-                  onClick={meta.toggleModal1}
-                  style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                />
-                {meta.showModal1 && (
-                  <>
-                    <div class="absolute">
-                      <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
-                        <div
-                          class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative"
-                          style="width: 187px; min-width: 187px; max-width: 187px; height: 136px; min-height: 136px; max-height: 136px;"
-                        >
-                          <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
-                            <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
-                              <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
-                                <img
-                                  src="/fimgs/404_669.x3.png"
-                                  style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                />
-                                <div class="flex flex-1 items-start justify-start">
-                                  <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                    View Detail
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
-                              <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
-                                <img
-                                  src="/fimgs/404_674.x3.png"
-                                  style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                />
-                                <div class="flex flex-1 items-start justify-start">
-                                  <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                    Download
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="border-coolGray-300" />
-                            <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br hover:bg-violet-50">
-                              <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
-                                <img
-                                  src="/fimgs/404_679.x3.png"
-                                  style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                />
-                                <div class="flex flex-1 items-start justify-start">
-                                  <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                    Delete
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
-                  </>
-                )}
               </div>
             </div>
-          </div>
-          {Object.keys(meta.listFile).map((e, idx) => {
-            var fileUrl = "/upload/" + meta.listFile[e].url;
-            return (
-              <div
-                class="flex flex-col items-start justify-start mb-8 border rounded border-coolGray-300"
-                style="margin-right: 22px;"
-              >
-                <img
-                  src={fileUrl}
-                  style="width: 300px; min-width: 300px; max-width: 300px; height: 232px; min-height: 232px; max-height: 232px;"
-                />
-                <div class="flex self-stretch space-x-2.5 items-center justify-center p-4 bg-white shadow-inner rounded-bl rounded-br">
-                  <div class="flex flex-1 space-x-2.5 items-center justify-start">
-                    <img
-                      src="/fimgs/398_733.x3.png"
-                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                    />
-                    <div class="flex flex-1 items-start justify-start">
-                      <div class="text-xs tracking-wide leading-none text-coolGray-900">
-                        {meta.listFile[e].name}
+            <div class="flex items-start">
+              <img
+                src="/fimgs/398_736.x3.png"
+                onClick={meta.toggleModal1}
+                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+              />
+              {meta.showModal1 && (
+                <>
+                  <div class="absolute">
+                    <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
+                      <div
+                        class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative"
+                        style="width: 187px; min-width: 187px; max-width: 187px; height: 136px; min-height: 136px; max-height: 136px;"
+                      >
+                        <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
+                          <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                            <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                              <img
+                                src="/fimgs/404_669.x3.png"
+                                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                              />
+                              <div class="flex flex-1 items-start justify-start">
+                                <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                  View Detail
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                            <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                              <img
+                                src="/fimgs/404_674.x3.png"
+                                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                              />
+                              <div class="flex flex-1 items-start justify-start">
+                                <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                  Download
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="border-coolGray-300" />
+                          <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br hover:bg-violet-50">
+                            <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                              <img
+                                src="/fimgs/404_679.x3.png"
+                                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                              />
+                              <div class="flex flex-1 items-start justify-start">
+                                <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                  Delete
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div class="flex items-start">
-                    <img
-                      src="/fimgs/398_736.x3.png"
-                      onClick={meta.toggleModal1}
-                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                    />
-                    {meta.showModal1 && (
-                      <>
-                        <div class="absolute">
-                          <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
-                            <div
-                              class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative"
-                              style="width: 187px; min-width: 187px; max-width: 187px; height: 136px; min-height: 136px; max-height: 136px;"
-                            >
-                              <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
-                                <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
-                                  <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
-                                    <img
-                                      src="/fimgs/404_669.x3.png"
-                                      style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                    />
-                                    <div class="flex flex-1 items-start justify-start">
-                                      <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                        View Detail
-                                      </div>
+                  {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+        {Object.keys(meta.listFile).map((e, idx) => {
+          var fileUrl = "/upload/" + meta.listFile[e].url;
+          return (
+            <div
+              class="flex flex-col items-start justify-start mb-8 border rounded border-coolGray-300"
+              style="margin-right: 22px;"
+            >
+              <img
+                src={fileUrl}
+                style="width: 300px; min-width: 300px; max-width: 300px; height: 232px; min-height: 232px; max-height: 232px;"
+              />
+              <div class="flex self-stretch space-x-2.5 items-center justify-center p-4 bg-white shadow-inner rounded-bl rounded-br">
+                <div class="flex flex-1 space-x-2.5 items-center justify-start">
+                  <img
+                    src="/fimgs/398_733.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                  <div class="flex flex-1 items-start justify-start">
+                    <div class="text-xs tracking-wide leading-none text-coolGray-900">
+                      {meta.listFile[e].name}
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-start">
+                  <img
+                    src="/fimgs/398_736.x3.png"
+                    onClick={meta.toggleModal1}
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                  {meta.showModal1 && (
+                    <>
+                      <div class="absolute">
+                        <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
+                          <div
+                            class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative"
+                            style="width: 187px; min-width: 187px; max-width: 187px; height: 136px; min-height: 136px; max-height: 136px;"
+                          >
+                            <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
+                              <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                                <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                                  <img
+                                    src="/fimgs/404_669.x3.png"
+                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                  />
+                                  <div class="flex flex-1 items-start justify-start">
+                                    <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                      View Detail
                                     </div>
                                   </div>
                                 </div>
-                                <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
-                                  <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
-                                    <img
-                                      src="/fimgs/404_674.x3.png"
-                                      style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                    />
-                                    <div class="flex flex-1 items-start justify-start">
-                                      <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                        Download
-                                      </div>
+                              </div>
+                              <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                                <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                                  <img
+                                    src="/fimgs/404_674.x3.png"
+                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                  />
+                                  <div class="flex flex-1 items-start justify-start">
+                                    <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                      Download
                                     </div>
                                   </div>
                                 </div>
-                                <div class="border-coolGray-300" />
-                                <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br hover:bg-violet-50">
-                                  <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
-                                    <img
-                                      src="/fimgs/404_679.x3.png"
-                                      style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                    />
-                                    <div class="flex flex-1 items-start justify-start">
-                                      <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                        Delete
-                                      </div>
+                              </div>
+                              <div class="border-coolGray-300" />
+                              <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br hover:bg-violet-50">
+                                <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                                  <img
+                                    src="/fimgs/404_679.x3.png"
+                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                  />
+                                  <div class="flex flex-1 items-start justify-start">
+                                    <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                      Delete
                                     </div>
                                   </div>
                                 </div>
@@ -402,15 +402,15 @@
                             </div>
                           </div>
                         </div>
-                        {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
-                      </>
-                    )}
-                  </div>
+                      </div>
+                      {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
+                    </>
+                  )}
                 </div>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   </div>
