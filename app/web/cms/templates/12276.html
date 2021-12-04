@@ -27,24 +27,6 @@
         tim2: false,
       },
       add: { tekan: true },
-      pilih: {
-        showTATeam: true,
-        showTTeam: false,
-      },
-      toggleTATeam() {
-        this.pilih.showTATeam = true;
-        this.pilih.showTTeam = false;
-      },
-      toggleTTeam() {
-        this.pilih.showTTeam = true;
-        this.pilih.showTATeam = false;
-      },
-      toggleSTeam1() {
-        this.show.tim1 = !this.show.tim1;
-      },
-      toggleSTeam2() {
-        this.show.tim2 = !this.show.tim2;
-      },
       setMonth(newMonth) {
         if (this.selectedMonth == null) {
           this.selectedMonth = new Date();
@@ -88,7 +70,7 @@
       },
       getPreviousMonth() {
         const currentMonthInMilli = new Date(this.selectedMonth).getTime();
-        const oneMonth = 1000 * 60 * 60 * 24 * 31;
+        const oneMonth = 1000 * 60 * 60 * 24 * 30;
         const previousMonthInMilli = currentMonthInMilli - oneMonth;
         const previousMonth = new Date(previousMonthInMilli);
         this.setMonth(previousMonth);
