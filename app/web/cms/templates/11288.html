@@ -14,6 +14,9 @@
       toggleModal2() {
         this.showModal2 = !this.showModal2;
       },
+      toggleModalD() {
+        this.showModalD = !this.showModalD;
+      },
       ubahNilai(e) {
         let name = e.target.name;
         let nilai = e.target.value;
@@ -118,7 +121,7 @@
                           </button>
                         </div>
                         <div class="cursor-pointer">
-                          <button>
+                          <button onClick={meta.toggleModalD}>
                             <img
                               style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
                               src="/fimgs/295_281.x3.png"
@@ -153,7 +156,7 @@
                           </button>
                         </div>
                         <div class="cursor-pointer">
-                          <button>
+                          <button onClick={meta.toggleModalD}>
                             <img
                               style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
                               src="/fimgs/295_281.x3.png"
@@ -391,6 +394,64 @@
                       </div>
                     </div>
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.showModalD ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 325px; width: 325px;"
+        >
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="flex w-full flex-col items-start justify-start p-4 space-y-6 bg-white rounded">
+              <div class="flex w-full space-x-4 items-start justify-start">
+                <div>
+                  <img
+                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                    src="/fimgs/295_281.x3.png"
+                  />
+                </div>
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                      Delete Project Manager
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight">
+                      Are you sure to delete{" "}
+                      <small class="text-sm font-medium">
+                        "Samuel Salmonela"?
+                      </small>{" "}
+                      You can’t undo this action
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex w-full space-x-6 items-start justify-end">
+                <div class="flex items-start justify-end">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                      <button onClick={meta.toggleModalD}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-start justify-end bg-red-500 rounded">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                      Delete
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

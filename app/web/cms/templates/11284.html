@@ -222,6 +222,7 @@
           runInAction(() => {
             meta.member = e.map((x) => x.value);
             meta.team = 0;
+            console.log(meta.member);
           });
         },
       };
@@ -230,6 +231,7 @@
           runInAction(() => {
             meta.team = e.value;
             meta.member = [];
+            console.log(meta.team);
           });
         },
       };

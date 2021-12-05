@@ -4,7 +4,7 @@
       toggleProfile() {
         this.showProfile = !this.showProfile;
       },
-      data_projek: "",
+      data_projek: [],
       dept1: [
         { value: "1", label: "Production" },
         { value: "2", label: "Research and Development" },
@@ -84,6 +84,12 @@
       },
       toggleModal() {
         this.showModal = !this.showModal;
+      },
+      toggleModalE() {
+        this.showModalE = !this.showModalE;
+      },
+      toggleModalD() {
+        this.showModalD = !this.showModalD;
       },
       toggleDrop() {
         this.showDrop = !this.showDrop;
@@ -293,16 +299,20 @@
                           <td class="px-6 py-2 whitespace-nowrap text-center text-sm font-medium">
                             <div class="flex flex-1 space-x-4 items-start justify-start">
                               <div class="cursor-pointer">
-                                <img
-                                  style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                                  src="/fimgs/295_279.x3.png"
-                                />
+                                <button onClick={meta.toggleModalE}>
+                                  <img
+                                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                                    src="/fimgs/295_279.x3.png"
+                                  />
+                                </button>
                               </div>
                               <div class="cursor-pointer">
-                                <img
-                                  style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-                                  src="/fimgs/295_281.x3.png"
-                                />
+                                <button onClick={meta.toggleModalD}>
+                                  <img
+                                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                                    src="/fimgs/295_281.x3.png"
+                                  />
+                                </button>
                               </div>
                               <div class="cursor-pointer">
                                 <img
@@ -380,6 +390,223 @@
       </div>
     </div>
   )}
+  {meta.showModalE ? (
+    <>
+      <div class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed">
+        <div
+          class="z-50 relative p-3 mx-auto my-0 max-w-full"
+          style="min-width: 640px; width: 640px;"
+        >
+          <div class="relative w-auto mx-auto z-50 my-0 max-w-full">
+            {/*content*/}
+            <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              {/*body*/}
+              <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+                <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                  <div class="flex self-stretch flex-col items-start justify-start">
+                    <div class="flex self-stretch items-center justify-between">
+                      <div class="flex items-start justify-start pl-52">
+                        <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                          Edit Employee
+                        </div>
+                      </div>
+                      <form onSubmit={meta.toggleModalE}>
+                        <button class="flex flex-col items-start justify-start">
+                          <img
+                            src="/fimgs/517_574.x1.svg"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                          />
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Full Name
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="fullname"
+                          onChange={meta.ubahNilai}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      NIK
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="nik"
+                          onChange={meta.ubahNilai}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Place and Date of Birth
+                    </div>
+                    <div class="flex flex-1 w-full space-x-4 items-center">
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <input
+                              id="name"
+                              name="birthplace"
+                              onChange={meta.ubahNilai}
+                              type="text"
+                              placeholder=""
+                              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div>,</div>
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <input
+                              id="name"
+                              name="birthdate"
+                              onChange={meta.ubahNilai}
+                              type="date"
+                              placeholder=""
+                              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Departement
+                    </div>
+                    <div class="flex flex-1 w-full space-x-6 items-center">
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <multipleselect
+                              options={meta.dept1}
+                              defaultValue={meta.dept1[0]}
+                              theme={(theme) => ({
+                                ...theme,
+                                colors: {
+                                  ...theme.colors,
+                                  primary25: "#F3F4F6",
+                                  primary: "#6366F1",
+                                },
+                              })}
+                              styles={meta.styles}
+                              className="w-full"
+                              classNamePrefix="select"
+                              name="departement"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <multipleselect
+                              options={meta.dept2}
+                              defaultValue={meta.dept2[0]}
+                              theme={(theme) => ({
+                                ...theme,
+                                colors: {
+                                  ...theme.colors,
+                                  primary25: "#F3F4F6",
+                                  primary: "#6366F1",
+                                },
+                              })}
+                              styles={meta.styles}
+                              className="w-full"
+                              classNamePrefix="select"
+                              name="departement"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Phone
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="phone"
+                          onChange={meta.ubahNilai}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Email
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="email"
+                          onChange={meta.ubahNilai}
+                          type="email"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Address
+                    </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="address"
+                          onChange={meta.ubahNilai}
+                          type="address"
+                          placeholder=""
+                          required
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <form
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    onSubmit={meta.submitData}
+                  >
+                    <button
+                      type="submit"
+                      class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    >
+                      <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                        <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                          Save
+                        </div>
+                      </div>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      </div>
+    </>
+  ) : null}
   {meta.showModal ? (
     <>
       <div class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed">
@@ -595,6 +822,64 @@
         </div>
         <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
       </div>
+    </>
+  ) : null}
+  {meta.showModalD ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 325px; width: 325px;"
+        >
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="flex w-full flex-col items-start justify-start p-4 space-y-6 bg-white rounded">
+              <div class="flex w-full space-x-4 items-start justify-start">
+                <div>
+                  <img
+                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                    src="/fimgs/295_281.x3.png"
+                  />
+                </div>
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                      Delete Employee
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight">
+                      Are you sure to delete{" "}
+                      <small class="text-sm font-medium">
+                        "Bambang Pinang"?
+                      </small>{" "}
+                      You can’t undo this action
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex w-full space-x-6 items-start justify-end">
+                <div class="flex items-start justify-end">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                      <button onClick={meta.toggleModalD}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-start justify-end bg-red-500 rounded">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                      Delete
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
     </>
   ) : null}
 </>
