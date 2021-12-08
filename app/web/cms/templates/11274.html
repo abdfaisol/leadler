@@ -238,6 +238,15 @@
           elem.classList.add("hidden");
         }
       },
+      showmodalku2(id) {
+        this.ShowStatusProject = !this.ShowStatusProject;
+        var elem = document.getElementById(id);
+        if (elem.classList.contains("hidden")) {
+          elem.classList.remove("hidden");
+        } else {
+          elem.classList.add("hidden");
+        }
+      },
     }}
     run={async () => {
       var data_i = meta.dataProjek();
@@ -408,92 +417,96 @@
             {meta.data_projek.map((e, idx) => {
               var urlproject = "/pm/projects/" + e.id + "/detail";
               return (
-                <div
-                  class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
-                  style="height: 244px; min-height: 244px;"
-                >
+                <>
                   <div
-                    class="flex self-stretch flex-col space-y-8 items-start justify-start"
-                    style="height: 196px; min-height: 196px; max-height: 196px;"
+                    class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                    style="height: 244px; min-height: 244px;"
                   >
                     <div
-                      class="flex self-stretch items-start justify-between"
-                      style="height: 24px; min-height: 24px; max-height: 24px;"
+                      class="flex self-stretch flex-col space-y-8 items-start justify-start"
+                      style="height: 196px; min-height: 196px; max-height: 196px;"
                     >
-                      <div class="flex items-center justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
-                          Tim 6
+                      <div
+                        class="flex self-stretch items-start justify-between"
+                        style="height: 24px; min-height: 24px; max-height: 24px;"
+                      >
+                        <div class="flex items-center justify-start">
+                          <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                            Tim 6
+                          </div>
                         </div>
-                      </div>
-                      <div class="flex items-start px-2">
-                        <img
-                          onClick={(e) => {
-                            meta.showmodalku(idx);
-                          }}
-                          src="/fimgs/609_876.x3.png"
-                          class="flex items-start justify-start cursor-pointer"
-                          style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
-                        />
+                        <div class="flex items-start px-2">
+                          <img
+                            onClick={(e) => {
+                              meta.showmodalku(idx);
+                            }}
+                            src="/fimgs/609_876.x3.png"
+                            class="flex items-start justify-start cursor-pointer"
+                            style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
 
-                        <div class="absolute hidden" id={idx.toString()}>
-                          <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
-                            <div class="flex flex-col items-start justify-start bg-white">
-                              <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
-                                <div class="flex self-stretch flex-col items-start justify-start">
-                                  <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50">
-                                    <div class="flex flex-1 space-x-2 items-center justify-start">
-                                      <img
-                                        src="/fimgs/545_1540.x3.png"
-                                        style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                      />
-                                      <div class="flex flex-1 items-start justify-start">
-                                        <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                          Edit Project
+                          <div class="absolute hidden" id={idx.toString()}>
+                            <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
+                              <div class="flex flex-col items-start justify-start bg-white">
+                                <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                  <div class="flex self-stretch flex-col items-start justify-start">
+                                    <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50">
+                                      <div class="flex flex-1 space-x-2 items-center justify-start">
+                                        <img
+                                          src="/fimgs/545_1540.x3.png"
+                                          style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                        />
+                                        <div class="flex flex-1 items-start justify-start">
+                                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                            Edit Project
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="flex self-stretch items-center justify-start py-2 pl-4 cursor-pointer hover:bg-violet-50">
+                                      <div class="flex flex-1 space-x-2 items-center justify-start">
+                                        <img
+                                          src="/fimgs/545_1545.x3.png"
+                                          style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                        />
+                                        <div class="flex flex-1 items-start justify-start">
+                                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                            Important Project
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div
+                                      onClick={(e) => {
+                                        meta.showmodalku2(idx);
+                                      }}
+                                      class="flex self-stretch items-center justify-start py-2 pl-4 cursor-pointer hover:bg-violet-50"
+                                    >
+                                      <div class="flex flex-1 space-x-2 items-center justify-start">
+                                        <img
+                                          src="/fimgs/545_1550.x3.png"
+                                          style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                        />
+                                        <div class="flex flex-1 items-start justify-start">
+                                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                            Status Project
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                  <div class="flex self-stretch items-center justify-start py-2 pl-4 cursor-pointer hover:bg-violet-50">
-                                    <div class="flex flex-1 space-x-2 items-center justify-start">
-                                      <img
-                                        src="/fimgs/545_1545.x3.png"
-                                        style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                      />
-                                      <div class="flex flex-1 items-start justify-start">
-                                        <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                          Important Project
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    onClick={meta.toggleStatusProject}
-                                    class="flex self-stretch items-center justify-start py-2 pl-4 cursor-pointer hover:bg-violet-50"
-                                  >
-                                    <div class="flex flex-1 space-x-2 items-center justify-start">
-                                      <img
-                                        src="/fimgs/545_1550.x3.png"
-                                        style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                      />
-                                      <div class="flex flex-1 items-start justify-start">
-                                        <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                          Status Project
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="flex self-stretch flex-col space-y-2 items-start justify-start border-t">
-                                  <div />
-                                  <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
-                                    <div class="flex flex-1 space-x-2 items-center justify-start">
-                                      <img
-                                        src="/fimgs/545_1557.x3.png"
-                                        style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                      />
-                                      <div class="flex flex-1 items-start justify-start">
-                                        <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                          Delete
+                                  <div class="flex self-stretch flex-col space-y-2 items-start justify-start border-t">
+                                    <div />
+                                    <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
+                                      <div class="flex flex-1 space-x-2 items-center justify-start">
+                                        <img
+                                          src="/fimgs/545_1557.x3.png"
+                                          style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                        />
+                                        <div class="flex flex-1 items-start justify-start">
+                                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                            Delete
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
@@ -504,38 +517,126 @@
                           </div>
                         </div>
                       </div>
+                      <a
+                        href={urlproject}
+                        class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                        style="height: 140px; min-height: 140px; max-height: 140px;"
+                      >
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                            {e.name}
+                          </div>
+                        </div>
+                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                          <bar percent={e.task.completed} />
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                              {e.task.taskComplete} Task Done
+                            </div>
+                          </div>
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight">
+                              Due Date: {e.duedate}
+                            </div>
+                          </div>
+                          <div class="flex items-center justify-center px-2 py-0.5 bg-orange-400 bg-opacity-70 rounded-sm">
+                            <div class="text-xs tracking-wide leading-none text-center text-white">
+                              In Progress
+                            </div>
+                          </div>
+                        </div>
+                      </a>
                     </div>
-                    <a
-                      href={urlproject}
-                      class="flex self-stretch flex-col space-y-6 items-start justify-start"
-                      style="height: 140px; min-height: 140px; max-height: 140px;"
-                    >
-                      <div class="flex self-stretch items-start justify-start">
-                        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                          {e.name}
-                        </div>
-                      </div>
-                      <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                        <bar percent={e.task.completed} />
-                        <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                            {e.task.taskComplete} Task Done
-                          </div>
-                        </div>
-                        <div class="flex self-stretch items-start justify-start">
-                          <div class="text-sm tracking-wide leading-tight">
-                            Due Date: {e.duedate}
-                          </div>
-                        </div>
-                        <div class="flex items-center justify-center px-2 py-0.5 bg-orange-400 bg-opacity-70 rounded-sm">
-                          <div class="text-xs tracking-wide leading-none text-center text-white">
-                            In Progress
-                          </div>
-                        </div>
-                      </div>
-                    </a>
                   </div>
-                </div>
+
+                  {meta.ShowStatusProject && (
+                    <>
+                      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+                        <div
+                          class="relative w-auto mx-auto max-w-3xl"
+                          style="min-width: 480px; width: 480px;"
+                        >
+                          {/*content*/}
+                          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                            {/*body*/}
+                            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+                              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                                <div class="flex self-stretch flex-col items-start justify-start">
+                                  <div class="flex self-stretch items-center justify-between">
+                                    <div class="flex items-start justify-start pl-40">
+                                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                                        Status Project
+                                      </div>
+                                    </div>
+                                    <form onSubmit={meta.toggleStatusProject}>
+                                      <button class="flex flex-col items-start justify-start">
+                                        <img
+                                          src="/fimgs/517_574.x1.svg"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                                        />
+                                      </button>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                              <form
+                                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                                // onSubmit={meta.submitData}
+                              >
+                                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                                    <div class="flex self-stretch items-start justify-start">
+                                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                                        Add Status Project
+                                      </div>
+                                    </div>
+
+                                    <div class="flex self-stretch items-center justify-start">
+                                      <div class="relative flex flex-1 items-center justify-start">
+                                        <multipleselect
+                                          options={meta.status}
+                                          defaultValue={meta.status[0]}
+                                          theme={(theme) => ({
+                                            ...theme,
+                                            colors: {
+                                              ...theme.colors,
+                                              primary25: "#F3F4F6",
+                                              primary: "#6366F1",
+                                            },
+                                          })}
+                                          styles={meta.styles}
+                                          className="w-full"
+                                          classNamePrefix="select"
+                                          name="status"
+                                          onChange={(e) => {
+                                            meta.actionstatus.onChange(e);
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <button
+                                    type="submit"
+                                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                                    onClick={meta.toggleModalAT}
+                                  >
+                                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                                        Save
+                                      </div>
+                                    </div>
+                                  </button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
+                    </>
+                  )}
+                </>
               );
             })}
           </div>
@@ -1189,91 +1290,4 @@
       <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
     </>
   ) : null}
-  {meta.ShowStatusProject && (
-    <>
-      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
-        <div
-          class="relative w-auto mx-auto max-w-3xl"
-          style="min-width: 480px; width: 480px;"
-        >
-          {/*content*/}
-          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            {/*body*/}
-            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
-              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
-                <div class="flex self-stretch flex-col items-start justify-start">
-                  <div class="flex self-stretch items-center justify-between">
-                    <div class="flex items-start justify-start pl-40">
-                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
-                        Status Project
-                      </div>
-                    </div>
-                    <form onSubmit={meta.toggleStatusProject}>
-                      <button class="flex flex-col items-start justify-start">
-                        <img
-                          src="/fimgs/517_574.x1.svg"
-                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
-                        />
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <form
-                class="flex flex-1 self-stretch flex-col items-start justify-start"
-                // onSubmit={meta.submitData}
-              >
-                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
-                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
-                    <div class="flex self-stretch items-start justify-start">
-                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
-                        Add Status Project
-                      </div>
-                    </div>
-
-                    <div class="flex self-stretch items-center justify-start">
-                      <div class="relative flex flex-1 items-center justify-start">
-                        <multipleselect
-                          options={meta.status}
-                          defaultValue={meta.status[0]}
-                          theme={(theme) => ({
-                            ...theme,
-                            colors: {
-                              ...theme.colors,
-                              primary25: "#F3F4F6",
-                              primary: "#6366F1",
-                            },
-                          })}
-                          styles={meta.styles}
-                          className="w-full"
-                          classNamePrefix="select"
-                          name="status"
-                          onChange={(e) => {
-                            meta.actionstatus.onChange(e);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    class="flex flex-1 self-stretch flex-col items-start justify-start"
-                    onClick={meta.toggleModalAT}
-                  >
-                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
-                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-                        Save
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
-    </>
-  )}
 </>
