@@ -244,15 +244,9 @@
     {/*file uploaded*/}
     <div class="flex self-stretch flex-wrap items-start justify-start">
       <div class="grid grid-cols-3 gap-8 flex-grow">
-        <div
-          class="flex flex-col items-start justify-start mb-8 border rounded border-coolGray-300"
-          style="margin-right: 22px;"
-        >
-          <img
-            src="/fimgs/398_730.x3.png"
-            style="width: 300px; min-width: 300px; max-width: 300px; height: 232px; min-height: 232px; max-height: 232px;"
-          />
-          <div class="flex self-stretch space-x-2.5 items-center justify-center p-4 bg-white shadow-inner rounded-bl rounded-br">
+        <div class="flex flex-wrap content-between border rounded border-coolGray-300">
+          <img src="/fimgs/398_730.x3.png" />
+          <div class="flex self-stretch w-full space-x-2.5 items-center justify-center p-4 bg-white shadow-inner rounded-bl rounded-br">
             <div class="flex flex-1 space-x-2.5 items-center justify-start">
               <img
                 src="/fimgs/398_733.x3.png"
@@ -329,15 +323,9 @@
         {Object.keys(meta.listFile).map((e, idx) => {
           var fileUrl = "/upload/" + meta.listFile[e].url;
           return (
-            <div
-              class="flex flex-col items-start justify-start mb-8 border rounded border-coolGray-300"
-              style="margin-right: 22px;"
-            >
-              <img
-                src={fileUrl}
-                style="width: 300px; min-width: 300px; max-width: 300px; height: 232px; min-height: 232px; max-height: 232px;"
-              />
-              <div class="flex self-stretch space-x-2.5 items-center justify-center p-4 bg-white shadow-inner rounded-bl rounded-br">
+            <div class="flex flex-wrap content-between border rounded border-coolGray-300">
+              <img src={fileUrl} />
+              <div class="flex self-stretch w-full space-x-2.5 items-center justify-center p-4 bg-white shadow-inner rounded-bl rounded-br">
                 <div class="flex flex-1 space-x-2.5 items-center justify-start">
                   <img
                     src="/fimgs/398_733.x3.png"
