@@ -12,6 +12,43 @@
         planning: "#",
         file: "#",
       },
+      team: "",
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      state2: { title: "" },
+      dataTeam(e) {
+        let result = [];
+        api("/api/team").then((i) => {
+          i.data_act.map((res, index) => {
+            i.data_act[index] = { value: res.id, label: res.name };
+            result.push(i.data_act[index]);
+          });
+        });
+        return result;
+      },
+      modalChangeTeam() {
+        this.showModalChangeTeam = !this.showModalChangeTeam;
+      },
     }}
     run={async () => {
       api("/api/project/show/" + params.id).then((e) => {
@@ -31,6 +68,15 @@
         }
         document.getElementById("loading").remove();
       });
+
+      meta.actionteam = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.team = e.value;
+            meta.member = [];
+          });
+        },
+      };
     }}
   />
   <div class="flex w-full self-stretch flex-col space-y-9 items-start justify-start px-10 pt-10">
@@ -124,7 +170,10 @@
         </div>
         <div class="flex flex-col items-start justify-start">
           <div class="flex items-start justify-start">
-            <div class="flex items-start justify-start px-4 py-2 border rounded border-indigo-400 hover:border-indigo-700 cursor-pointer">
+            <div
+              class="flex items-start justify-start px-4 py-2 border rounded border-indigo-400 hover:border-indigo-700 cursor-pointer"
+              onClick={meta.modalChangeTeam}
+            >
               <div class="text-base font-medium tracking-wide leading-normal text-center text-indigo-500">
                 Change Team
               </div>
@@ -132,6 +181,7 @@
           </div>
         </div>
       </div>
+
       <div class="flex self-stretch flex-col items-start justify-start">
         <div class="flex self-stretch flex-col items-start justify-start p-6 bg-coolGray-50 border rounded border-coolGray-300">
           <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
@@ -256,4 +306,106 @@
       </div>
     </div>
   </div>
+  {meta.showModalChangeTeam && (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 480px; width: 480px;"
+        >
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <div class="flex self-stretch items-center justify-between">
+                    <div class="flex items-start justify-start pl-40">
+                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                        Change Team
+                      </div>
+                    </div>
+                    <form onSubmit={meta.modalChangeTeam}>
+                      <button class="flex flex-col items-start justify-start">
+                        <img
+                          src="/fimgs/517_574.x1.svg"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                        />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                // onSubmit={meta.submitData}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Team Now
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2.5">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="project"
+                          type="text"
+                          placeholder=""
+                          value="Team 1"
+                          disabled
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        Replace By
+                      </div>
+                    </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.dataTeam()}
+                          value={meta.state2.team}
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full"
+                          classNamePrefix="select"
+                          name="team"
+                          onChange={(e) => {
+                            meta.actionteam.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    onClick={meta.modalChangeTeam}
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Save
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  )}
 </>
