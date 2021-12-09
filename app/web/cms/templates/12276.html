@@ -27,6 +27,86 @@
         tim2: false,
       },
       add: { tekan: true },
+      team: [
+        { value: "0", label: "All Team" },
+        { value: "1", label: "Team 1" },
+        { value: "2", label: "Team 2" },
+        { value: "3", label: "Team 3" },
+      ],
+      status: [
+        { value: "1", label: "TODO", color: "#4ADE80" },
+        {
+          value: "2",
+          label: "IN PROGRESS",
+          color: "#888DF1",
+        },
+        { value: "3", label: "SUBMITTED", color: "#2D34E6" },
+        { value: "4", label: "REVIEW", color: "#F9A8D4" },
+        { value: "5", label: "REVISION", color: "#F87171" },
+        { value: "6", label: "COMPLETE", color: "#F1B459" },
+      ],
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "2px",
+          paddingBottom: "2px",
+          border: "none",
+          boxShadow: "none",
+          backgroundColor: "transparent",
+        }),
+        input: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        singleValue: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        option: (styles, { data }) => {
+          return {
+            ...styles,
+            backgroundColor: data.color,
+            "&:hover": {
+              backgroundColor: data.isDisabled
+                ? "#F3F4F6"
+                : data.isSelected
+                ? null
+                : "#F3F4F6",
+            },
+          };
+        },
+      },
+      stylesx: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          border: "none",
+          boxShadow: "none",
+          backgroundColor: "transparent",
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      toggleTooltip() {
+        this.showTooltip = !this.showTooltip;
+      },
+      showtooltipku(id) {
+        var elem = document.getElementById(id);
+        if (elem.classList.contains("hidden")) {
+          elem.classList.remove("hidden");
+        } else {
+          elem.classList.add("hidden");
+        }
+      },
       setMonth(newMonth) {
         if (this.selectedMonth == null) {
           this.selectedMonth = new Date();
@@ -178,7 +258,22 @@
         .catch((e) => {
           console.log(e);
         });
-
+      meta.actionstatus = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.status = e.value;
+            console.log(meta.state.status);
+          });
+        },
+      };
+      meta.actioncstatus = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.cstatus = e.color;
+            console.log(meta.state.cstatus);
+          });
+        },
+      };
       console.log("Akhir:");
     }}
   />
@@ -260,20 +355,30 @@
   <div class="flex flex-col self-stretch space-y-6 p-10 w-auto">
     <div class="rounded">
       <div
-        class="flex self-stretch items-center justify-between bg-white rounded-t border-b border-coolGray-300 px-8"
+        class="flex self-stretch items-center justify-between bg-white rounded-t border-b border-coolGray-300 pr-8"
         style="height: 50px; min-height: 50px; max-height: 50px;"
       >
-        <div class="text-sm font-medium tracking-wide leading-tight text-center text-coolGray-900 rounded-l border-r border-coolGray-300 pr-3">
-          <label class="bg-white"></label>
-          <select
-            id="employee"
-            name="employee"
-            class="text-sm bg-white rounded-l py-3 outline-none"
-          >
-            <option value="volvo">UI/UX Designer</option>
-            <option value="saab">Business Analyst</option>
-            <option value="fiat">Full Stack Developer</option>
-          </select>
+        <div class="text-sm font-medium tracking-wide leading-tight text-center text-coolGray-900 rounded-l border-r border-coolGray-300">
+          <div class="flex items-center justify-center">
+            <multipleselect
+              options={meta.team}
+              defaultValue={meta.team[0]}
+              menuPortalTarget={document.body}
+              theme={(theme) => ({
+                ...theme,
+                borderRadius: 0,
+                colors: {
+                  ...theme.colors,
+                  primary25: "#F3F4F6",
+                  primary: "#6366F1",
+                },
+              })}
+              styles={meta.stylesx}
+              className="w-52"
+              classNamePrefix="select"
+              name="status"
+            />
+          </div>
         </div>
         <div class="flex space-x-2 items-center justify-center">
           <div id="prev" onClick={meta.getPreviousMonth}>
