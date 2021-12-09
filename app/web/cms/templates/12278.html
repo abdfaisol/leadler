@@ -36,6 +36,16 @@
         }),
       },
       state2: { title: "" },
+      dataUser(e) {
+        let userDetail = [];
+        api("/api/user").then((i) => {
+          i.data_act.map((res, index) => {
+            i.data_act[index] = { value: res.id, label: res.email };
+            userDetail.push(i.data_act[index]);
+          });
+        });
+        return userDetail;
+      },
       dataTeam(e) {
         let result = [];
         api("/api/team").then((i) => {
@@ -48,6 +58,9 @@
       },
       modalChangeTeam() {
         this.showModalChangeTeam = !this.showModalChangeTeam;
+      },
+      modalAddMember() {
+        this.showModalAddMember = !this.showModalAddMember;
       },
     }}
     run={async () => {
@@ -68,12 +81,19 @@
         }
         document.getElementById("loading").remove();
       });
-
       meta.actionteam = {
         onChange: (e) => {
           runInAction(() => {
             meta.team = e.value;
             meta.member = [];
+          });
+        },
+      };
+      meta.actionmember = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.member = e.map((x) => x.value);
+            meta.team = 0;
           });
         },
       };
@@ -192,7 +212,10 @@
                 </div>
               </div>
               <div class="flex flex-col items-start justify-start">
-                <div class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded cursor-pointer">
+                <div
+                  class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded cursor-pointer"
+                  onClick={meta.modalAddMember}
+                >
                   <img
                     src="/fimgs/603_427.x3.png"
                     style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
@@ -392,6 +415,92 @@
                     type="submit"
                     class="flex flex-1 self-stretch flex-col items-start justify-start"
                     onClick={meta.modalChangeTeam}
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Save
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  )}
+  {meta.showModalAddMember && (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 480px; width: 480px;"
+        >
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <div class="flex self-stretch items-center justify-between">
+                    <div class="flex items-start justify-start pl-40">
+                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                        Add Member
+                      </div>
+                    </div>
+                    <form onSubmit={meta.modalAddMember}>
+                      <button class="flex flex-col items-start justify-start">
+                        <img
+                          src="/fimgs/517_574.x1.svg"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                        />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                // onSubmit={meta.submitData}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        Search Employee
+                      </div>
+                    </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.dataUser()}
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full"
+                          classNamePrefix="select"
+                          isMulti
+                          name="member"
+                          onChange={(e) => {
+                            meta.actionmember.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    onClick={meta.modalAddMember}
                   >
                     <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
                       <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
