@@ -179,9 +179,10 @@
                   </a>
                 </div>
                 <div
-                  class={`${meta.isActive(
-                    "/pm/teams"
-                  )} flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
+                  class={`${
+                    meta.isActive("/pm/teams") ||
+                    meta.isActive("/pm/teams/edit")
+                  } flex self-stretch flex-col items-start justify-start rounded hover:bg-violet-50`}
                 >
                   <a
                     href="/pm/teams"
@@ -189,7 +190,8 @@
                   >
                     <img
                       src={
-                        meta.isActive("/pm/teams")
+                        meta.isActive("/pm/teams") ||
+                        meta.isActive("/pm/teams/edit")
                           ? "/fimgs/603_429.x3.png"
                           : "/fimgs/603_428.x3.png"
                       }
@@ -199,7 +201,8 @@
                     <div class="flex flex-1 items-start justify-start">
                       <div
                         class={
-                          meta.isActive("/pm/teams")
+                          meta.isActive("/pm/teams") ||
+                          meta.isActive("/pm/teams/edit")
                             ? "text-base tracking-wide leading-normal text-blue-700"
                             : "text-base tracking-wide leading-normal text-coolGray-500"
                         }
@@ -339,7 +342,8 @@
           meta.isActive("/pm/projects/" + meta.state.id + "/planning") ||
           meta.isActive("/pm/projects/" + meta.state.id + "/timeline") ||
           meta.isActive("/pm/projects/" + meta.state.id + "/file-management") ||
-          meta.isActive("/pm/projects/" + meta.state.id + "/team") ? (
+          meta.isActive("/pm/projects/" + meta.state.id + "/team") ||
+          meta.isActive("/pm/teams/edit") ? (
             <div
               class="flex self-stretch space-x-32 w-full px-12 items-center justify-between bg-white shadow shadow-b"
               style="height: 70px; min-height: 70px; max-height: 70px;"
@@ -347,7 +351,11 @@
               <div class="flex items-center justify-start">
                 <div class="text-2xl font-medium capitalize tracking-wide leading-loose text-coolGray-900">
                   <a
-                    href="/pm/projects"
+                    href={
+                      meta.isActive("/pm/teams/edit")
+                        ? "/pm/teams"
+                        : "/pm/projects"
+                    }
                     class="flex flex-1 space-x-2 items-center justify-start cursor-pointer"
                   >
                     <div class="flex items-center justify-start">
