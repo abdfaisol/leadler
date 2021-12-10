@@ -151,142 +151,389 @@
       </div>
       <div class="flex self-stretch flex-col items-start justify-start">
         <div class="flex flex-col items-end justify-end p-6">
-          <div class="flex flex-col space-y-8items-start justify-start">
-            <div class="flex items-center justify-between">
-              <div class="flex flex-col space-y-6 items-start justify-start">
-                <div class="flex flex-col space-y-6 items-start justify-start">
-                  <div class="flex self-stretch space-x-3 items-center justify-center px-4 py-4 bg-indigo-400">
-                    <div class="flex items-start justify-start">
-                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-                        IN PROGRESS
-                      </div>
-                    </div>
-                    <div class="flex items-start justify-start">
-                      <div class="transform -rotate-90 bg-coolGray-500 border-coolGray-50" />
-                    </div>
-                    <div class="flex items-start justify-start">
-                      <div class="text-sm tracking-wide leading-tight text-center text-white">
-                        2 Task
-                      </div>
-                    </div>
+          <div class="grid grid-cols-4 gap-8 flex-grow">
+            <div class="space-y-4 items-start justify-start">
+              <div class="flex space-x-3 items-center justify-start px-4 py-4 bg-green-400">
+                <div class="flex items-start justify-start">
+                  <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                    TODO
                   </div>
-                  {meta.data_task.map((e) => {
-                    return (
-                      <div class="flex self-stretch flex-col items-start justify-start">
-                        <div class="flex flex-1 self-stretch flex-col items-start justify-start p-4 bg-white">
-                          <div class="flex items-start justify-start">
-                            <div class="flex flex-col space-y-6 items-start justify-start">
-                              <div class="flex flex-col space-y-2 items-start justify-start">
-                                <div class="flex space-x-1 items-center justify-center">
-                                  <div class="flex items-start justify-start">
-                                    <img
-                                      src="/fimgs/426_927.x3.png"
-                                      class="bg-indigo-500 rounded-full"
-                                      style="width: 8px; min-width: 8px; max-width: 8px; height: 8px; min-height: 8px; max-height: 8px;"
-                                    />
-                                  </div>
-                                  <div class="flex items-start justify-start">
-                                    <div class="text-sm tracking-wide leading-tight text-indigo-500">
-                                      UIUX Designer
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="flex items-start justify-start">
-                                  <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                                    {e.name}
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="flex flex-col space-y-2 items-start justify-start">
-                                <div class="flex items-start justify-start">
-                                  <div class="text-xs tracking-wide leading-none">
-                                    {e.startdate} -{" "}
-                                    <span class="text-red-500">
-                                      {" "}
-                                      {e.duedate}{" "}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div class="flex self-stretch space-x-4 items-start justify-start">
-                                  <div class="flex items-center justify-center px-1 bg-indigo-500 rounded-full">
-                                    <div class="text-xs tracking-wide leading-none text-center text-white">
-                                      Medium
-                                    </div>
-                                  </div>
-                                  <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
-                                    <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
-                                      5
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <img
-                            src="/fimgs/426_1010.x3.png"
-                            class="flex items-start justify-end"
-                            style="width: 177px; min-width: 177px; max-width: 177px; height: 24px; min-height: 24px; max-height: 24px;"
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
+                </div>
+                <div class="flex items-start justify-start pl-2 border-l">
+                  <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
+                    2 Task
+                  </div>
                 </div>
               </div>
-              {meta.showModal1 ? (
-                <>
-                  <div
-                    class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative"
-                    style="width: 187px; min-width: 187px; max-width: 187px; height: 136px; min-height: 136px; max-height: 136px;"
-                  >
-                    <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
-                      <div class="flex items-center justify-start py-2 pl-4 rounded-tl rounded-tr">
-                        <div class="flex flex-1 space-x-2 items-center justify-start">
+              {meta.data_task.map((e) => {
+                return (
+                  <>
+                    <div class="flex flex-col items-start justify-start">
+                      <div class="flex flex-col w-full items-start justify-start p-4 bg-white rounded-sm">
+                        <div class="flex self-stretch flex-col space-y-4 items-end justify-start">
+                          <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                            <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                              <div class="flex self-stretch space-x-2 items-center justify-start">
+                                <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full" />
+                                <div class="flex flex-1 items-start justify-start">
+                                  <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                    UIUX Designer
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="flex self-stretch items-start justify-start">
+                                <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                                  {e.name}
+                                </div>
+                              </div>
+                            </div>
+                            <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                              <div class="flex self-stretch items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none">
+                                  <span class="text-green-500">
+                                    {" "}
+                                    {e.startdate} -{" "}
+                                  </span>
+                                  <span class="text-red-500">
+                                    {" "}
+                                    {e.duedate}{" "}
+                                  </span>
+                                </div>
+                              </div>
+                              <div class="flex self-stretch space-x-4 items-start justify-start">
+                                <div class="flex items-center justify-center px-1 bg-indigo-500 rounded-full">
+                                  <div class="text-xs tracking-wide leading-none text-center text-white">
+                                    Medium
+                                  </div>
+                                </div>
+                                <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
+                                  <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                    5
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                           <img
-                            src="/fimgs/404_669.x3.png"
-                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                            src="/fimgs/457_1759.x3.png"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
                           />
-                          <div class="flex flex-1 items-start justify-start">
-                            <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                              View Detail
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col items-start justify-start">
+                      <div class="flex flex-col w-full items-start justify-start p-4 bg-white rounded-sm">
+                        <div class="flex self-stretch flex-col space-y-4 items-end justify-start">
+                          <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                            <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                              <div class="flex self-stretch space-x-2 items-center justify-start">
+                                <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full" />
+                                <div class="flex flex-1 items-start justify-start">
+                                  <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                    UIUX Designer
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="flex self-stretch items-start justify-start">
+                                <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                                  {e.name}
+                                </div>
+                              </div>
+                            </div>
+                            <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                              <div class="flex self-stretch items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none">
+                                  {e.startdate} -{" "}
+                                  <span class="text-red-500">
+                                    {" "}
+                                    {e.duedate}{" "}
+                                  </span>
+                                </div>
+                              </div>
+                              <div class="flex self-stretch space-x-4 items-start justify-start">
+                                <div class="flex items-center justify-center px-1 bg-indigo-500 rounded-full">
+                                  <div class="text-xs tracking-wide leading-none text-center text-white">
+                                    Medium
+                                  </div>
+                                </div>
+                                <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
+                                  <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                    5
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <img
+                            src="/fimgs/457_1759.x3.png"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                );
+              })}
+            </div>
+            <div class="space-y-4 items-start justify-start">
+              <div class="flex space-x-3 items-center justify-start px-4 py-4 bg-indigo-400">
+                <div class="flex items-start justify-start">
+                  <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                    IN PROGRESS
+                  </div>
+                </div>
+                <div class="flex items-start justify-start pl-2 border-l">
+                  <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
+                    2 Task
+                  </div>
+                </div>
+              </div>
+              {meta.data_task.map((e) => {
+                return (
+                  <div class="flex flex-col items-start justify-start">
+                    <div class="flex flex-col w-full items-start justify-start p-4 bg-white rounded-sm">
+                      <div class="flex self-stretch flex-col space-y-4 items-end justify-start">
+                        <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                          <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                            <div class="flex self-stretch space-x-2 items-center justify-start">
+                              <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full" />
+                              <div class="flex flex-1 items-start justify-start">
+                                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                  UIUX Designer
+                                </div>
+                              </div>
+                            </div>
+                            <div class="flex self-stretch items-start justify-start">
+                              <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                                {e.name}
+                              </div>
+                            </div>
+                          </div>
+                          <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                            <div class="flex self-stretch items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none">
+                                <span class="text-green-500">
+                                  {" "}
+                                  {e.startdate} -{" "}
+                                </span>
+                                <span class="text-red-500"> {e.duedate} </span>
+                              </div>
+                            </div>
+                            <div class="flex self-stretch space-x-4 items-start justify-start">
+                              <div class="flex items-center justify-center px-1 bg-indigo-500 rounded-full">
+                                <div class="text-xs tracking-wide leading-none text-center text-white">
+                                  Medium
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
+                                <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                  5
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
+                        <img
+                          src="/fimgs/457_1759.x3.png"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                        />
                       </div>
-                      <div class="flex self-stretch items-center justify-start py-2 pl-4 bg-coolGray-50">
-                        <div class="flex flex-1 space-x-2 items-center justify-start">
-                          <img
-                            src="/fimgs/404_674.x3.png"
-                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                          />
-                          <div class="flex flex-1 items-start justify-start">
-                            <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                              Download
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div class="space-y-4 items-start justify-start">
+              <div class="flex space-x-3 items-center justify-start px-4 py-4 bg-blue-700">
+                <div class="flex items-start justify-start">
+                  <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                    SUBMITTED
+                  </div>
+                </div>
+                <div class="flex items-start justify-start pl-2 border-l">
+                  <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
+                    2 Task
+                  </div>
+                </div>
+              </div>
+              {meta.data_task.map((e) => {
+                return (
+                  <div class="flex flex-col items-start justify-start">
+                    <div class="flex flex-col w-full items-start justify-start p-4 bg-white rounded-sm">
+                      <div class="flex self-stretch flex-col space-y-4 items-end justify-start">
+                        <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                          <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                            <div class="flex self-stretch space-x-2 items-center justify-start">
+                              <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full" />
+                              <div class="flex flex-1 items-start justify-start">
+                                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                  UIUX Designer
+                                </div>
+                              </div>
+                            </div>
+                            <div class="flex self-stretch items-start justify-start">
+                              <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                                {e.name}
+                              </div>
+                            </div>
+                          </div>
+                          <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                            <div class="flex self-stretch items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none">
+                                <span class="text-green-500">
+                                  {" "}
+                                  {e.startdate} -{" "}
+                                </span>
+                                <span class="text-red-500"> {e.duedate} </span>
+                              </div>
+                            </div>
+                            <div class="flex self-stretch space-x-4 items-start justify-start">
+                              <div class="flex items-center justify-center px-1 bg-indigo-500 rounded-full">
+                                <div class="text-xs tracking-wide leading-none text-center text-white">
+                                  Medium
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
+                                <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                  5
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
+
+                        <img
+                          src="/fimgs/457_1759.x3.png"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                        />
                       </div>
-                      <div class="border-coolGray-300" />
-                      <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br">
-                        <div class="flex flex-1 space-x-2 items-center justify-start">
-                          <img
-                            src="/fimgs/404_679.x3.png"
-                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                          />
-                          <div class="flex flex-1 items-start justify-start">
-                            <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                              Delete
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div class="space-y-4 items-start justify-start">
+              <div class="flex space-x-3 items-center justify-start px-4 py-4 bg-orange-300">
+                <div class="flex items-start justify-start">
+                  <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                    COMPLETE
+                  </div>
+                </div>
+                <div class="flex items-start justify-start pl-2 border-l">
+                  <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
+                    2 Task
+                  </div>
+                </div>
+              </div>
+              {meta.data_task.map((e) => {
+                return (
+                  <div class="flex flex-col items-start justify-start">
+                    <div class="flex flex-col w-full items-start justify-start p-4 bg-white rounded-sm">
+                      <div class="flex self-stretch flex-col space-y-4 items-end justify-start">
+                        <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                          <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                            <div class="flex self-stretch space-x-2 items-center justify-start">
+                              <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full" />
+                              <div class="flex flex-1 items-start justify-start">
+                                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                  UIUX Designer
+                                </div>
+                              </div>
+                            </div>
+                            <div class="flex self-stretch items-start justify-start">
+                              <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                                {e.name}
+                              </div>
                             </div>
                           </div>
+                          <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                            <div class="flex self-stretch items-start justify-start">
+                              <div class="text-xs tracking-wide leading-none">
+                                <span class="text-green-500">
+                                  {" "}
+                                  {e.startdate} -{" "}
+                                </span>
+                                <span class="text-red-500"> {e.duedate} </span>
+                              </div>
+                            </div>
+                            <div class="flex self-stretch space-x-4 items-start justify-start">
+                              <div class="flex items-center justify-center px-1 bg-indigo-500 rounded-full">
+                                <div class="text-xs tracking-wide leading-none text-center text-white">
+                                  Medium
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start px-1 border rounded border-indigo-500">
+                                <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                  5
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <img
+                          src="/fimgs/457_1759.x3.png"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {meta.showModal1 ? (
+            <>
+              <div
+                class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative"
+                style="width: 187px; min-width: 187px; max-width: 187px; height: 136px; min-height: 136px; max-height: 136px;"
+              >
+                <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
+                  <div class="flex items-center justify-start py-2 pl-4 rounded-tl rounded-tr">
+                    <div class="flex flex-1 space-x-2 items-center justify-start">
+                      <img
+                        src="/fimgs/404_669.x3.png"
+                        style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                      />
+                      <div class="flex flex-1 items-start justify-start">
+                        <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                          View Detail
                         </div>
                       </div>
                     </div>
                   </div>
-                  {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
-                </>
-              ) : null}
-            </div>
-          </div>
+                  <div class="flex self-stretch items-center justify-start py-2 pl-4 bg-coolGray-50">
+                    <div class="flex flex-1 space-x-2 items-center justify-start">
+                      <img
+                        src="/fimgs/404_674.x3.png"
+                        style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                      />
+                      <div class="flex flex-1 items-start justify-start">
+                        <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                          Download
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="border-coolGray-300" />
+                  <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br">
+                    <div class="flex flex-1 space-x-2 items-center justify-start">
+                      <img
+                        src="/fimgs/404_679.x3.png"
+                        style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                      />
+                      <div class="flex flex-1 items-start justify-start">
+                        <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                          Delete
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
+            </>
+          ) : null}
         </div>
       </div>
     </div>
