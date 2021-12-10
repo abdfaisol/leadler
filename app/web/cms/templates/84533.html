@@ -1,5 +1,53 @@
 <>
-  <effect meta={{}} run={async () => {}} />
+  <effect
+    meta={{
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      dataUser(e) {
+        let userDetail = [];
+        api("/api/user").then((i) => {
+          i.data_act.map((res, index) => {
+            i.data_act[index] = { value: res.id, label: res.email };
+            userDetail.push(i.data_act[index]);
+          });
+        });
+        return userDetail;
+      },
+      modalAddMember() {
+        this.showModalAddMember = !this.showModalAddMember;
+      },
+    }}
+    run={async () => {
+      meta.actionmember = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.member = e.map((x) => x.value);
+            meta.team = 0;
+          });
+        },
+      };
+    }}
+  />
   <div class="flex flex-col self-stretch space-y-8 p-10 w-auto">
     <div class="flex self-stretch flex-col space-y-8 items-start justify-start pl-6 pr-8 pt-8 pb-10 bg-white rounded">
       <div class="flex self-stretch flex-col space-y-2 items-start justify-center">
@@ -30,8 +78,11 @@
                   List Member
                 </div>
               </div>
-              <button class="flex flex-col items-start justify-start">
-                <div class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+              <div class="flex flex-col items-start justify-start">
+                <button
+                  onClick={meta.modalAddMember}
+                  class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+                >
                   <img
                     src="/fimgs/603_427.x3.png"
                     style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
@@ -39,8 +90,8 @@
                   <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
                     Add Member
                   </div>
-                </div>
-              </button>
+                </button>
+              </div>
             </div>
             <div class="flex self-stretch flex-col items-start justify-start py-6 pl-6 bg-coolGray-50 rounded">
               <div class="flex self-stretch flex-col items-start justify-start">
@@ -168,4 +219,90 @@
       </div>
     </div>
   </div>
+  {meta.showModalAddMember && (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 480px; width: 480px;"
+        >
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <div class="flex self-stretch items-center justify-between">
+                    <div class="flex items-start justify-start pl-40">
+                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                        Add Member
+                      </div>
+                    </div>
+                    <form onSubmit={meta.modalAddMember}>
+                      <button class="flex flex-col items-start justify-start">
+                        <img
+                          src="/fimgs/517_574.x1.svg"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                        />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                // onSubmit={meta.submitData}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        Search Employee
+                      </div>
+                    </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.dataUser()}
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full"
+                          classNamePrefix="select"
+                          isMulti
+                          name="member"
+                          onChange={(e) => {
+                            meta.actionmember.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    onClick={meta.modalAddMember}
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Save
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  )}
 </>
