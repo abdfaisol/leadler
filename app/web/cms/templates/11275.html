@@ -60,6 +60,22 @@
         this.state[name] = nilai;
         console.log(nilai);
       },
+      showmodalku(id) {
+        var elem = document.getElementById(id);
+        if (elem.classList.contains("hidden")) {
+          elem.classList.remove("hidden");
+        } else {
+          elem.classList.add("hidden");
+        }
+      },
+      showmodalku2(id) {
+        var elem = document.getElementById(id);
+        if (elem.classList.contains("hidden")) {
+          elem.classList.remove("hidden");
+        } else {
+          elem.classList.add("hidden");
+        }
+      },
     }}
     run={async () => {
       meta.actionmember = {
@@ -102,193 +118,184 @@
         <div class="flex self-stretch items-start justify-between bg-coolGray-50 rounded ">
           <div
             class="text-base tracking-wide leading-normal text-coolGray-900 py-3 pl-6 w-full cursor-pointer"
-            onClick={meta.toggleSTeam1}
+            onClick={(e) => {
+              meta.showmodalku2(8);
+            }}
           >
             Team 1
           </div>
           <div
-            class="flex items-center justify-center py-3 px-6"
-            onClick={meta.toggleModal}
+            class="flex items-center justify-center py-3 px-6 cursor-pointer"
+            onClick={(e) => {
+              meta.showmodalku(9);
+            }}
           >
             <img
               style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
               src="/fimgs/5_48.x3.png"
             />
-            {meta.showModal && (
-              <>
-                <div class="absolute">
-                  <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
-                    <div class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative">
-                      <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
-                        <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
-                          <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
-                            <div class="pr-2">
-                              <img
-                                src="/fimgs/1454_4082.x3.png"
-                                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                              />
-                            </div>
-                            <a
-                              href="/pm/teams/edit"
-                              class="flex flex-1 items-start justify-start"
-                            >
-                              <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                Edit Team
-                              </div>
-                            </a>
-                          </div>
+            <div class="absolute hidden" id="9">
+              <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
+                <div class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative">
+                  <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
+                    <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                      <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                        <div class="pr-2">
+                          <img
+                            src="/fimgs/1454_4082.x3.png"
+                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                          />
                         </div>
-                        <div class="border-coolGray-300" />
-                        <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br hover:bg-violet-50">
-                          <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
-                            <div class="pr-2">
-                              <img
-                                src="/fimgs/404_679.x3.png"
-                                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                              />
-                            </div>
-                            <div class="flex flex-1 items-start justify-start">
-                              <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                Delete
-                              </div>
-                            </div>
+                        <a
+                          href="/pm/teams/edit"
+                          class="flex flex-1 items-start justify-start"
+                        >
+                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                            Edit Team
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="border-coolGray-300" />
+                    <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br hover:bg-violet-50">
+                      <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                        <div class="pr-2">
+                          <img
+                            src="/fimgs/404_679.x3.png"
+                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                          />
+                        </div>
+                        <div class="flex flex-1 items-start justify-start">
+                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                            Delete
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
-              </>
-            )}
+              </div>
+            </div>
+            {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
           </div>
         </div>
       </div>
-      {meta.show.tim1 ? (
-        <div class="flex flex-col self-stretch space-y-6 items-start justify-start p-6 bg-coolGray-50 border rounded-sm border-coolGray-300">
-          <div class="flex self-stretch space-x-2.5 items-center justify-start">
-            <div class="flex flex-1 items-start justify-start">
-              <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                List Member
-              </div>
-            </div>
-            <div
-              class="flex flex-col items-start justify-start"
-              onClick={meta.toggleSTeam1}
-            >
-              <img
-                src="/fimgs/701_637.x3.png"
-                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-              />
+
+      <div
+        class="flex flex-col self-stretch space-y-6 items-start justify-start p-6 bg-coolGray-50 border rounded-sm border-coolGray-300 hidden"
+        id="8"
+      >
+        <div class="flex self-stretch space-x-2.5 items-center justify-start">
+          <div class="flex flex-1 items-start justify-start">
+            <div class="text-base tracking-wide leading-normal text-coolGray-500">
+              List Member
             </div>
           </div>
-          <div class="flex flex-1 space-x-2 items-center justify-center">
+          <div
+            class="flex flex-col items-start justify-start cursor-pointer"
+            onClick={(e) => {
+              meta.showmodalku(8);
+            }}
+          >
             <img
-              src="/fimgs/609_817.x3.png"
-              class="flex items-start justify-start"
-              style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+              src="/fimgs/701_637.x3.png"
+              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
             />
-            <div class="flex flex-1 flex-col items-start justify-start">
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                  Royhan
-                </div>
-              </div>
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                  Full Stact Developer
-                </div>
+          </div>
+        </div>
+        <div class="flex flex-1 space-x-2 items-center justify-center">
+          <img
+            src="/fimgs/609_817.x3.png"
+            class="flex items-start justify-start"
+            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+          />
+          <div class="flex flex-1 flex-col items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                Royhan
               </div>
             </div>
-          </div>
-          <div class="flex flex-1 space-x-2 items-center justify-center">
-            <img
-              src="/fimgs/609_817.x3.png"
-              class="flex items-start justify-start"
-              style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-            />
-            <div class="flex flex-1 flex-col items-start justify-start">
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                  Bukhari
-                </div>
-              </div>
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                  Full Stack Developer
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-1 space-x-2 items-center justify-center">
-            <img
-              src="/fimgs/609_817.x3.png"
-              class="flex items-start justify-start"
-              style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-            />
-            <div class="flex flex-1 flex-col items-start justify-start">
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                  Faisol
-                </div>
-              </div>
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                  Full Stack Developer
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-1 space-x-2 items-center justify-center">
-            <img
-              src="/fimgs/609_817.x3.png"
-              class="flex items-start justify-start"
-              style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-            />
-            <div class="flex flex-1 flex-col items-start justify-start">
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                  Afif
-                </div>
-              </div>
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                  UI/UX Designer
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-1 space-x-2 items-center justify-center">
-            <img
-              src="/fimgs/609_817.x3.png"
-              class="flex items-start justify-start"
-              style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-            />
-            <div class="flex flex-1 flex-col items-start justify-start">
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                  Zaki
-                </div>
-              </div>
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                  Business Analyst
-                </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                Full Stact Developer
               </div>
             </div>
           </div>
         </div>
-      ) : null}
-      <div class="flex flex-col self-stretch space-y-2.5 items-start justify-start">
-        <div class="flex self-stretch items-start justify-between px-6 py-3 bg-coolGray-50 rounded">
-          <div class="text-base tracking-wide leading-normal text-coolGray-900">
-            Team 2
+        <div class="flex flex-1 space-x-2 items-center justify-center">
+          <img
+            src="/fimgs/609_817.x3.png"
+            class="flex items-start justify-start"
+            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+          />
+          <div class="flex flex-1 flex-col items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                Bukhari
+              </div>
+            </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                Full Stack Developer
+              </div>
+            </div>
           </div>
-          <div class="flex items-center justify-center">
-            <img
-              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-              src="/fimgs/5_48.x3.png"
-            />
+        </div>
+        <div class="flex flex-1 space-x-2 items-center justify-center">
+          <img
+            src="/fimgs/609_817.x3.png"
+            class="flex items-start justify-start"
+            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+          />
+          <div class="flex flex-1 flex-col items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                Faisol
+              </div>
+            </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                Full Stack Developer
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-1 space-x-2 items-center justify-center">
+          <img
+            src="/fimgs/609_817.x3.png"
+            class="flex items-start justify-start"
+            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+          />
+          <div class="flex flex-1 flex-col items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                Afif
+              </div>
+            </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                UI/UX Designer
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-1 space-x-2 items-center justify-center">
+          <img
+            src="/fimgs/609_817.x3.png"
+            class="flex items-start justify-start"
+            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+          />
+          <div class="flex flex-1 flex-col items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                Zaki
+              </div>
+            </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                Business Analyst
+              </div>
+            </div>
           </div>
         </div>
       </div>
