@@ -116,11 +116,7 @@
             ...styles,
             backgroundColor: data.color,
             "&:hover": {
-              backgroundColor: data.isDisabled
-                ? "#F3F4F6"
-                : data.isSelected
-                ? null
-                : "#F3F4F6",
+              cursor: "pointer",
             },
           };
         },
@@ -559,9 +555,9 @@
                         </div>
                       </td>
                       <td class="px-6 py-2 whitespace-nowrap text-center">
-                        <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
-                          <div class="text-xs tracking-wide leading-none text-center text-white">
-                            Medium
+                        <div class="flex items-center justify-center px-2 py-0.5 bg-green-50 border rounded-sm border-green-400">
+                          <div class="text-xs tracking-wide leading-none text-center text-green-400">
+                            Low
                           </div>
                         </div>
                       </td>
