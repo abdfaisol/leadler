@@ -1,0 +1,105 @@
+<>
+  <effect
+    meta={{
+      isActive(route) {
+        if (route == window.location.pathname) {
+          return "bg-violet-100";
+        } else {
+          return null;
+        }
+      },
+      titleNavA() {
+        var title = "Analytics";
+        title = title.replace("/m/pm", "");
+        return title;
+      },
+      titleNav() {
+        var title = window.location.pathname;
+        title = title.replace("/m/pm/", "");
+        return title;
+      },
+    }}
+    run={async () => {}}
+  />
+  <m-page class="content-between pt-2 bg-coolGray-100">
+    <div class="flex flex-col items-center justify-center h-full">
+      {children}
+    </div>
+    <div class="flex flex-col items-center justify-center">
+      <div class="flex flex-col items-center justify-between px-5 py-4 bg-white shadow w-full fixed bottom-0">
+        <div class="flex space-x-10 items-center justify-center w-full">
+          <a
+            href="/m/pm/"
+            class="flex flex-col items-center justify-center cursor-pointer"
+          >
+            <img
+              src={
+                meta.isActive("/m/pm/")
+                  ? "/fimgs/612_2567.x3.png"
+                  : "/fimgs/612_2568.x3.png"
+              }
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+            <div class="flex items-start justify-start">
+              <div
+                class={
+                  meta.isActive("/m/pm/")
+                    ? "text-sm tracking-wide leading-tight text-indigo-500"
+                    : "text-sm tracking-wide leading-tight text-coolGray-400"
+                }
+              >
+                Home
+              </div>
+            </div>
+          </a>
+          <a
+            href="/m/pm/projects"
+            class="flex flex-col items-center justify-center"
+          >
+            <img
+              src={
+                meta.isActive("/m/pm/projects")
+                  ? "/fimgs/45_104.x3.png"
+                  : "/fimgs/612_2571.x3.png"
+              }
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+            <div class="flex items-start justify-start">
+              <div
+                class={
+                  meta.isActive("/m/pm/projects")
+                    ? "text-sm tracking-wide leading-tight text-indigo-500"
+                    : "text-sm tracking-wide leading-tight text-coolGray-400"
+                }
+              >
+                Projects
+              </div>
+            </div>
+          </a>
+          <div class="flex flex-col items-center justify-center">
+            <img
+              src="/fimgs/612_2575.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+            <div class="flex items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-coolGray-400">
+                Timeline
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col items-center justify-center">
+            <img
+              src="/fimgs/612_2579.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+            <div class="flex items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-coolGray-400">
+                Account
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </m-page>
+</>
