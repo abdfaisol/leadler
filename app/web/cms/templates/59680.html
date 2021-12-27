@@ -1,0 +1,111 @@
+<>
+  <effect
+    meta={{
+      //date: { startDate: new Date() },
+      datePicker: new Date(),
+      setStartDate(newDate) {
+        this.datePicker = newDate;
+      },
+      startDatex(date) {
+        date = new Date();
+      },
+      datePickerx: new Date(),
+      setStartDatex(newDate) {
+        this.datePickerx = newDate;
+      },
+      isOpen: false,
+      setIsOpen(open) {
+        this.isOpen = open;
+      },
+      handleChange(e) {
+        this.setIsOpen(!this.isOpen);
+        this.setStartDate(e);
+      },
+      handleClick(e) {
+        e.preventDefault();
+        this.setIsOpen(!this.isOpen);
+      },
+    }}
+    run={async () => {
+      meta.actiondate = {
+        onChange: (date) => {
+          runInAction(() => {
+            meta.date.startDate = date.target.value;
+            console.log(meta.date.startDate);
+          });
+        },
+      };
+    }}
+  />
+  <div class="flex flex-col self-stretch p-10 w-auto">
+    {/*<datepicker*/}
+    {/*class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"*/}
+    {/*selected={meta.datePicker}*/}
+    {/*dateFormat="d MMMM yyyy"*/}
+    {/*onChange={(date) => meta.setStartDate(date)}*/}
+    {/*/>*/}
+    <label>
+      <datepicker
+        class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+        selected={meta.datePickerx}
+        dateFormat="d MMMM yyyy"
+        onChange={(date) => meta.setStartDatex(date)}
+        customInput={
+          <div>
+            <ai-calendar style="background:none;" />
+          </div>
+        }
+      />
+    </label>
+    <ai-calendar />
+    <fa-calendar />
+    <div class="flex self-stretch items-center justify-start">
+      <div
+        class="relative flex flex-1 items-center justify-start"
+        style="width: 300px; min-width: 300px; max-width: 300px;"
+      >
+        <datepicker
+          class="text-base relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+          selected={meta.datePicker}
+          dateFormat="d MMMM yyyy"
+          onChange={meta.handleChange}
+          readonly
+          // onChange={(date) => meta.setStartDate(date)}
+        />
+        <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+          <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
+            <div class="cursor-pointer" onClick={meta.handleClick}>
+              <ai-calendar style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {meta.isOpen && (
+      <datepicker
+        selected={meta.datePicker}
+        onChange={meta.handleChange}
+        inline
+      />
+    )}
+    {/*tes*/}
+    {/*<input*/}
+    {/*id="name"*/}
+    {/*name="due"*/}
+    {/*type="date"*/}
+    {/*placeholder="yyyy"*/}
+    {/*class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"*/}
+    {/*/>*/}
+    {/*<div class="flex self-stretch items-center justify-start pb-2">*/}
+    {/*<div class="relative flex flex-1 items-center justify-start">*/}
+    {/*<input*/}
+    {/*id="name"*/}
+    {/*name="fullname"*/}
+    {/*type="text"*/}
+    {/*placeholder="ff"*/}
+    {/*class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"*/}
+    {/*/>*/}
+    {/*</div>*/}
+    {/*</div>*/}
+  </div>
+</>
