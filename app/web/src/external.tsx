@@ -49,4 +49,17 @@ export default {
     { c: "", s: "", h: "" },
   ],
   loadku: () => [import("./components/loadku"), { c: "", s: "", h: "" }],
+  datepicker: () => [
+    import("./components/datepicker"),
+    { c: "", s: "", h: "" },
+  ],
+  "m-input": () => [import("./components/m-input"), { c: "", s: "", h: "" }],
+  "fa-calendar": () => [
+    import("./components/fa-calendar"),
+    { c: "", s: "", h: "" },
+  ],
+  "ai-calendar": () => [
+    import("./components/ai-calendar"),
+    { c: "", s: "", h: "" },
+  ],
 };
