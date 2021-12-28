@@ -1,0 +1,175 @@
+<>
+  <effect
+    meta={{
+      state: { email: "", password: "" },
+      showErrorMessage: false,
+      validate() {
+        let input = this.input;
+        let errors = {};
+        let isValid = true;
+
+        if (!input["email"]) {
+          isValid = false;
+          errors["email"] = "This field is required.";
+        }
+
+        if (typeof input["email"] !== "undefined") {
+          let pattern = RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+          ///^[a-zA-Z0-9._]+@[a-zA-Z]+(?:\.[a-zA-Z0-9-]+)*$/
+          if (!pattern.test(input["email"])) {
+            isValid = false;
+            errors["email"] = "Email address doesn't valid.";
+          }
+        }
+        this.errors = errors;
+        return isValid;
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        // console.log(name);
+      },
+      handleInputChange(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        console.log(name + "   " + e.target.value);
+        this.state[name] = nilai;
+        // console.log(this.state.username);
+      },
+      togglePass() {
+        this.showPass = !this.showPass;
+        // console.log(this.showPass);
+      },
+    }}
+    run={async () => {}}
+  />
+  <div class="flex flex-col w-full h-full items-center justify-center bg-white m-auto">
+    <div class="flex flex-col w-full px-5 space-y-10 items-center justify-center m-auto">
+      <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+        <div class="flex self-stretch items-start justify-start pb-2">
+          <div class="text-xl font-semibold tracking-wide leading-none text-coolGray-800">
+            Welcome Back
+          </div>
+        </div>
+        <div class="flex self-stretch items-start justify-start">
+          <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-500">
+            Insert your email and password
+          </div>
+        </div>
+      </div>
+      <div class="flex self-stretch flex-col space-y-6 items-start justify-start">
+        <div class="flex self-stretch flex-col space-y-6 items-start justify-start">
+          <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
+                Email Address
+              </div>
+            </div>
+            <div class="flex self-stretch items-center justify-start">
+              <div class="relative flex flex-1 items-center justify-start">
+                <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                  <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                    <img
+                      src="/fimgs/I205_201_18_21.x3.png"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-7f26b390a09bdf75f8aad23d0059860be6c55013');background-size:100% 100%;background-repeat:no-repeat;"
+                    />
+                  </div>
+                </div>
+                <m-input
+                  id="email-address"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  placeholder="Insert your email here"
+                  class={
+                    meta.showErrorMessage
+                      ? "text-sm relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-2.5 pr-4 pl-12"
+                      : "text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 py-2.5 pr-4 pl-12"
+                  }
+                />
+              </div>
+            </div>
+          </div>
+          <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
+                Password
+              </div>
+            </div>
+
+            <div class="flex self-stretch items-center justify-start">
+              <div class="relative flex flex-1 items-center justify-start">
+                <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                  <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                    <img
+                      src="/fimgs/I159_397_18_30.x3.png"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+                    />
+                  </div>
+                </div>
+                <m-input
+                  type="password"
+                  autoComplete="current-password"
+                  placeholder="Insert your password here"
+                  class={
+                    meta.showErrorMessage
+                      ? "text-sm relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-2.5 pr-4 pl-12"
+                      : "text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 py-2.5 pr-4 pl-12"
+                  }
+                  name="password"
+                />
+                <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                  <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
+                    <div onClick={meta.togglePass} class="cursor-pointer">
+                      {meta.showPass ? (
+                        <img
+                          src="/fimgs/618_960.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      ) : (
+                        <img
+                          src="/fimgs/620_443.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="text-sm flex self-stretch items-center justify-between">
+              <div
+                className={
+                  meta.showErrorMessage
+                    ? "text-sm flex self-stretch items-center justify-between"
+                    : "text-sm flex self-stretch items-center justify-end"
+                }
+              >
+                {meta.showErrorMessage ? (
+                  <div class="font-normal text-red-500">
+                    Email/Password anda salah, Silahkan coba lagi!
+                  </div>
+                ) : null}
+              </div>
+              <a
+                href="/forget-pass"
+                className="font-medium text-indigo-500 hover:text-indigo-700"
+              >
+                Forget Password?
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="flex self-stretch flex-col items-start justify-start">
+          <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 rounded">
+            <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+              Login
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

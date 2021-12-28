@@ -1,0 +1,201 @@
+<>
+  <effect
+    meta={{
+      datePicker: new Date(),
+      setStartDate(newDate) {
+        this.datePicker = newDate;
+      },
+      isOpen: false,
+      setIsOpen(open) {
+        this.isOpen = open;
+      },
+      handleChange(e) {
+        this.setIsOpen(!this.isOpen);
+        this.setStartDate(e);
+      },
+      handleClick(e) {
+        e.preventDefault();
+        this.setIsOpen(!this.isOpen);
+      },
+    }}
+    run={async () => {}}
+  />
+  <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50">
+    <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+      <div class="flex w-full space-x-5 items-center justify-start">
+        <a href="/m/pm/account" class="flex items-center justify-start">
+          <img
+            src="/fimgs/I727_1000_1575_5334.x3.png"
+            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+          />
+          <div class="text-base tracking-wide leading-tight text-indigo-500">
+            Back
+          </div>
+        </a>
+        <div class="flex items-center justify-center">
+          <div class="text-base tracking-wide leading-normal text-coolGray-900">
+            Profile
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col w-full self-stretch space-y-5 py-3 w-auto">
+      <div class="flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+        <div class="flex self-stretch items-start justify-center">
+          <div class="flex items-center justify-center z-0">
+            <img
+              src="/fimgs/727_1003.x3.png"
+              style="width: 72px; min-width: 72px; max-width: 72px; height: 72px; min-height: 72px; max-height: 72px;"
+            />
+          </div>
+          <div
+            class="flex items-center justify-center z-10"
+            style="padding-top:2.7rem; margin-left:-1.5rem"
+          >
+            <img
+              src="/fimgs/727_1004.x3.png"
+              style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto">
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Full Name
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <m-input
+              id="name"
+              name="fullname"
+              type="text"
+              placeholder=""
+              class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Department
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <m-input
+              id="name"
+              name="fullname"
+              type="text"
+              placeholder="Project Manager"
+              disabled
+              class="text-sm relative w-full rounded placeholder-gray-400 bg-gray-100 border border-gray-100 py-2.5 px-2.5"
+            />
+          </div>
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Email Address
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <m-input
+              id="name"
+              name="fullname"
+              type="text"
+              placeholder=""
+              class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            NIK
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <m-input
+              id="name"
+              name="fullname"
+              type="text"
+              placeholder=""
+              class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Phone Number
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <m-input
+              id="name"
+              name="fullname"
+              type="text"
+              placeholder=""
+              class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Place and Date of Birth
+          </div>
+          <div class="flex w-full flex-1 self-stretch space-x-4 items-center">
+            <div class="flex self-stretch w-full flex-col space-y-2.5 items-start justify-center">
+              <div class="flex self-stretch items-center justify-start pb-2">
+                <div class="relative flex flex-1 items-center justify-start">
+                  <m-input
+                    id="name"
+                    name="birthplace"
+                    type="text"
+                    placeholder=""
+                    class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                  />
+                </div>
+              </div>
+            </div>
+            <div>,</div>
+            <div class="flex self-stretch w-full flex-col space-y-2.5 items-start justify-center">
+              <div class="flex self-stretch items-center justify-start pb-2">
+                <div class="relative flex flex-1 items-center justify-start">
+                  <div class="text-sm relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5">
+                    <datepicker
+                      selected={meta.datePicker}
+                      dateFormat="d MMMM yyyy"
+                      onChange={meta.handleChange}
+                      disabled
+                    />
+                    <div
+                      class="absolute flex border border-transparent right-0 top-0 h-full"
+                      style="width: 2.3rem; min-width: 2.3rem; max-width: 2.3rem;"
+                    >
+                      <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
+                        <div class="cursor-pointer" onClick={meta.handleClick}>
+                          <ai-calendar style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {meta.isOpen && (
+              <div class="absolute right-0" style="top:40%">
+                <div class="flex flex-col items-start justify-start overflow-ellipsis z-50 relative">
+                  <datepicker
+                    selected={meta.datePicker}
+                    onChange={meta.handleChange}
+                    inline
+                  />
+                </div>
+              </div>
+            )}
+            {/*<div class="flex self-stretch w-full flex-col space-y-2.5 items-start justify-center">*/}
+            {/*<div class="flex self-stretch items-center justify-start pb-2">*/}
+            {/*<div class="relative flex flex-1 items-center justify-start">*/}
+            {/*<m-input*/}
+            {/*id="name"*/}
+            {/*name="birthdate"*/}
+            {/*type="date"*/}
+            {/*placeholder=""*/}
+            {/*class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"*/}
+            {/*/>*/}
+            {/*</div>*/}
+            {/*</div>*/}
+            {/*</div>*/}
+          </div>
+        </div>
+      </div>
+      {/*<div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white shadow">*/}
+      {/*<div class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded">*/}
+      {/*<div class="text-sm tracking-wide leading-tight text-center text-white">*/}
+      {/*Save Changes*/}
+      {/*</div>*/}
+      {/*</div>*/}
+      {/*</div>*/}
+    </div>
+  </div>
+</>
