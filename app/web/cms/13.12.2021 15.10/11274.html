@@ -1,0 +1,1077 @@
+<>
+  <effect
+    meta={{
+      data_projek: [],
+      member: "",
+      name: "",
+      team: "",
+      isLoading: false,
+      state: {
+        showModal: false,
+        showModal2: false,
+        showModal3: false,
+        showModal4: false,
+        showModal5: false,
+      },
+      state2: { title: "" },
+      add: { tekan: true },
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      pilih: {
+        allproject: true,
+        inprogress: false,
+        complete: false,
+        unfinish: false,
+        nextproject: false,
+      },
+      toggleAllproject() {
+        this.pilih.allproject = true;
+        this.pilih.inprogress = false;
+        this.pilih.complete = false;
+        this.pilih.unfinish = false;
+        this.pilih.nextproject = false;
+      },
+      toggleInprogress() {
+        this.pilih.allproject = false;
+        this.pilih.inprogress = true;
+        this.pilih.complete = false;
+        this.pilih.unfinish = false;
+        this.pilih.nextproject = false;
+      },
+      toggleComplete() {
+        this.pilih.allproject = false;
+        this.pilih.inprogress = false;
+        this.pilih.complete = true;
+        this.pilih.unfinish = false;
+        this.pilih.nextproject = false;
+      },
+      toggleUnfinish() {
+        this.pilih.allproject = false;
+        this.pilih.inprogress = false;
+        this.pilih.complete = false;
+        this.pilih.unfinish = true;
+        this.pilih.nextproject = false;
+      },
+      toggleNextproject() {
+        this.pilih.allproject = false;
+        this.pilih.inprogress = false;
+        this.pilih.complete = false;
+        this.pilih.unfinish = false;
+        this.pilih.nextproject = true;
+      },
+      toggleTekan() {
+        this.add.tekan = !this.add.tekan;
+      },
+      handleExit(e) {
+        this.state.showModal = false;
+        this.state.showModal2 = false;
+        this.state.showModal3 = false;
+        this.state.showModal4 = false;
+        this.state.showModal5 = false;
+        e.preventDefault();
+      },
+      handleSubmit(e) {
+        this.state.showModal = !this.state.showModal;
+        this.state.showModal2 = false;
+        this.state.showModal3 = false;
+        this.state.showModal4 = false;
+        this.state.showModal5 = false;
+        e.preventDefault();
+      },
+      handleSubmit2(e) {
+        this.state.showModal2 = !this.state.showModal2;
+        this.state.showModal = false;
+        this.state.showModal3 = false;
+        this.state.showModal4 = false;
+        this.state.showModal5 = false;
+        this.print = true;
+        e.preventDefault();
+      },
+      handleSubmit3(e) {
+        this.state.showModal3 = !this.state.showModal3;
+        this.state.showModal = false;
+        this.state.showModal2 = false;
+        this.state.showModal4 = false;
+        this.state.showModal5 = false;
+        this.print = true;
+        e.preventDefault();
+      },
+      handleSubmit4(e) {
+        this.state.showModal4 = !this.state.showModal4;
+        this.state.showModal = false;
+        this.state.showModal2 = false;
+        this.state.showModal3 = false;
+        this.state.showModal5 = false;
+        this.print = true;
+        e.preventDefault();
+      },
+      handleSubmit5(e) {
+        this.state.showModal5 = !this.state.showModal5;
+        this.state.showModal = false;
+        this.state.showModal2 = false;
+        this.state.showModal3 = false;
+        this.state.showModal4 = false;
+        this.print = true;
+        e.preventDefault();
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      ubahNilai2(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      ubahNilai3(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      ubahNilai4(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      ubahNilai5(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      ubahNilai6(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        console.log(name);
+      },
+      dataUser(e) {
+        let userDetail = [];
+        api("/api/user").then((i) => {
+          i.data_act.map((res, index) => {
+            i.data_act[index] = { value: res.id, label: res.email };
+            userDetail.push(i.data_act[index]);
+          });
+        });
+        return userDetail;
+      },
+      dataTeam(e) {
+        let result = [];
+        api("/api/team").then((i) => {
+          i.data_act.map((res, index) => {
+            i.data_act[index] = { value: res.id, label: res.name };
+            result.push(i.data_act[index]);
+          });
+        });
+        return result;
+      },
+      dataProjek() {
+        let result = [];
+        api("/api/project").then((e) => {
+          result["result"] = e;
+        });
+        return result;
+      },
+      submitData(event) {
+        api("/api/project/create", {
+          data: {
+            name: this.state2.title,
+            desc: this.state2.desc,
+            member: this.member,
+            team: this.team,
+          },
+        }).then((e) => {
+          if (e.status == true) {
+            location.reload();
+          }
+          console.log(e);
+        });
+        event.preventDefault();
+      },
+    }}
+    run={async () => {
+      var data_i = meta.dataProjek();
+      api("/api/project").then((e) => {
+        // console.log(e);
+        e.data_act.map((idx) => {
+          api("/api/project/show/" + idx.id).then((e1) => {
+            if (e1.status == true) {
+              idx.task = e1.data_act.resultTask;
+              // idx.task = e1.data_act.resultTask;
+              meta.data_projek.push(idx);
+              meta.isLoading = true;
+            }
+            console.log(meta.data_projek.length);
+          });
+        });
+      });
+      meta.actionmember = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.member = e.map((x) => x.value);
+            meta.team = 0;
+          });
+        },
+      };
+      meta.actionteam = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.team = e.value;
+            meta.member = [];
+          });
+        },
+      };
+    }}
+  />
+  <div class="flex flex-col self-stretch space-y-10 p-10 w-auto">
+    <div class="flex self-stretch w-full items-start justify-start px-6 py-6 bg-white rounded">
+      <div class="flex self-stretch w-full items-center justify-start space-x-8">
+        <div
+          onClick={meta.toggleAllproject}
+          class={
+            meta.pilih.allproject
+              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+          }
+        >
+          <div
+            class={
+              meta.pilih.allproject
+                ? "text-base font-normal tracking-wide leading-normal text-indigo-500"
+                : "text-base font-normal tracking-wide leading-normal text-coolGray-500"
+            }
+          >
+            All Project
+          </div>
+        </div>
+        <div
+          onClick={meta.toggleInprogress}
+          class={
+            meta.pilih.inprogress
+              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+          }
+        >
+          <div
+            class={
+              meta.pilih.inprogress
+                ? "text-base font-normal tracking-wide leading-normal text-indigo-500"
+                : "text-base font-normal tracking-wide leading-normal text-coolGray-500"
+            }
+          >
+            In Progress
+          </div>
+        </div>
+        <div
+          onClick={meta.toggleComplete}
+          class={
+            meta.pilih.complete
+              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+          }
+        >
+          <div
+            class={
+              meta.pilih.complete
+                ? "text-base font-normal tracking-wide leading-normal text-indigo-500"
+                : "text-base font-normal tracking-wide leading-normal text-coolGray-500"
+            }
+          >
+            Complete
+          </div>
+        </div>
+        <div
+          onClick={meta.toggleUnfinish}
+          class={
+            meta.pilih.unfinish
+              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+          }
+        >
+          <div
+            class={
+              meta.pilih.unfinish
+                ? "text-base font-normal tracking-wide leading-normal text-indigo-500"
+                : "text-base font-normal tracking-wide leading-normal text-coolGray-500"
+            }
+          >
+            Unfinish
+          </div>
+        </div>
+        <div
+          onClick={meta.toggleNextproject}
+          class={
+            meta.pilih.nextproject
+              ? "flex flex-grow items-center justify-center px-4 py-2 bg-violet-100 rounded cursor-pointer"
+              : "flex flex-grow items-center justify-center px-4 py-2 rounded cursor-pointer"
+          }
+        >
+          <div
+            class={
+              meta.pilih.nextproject
+                ? "text-base font-normal tracking-wide leading-normal text-indigo-500"
+                : "text-base font-normal tracking-wide leading-normal text-coolGray-500"
+            }
+          >
+            Next Project
+          </div>
+        </div>
+        <div class="flex flex-col items-start justify-start">
+          <form onSubmit={meta.handleSubmit}>
+            <button
+              class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+              style="width: 208px; min-width: 208px; max-width: 208px; height: 40px; min-height: 40px; max-height: 40px;"
+            >
+              <img
+                src="/fimgs/603_427.x3.png"
+                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+              />
+              <div class="text-base font-medium tracking-wide leading-normal text-right text-white pl-1">
+                Create New Project
+              </div>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {/* Content  */}
+    {meta.isLoading ? (
+      <>
+        <div class="flex self-stretch flex-wrap items-start justify-start">
+          <div class="grid grid-cols-3 gap-8 flex-grow">
+            {meta.data_projek.map((e) => {
+              var urlproject = "/pm/projects/" + e.id + "/detail";
+              return (
+                <a
+                  href={urlproject}
+                  class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                  style="height: 244px; min-height: 244px;"
+                >
+                  <div
+                    class="flex self-stretch flex-col space-y-8 items-start justify-start"
+                    style="height: 196px; min-height: 196px; max-height: 196px;"
+                  >
+                    <div
+                      class="flex self-stretch items-start justify-between"
+                      style="height: 24px; min-height: 24px; max-height: 24px;"
+                    >
+                      <div class="flex items-center justify-start">
+                        <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                          Tim 6
+                        </div>
+                      </div>
+                      <img
+                        src="/fimgs/609_876.x3.png"
+                        class="flex items-start justify-start"
+                        style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                      />
+                    </div>
+                    <div
+                      class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                      style="height: 140px; min-height: 140px; max-height: 140px;"
+                    >
+                      <div class="flex self-stretch items-start justify-start">
+                        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                          {e.name}
+                        </div>
+                      </div>
+                      <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                        <bar percent={e.task.completed} />
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                            {e.task.taskComplete} Task Done
+                          </div>
+                        </div>
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight">
+                            Due Date: {e.duedate}
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-center px-2 py-0.5 bg-orange-400 bg-opacity-70 rounded-sm">
+                          <div class="text-xs tracking-wide leading-none text-center text-white">
+                            In Progress
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </>
+    ) : (
+      <div class="flex self-stretch flex-wrap items-center justify-center">
+        <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+          <div
+            class="loader-dots block relative w-22 h-6 mt-2"
+            style="width: 5rem;"
+          >
+            <div
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; width: 0.75rem; height: 0.75rem;"
+            ></div>
+            <div
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+            ></div>
+            <div
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+            ></div>
+            <div
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+            ></div>
+          </div>
+        </div>
+        {/*start cadangan component load*/}
+        {/*<div class="grid grid-cols-3 gap-3 flex-grow">*/}
+        {/*<div class="bg-white p-2 sm:p-4 sm:h-64 rounded-2xl shadow-lg flex flex-col sm:flex-row gap-5 select-none ">*/}
+        {/*<div class="flex flex-col flex-1 gap-5 sm:p-2">*/}
+        {/*<div class="flex flex-1 flex-col gap-3">*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-10 rounded-2xl"></div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*<div class="bg-white p-2 sm:p-4 sm:h-64 rounded-2xl shadow-lg flex flex-col sm:flex-row gap-5 select-none ">*/}
+        {/*<div class="flex flex-col flex-1 gap-5 sm:p-2">*/}
+        {/*<div class="flex flex-1 flex-col gap-3">*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-10 rounded-2xl"></div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*<div class="bg-white p-2 sm:p-4 sm:h-64 rounded-2xl shadow-lg flex flex-col sm:flex-row gap-5 select-none ">*/}
+        {/*<div class="flex flex-col flex-1 gap-5 sm:p-2">*/}
+        {/*<div class="flex flex-1 flex-col gap-3">*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>*/}
+        {/*<div class="bg-gray-200 w-full animate-pulse h-10 rounded-2xl"></div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*end cadangan component load*/}
+      </div>
+    )}
+    {/*end content*/}
+  </div>
+  {meta.state.showModal ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto mx-auto max-w-3xl" style="width: 480px;">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col items-start justify-start px-7 py-4 bg-white shadow">
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <div class="flex self-stretch items-center justify-between">
+                    <div class="flex items-start justify-start pl-28">
+                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                        Create New Project
+                      </div>
+                    </div>
+                    <form onSubmit={meta.handleExit}>
+                      <button class="flex flex-col items-start justify-start">
+                        <img
+                          src="/fimgs/517_574.x1.svg"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                        />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                onSubmit={meta.handleSubmit2}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-center justify-start p-8">
+                  <img
+                    src="/fimgs/643_553.x3.png"
+                    class="flex flex-col items-center justify-center"
+                    style="width: 223px; min-width: 223px; max-width: 223px; height: 137px; min-height: 137px; max-height: 137px;"
+                  />
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        Project Name
+                      </div>
+                    </div>
+
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="title"
+                          type="text"
+                          placeholder="Project Title"
+                          value={meta.state2.title}
+                          onChange={meta.ubahNilai}
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Next
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.state.showModal2 ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto mx-auto max-w-3xl" style="width: 480px;">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis overflow-hidden bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white -ml-1">
+                  <form onSubmit={meta.handleSubmit}>
+                    <button>
+                      <img
+                        src="/fimgs/388_1042.x1.svg"
+                        class="flex space-x-2 items-start justify-start"
+                        style="width: 71px; min-width: 71px; max-width: 71px; height: 24px; min-height: 24px; max-height: 24px;"
+                      />
+                    </button>
+                  </form>
+                  <form onSubmit={meta.handleExit}>
+                    <button>
+                      <img
+                        src="/fimgs/517_574.x1.svg"
+                        class="flex flex-col items-start justify-start"
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                      />
+                    </button>
+                  </form>
+                </div>
+                <div class="flex self-stretch items-start justify-start overflow-ellipsis overflow-hidden bg-white mx-1 pb-1.5 pt-0.5">
+                  <div class="text-xl font-medium tracking-wide leading-tight text-gray-900">
+                    {meta.print ? (
+                      <div class="soverflow-ellipsis break-words">
+                        {meta.state2.title}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                onSubmit={meta.handleSubmit3}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex flex-col items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-gray-500">
+                        Project Description
+                      </div>
+                    </div>
+                    <textarea
+                      class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                      placeholder="Add project description"
+                      style="resize: none;"
+                      name="desc"
+                      value={meta.state2.desc}
+                      onChange={meta.ubahNilai2}
+                      rows={4}
+                      cols={50}
+                    ></textarea>
+                  </div>
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Next
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.state.showModal3 ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto mx-auto max-w-3xl" style="width: 480px;">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis overflow-hidden bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white -ml-1">
+                  <form onSubmit={meta.handleSubmit2}>
+                    <button>
+                      <img
+                        src="/fimgs/388_1042.x1.svg"
+                        class="flex space-x-2 items-start justify-start"
+                        style="width: 71px; min-width: 71px; max-width: 71px; height: 24px; min-height: 24px; max-height: 24px;"
+                      />
+                    </button>
+                  </form>
+                  <form onSubmit={meta.handleExit}>
+                    <button>
+                      <img
+                        src="/fimgs/517_574.x1.svg"
+                        class="flex flex-col items-start justify-start"
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                      />
+                    </button>
+                  </form>
+                </div>
+                <div class="flex self-stretch items-start justify-start overflow-ellipsis overflow-hidden bg-white mx-1 pb-1.5 pt-0.5">
+                  <div class="text-xl font-medium tracking-wide leading-tight text-gray-900">
+                    {meta.print ? (
+                      <div class="soverflow-ellipsis break-words">
+                        {meta.state2.title}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                onSubmit={meta.handleSubmit4}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Project Create For
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2.5">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="project"
+                          type="text"
+                          placeholder=""
+                          value={meta.state2.project}
+                          onChange={meta.ubahNilai3}
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <hr
+                      class="border-gray-300 pb-2.5 my-auto"
+                      style="width: 100%;"
+                    ></hr>
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Start Project
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="start"
+                          type="date"
+                          placeholder=""
+                          value={meta.state2.start}
+                          onChange={meta.ubahNilai4}
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Due Date
+                    </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="due"
+                          type="date"
+                          placeholder=""
+                          value={meta.state2.due}
+                          onChange={meta.ubahNilai5}
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Next
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.state.showModal4 ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div class="relative w-auto mx-auto max-w-3xl" style="width: 480px;">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white -ml-1">
+                  <form onSubmit={meta.handleSubmit3}>
+                    <button>
+                      <img
+                        src="/fimgs/388_1042.x1.svg"
+                        class="flex space-x-2 items-start justify-start"
+                        style="width: 71px; min-width: 71px; max-width: 71px; height: 24px; min-height: 24px; max-height: 24px;"
+                      />
+                    </button>
+                  </form>
+                  <form onSubmit={meta.handleExit}>
+                    <button>
+                      <img
+                        src="/fimgs/517_574.x1.svg"
+                        class="flex flex-col items-start justify-start"
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                      />
+                    </button>
+                  </form>
+                </div>
+                <div class="flex self-stretch items-start justify-start overflow-ellipsis overflow-hidden bg-white mx-1 pb-1.5 pt-0.5">
+                  <div class="text-xl font-medium tracking-wide leading-tight text-gray-900">
+                    {meta.print ? (
+                      <div class="soverflow-ellipsis break-words">
+                        {meta.state2.title}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+              <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                  <div class="text-base tracking-wide leading-none text-gray-900">
+                    Add member or Team
+                  </div>
+                  <div class="flex self-stretch space-x-4 items-start justify-start">
+                    <div class="cursor-pointer" onClick={meta.toggleTekan}>
+                      {meta.add.tekan ? (
+                        <div class="cursor-pointer flex flex-col items-center space-y-2 justify-center bg-white border rounded border-indigo-500 px-3.5 py-3.5">
+                          <div class="flex items-start justify-start">
+                            <img
+                              src="/fimgs/560_382.x1.svg"
+                              class="flex items-start justify-start"
+                              style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
+                            />
+                          </div>
+                          <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                            Add Team
+                          </div>
+                        </div>
+                      ) : (
+                        <div class="cursor-pointer flex flex-col items-center space-y-2 justify-center bg-white border rounded border-gray-300 px-3.5 py-3.5">
+                          <div class="flex items-start justify-start">
+                            <img
+                              src="/fimgs/561_387.x1.svg"
+                              class="flex items-start justify-start"
+                              style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
+                            />
+                          </div>
+                          <div class="text-sm tracking-wide leading-tight text-gray-500">
+                            Add Team
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div class="cursor-pointer" onClick={meta.toggleTekan}>
+                      {meta.add.tekan ? (
+                        <div class="flex flex-col items-center space-y-2 justify-center bg-white border rounded border-gray-300 px-3 py-3.5">
+                          <div class="flex items-start justify-start">
+                            <img
+                              src="/fimgs/541_407.x1.svg"
+                              class="flex items-start justify-start"
+                              style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
+                            />
+                          </div>
+                          <div class="text-sm tracking-wide leading-tight text-gray-500">
+                            Add People
+                          </div>
+                        </div>
+                      ) : (
+                        <div class="flex flex-col items-center space-y-2 justify-center bg-white border rounded border-indigo-500 px-3 py-3.5">
+                          <div class="flex items-start justify-start">
+                            <img
+                              src="/fimgs/561_392.x1.svg"
+                              class="flex items-start justify-start"
+                              style="width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; max-height: 36px;"
+                            />
+                          </div>
+                          <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                            Add People
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {meta.add.tekan ? (
+                  <div class="flex self-stretch items-center justify-start">
+                    <div class="relative flex flex-1 items-center justify-start">
+                      <multipleselect
+                        options={meta.dataTeam()}
+                        value={meta.state2.team}
+                        theme={(theme) => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#F3F4F6",
+                            primary: "#6366F1",
+                          },
+                        })}
+                        styles={meta.styles}
+                        className="w-full"
+                        classNamePrefix="select"
+                        name="team"
+                        onChange={(e) => {
+                          meta.actionteam.onChange(e);
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div class="flex self-stretch items-center justify-start">
+                    <div class="relative flex flex-1 items-center justify-start">
+                      <multipleselect
+                        options={meta.dataUser()}
+                        theme={(theme) => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#F3F4F6",
+                            primary: "#6366F1",
+                          },
+                        })}
+                        styles={meta.styles}
+                        className="w-full"
+                        classNamePrefix="select"
+                        isMulti
+                        name="member"
+                        onChange={(e) => {
+                          meta.actionmember.onChange(e);
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <form
+                  class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  onSubmit={meta.handleSubmit5}
+                >
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Next
+                      </div>
+                    </div>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.state.showModal5 ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="width: 640px; max-width: 640px;"
+        >
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis overflow-hidden bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch items-center justify-between bg-white -ml-1">
+                  <form onSubmit={meta.handleSubmit4}>
+                    <button>
+                      <img
+                        src="/fimgs/388_1042.x1.svg"
+                        class="flex space-x-2 items-start justify-start"
+                        style="width: 71px; min-width: 71px; max-width: 71px; height: 24px; min-height: 24px; max-height: 24px;"
+                      />
+                    </button>
+                  </form>
+                  <form onSubmit={meta.handleExit}>
+                    <button>
+                      <img
+                        src="/fimgs/517_574.x1.svg"
+                        class="flex flex-col items-start justify-start"
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                      />
+                    </button>
+                  </form>
+                </div>
+                <div class="flex self-stretch flex-col space-y-2 items-start justify-start overflow-ellipsis overflow-hidden bg-white mx-1 pb-2 pt-0.5">
+                  <div class="flex self-stretch text-xl font-medium tracking-wide leading-tight text-center text-gray-900">
+                    Check Again
+                  </div>
+                  <div class="flex self-stretch text-sm tracking-wide leading-tight text-gray-500">
+                    Is the project information you added correct?
+                  </div>
+                </div>
+              </div>
+              <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white border rounded border-gray-300">
+                  <div class="flex self-stretch items-start justify-between px-4 pt-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500 w-1/2">
+                      Project Name
+                    </div>
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 w-1/2">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.title}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
+                  <div class="flex self-stretch items-start justify-between px-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500 w-1/2">
+                      Project Description
+                    </div>
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 w-1/2">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.desc}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
+                  <div class="flex self-stretch items-start justify-between px-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500 w-1/2">
+                      Project Create For
+                    </div>
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 w-1/2">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.project}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
+                  <div class="flex self-stretch items-start justify-between px-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500 w-1/2">
+                      Start Project
+                    </div>
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 w-1/2">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.start}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
+                  <div class="flex self-stretch items-start justify-between px-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500 w-1/2">
+                      Due Date
+                    </div>
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 w-1/2">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.due}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <hr class="border-gray-300 my-auto" style="width: 100%;"></hr>
+                  <div class="flex self-stretch items-start justify-between px-4 pb-4">
+                    <div class="text-sm tracking-wide leading-tight text-gray-500">
+                      Assigned
+                    </div>
+                    <div class="text-right text-sm tracking-wide leading-tight text-gray-900 truncate">
+                      {meta.print ? (
+                        <div class="truncate">{meta.state2.team}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+                <form
+                  class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  onSubmit={meta.submitData}
+                >
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Create Project
+                      </div>
+                    </div>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+</>

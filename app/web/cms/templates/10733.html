@@ -1,0 +1,261 @@
+<>
+  <effect
+    meta={{
+      datePicker: new Date(),
+      datePicker2: new Date(),
+      setStartDate(newDate) {
+        this.datePicker = newDate;
+      },
+      setStartDate2(newDate) {
+        this.datePicker2 = newDate;
+      },
+      isOpen: false,
+      isOpen2: false,
+      setIsOpen(open) {
+        this.isOpen = open;
+      },
+      setIsOpen2(open) {
+        this.isOpen2 = open;
+      },
+      handleChange(e) {
+        this.setIsOpen(!this.isOpen);
+        this.setStartDate(e);
+      },
+      handleChange2(e) {
+        this.setIsOpen2(!this.isOpen2);
+        this.setStartDate2(e);
+      },
+      handleClick(e) {
+        e.preventDefault();
+        this.setIsOpen(!this.isOpen);
+      },
+      handleClick2(e) {
+        e.preventDefault();
+        this.setIsOpen2(!this.isOpen2);
+      },
+      priority: [
+        { value: "1", label: "Low" },
+        { value: "2", label: "Medium" },
+        { value: "3", label: "High" },
+      ],
+      taskv: [
+        { value: "1", label: "1 (Easy)" },
+        { value: "2", label: "2 (Intermediate)" },
+        { value: "3", label: "3 (Hard)" },
+      ],
+      statusx: [
+        { value: "3", label: "TODO", color: "#4ADE80" },
+        {
+          value: "2",
+          label: "IN PROGRESS",
+          color: "#888DF1",
+        },
+        { value: "1", label: "COMPLETE", color: "#F1B459" },
+      ],
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "2.5px",
+          paddingBottom: "2.5px",
+          boxShadow: "none",
+          border: "none",
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+    }}
+    run={async () => {}}
+  />
+  <div class="flex flex-col items-start justify-start bg-coolGray-50">
+    <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+      <div class="flex w-full space-x-5 items-center justify-start">
+        <a
+          href="/m/pm/projects/task/create-task"
+          class="flex items-center justify-start"
+        >
+          <img
+            src="/fimgs/I727_1000_1575_5334.x3.png"
+            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+          />
+          <div class="text-base tracking-wide leading-tight text-indigo-500">
+            Back
+          </div>
+        </a>
+        <div class="flex items-center justify-center">
+          <div class="text-base tracking-wide leading-normal text-coolGray-900">
+            Edit Subtask
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col w-full self-stretch space-y-5 py-3 w-auto">
+      <div class="flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+        <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative">
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Subtask Name
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <m-input
+              id="name"
+              name="taskname"
+              type="text"
+              placeholder=""
+              class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Task Status
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <div class="relative flex flex-1 items-center justify-start">
+              <multipleselect
+                options={meta.statusx}
+                defaultValue={meta.statusx[0]}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#F3F4F6",
+                    primary: "#6366F1",
+                  },
+                })}
+                styles={meta.styles}
+                className="w-full text-sm border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none z-50"
+                classNamePrefix="select"
+                name="status"
+              />
+            </div>
+          </div>
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Start Date
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <div class="text-sm relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5">
+              <datepicker
+                selected={meta.datePicker}
+                dateFormat="MMMM d, yyyy"
+                onChange={meta.handleChange}
+                disabled
+              />
+              <div
+                class="absolute flex border border-transparent right-0 top-0 h-full"
+                style="width: 2.3rem; min-width: 2.3rem; max-width: 2.3rem;"
+              >
+                <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
+                  <div class="cursor-pointer" onClick={meta.handleClick}>
+                    <ai-calendar style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {meta.isOpen && (
+            <div class="absolute right-0" style="top:56.2%">
+              <div class="flex flex-col items-start justify-start overflow-ellipsis z-50 relative">
+                <datepicker
+                  selected={meta.datePicker}
+                  onChange={meta.handleChange}
+                  inline
+                />
+              </div>
+            </div>
+          )}
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Due Date
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <div class="text-sm relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5">
+              <datepicker
+                selected={meta.datePicker2}
+                dateFormat="MMMM d, yyyy"
+                onChange={meta.handleChange2}
+                disabled
+              />
+              <div
+                class="absolute flex border border-transparent right-0 top-0 h-full"
+                style="width: 2.3rem; min-width: 2.3rem; max-width: 2.3rem;"
+              >
+                <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
+                  <div class="cursor-pointer" onClick={meta.handleClick2}>
+                    <ai-calendar style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {meta.isOpen2 && (
+            <div class="absolute right-0" style="top:77%">
+              <div class="flex flex-col items-start justify-start overflow-ellipsis z-50 relative">
+                <datepicker
+                  selected={meta.datePicker2}
+                  onChange={meta.handleChange2}
+                  inline
+                />
+              </div>
+            </div>
+          )}
+          <div class="flex flex-1 w-full space-x-6 items-center">
+            <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+              <div class="text-sm tracking-wide leading-none text-gray-500">
+                Priority
+              </div>
+              <div class="flex self-stretch items-center justify-start">
+                <div class="relative flex flex-1 items-center justify-start">
+                  <multipleselect
+                    options={meta.priority}
+                    defaultValue={meta.priority[0]}
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary25: "#F3F4F6",
+                        primary: "#6366F1",
+                      },
+                    })}
+                    styles={meta.styles}
+                    className="w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none"
+                    classNamePrefix="select"
+                    name="status"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+              <div class="text-sm tracking-wide leading-none text-gray-500">
+                Task Value
+              </div>
+              <div class="flex self-stretch items-center justify-start">
+                <div class="relative flex flex-1 items-center justify-start">
+                  <multipleselect
+                    options={meta.taskv}
+                    defaultValue={meta.taskv[0]}
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary25: "#F3F4F6",
+                        primary: "#6366F1",
+                      },
+                    })}
+                    styles={meta.styles}
+                    className="w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none"
+                    classNamePrefix="select"
+                    name="status"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

@@ -1,0 +1,259 @@
+<>
+  <effect
+    meta={{
+      state: {
+        judul: "Loading",
+      },
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+    }}
+    run={async () => {
+      api("/api/project/show/" + params.id).then((e) => {
+        console.log(e);
+        if (e.status == true) {
+          meta.state.judul = e.data_act.project.name;
+          meta.link.detail =
+            "/pm/projects/" + e.data_act.project.id + "/detail";
+          meta.link.team = "/pm/projects/" + e.data_act.project.id + "/team";
+          meta.link.task = "/pm/projects/" + e.data_act.project.id + "/task";
+          meta.link.timeline =
+            "/pm/projects/" + e.data_act.project.id + "/timeline";
+          meta.link.planning =
+            "/pm/projects/" + e.data_act.project.id + "/planning";
+          meta.link.file =
+            "/pm/projects/" + e.data_act.project.id + "/file-management";
+        }
+        document.getElementById("loading").remove();
+      });
+    }}
+  />
+  <div class="flex w-full self-stretch flex-col space-y-9 items-start justify-start px-10 pt-10">
+    <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
+      <div class="flex w-full items-start justify-between">
+        <div class="flex items-start justify-start">
+          <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+            {meta.state.judul}
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2 items-start justify-start">
+          <div
+            class="flex flex-col items-start justify-start"
+            style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
+          >
+            <bar />
+          </div>
+          <div class="flex items-start justify-start">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+              10 Task Done
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex space-x-8 items-center justify-start">
+        <a
+          href={meta.link.detail}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Project Detail
+          </div>
+        </a>
+        <a
+          href={meta.link.task}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Task
+          </div>
+        </a>
+        <a
+          href={meta.link.planning}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Planning
+          </div>
+        </a>
+        <a
+          href={meta.link.timeline}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Timeline
+          </div>
+        </a>
+        <a
+          href={meta.link.file}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            File Management
+          </div>
+        </a>
+        <a
+          href={meta.link.team}
+          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+            Team
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-10">
+    <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-6 bg-white rounded">
+      <div class="flex self-stretch space-x-2 items-start justify-start">
+        <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
+          <div class="flex self-stretch items-start justify-start">
+            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+              This project will be carried out by:
+            </div>
+          </div>
+          <div class="flex self-stretch items-start justify-start">
+            <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+              Team 1
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col items-start justify-start">
+          <div class="flex items-start justify-start">
+            <div class="flex items-start justify-start px-4 py-2 border rounded border-indigo-400 hover:border-indigo-700 cursor-pointer">
+              <div class="text-base font-medium tracking-wide leading-normal text-center text-indigo-500">
+                Change Team
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex self-stretch flex-col items-start justify-start">
+        <div class="flex self-stretch flex-col items-start justify-start p-6 bg-coolGray-50 border rounded border-coolGray-300">
+          <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+            <div class="flex self-stretch space-x-2.5 items-center justify-start">
+              <div class="flex flex-1 items-start justify-start">
+                <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                  List Member
+                </div>
+              </div>
+              <div class="flex flex-col items-start justify-start">
+                <div class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded cursor-pointer">
+                  <img
+                    src="/fimgs/603_427.x3.png"
+                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                  />
+                  <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                    Add Member
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex self-stretch flex-col items-start justify-start py-6 pl-6 bg-coolGray-50 rounded">
+              <div class="flex self-stretch flex-col items-start justify-start">
+                <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                  <div class="flex self-stretch items-center justify-start py-2 pr-4 rounded">
+                    <div class="flex space-x-4 items-start justify-start">
+                      <div class="flex items-start justify-start">
+                        <img
+                          src="/fimgs/I448_1610_1448_4295.x3.png"
+                          class="rounded-full"
+                          style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                        />
+                      </div>
+                      <div class="flex flex-col items-start justify-start">
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                            Afif Hanifudin
+                          </div>
+                        </div>
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                            UIUX Designer
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-center justify-start py-2 pr-4 rounded">
+                    <div class="flex space-x-4 items-start justify-start">
+                      <div class="flex items-start justify-start">
+                        <img
+                          src="/fimgs/I448_1610_1448_4295.x3.png"
+                          class="rounded-full"
+                          style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                        />
+                      </div>
+                      <div class="flex flex-col items-start justify-start">
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                            Afif Hanifudin
+                          </div>
+                        </div>
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                            UIUX Designer
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-center justify-start py-2 pr-4 rounded">
+                    <div class="flex space-x-4 items-start justify-start">
+                      <div class="flex items-start justify-start">
+                        <img
+                          src="/fimgs/I448_1610_1448_4295.x3.png"
+                          class="rounded-full"
+                          style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                        />
+                      </div>
+                      <div class="flex flex-col items-start justify-start">
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                            Afif Hanifudin
+                          </div>
+                        </div>
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                            UIUX Designer
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-center justify-start py-2 pr-4 rounded">
+                    <div class="flex space-x-4 items-start justify-start">
+                      <div class="flex items-start justify-start">
+                        <img
+                          src="/fimgs/I448_1610_1448_4295.x3.png"
+                          class="rounded-full"
+                          style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                        />
+                      </div>
+                      <div class="flex flex-col items-start justify-start">
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                            Afif Hanifudin
+                          </div>
+                        </div>
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                            UIUX Designer
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

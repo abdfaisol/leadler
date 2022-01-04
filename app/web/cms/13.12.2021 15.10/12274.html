@@ -1,0 +1,1336 @@
+<>
+  <effect
+    meta={{
+      state: {
+        name: "",
+        startdate: "",
+        duedate: "",
+        status: [],
+        cstatus: "",
+        effort: "",
+        priority: "",
+        iddivision: "",
+        idtask: "",
+        description: "",
+        cost: "0",
+        taskname: "",
+      },
+      project: {
+        judul: "Loading",
+        deskripsi: "Loading",
+        label: "Loading",
+        startdate: "26/09/2021",
+        duedate: "26/09/2021",
+        proggres: "0",
+        taskComplete: "0",
+      },
+      dataSubTask: [],
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      cobaElement: [],
+      print: true,
+      data_task: [],
+      status: [
+        { value: "1", label: "TODO", color: "#4ADE80" },
+        {
+          value: "2",
+          label: "IN PROGRESS",
+          color: "#888DF1",
+        },
+        { value: "3", label: "SUBMITTED", color: "#2D34E6" },
+        { value: "4", label: "COMPLETE", color: "#F1B459" },
+      ],
+      priority: [
+        { value: "L", label: "Low" },
+        { value: "M", label: "Medium" },
+        { value: "H", label: "High" },
+      ],
+      taskv: [
+        { value: "1", label: "1 (Easy)" },
+        { value: "2", label: "2 (Intermediate)" },
+        { value: "3", label: "3 (Hard)" },
+      ],
+      statusx: [],
+      isStatus() {
+        if (this.statusx[0]) {
+          console.log("tes");
+          return "w-40 bg-blue-300";
+        } else if (this.statusx[1]) {
+          console.log("tes2");
+          return "w-40 bg-orange-300";
+        } else if (this.statusx[2]) {
+          console.log("tes3");
+          return "w-40 bg-red-300";
+        } else {
+          console.log("tes4");
+          return "w-40 bg-green-300";
+        }
+      },
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      stylesx: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "2px",
+          paddingBottom: "2px",
+          border: "none",
+          boxShadow: "none",
+          backgroundColor: "transparent",
+        }),
+        input: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        singleValue: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        option: (styles, { data }) => {
+          return {
+            ...styles,
+            backgroundColor: data.color,
+            "&:hover": {
+              backgroundColor: data.isDisabled
+                ? "#F3F4F6"
+                : data.isSelected
+                ? null
+                : "#F3F4F6",
+            },
+          };
+        },
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        // console.log(nilai);
+      },
+      toggleModal() {
+        console.clear();
+        this.showModal = !this.showModal;
+        this.dataSubTask = [];
+      },
+      toggleModal2() {
+        this.showModal2 = !this.showModal2;
+      },
+      toggleAdd() {
+        this.showAdd = !this.showAdd;
+      },
+      removeSubtask(event, id) {
+        console.log(event);
+        var list = document.getElementById("subtask-" + id);
+        // console.log(list);
+        list.remove();
+        delete this.dataSubTask[id];
+        console.log(this.dataSubTask.length);
+      },
+      delete(id) {
+        this.setState((prevState) => ({
+          data: prevState.data.filter((el) => el != id),
+        }));
+      },
+      subtask(event) {
+        // var elmSubtask = document.getElementById("listSubTask");
+        // console.log("masuk pak eko");
+        if (this.state.taskname == "") {
+          console.log("tidak boleh kosong");
+        } else {
+          var dataSub = {
+            name: this.state.taskname,
+            startdate: "",
+            duedate: "",
+            status: "",
+            cstatus: "",
+            effort: "",
+            priority: "",
+            iddivision: "",
+            idtask: "",
+            description: "",
+            cost: "0",
+            taskname: "",
+          };
+          var length = this.dataSubTask.push(dataSub);
+          this.cobaElement.push({ index: idx, name: this.state.taskname });
+        }
+        event.preventDefault();
+      },
+      submitData(event) {
+        let data = {
+          desc: this.state.description,
+          estimated_cost: parseInt(this.state.cost),
+          idproject: params.id,
+          name: this.state.name,
+          startdate: this.state.startdate,
+          duedate: this.state.duedate,
+          idstatus: this.state.status,
+          effort: this.state.effort,
+          priority: this.state.priority,
+          iddivision: this.state.iddivision,
+        };
+        console.log("mempersiapkan data");
+        console.log(data);
+        console.log("memasukkan data");
+        api("/api/project/task/create", {
+          data: data,
+        }).then((e) => {
+          console.log(e);
+          if (e.status == false) {
+            console.log(e);
+            console.log("gagal masuk");
+            console.log(data);
+            // this.isFilled = this.isFilled;
+            // this.showModal = !this.showModal;
+          } else {
+            console.log(e);
+            console.log("berhasil masuk");
+            console.log(data);
+            if (this.dataSubTask.length > 0) {
+              this.dataSubTask.map((idx) => {
+                console.log("memasukkan subtask : ");
+                console.log(idx);
+                api("/api/project/subtask/create", {
+                  data: {
+                    idtask: e.data_act.id,
+                    idproject: params.id,
+                    name: idx.name,
+                    startdate: idx.startdate,
+                    duedate: idx.duedate,
+                    idstatus: "3",
+                  },
+                }).then((e) => {
+                  console.log(e);
+                });
+              });
+            }
+            // location.reload();
+          }
+        });
+        event.preventDefault();
+      },
+      updateStatus(event, idtask, idx) {
+        // meta.state.iddepartment = e.value;
+        //     console.log(meta.state.iddepartment);
+        console.log(
+          "task dengan id : " +
+            id +
+            "berhasil diupdate dengan value : " +
+            event.value
+        );
+        console.log(this.data_task[idx].idstatus);
+        this.data_task[idx].idstatus = event.value;
+        let data = {
+          id: idtask,
+          idstatus: event.value,
+        };
+        console.log("mempersiapkan data");
+        console.log(data);
+        console.log("memasukkan data");
+        api("/api/project/task/status/update", {
+          data: data,
+        }).then((e) => {
+          console.log(e);
+          if (e.status == false) {
+            // console.log(e);
+            console.log("gagal");
+            // console.log(data);
+          } else {
+            // console.log(e);
+            console.log("berhasil");
+          }
+        });
+      },
+    }}
+    run={async () => {
+      console.log("mendapatkan data: loading");
+      api("/api/project/show/" + params.id).then((e) => {
+        console.clear();
+        console.log(e);
+        if (e.status == true) {
+          meta.data_task = e.data_act.project_task;
+          meta.project.task = e.data_act.resultTask.nTask;
+          meta.project.judul = e.data_act.project.name;
+          meta.project.deskripsi = e.data_act.project.desc;
+          meta.project.label = e.data_act.project.label;
+          meta.project.startdate = dateFormat(
+            e.data_act.project.startdate,
+            "dd MMMM YYY"
+          );
+          meta.project.duedate = dateFormat(
+            e.data_act.project.duedate,
+            "dd MMMM YYY"
+          );
+          meta.project.taskComplete = e.data_act.resultTask.taskComplete;
+          meta.project.proggres = e.data_act.resultTask.completed;
+          meta.link.team = "/pm/projects/" + e.data_act.project.id + "/team";
+          meta.link.task = "/pm/projects/" + e.data_act.project.id + "/task";
+          meta.link.timeline =
+            "/pm/projects/" + e.data_act.project.id + "/timeline";
+          meta.link.planning =
+            "/pm/projects/" + e.data_act.project.id + "/planning";
+          meta.link.file =
+            "/pm/projects/" + e.data_act.project.id + "/file-management";
+        }
+      });
+      // Data status
+      api("/api/status").then((e) => {
+        // console.clear();
+        console.log("data status");
+        console.log(e);
+        if (e.status == true) {
+          e.data_act.map((e1) => {
+            meta.statusx.push(e1);
+          });
+        }
+      });
+      meta.state.iddivision = document.getElementById("employee").value;
+      meta.actionstatus = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.status = e.value;
+            console.log(meta.state.status);
+          });
+        },
+      };
+      meta.actioncstatus = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.cstatus = e.color;
+            console.log(meta.state.cstatus);
+          });
+        },
+      };
+      meta.actioneffort = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.effort = e.value;
+            console.log(meta.state.effort);
+          });
+        },
+      };
+      meta.actionpriority = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.priority = e.value;
+            console.log(meta.state.priority);
+          });
+        },
+      };
+    }}
+  />
+  <div class="flex w-full self-stretch flex-col space-y-9 items-start justify-start px-10 pt-10">
+    <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
+      <div class="flex w-full items-start justify-between">
+        <div class="flex items-start justify-start">
+          <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+            {meta.project.judul}
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2 items-start justify-start">
+          <div
+            class="flex flex-col items-start justify-start"
+            style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
+          >
+            <bar percent={meta.project.proggres} />
+          </div>
+          <div class="flex items-start justify-start">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+              {meta.project.taskComplete} Task Done
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex space-x-8 items-center justify-start">
+        <a
+          href={meta.link.detail}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Project Detail
+          </div>
+        </a>
+        <a
+          href={meta.link.task}
+          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+            Task
+          </div>
+        </a>
+        <a
+          href={meta.link.planning}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Planning
+          </div>
+        </a>
+        <a
+          href={meta.link.timeline}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Timeline
+          </div>
+        </a>
+        <a
+          href={meta.link.file}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            File Management
+          </div>
+        </a>
+        <a
+          href={meta.link.team}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Team
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col self-stretch space-y-8 p-10 w-auto">
+    <div class="border">
+      <div class="flex self-stretch items-center justify-between px-6 py-2.5 bg-white rounded-t">
+        <div class="text-sm font-medium tracking-wide leading-tight text-center text-coolGray-900 rounded-l border-r border-coolGray-300 pr-3">
+          <label class="bg-white"></label>
+          <select
+            id="employee"
+            name="employee"
+            class="bg-white rounded-l outline-none"
+          >
+            <option value="1">UI/UX Designer</option>
+            <option value="2">Business Analyst</option>
+            <option value="3">Full Stack Developer</option>
+          </select>
+        </div>
+        <div class="flex items-start justify-start">
+          <div class="flex items-center justify-between px-4 py-2 bg-coolGray-100 rounded w-48">
+            <div class="flex items-start justify-start">
+              <input
+                placeholder="Search Task"
+                class="text-xs tracking-wide leading-none text-start bg-coolGray-100 text-coolGray-500 focus:outline-none"
+              />
+            </div>
+            <div class="flex items-start justify-start">
+              <img
+                src="/fimgs/320_715.x3.png"
+                style="width: 14px; min-width: 14px; max-width: 14px; height: 14px; min-height: 14px; max-height: 14px;"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex self-stretch flex-col items-end justify-start p-6">
+        <div class="flex flex-col items-end justify-end">
+          <div class="flex flex-col items-start justify-start">
+            <button
+              class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+              onClick={meta.toggleModal}
+            >
+              <img
+                src="/fimgs/603_427.x3.png"
+                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+              />
+              <div class="text-base font-medium tracking-wide leading-normal text-right text-white pl-1">
+                Task
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <div class="w-full px-6 pb-6 align-middle inline-block">
+          <div class="overflow-hidden">
+            <table class="w-full divide-y-4 divide-gray-50">
+              <thead class="bg-white">
+                <tr>
+                  <th
+                    scope="col"
+                    class="pr-6 tracking-wider text-center justify-center mr-auto"
+                  >
+                    <div class="flex items-center justify-start ">
+                      <div class="flex text-sm tracking-wide px-6 py-3 bg-green-400 leading-tight text-center text-white">
+                        TODO
+                      </div>
+                      <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
+                        {meta.data_task.length} Task
+                      </div>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative px-6 py-3 text-sm text-left justify-start"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-start">
+                      Start Project
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative px-6 py-3 text-sm text-left justify-start"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-start">
+                      Due Date
+                    </div>
+                  </th>
+
+                  <th
+                    scope="col"
+                    class="relative px-6 py-3 text-sm text-center justify-start"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-start">
+                      Status
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative px-6 py-3 text-sm text-center justify-start"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-start">
+                      Priority
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative px-6 py-3 text-sm text-center justify-start"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-start">
+                      Task Value
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative px-6 py-3 text-sm text-center justify-start"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-start"></div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y-4 divide-gray-50">
+                {meta.data_task.map((e, idx) => {
+                  return (
+                    <tr>
+                      <td
+                        class="px-6 py-3 whitespace-nowrap text-start cursor-pointer"
+                        onClick={meta.toggleModal2}
+                      >
+                        <div class="text-sm text-gray-900">{e.name}</div>
+                      </td>
+                      <td class="px-6 py-3 whitespace-nowrap text-start">
+                        <div class="text-xs tracking-wide leading-none text-green-500">
+                          {dateFormat(e.startdate, "dd MMM YYY")}
+                        </div>
+                      </td>
+                      <td class="px-6 py-3 whitespace-nowrap text-start">
+                        <div class="text-xs tracking-wide leading-none text-red-500">
+                          {dateFormat(e.duedate, "dd MMM YYY")}
+                        </div>
+                      </td>
+                      <td class="text-center py-0">
+                        <div class="flex items-center justify-center">
+                          <multipleselect
+                            onChange={(event) => {
+                              meta.updateStatus(event, e.id, idx);
+                            }}
+                            options={meta.statusx}
+                            defaultValue={meta.statusx[e.idstatus]}
+                            menuPortalTarget={document.body}
+                            theme={(theme) => ({
+                              ...theme,
+                              borderRadius: 0,
+                              colors: {
+                                ...theme.colors,
+                                primary25: "#F3F4F6",
+                                primary: "#6366F1",
+                              },
+                            })}
+                            styles={meta.stylesx}
+                            style={
+                              e.idstatus == 1
+                                ? "background-color: #4ADE80;"
+                                : e.idstatus == 2
+                                ? "background-color: #888DF1;"
+                                : e.idstatus == 3
+                                ? "background-color: #2D34E6;"
+                                : e.idstatus == 4
+                                ? "background-color: #F1B459;"
+                                : "background-color: #4ADE80;"
+                            }
+                            className="w-40"
+                            classNamePrefix="select"
+                            name="status"
+                            // onChange={(e) => {
+                            //   meta.actionstatus.onChange(e);
+                            // }}
+                          />
+                        </div>
+                      </td>
+                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                        <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                          <div class="text-xs tracking-wide leading-none text-center text-white">
+                            {e.mpriority.name}
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-7 py-2 whitespace-nowrap text-center">
+                        <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                          <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                            {e.effort}
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                        <div class="flex items-center justify-center">
+                          <img
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                            src="/fimgs/5_48.x3.png"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {meta.showModal ? (
+    <>
+      <div class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed">
+        <div
+          class="z-50 relative p-3 mx-auto my-0 max-w-full"
+          style="min-width: 640px; width: 640px;"
+        >
+          <div class="relative w-auto mx-auto z-50 my-0 max-w-full">
+            {/*content*/}
+            <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              {/*body*/}
+              <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+                <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                  <div class="flex self-stretch flex-col items-start justify-start">
+                    <div class="flex self-stretch items-center justify-between">
+                      <div class="flex items-start justify-start pl-56">
+                        <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                          Create Task
+                        </div>
+                      </div>
+                      <form onSubmit={meta.toggleModal}>
+                        <button class="flex flex-col items-start justify-start">
+                          <img
+                            src="/fimgs/517_574.x1.svg"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                          />
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Task Name
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="name"
+                          onChange={meta.ubahNilai}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Task Status
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.status}
+                          defaultValue={meta.status[0]}
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full"
+                          classNamePrefix="select"
+                          name="status"
+                          onChange={(e) => {
+                            meta.actionstatus.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div class="flex flex-1 w-full space-x-6 items-center">
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Start Date
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <input
+                              id="name"
+                              name="startdate"
+                              onChange={meta.ubahNilai}
+                              type="date"
+                              placeholder=""
+                              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Due Date
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <input
+                              id="name"
+                              name="duedate"
+                              onChange={meta.ubahNilai}
+                              type="date"
+                              placeholder=""
+                              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-1 w-full space-x-6 items-center">
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Priority
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <multipleselect
+                              options={meta.priority}
+                              defaultValue={meta.priority[0]}
+                              theme={(theme) => ({
+                                ...theme,
+                                colors: {
+                                  ...theme.colors,
+                                  primary25: "#F3F4F6",
+                                  primary: "#6366F1",
+                                },
+                              })}
+                              styles={meta.styles}
+                              className="w-full"
+                              classNamePrefix="select"
+                              name="status"
+                              onChange={(e) => {
+                                meta.actionpriority.onChange(e);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Task Value
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <multipleselect
+                              options={meta.taskv}
+                              defaultValue={meta.taskv[0]}
+                              theme={(theme) => ({
+                                ...theme,
+                                colors: {
+                                  ...theme.colors,
+                                  primary25: "#F3F4F6",
+                                  primary: "#6366F1",
+                                },
+                              })}
+                              styles={meta.styles}
+                              className="w-full"
+                              classNamePrefix="select"
+                              name="status"
+                              onChange={(e) => {
+                                meta.actioneffort.onChange(e);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-1 w-full items-center justify-between">
+                      <div class="flex flex-col items-center">
+                        <div class="text-sm tracking-wide leading-none text-coolGray-500">
+                          Subtask
+                        </div>
+                      </div>
+                      <div
+                        class="cursor-pointer flex flex-col items-center"
+                        onClick={meta.toggleAdd}
+                      >
+                        {meta.showAdd ? (
+                          <img
+                            src="/fimgs/649_493.x3.png"
+                            class="flex flex-col items-start"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                          />
+                        ) : (
+                          <img
+                            src="/fimgs/645_539.x3.png"
+                            class="flex flex-col items-start justify-start"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
+                      <div
+                        id="listSubTask"
+                        class="flex self-stretch flex-col space-y-3 items-start justify-start"
+                      >
+                        {meta.cobaElement.map((e) => {
+                          var idsubtask = "subtask-" + e.index;
+                          return (
+                            <div
+                              id={idsubtask}
+                              class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded"
+                            >
+                              <div class="flex w-full space-x-6 items-center justify-start">
+                                <div class="flex flex-1 items-start justify-start">
+                                  <div class="text-sm tracking-wide leading-tight">
+                                    {e.name}
+                                  </div>
+                                </div>
+                                <div class="flex space-x-5 items-start justify-start">
+                                  <div class="cursor-pointer">
+                                    <img
+                                      src="/fimgs/295_279.x3.png"
+                                      class="flex items-start justify-start"
+                                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                                    />
+                                  </div>
+                                  <div
+                                    class="cursor-pointer"
+                                    onClick={(event) => {
+                                      meta.removeSubtask(event, e.index);
+                                    }}
+                                  >
+                                    <img
+                                      src="/fimgs/656_794.x3.png"
+                                      class="flex items-center justify-start"
+                                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      <div class="flex self-stretch items-center justify-start">
+                        <form
+                          onSubmit={meta.subtask}
+                          class="relative flex flex-1 items-center justify-start"
+                        >
+                          <input
+                            id="name"
+                            name="taskname"
+                            type="text"
+                            onSubmit={meta.subtask}
+                            placeholder="Create Subtask"
+                            onChange={meta.ubahNilai}
+                            class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                          />
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <form
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    onSubmit={meta.submitData}
+                  >
+                    <button
+                      type="submit"
+                      class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    >
+                      <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                        <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                          Create Task
+                        </div>
+                      </div>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      </div>
+    </>
+  ) : null}
+  {meta.showModal2 ? (
+    <>
+      <div class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed">
+        <div
+          class="z-50 relative p-3 mx-auto my-0 max-w-full"
+          style="min-width: 640px; width: 640px;"
+        >
+          <div class="relative w-auto mx-auto z-50 my-0 max-w-full">
+            {/*content*/}
+            <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              {/*body*/}
+              <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+                <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                  <div class="flex self-stretch flex-col items-start justify-start">
+                    <div class="flex self-stretch items-center justify-between">
+                      <div class="flex items-start justify-start pl-56">
+                        <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                          Task Detail
+                        </div>
+                      </div>
+                      <form onSubmit={meta.toggleModal2}>
+                        <button class="flex flex-col items-start justify-start">
+                          <img
+                            src="/fimgs/517_574.x1.svg"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                          />
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex w-full items-center justify-between pb-2">
+                      <div class="flex justify-center">
+                        <div class="flex items-start justify-start px-6 py-2 bg-indigo-400">
+                          <div class="text-sm tracking-wide leading-tight text-center text-white">
+                            IN PROGRESS
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between space-x-10">
+                        <div class="flex flex-col self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight text-justify text-coolGray-500">
+                            Start Task
+                          </div>
+                          <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
+                            26/09/2021
+                          </div>
+                        </div>
+                        <div class="flex flex-col self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight text-justify text-coolGray-500">
+                            Due Date
+                          </div>
+                          <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
+                            26/11/2021
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <hr
+                      class="border-gray-300 pb-2.5 my-auto"
+                      style="width: 100%;"
+                    ></hr>
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Task Name
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="taskname"
+                          onChange={meta.ubahNilai}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Task Status
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.status}
+                          defaultValue={meta.status[0]}
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full"
+                          classNamePrefix="select"
+                          name="status"
+                        />
+                      </div>
+                    </div>
+                    <div class="flex flex-1 w-full space-x-6 items-center">
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Start Date
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <input
+                              id="name"
+                              name="startdate"
+                              onChange={meta.ubahNilai}
+                              type="date"
+                              placeholder=""
+                              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Due Date
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <input
+                              id="name"
+                              name="duedate"
+                              onChange={meta.ubahNilai}
+                              type="date"
+                              placeholder=""
+                              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-1 w-full space-x-6 items-center">
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Priority
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <multipleselect
+                              options={meta.priority}
+                              defaultValue={meta.priority[0]}
+                              theme={(theme) => ({
+                                ...theme,
+                                colors: {
+                                  ...theme.colors,
+                                  primary25: "#F3F4F6",
+                                  primary: "#6366F1",
+                                },
+                              })}
+                              styles={meta.styles}
+                              className="w-full"
+                              classNamePrefix="select"
+                              name="status"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Task Value
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <multipleselect
+                              options={meta.taskv}
+                              defaultValue={meta.taskv[0]}
+                              theme={(theme) => ({
+                                ...theme,
+                                colors: {
+                                  ...theme.colors,
+                                  primary25: "#F3F4F6",
+                                  primary: "#6366F1",
+                                },
+                              })}
+                              styles={meta.styles}
+                              className="w-full"
+                              classNamePrefix="select"
+                              name="status"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-1 w-full items-center justify-between">
+                      <div class="flex flex-col items-center">
+                        <div class="text-sm tracking-wide leading-none text-coolGray-500">
+                          Subtask
+                        </div>
+                      </div>
+                      <div
+                        class="cursor-pointer flex flex-col items-center"
+                        onClick={meta.toggleAdd}
+                      >
+                        {meta.showAdd ? (
+                          <img
+                            src="/fimgs/649_493.x3.png"
+                            class="flex flex-col items-start"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                          />
+                        ) : (
+                          <img
+                            src="/fimgs/645_539.x3.png"
+                            class="flex flex-col items-start justify-start"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
+                      <div
+                        id="listSubtask"
+                        class="flex self-stretch flex-col space-y-3 items-start justify-start"
+                      >
+                        <div class="flex self-stretch flex-col items-center justify-start py-3.5 px-3.5 rounded">
+                          <div class="flex w-full space-x-6 items-center justify-between">
+                            <div class="flex flex-1 items-start justify-start">
+                              <div class="text-sm tracking-wide leading-tight">
+                                Landing Page
+                              </div>
+                            </div>
+                            <div class="flex space-x-5 items-start justify-start">
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-green-400">
+                                  14/09/2021
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-red-400">
+                                  15/09/2021
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                  IN PROGRESS
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                  Medium
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-indigo-500">
+                                  5
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded">
+                          <div class="flex w-full space-x-6 items-center justify-start">
+                            <div class="flex flex-1 items-start justify-start">
+                              <div class="text-sm tracking-wide leading-tight">
+                                Landing Page
+                              </div>
+                            </div>
+                            <div class="flex space-x-5 items-start justify-start">
+                              <img
+                                src="/fimgs/656_779.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_782.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_785.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_788.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_791.x3.png"
+                                class="flex items-start justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                              <img
+                                src="/fimgs/656_794.x3.png"
+                                class="flex items-center justify-start"
+                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch items-center justify-start pb-6">
+                        <form
+                          onSubmit={meta.subtask}
+                          class="relative flex flex-1 items-center justify-start"
+                        >
+                          <input
+                            id="subtask"
+                            name="taskname"
+                            type="text"
+                            placeholder="Create Subtask"
+                            onChange={meta.ubahNilai}
+                            class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                          />
+                        </form>
+                      </div>
+                    </div>
+                    <div class="w-full flex flex-col space-y-6 items-start justify-start">
+                      <div class="flex items-start justify-start">
+                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
+                          Progress Task
+                        </div>
+                      </div>
+                      <div class="align-middle inline-block w-full truncate">
+                        <table class="w-full divide-y-4 divide-gray-50">
+                          <thead class="bg-white">
+                            <tr>
+                              <th
+                                scope="col"
+                                class="pr-6 tracking-wider text-center justify-center mr-auto"
+                              >
+                                <div class="flex items-center justify-start ">
+                                  <div class="text-sm tracking-wide px-6 py-3 bg-green-400 leading-tight text-center text-white">
+                                    TODO
+                                  </div>
+                                  <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
+                                    2 Task
+                                  </div>
+                                </div>
+                              </th>
+                              <th
+                                scope="col"
+                                class="relative px-6 py-3 text-sm text-left justify-start"
+                              >
+                                <div class="text-sm font-medium text-coolGray-500 text-center">
+                                  Status
+                                </div>
+                              </th>
+                              <th
+                                scope="col"
+                                class="relative px-6 py-3 text-sm text-left justify-start"
+                              >
+                                <div class="text-sm font-medium text-coolGray-500 text-start">
+                                  Information
+                                </div>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody class="w-full bg-white divide-y-4 divide-gray-50">
+                            <tr>
+                              <td class="px-6 py-3 text-start cursor-pointer">
+                                <div class="text-sm text-gray-900">
+                                  Register Page
+                                </div>
+                              </td>
+                              <td class="text-start py-0">
+                                <div class="flex items-center justify-center px-2 py-3 bg-orange-300">
+                                  <select
+                                    id="employee"
+                                    name="employee"
+                                    class="bg-orange-300 text-white rounded-l outline-none"
+                                  >
+                                    <option
+                                      class="bg-white text-coolGray-500"
+                                      value="saab"
+                                    >
+                                      COMPLETE
+                                    </option>
+                                    <option
+                                      class="bg-white text-coolGray-500"
+                                      value="fiat"
+                                    >
+                                      TODO
+                                    </option>
+                                    <option
+                                      class="bg-white text-coolGray-500"
+                                      value="audi"
+                                    >
+                                      IN PROGRESS
+                                    </option>
+                                  </select>
+                                </div>
+                              </td>
+                              <td class="px-6 py-3 text-start cursor-pointer">
+                                <div class="truncate text-sm text-gray-900">
+                                  -
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <form
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    onSubmit={meta.toggleModal2}
+                  >
+                    <button
+                      type="submit"
+                      class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    >
+                      <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                        <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                          Create Task
+                        </div>
+                      </div>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      </div>
+    </>
+  ) : null}
+</>

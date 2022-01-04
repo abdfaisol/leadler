@@ -1,0 +1,268 @@
+<>
+  <effect
+    meta={{
+      state: { email: "", password: "" },
+      showErrorMessage: false,
+
+      handleSubmit(event) {
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.state),
+        };
+        fetch(window.location.origin + "/api/login", requestOptions).then(
+          (response) => {
+            response.json().then((e) => {
+              console.log(e);
+              if (e.status == true || e.status == "true") {
+                // console.log(e.data_act.muser_role.name.toLowerCase() == 'project manager');
+                if (
+                  e.data_act.muser_role.name.toLowerCase() == "project manager"
+                ) {
+                  window.location.replace(window.location.origin + "/pm");
+                } else if (
+                  e.data_act.muser_role.name.toLowerCase() == "admin"
+                ) {
+                  window.location.replace(
+                    window.location.origin + "/admin/employee"
+                  );
+                } else {
+                  window.location.replace(window.location.origin + "/app");
+                }
+                // window.location.replace(
+                //   window.location.origin + "/projectmanager"
+                // );
+              } else {
+                this.showErrorMessage = !this.showErrorMessage;
+                console.log("user is not signed in to retrive username");
+                console.log(e.status);
+                console.log(e);
+              }
+            });
+          }
+        );
+        event.preventDefault();
+      },
+      validate() {
+        let input = this.input;
+        let errors = {};
+        let isValid = true;
+
+        if (!input["email"]) {
+          isValid = false;
+          errors["email"] = "This field is required.";
+        }
+
+        if (typeof input["email"] !== "undefined") {
+          let pattern = RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+          ///^[a-zA-Z0-9._]+@[a-zA-Z]+(?:\.[a-zA-Z0-9-]+)*$/
+          if (!pattern.test(input["email"])) {
+            isValid = false;
+            errors["email"] = "Email address doesn't valid.";
+          }
+        }
+        this.errors = errors;
+        return isValid;
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        // console.log(name);
+      },
+      handleInputChange(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        console.log(name + "   " + e.target.value);
+        this.state[name] = nilai;
+        // console.log(this.state.username);
+      },
+      togglePass() {
+        this.showPass = !this.showPass;
+        // console.log(this.showPass);
+      },
+    }}
+    run={async () => {
+      api("/api/session").then((e) => {
+        if (e.status == true || e.status == "true") {
+          if (e.data_act.muser_role.name.toLowerCase() == "project manager") {
+            window.location.replace(window.location.origin + "/pm");
+          } else if (e.data_act.muser_role.name.toLowerCase() == "admin") {
+            window.location.replace(window.location.origin + "/admin");
+          } else {
+            window.location.replace(window.location.origin);
+          }
+        }
+      });
+    }}
+  />
+  <div class="flex items-start justify-start bg-white">
+    <div class="flex self-stretch items-start justify-start">
+      <div
+        class="flex flex-1 self-stretch flex-col space-y-44 items-start justify-start px-16 py-28"
+        style="background-image: url(fimgs/222_193.x3.png); height: 100%, width: 100%; background-position: center; background-repeat: no-repeat; background-size: cover;"
+      >
+        <div class="flex flex-col items-start justify-start">
+          <div class="flex flex-col items-start justify-start">
+            <div class="flex flex-col items-start justify-start">
+              <img
+                src="/fimgs/158_348.x3.png"
+                style="width: 190px; min-width: 95px; max-width: 190px; height: 38px; min-height: 25px; max-height: 38px;"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col space-y-6 items-start justify-start">
+          <div class="flex flex-1 self-stretch items-start justify-start">
+            <div class="text-4xl font-semibold tracking-wide leading-loose text-white">
+              Project Monitoring and Evaluation
+            </div>
+          </div>
+          <div class="flex self-stretch items-start justify-start">
+            <div
+              class={`text-xl tracking-wide leading-loose text-justify text-gray-300`}
+            >
+              Build your project with your team and find it easy to complete
+              your project. You can easily monitor and evaluate projects anytime
+              and anywhere
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-start justify-start px-32 py-72">
+      <div class="flex flex-col items-start justify-start bg-white">
+        <div class="flex flex-1 self-stretch flex-col space-y-14 items-center justify-center">
+          <div
+            class="flex flex-col space-y-1.5 items-start justify-start"
+            style="width: 413px; min-width: 413px; max-width: 413px; height: 64px; min-height: 64px; max-height: 64px;"
+          >
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-2xl font-semibold tracking-wide leading-loose text-coolGray-800">
+                Welcome Back
+              </div>
+            </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+                Insert your email and password
+              </div>
+            </div>
+          </div>
+          <form
+            class="flex flex-col space-y-14 items-start justify-start"
+            onSubmit={meta.handleSubmit}
+          >
+            <div class="flex self-stretch flex-col space-y-10 items-start justify-start">
+              <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                <div class="flex self-stretch items-start justify-start">
+                  <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
+                    Email Address
+                  </div>
+                </div>
+                <div class="flex self-stretch items-center justify-start">
+                  <div class="relative flex flex-1 items-center justify-start">
+                    <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                      <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                        <img
+                          src="/fimgs/I159_393_18_20.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-ef3488923855607fdda3b615deaf86593bda50fb');background-size:100% 100%;background-repeat:no-repeat;"
+                        />
+                      </div>
+                    </div>
+                    <input
+                      id="email-address"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      placeholder="Insert your email here"
+                      class={
+                        meta.showErrorMessage
+                          ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                          : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      }
+                      onChange={meta.ubahNilai}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                <div class="flex self-stretch items-start justify-start">
+                  <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
+                    Password
+                  </div>
+                </div>
+
+                <div class="flex self-stretch items-center justify-start">
+                  <div class="relative flex flex-1 items-center justify-start">
+                    <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                      <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                        <img
+                          src="/fimgs/I159_397_18_30.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+                        />
+                      </div>
+                    </div>
+                    <input
+                      type={meta.showPass ? "text" : "password"}
+                      autoComplete="current-password"
+                      placeholder="Insert your password here"
+                      class={
+                        meta.showErrorMessage
+                          ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                          : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                      }
+                      name="password"
+                      onChange={meta.ubahNilai}
+                    />
+                    <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                      <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
+                        <div onClick={meta.togglePass} class="cursor-pointer">
+                          {meta.showPass ? <eye-icon /> : <eye-slash />}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-sm flex self-stretch items-center justify-between">
+                  <div
+                    className={
+                      meta.showErrorMessage
+                        ? "text-sm flex self-stretch items-center justify-between"
+                        : "text-sm flex self-stretch items-center justify-end"
+                    }
+                  >
+                    {meta.showErrorMessage ? (
+                      <div class="font-normal text-red-500">
+                        Email/Password anda salah, Silahkan coba lagi!
+                      </div>
+                    ) : null}
+                  </div>
+                  <a
+                    href="/lupa-pass"
+                    className="font-medium text-indigo-500 hover:text-indigo-700"
+                  >
+                    Lupa Password?
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="flex flex-1 self-stretch flex-col items-start justify-start"
+              style="width: 413px; min-width: 413px; max-width: 413px; height: 40px; min-height: 40px; max-height: 40px;"
+            >
+              <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                  Masuk
+                </div>
+              </div>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

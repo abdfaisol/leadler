@@ -84,6 +84,7 @@
     }}
     run={async () => {
       api("/api/session").then((e) => {
+        // console.log(e);
         if (e.status == true || e.status == "true") {
           if (e.data_act.muser_role.name.toLowerCase() == "project manager") {
             window.location.replace(window.location.origin + "/pm");
@@ -218,17 +219,7 @@
                     <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
                       <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
                         <div onClick={meta.togglePass} class="cursor-pointer">
-                          {meta.showPass ? (
-                            <img
-                              src="/fimgs/618_960.x3.png"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                          ) : (
-                            <img
-                              src="/fimgs/620_443.x3.png"
-                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                            />
-                          )}
+                          {meta.showPass ? <eye-icon /> : <eye-slash />}
                         </div>
                       </div>
                     </div>
@@ -266,7 +257,7 @@
             >
               <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
                 <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-                  Login
+                  Masuk
                 </div>
               </div>
             </button>

@@ -283,7 +283,7 @@ export const Template = (props: {
                             .toLowerCase()
                         } else if (col === 'slug') {
                           row.slug = row.slug
-                          .replace(/[^a-z0-9\-\\[\\]\/]/gim, '-')
+                            .replace(/[^a-z0-9\-\\[\\]\/]/gim, '-')
                             .toLowerCase()
                         }
 

@@ -7,7 +7,6 @@ import { ITableDefinitions } from './qlist'
 interface ICRUD {
   id?: string
   nav?: string[]
-  defaultMode?: 'form' | 'list'
   content: Record<string, IAdminSingle>
   parentCtx?: React.Context<IBaseFormContext>
 }

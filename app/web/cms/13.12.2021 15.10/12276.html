@@ -1,0 +1,416 @@
+<>
+  <effect
+    meta={{
+      data_projek: "",
+      state: {
+        judul: "Loading",
+        deskripsi: "Loading",
+        label: "Loading",
+        startdate: "26/09/2021",
+        duedate: "26/09/2021",
+      },
+      link: {
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      time: {
+        year: "2021",
+        month: "11",
+      },
+      data_timeline: [],
+      selectedMonth: null,
+      show: {
+        tim1: false,
+        tim2: false,
+      },
+      add: { tekan: true },
+      setMonth(newMonth) {
+        if (this.selectedMonth == null) {
+          this.selectedMonth = new Date();
+          const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          var yyyy = this.selectedMonth.getFullYear();
+          this.selectedMonth =
+            months[this.selectedMonth.getMonth()] + " " + yyyy;
+        } else {
+          this.selectedMonth = newMonth;
+          const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          var yyyy = this.selectedMonth.getFullYear();
+          this.selectedMonth =
+            months[this.selectedMonth.getMonth()] + " " + yyyy;
+        }
+      },
+      getPreviousMonth() {
+        const currentMonthInMilli = new Date(this.selectedMonth).getTime();
+        const oneMonth = 1000 * 60 * 60 * 24 * 30;
+        const previousMonthInMilli = currentMonthInMilli - oneMonth;
+        const previousMonth = new Date(previousMonthInMilli);
+        this.setMonth(previousMonth);
+        console.log("test1");
+        console.log(currentMonthInMilli);
+        console.log(previousMonthInMilli);
+        console.log(previousMonth);
+      },
+      getNextMonth() {
+        const currentMonthInMilli = new Date(this.selectedMonth).getTime();
+        const oneMonth = 1000 * 60 * 60 * 24 * 31;
+        const nextMonthInMilli = currentMonthInMilli + oneMonth;
+        const nextMonth = new Date(nextMonthInMilli);
+        this.setMonth(nextMonth);
+        console.log("test1");
+        console.log(currentMonthInMilli);
+        console.log(nextMonthInMilli);
+        console.log(nextMonth);
+      },
+    }}
+    run={async () => {
+      api("/api/project/show/" + params.id).then((e) => {
+        // console.log(e);
+        if (e.status == true) {
+          meta.state.judul = e.data_act.project.name;
+          meta.state.deskripsi = e.data_act.project.desc;
+          meta.state.label = e.data_act.project.label;
+          meta.state.startdate = e.data_act.project.startdate;
+          meta.state.dudate = e.data_act.project.duedate;
+          meta.link.team = "/pm/projects/" + e.data_act.project.id + "/team";
+          meta.link.task = "/pm/projects/" + e.data_act.project.id + "/task";
+          meta.link.timeline =
+            "/pm/projects/" + e.data_act.project.id + "/timeline";
+          meta.link.planning =
+            "/pm/projects/" + e.data_act.project.id + "/planning";
+          meta.link.file =
+            "/pm/projects/" + e.data_act.project.id + "/file-management";
+        }
+      });
+      console.log("Mendapatkan data timeline : loading");
+      api("/api/project/task/timeline", {
+        data: {
+          idproject: params.id,
+          month: "11",
+          year: "2021",
+        },
+      })
+        .then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            e.data_act.timeline.map((e) => {
+              // console.log(e);
+              console.log(
+                e.startdate.split("-")[0] + "-" + e.startdate.split("-")[1]
+              );
+              var startDateku = new Date(
+                e.startdate.split("-")[0],
+                parseInt(e.startdate.split("-")[1]) - 1
+              );
+              var dueDateku = new Date(
+                e.duedate.split("-")[0],
+                parseInt(e.duedate.split("-")[1]) - 1
+              );
+              var dateku = new Date(
+                meta.time.year,
+                parseInt(meta.time.month) - 1
+              );
+              console.log("tanggal mulai " + startDateku);
+              console.log("tanggal akhir " + dueDateku);
+              console.log("waktu yang dipilih " + dateku);
+              var label = [];
+              if (dateku >= startDateku) {
+                if (dateku < dueDateku) {
+                  for (let i = 1; i <= 4; i++) {
+                    label[i] =
+                      "flex-grow bg-blue-300 border border-coolGray-300";
+                  }
+                } else {
+                  var startWeek = parseInt(e.startweeks);
+                  var dueWeek = parseInt(e.dueweeks);
+                  console.log(startWeek + " and " + dueWeek);
+                  for (let i = 1; i <= 4; i++) {
+                    console.log(i);
+                    var tes = true;
+                    if (i >= startWeek && i <= dueWeek) {
+                      label[i] =
+                        "flex-grow bg-blue-300 border border-coolGray-300";
+                    } else {
+                      tes = false;
+                      label[i] = "flex-grow border border-coolGray-300";
+                    }
+                    console.log(tes);
+                  }
+                }
+                e.labelTime = label;
+                console.log(label);
+                console.log(e);
+              }
+            });
+            document.getElementById("loading").remove();
+            meta.data_timeline = e.data_act.timeline;
+            // console.log(e);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
+      console.log("Akhir:");
+    }}
+  />
+
+  <div class="flex w-full self-stretch flex-col space-y-9 items-start justify-start px-10 pt-10">
+    <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
+      <div class="flex w-full items-start justify-between">
+        <div class="flex items-start justify-start">
+          <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+            {meta.state.judul}
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2 items-start justify-start">
+          <div
+            class="flex flex-col items-start justify-start"
+            style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
+          >
+            <bar />
+          </div>
+          <div class="flex items-start justify-start">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+              10 Task Done
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex space-x-8 items-center justify-start">
+        <a
+          href={meta.link.detail}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Project Detail
+          </div>
+        </a>
+        <a
+          href={meta.link.task}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Task
+          </div>
+        </a>
+        <a
+          href={meta.link.planning}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Planning
+          </div>
+        </a>
+        <a
+          href={meta.link.timeline}
+          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+            Timeline
+          </div>
+        </a>
+        <a
+          href={meta.link.file}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            File Management
+          </div>
+        </a>
+        <a
+          href={meta.link.team}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Team
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col self-stretch space-y-6 p-10 w-auto">
+    <div class="rounded">
+      <div
+        class="flex self-stretch items-center justify-between bg-white rounded-t border-b border-coolGray-300 px-8"
+        style="height: 50px; min-height: 50px; max-height: 50px;"
+      >
+        <div class="text-sm font-medium tracking-wide leading-tight text-center text-coolGray-900 rounded-l border-r border-coolGray-300 pr-3">
+          <label class="bg-white"></label>
+          <select
+            id="employee"
+            name="employee"
+            class="text-sm bg-white rounded-l py-3 outline-none"
+          >
+            <option value="volvo">UI/UX Designer</option>
+            <option value="saab">Business Analyst</option>
+            <option value="fiat">Full Stack Developer</option>
+          </select>
+        </div>
+        <div class="flex space-x-2 items-center justify-center">
+          <div id="prev" onClick={meta.getPreviousMonth}>
+            <img
+              class="cursor-pointer"
+              src="/fimgs/638_776.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
+          <div class="flex flex-1 items-start justify-start">
+            <div
+              class="text-base font-medium tracking-wide leading-normal text-indigo-500"
+              id="date"
+            >
+              {meta.selectedMonth}
+            </div>
+          </div>
+          <div id="next" onClick={meta.getNextMonth}>
+            <img
+              class="cursor-pointer"
+              src="/fimgs/638_779.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
+        </div>
+        <div
+          class="flex items-center justify-between px-4 py-2 bg-coolGray-50 rounded-full"
+          style="height: 32px; min-height: 32px; max-height: 32px;"
+        >
+          <div class="flex flex-1 items-start justify-start">
+            <input
+              placeholder="Search Task"
+              class="text-xs tracking-wide leading-none text-coolGray-500 w-full bg-coolGray-50 placeholder-gray-400 focus:outline-none"
+            />
+          </div>
+          <img
+            src="/fimgs/638_750.x3.png"
+            class="cursor-pointer flex items-start justify-start"
+            style="width: 14px; min-width: 14px; max-width: 14px; height: 14px; min-height: 14px; max-height: 14px;"
+          />
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <div class="align-middle inline-block min-w-full">
+          <div class="overflow-hidden">
+            <table class="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <td
+                    rowSpan="2"
+                    class="relative px-3 py-2 justify-center mr-auto border-r border-b border-coolGray-300"
+                  >
+                    <div class=" text-sm font-medium text-gray-500 text-center">
+                      Task Name
+                    </div>
+                  </td>
+                  <td
+                    colSpan="4"
+                    class="relative px-6 py-2 justify-center border-b border-coolGray-300"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      Week
+                    </div>
+                  </td>
+                </tr>
+                <tr class="border-b border-coolGray-300">
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      1
+                    </div>
+                  </td>
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      2
+                    </div>
+                  </td>
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      3
+                    </div>
+                  </td>
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      4
+                    </div>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                {/*<tr class="border-b border-coolGray-300">*/}
+                {/*<td class="px-3 py-4 whitespace-normal text-left">*/}
+                {/*<div class="text-sm text-gray-900">Analisa Data</div>*/}
+                {/*</td>*/}
+                {/*<td*/}
+                {/*class="flex-grow bg-orange-300 border border-coolGray-300"*/}
+                {/*style="width: 18%; min-width: 18%; max-width: 18%;"*/}
+                {/*></td>*/}
+                {/*<td*/}
+                {/*class="flex-grow border border-coolGray-300"*/}
+                {/*style="width: 18%; min-width: 18%; max-width: 18%;"*/}
+                {/*></td>*/}
+                {/*<td*/}
+                {/*class="flex-grow border border-coolGray-300"*/}
+                {/*style="width: 18%; min-width: 18%; max-width: 18%;"*/}
+                {/*></td>*/}
+                {/*<td*/}
+                {/*class="flex-grow"*/}
+                {/*style="width: 18%; min-width: 18%; max-width: 18%;"*/}
+                {/*></td>*/}
+                {/*</tr>*/}
+                {/*<tr class="border-b border-coolGray-300">*/}
+                {/*<td class="px-3 py-4 whitespace-normal text-left">*/}
+                {/*<div class="text-sm text-gray-900">Brainstorming</div>*/}
+                {/*</td>*/}
+                {/*<td class="flex-grow border border-coolGray-300"></td>*/}
+                {/*<td class="flex-grow bg-blue-300 border border-coolGray-300"></td>*/}
+                {/*<td class="flex-grow border border-coolGray-300"></td>*/}
+                {/*<td class="flex-grow"></td>*/}
+                {/*</tr>*/}
+                {meta.data_timeline.map((e) => {
+                  return (
+                    <tr class="border-b border-coolGray-300">
+                      <td class="px-3 py-4 whitespace-normal text-left">
+                        <div class="text-sm text-gray-900">{e.name}</div>
+                      </td>
+                      <td class={e.labelTime[1]}></td>
+                      <td class={e.labelTime[2]}></td>
+                      <td class={e.labelTime[3]}></td>
+                      <td class={e.labelTime[4]}></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

@@ -1,0 +1,33 @@
+<div>
+  <effect
+    meta={{
+      data_projek: "",
+      dataProjek() {
+        let result = [];
+        api("/api/project").then((e) => {
+          result["result"] = e;
+        });
+        return result;
+      },
+    }}
+    run={() => {
+      var data_i = meta.dataProjek();
+      api("/api/project").then((e) => {
+        console.log(e.data_act);
+        console.log(data_i.result.data_act);
+        meta.data_projek = data_i.result.data_act;
+        console.log(meta.dataProjek());
+        console.log(meta.data_projek);
+      });
+    }}
+  />
+  <p>code</p>
+  {meta.data_projek.map((e) => {
+    return (
+      <div>
+        <p>{e.name}</p>
+        <p>coba</p>
+      </div>
+    );
+  })}
+</div>

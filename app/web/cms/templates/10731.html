@@ -1,0 +1,907 @@
+<>
+  <effect
+    meta={{
+      modalSubTask: false,
+
+      expandSubtask: [],
+      state: {
+        name: "",
+        startdate: "",
+        duedate: "",
+        labelstartdate: "",
+        labelduedate: "",
+        status: [],
+        cstatus: "",
+        effort: "",
+        priority: "",
+        iddivision: "",
+        idtask: "",
+        description: "",
+        cost: "0",
+        taskname: "",
+        proggres: "0",
+        taskComplete: "0",
+      },
+      stateSubTask: {
+        name: "",
+        startdate: "",
+        duedate: "",
+        status: [],
+        cstatus: "",
+        effort: "",
+        priority: "",
+        iddivision: "",
+        idtask: "",
+      },
+      division: [],
+      isLoading: false,
+      dataSubTask: [],
+      dataSubTaskProgress: [],
+      dataSubTaskSubmit: [],
+      dataSubTaskComplete: [],
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      cobaElement: [],
+      print: true,
+      data_task: [],
+      status: [],
+      statusRaw: [],
+      datePicker: new Date(),
+      datePicker2: new Date(),
+      setStartDate(newDate) {
+        this.datePicker = newDate;
+      },
+      setStartDate2(newDate) {
+        this.datePicker2 = newDate;
+      },
+      isOpen: false,
+      isOpen2: false,
+      setIsOpen(open) {
+        this.isOpen = open;
+      },
+      setIsOpen2(open) {
+        this.isOpen2 = open;
+      },
+      handleChange(e) {
+        this.setIsOpen(!this.isOpen);
+        this.setStartDate(e);
+      },
+      handleChange2(e) {
+        this.setIsOpen2(!this.isOpen2);
+        this.setStartDate2(e);
+      },
+      handleClick(e) {
+        e.preventDefault();
+        this.setIsOpen(!this.isOpen);
+      },
+      handleClick2(e) {
+        e.preventDefault();
+        this.setIsOpen2(!this.isOpen2);
+      },
+      priority: [
+        { value: "1", label: "Low" },
+        { value: "2", label: "Medium" },
+        { value: "3", label: "High" },
+      ],
+      taskv: [
+        { value: "1", label: "1 (Easy)" },
+        { value: "2", label: "2 (Intermediate)" },
+        { value: "3", label: "3 (Hard)" },
+      ],
+      statusx: [
+        { value: "3", label: "TODO", color: "#4ADE80" },
+        {
+          value: "2",
+          label: "IN PROGRESS",
+          color: "#888DF1",
+        },
+        { value: "1", label: "COMPLETE", color: "#F1B459" },
+      ],
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value == value) {
+            out = idx;
+          }
+        });
+        return out;
+      },
+      isStatus() {
+        if (this.statusx[0]) {
+          console.log("tes");
+          return "w-40 bg-blue-300";
+        } else if (this.statusx[1]) {
+          console.log("tes2");
+          return "w-40 bg-orange-300";
+        } else if (this.statusx[2]) {
+          console.log("tes3");
+          return "w-40 bg-red-300";
+        } else {
+          console.log("tes4");
+          return "w-40 bg-green-300";
+        }
+      },
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "2.5px",
+          paddingBottom: "2.5px",
+          boxShadow: "none",
+          border: "none",
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        // console.log(nilai);
+      },
+      toggleModal() {
+        console.clear();
+        this.showModal = !this.showModal;
+        this.dataSubTask = [];
+      },
+      toggleModal2Close() {
+        this.showModal2 = !this.showModal2;
+      },
+      toggleModal2(event, id) {
+        console.log(id);
+        this.showModal2 = !this.showModal2;
+        api("/api/project/task/show", {
+          data: {
+            idtask: id,
+            idproject: params.id,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.state.idtask = e.data_act.id;
+            this.state.name = e.data_act.name;
+            this.state.labelstartdate = dateFormat(
+              e.data_act.startdate,
+              "MMM dd, YYY"
+            );
+            this.state.labelduedate = dateFormat(
+              e.data_act.duedate,
+              "MMM dd, YYY"
+            );
+            this.state.startdate = dateFormat(
+              e.data_act.startdate,
+              "YYY-MM-dd"
+            );
+            this.state.duedate = dateFormat(e.data_act.duedate, "YYY-MM-dd");
+            this.state.priority = e.data_act.priority;
+            this.state.cstatus = e.data_act.mproject_status.name;
+            this.state.status = e.data_act.idstatus;
+            this.state.effort = e.data_act.effort;
+          }
+        });
+      },
+      toggleAdd() {
+        this.showAdd = !this.showAdd;
+      },
+      idsubtask: 0,
+      // SUBTASK
+      ubahNilai2(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.ttempHistorySubTask[this.idsubtask][name] = nilai;
+        // this.dataSubTask[this.idsubtask][name] = nilai;
+        console.log("name => " + nilai);
+      },
+      removeSubtask(event, id) {
+        console.log(event);
+        var list = document.getElementById("subtask-" + id);
+        // console.log(list);
+        list.remove();
+        delete this.ttempSubTask[id];
+        console.log(this.dataSubTask.length);
+      },
+      delete(id) {
+        this.setState((prevState) => ({
+          data: prevState.data.filter((el) => el != id),
+        }));
+      },
+      ttempSubTask: [],
+      showModalSubTask(event, id) {
+        this.toggleModal();
+        this.modalSubTask = true;
+        this.idsubtask = id;
+        // this.stateSubTask.name = this.ttempSubTask[meta.idsubtask].name;
+      },
+      backTask(e) {
+        this.modalSubTask = false;
+        this.toggleModal();
+        this.ttempHistorySubTask[this.idsubtask] = this.ttempSubTask[
+          this.idsubtask
+        ];
+        e.preventDefault();
+      },
+      subtask(event) {
+        if (this.state.taskname == "") {
+          console.log("tidak boleh kosong");
+        } else {
+          var dataSub = {
+            name: this.state.taskname,
+            startdate: "",
+            duedate: "",
+            status: "",
+            cstatus: "",
+            effort: "",
+            priority: "",
+            iddivision: "",
+            idtask: "",
+            description: "",
+            cost: "0",
+            taskname: "",
+            index: 0,
+          };
+          var length = this.dataSubTask.push(dataSub);
+          var idx = length - 1;
+          dataSub.index = idx;
+          this.ttempSubTask[idx] = dataSub;
+          this.ttempHistorySubTask[idx] = dataSub;
+          this.cobaElement.push({ index: idx, name: this.state.taskname });
+        }
+        event.preventDefault();
+      },
+      ttempHistorySubTask: [],
+      saveSubtask(event) {
+        this.ttempSubTask[this.idsubtask] = this.ttempHistorySubTask[
+          this.idsubtask
+        ];
+        this.modalSubTask = false;
+        this.toggleModal();
+        event.preventDefault();
+      },
+      submitData(event) {
+        let data = {
+          desc: this.state.description,
+          estimated_cost: parseInt(this.state.cost),
+          idproject: params.id,
+          name: this.state.name,
+          startdate: this.state.startdate,
+          duedate: this.state.duedate,
+          idstatus: this.state.status,
+          effort: this.state.effort,
+          priority: this.state.priority,
+          iddivision: this.state.iddivision,
+        };
+        console.log("mempersiapkan data");
+        console.log(data);
+        console.log("memasukkan data");
+        api("/api/project/task/create", {
+          data: data,
+        }).then((e) => {
+          console.log(e);
+          if (e.status == false) {
+            console.log(e);
+            console.log("gagal masuk");
+            console.log(data);
+            // this.isFilled = this.isFilled;
+            // this.showModal = !this.showModal;
+          } else {
+            // console.log(e);
+            // console.log("berhasil masuk");
+            // console.log(data);
+            this.isLoading = false;
+            if (this.ttempSubTask.length > 0) {
+              this.ttempSubTask.map((idx) => {
+                // console.log("memasukkan subtask : ");
+                // console.log(idx);
+                api("/api/project/subtask/create", {
+                  data: {
+                    idtask: e.data_act.id,
+                    idproject: params.id,
+                    name: idx.name,
+                    startdate: idx.startdate,
+                    duedate: idx.duedate,
+                    idstatus: idx.status,
+                    effort: idx.effort,
+                    priority: idx.priority,
+                    iddivision: this.state.iddivision,
+                  },
+                }).then((e) => {});
+                this.reloadProject();
+              });
+            } else {
+              this.reloadProject();
+            }
+            this.toggleModal();
+            // location.reload();
+          }
+        });
+        event.preventDefault();
+      },
+      updateStatus(event, idtask, idx) {
+        // meta.state.iddepartment = e.value;
+        //     console.log(meta.state.iddepartment);
+        console.log(
+          "task dengan id : " +
+            idtask +
+            "berhasil diupdate dengan value : " +
+            event.value
+        );
+        // /api/project/status/update
+        api("/api/project/task/status/update", {
+          data: {
+            id: idtask,
+            idstatus: event.value,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.isLoading = false;
+            this.reloadProject();
+            console.log("reload");
+          }
+        });
+      },
+      updateTask(event) {
+        api("/api/project/task/update", {
+          data: {
+            desc: this.state.description,
+            idproject: params.id,
+            name: this.state.name,
+            startdate: this.state.startdate,
+            duedate: this.state.duedate,
+            idstatus: this.state.status,
+            effort: this.state.effort,
+            priority: this.state.priority,
+            iddivision: this.state.iddivision,
+            idtask: this.state.idtask,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.isLoading = false;
+            this.reloadProject();
+            console.log("reload");
+            this.toggleModal2Close();
+          }
+        });
+        event.preventDefault();
+        // console.log(this.data_task[idx].idstatus);
+        // this.data_task[idx].idstatus = event.value;
+      },
+      // Subtask expand
+      expand(id) {
+        var vv = [];
+        if (!this.expandSubtask[id]) {
+          vv[id] = true;
+        }
+        this.expandSubtask = vv;
+
+        this.expandData(id);
+        this.loadingexpand = false;
+      },
+      loadingexpand: false,
+      dataExpand: [],
+      expandData(id) {
+        console.log("EXPAND ID => " + id);
+        api("/api/project/task/subtask/show", {
+          data: {
+            idproject: params.id,
+            idparent: id,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            e.data_act.map((idx) => {
+              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+            });
+            this.dataExpand = e.data_act;
+            console.log(this.dataExpand.length);
+            this.loadingexpand = true;
+          }
+        });
+        // return printout;
+      },
+
+      reloadProject() {
+        // All Project
+        api("/api/project/show/" + params.id).then((e) => {
+          // console.log(e);
+          if (e.status == true) {
+            e.data_act.project_task.map((idx) => {
+              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+            });
+            this.data_task = e.data_act.project_task;
+          }
+          // In proggress
+          api("/api/project/show/" + params.id, {
+            data: {
+              idstatus: 2,
+            },
+          }).then((e) => {
+            console.log(e.data_act.project_task);
+            if (e.status == true) {
+              // console.log(e);
+              e.data_act.project_task.map((idx) => {
+                idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+              });
+              this.dataSubTaskProgress = e.data_act.project_task;
+            }
+            // Submitted
+            api("/api/project/show/" + params.id, {
+              data: {
+                idstatus: 6,
+              },
+            }).then((e) => {
+              if (e.status == true) {
+                // console.log(e);
+                e.data_act.project_task.map((idx) => {
+                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                });
+                this.dataSubTaskSubmit = e.data_act.project_task;
+              }
+              // Complete
+              api("/api/project/show/" + params.id, {
+                data: {
+                  idstatus: 1,
+                },
+              }).then((e) => {
+                if (e.status == true) {
+                  // console.log(e);
+                  e.data_act.project_task.map((idx) => {
+                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  });
+                  this.dataSubTaskComplete = e.data_act.project_task;
+                  this.isLoading = true;
+                }
+              });
+            });
+          });
+        });
+      },
+      arrayMove(arr, fromIndex, toIndex) {
+        var element = arr[fromIndex];
+        arr.splice(fromIndex, 1);
+        arr.splice(toIndex, 0, element);
+      },
+    }}
+    run={async () => {
+      // Complete
+      api("/api/status").then((e) => {
+        // console.log(e);
+        if (e.status == true) {
+          meta.statusRaw = e.data_act;
+          var ttemp_status = [];
+          e.data_act.map((idx) => {
+            ttemp_status[idx.value] = idx;
+            // console.log(ttemp_status);
+          });
+          meta.status = ttemp_status;
+        }
+      });
+      // Mendapatkan data projek
+      // All Project
+      api("/api/project/show/" + params.id).then((e) => {
+        // console.log(e);
+        if (e.status == true) {
+          meta.state.judul = e.data_act.project.name;
+          e.data_act.project_task.map((idx) => {
+            idx.subtask = false;
+
+            idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+            idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+            console.log("ID TASK => " + idx.id);
+            console.log(idx);
+            api("/api/project/task/subtask/show", {
+              data: {
+                idproject: params.id,
+                idparent: idx.id,
+              },
+            }).then((e) => {
+              console.log(e);
+              if (e.status == true) {
+                if (e.data_act.length > 0) {
+                  idx.subtask = true;
+                }
+              }
+              meta.data_task.push(idx);
+            });
+          });
+          meta.division = e.data_act.project_division;
+
+          meta.link.detail = "/pm/projects/" + params.id + "/detail";
+          meta.link.team = "/pm/projects/" + params.id + "/team";
+          meta.link.task = "/pm/projects/" + params.id + "/task";
+          meta.link.timeline = "/pm/projects/" + params.id + "/timeline";
+          meta.link.planning = "/pm/projects/" + params.id + "/planning";
+          meta.link.file = "/pm/projects/" + params.id + "/file-management";
+          meta.state.taskComplete = e.data_act.resultTask.taskComplete;
+          meta.state.proggres = e.data_act.resultTask.completed;
+          console.log(e);
+        }
+
+        // In proggress
+        api("/api/project/show/" + params.id, {
+          data: {
+            idstatus: 2,
+          },
+        }).then((e) => {
+          // console.log(e.data_act.project_task);
+          if (e.status == true) {
+            // console.log(e);
+            e.data_act.project_task.map((idx) => {
+              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+            });
+            meta.dataSubTaskProgress = e.data_act.project_task;
+          }
+          // Submitted
+          api("/api/project/show/" + params.id, {
+            data: {
+              idstatus: 6,
+            },
+          }).then((e) => {
+            if (e.status == true) {
+              // console.log(e);
+              e.data_act.project_task.map((idx) => {
+                idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+              });
+              meta.dataSubTaskSubmit = e.data_act.project_task;
+            }
+            // Complete
+            api("/api/project/show/" + params.id, {
+              data: {
+                idstatus: 1,
+              },
+            }).then((e) => {
+              if (e.status == true) {
+                // console.log(e);
+                e.data_act.project_task.map((idx) => {
+                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                });
+                meta.dataSubTaskComplete = e.data_act.project_task;
+                meta.isLoading = true;
+              }
+            });
+          });
+        });
+      });
+      // meta.state.iddivision = document.getElementById("employee").value;
+      // console.log("id division" + document.getElementById("employee").value);
+      meta.actionstatus = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.status = e.value;
+            console.log(meta.state.status);
+          });
+        },
+      };
+      meta.actionstatus2 = {
+        onChange: (e, idx) => {
+          runInAction(() => {
+            meta.ttempHistorySubTask[idx].status = e.value;
+          });
+        },
+      };
+      meta.actioneffort2 = {
+        onChange: (e, idx) => {
+          runInAction(() => {
+            meta.ttempHistorySubTask[idx].effort = e.value;
+          });
+        },
+      };
+      meta.actionpriority2 = {
+        onChange: (e, idx) => {
+          runInAction(() => {
+            meta.ttempHistorySubTask[idx].priority = e.value;
+          });
+        },
+      };
+      meta.actioncstatus = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.cstatus = e.color;
+            console.log(meta.state.cstatus);
+          });
+        },
+      };
+      meta.actioneffort = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.effort = e.value;
+            console.log(meta.state.effort);
+          });
+        },
+      };
+      meta.actionpriority = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.priority = e.value;
+            console.log(meta.state.priority);
+          });
+        },
+      };
+      meta.actiondivision = {
+        onChange: (e) => {
+          runInAction(() => {
+            // console.log("ID DIVISION " + meta.state.iddivision);
+            meta.state.iddivision = e.target.value;
+            // console.log();
+            // console.log("VALUE : " + e.target.value);
+          });
+        },
+      };
+    }}
+  />
+  <div class="flex flex-col items-start justify-start bg-coolGray-50">
+    <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+      <div class="flex w-full space-x-5 items-center justify-start">
+        <a href="/m/pm/projects/task" class="flex items-center justify-start">
+          <img
+            src="/fimgs/I727_1000_1575_5334.x3.png"
+            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+          />
+          <div class="text-base tracking-wide leading-tight text-indigo-500">
+            Back
+          </div>
+        </a>
+        <div class="flex items-center justify-center">
+          <div class="text-base tracking-wide leading-normal text-coolGray-900">
+            Create Task
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col w-full self-stretch space-y-5 py-3 w-auto">
+      <div class="flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+        <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative">
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Task Name
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <m-input
+              id="name"
+              name="taskname"
+              type="text"
+              placeholder=""
+              class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Task Status
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <div class="relative flex flex-1 items-center justify-start">
+              <multipleselect
+                options={meta.statusx}
+                defaultValue={meta.statusx[0]}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#F3F4F6",
+                    primary: "#6366F1",
+                  },
+                })}
+                styles={meta.styles}
+                className="w-full text-sm border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none z-50"
+                classNamePrefix="select"
+                name="status"
+              />
+            </div>
+          </div>
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Start Date
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <div class="text-sm relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5">
+              <datepicker
+                selected={meta.datePicker}
+                dateFormat="MMMM d, yyyy"
+                onChange={meta.handleChange}
+                disabled
+              />
+              <div
+                class="absolute flex border border-transparent right-0 top-0 h-full"
+                style="width: 2.3rem; min-width: 2.3rem; max-width: 2.3rem;"
+              >
+                <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
+                  <div class="cursor-pointer" onClick={meta.handleClick}>
+                    <ai-calendar style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {meta.isOpen && (
+            <div class="absolute right-0" style="top:55%">
+              <div class="flex flex-col items-start justify-start overflow-ellipsis z-50 relative">
+                <datepicker
+                  selected={meta.datePicker}
+                  onChange={meta.handleChange}
+                  inline
+                />
+              </div>
+            </div>
+          )}
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Due Date
+          </div>
+          <div class="flex self-stretch items-center justify-start pb-2">
+            <div class="text-sm relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5">
+              <datepicker
+                selected={meta.datePicker2}
+                dateFormat="MMMM d, yyyy"
+                onChange={meta.handleChange2}
+                disabled
+              />
+              <div
+                class="absolute flex border border-transparent right-0 top-0 h-full"
+                style="width: 2.3rem; min-width: 2.3rem; max-width: 2.3rem;"
+              >
+                <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
+                  <div class="cursor-pointer" onClick={meta.handleClick2}>
+                    <ai-calendar style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {meta.isOpen2 && (
+            <div class="absolute right-0" style="top:75.5%">
+              <div class="flex flex-col items-start justify-start overflow-ellipsis z-50 relative">
+                <datepicker
+                  selected={meta.datePicker2}
+                  onChange={meta.handleChange2}
+                  inline
+                />
+              </div>
+            </div>
+          )}
+          <div class="flex flex-1 w-full space-x-6 items-center">
+            <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+              <div class="text-sm tracking-wide leading-none text-gray-500">
+                Priority
+              </div>
+              <div class="flex self-stretch items-center justify-start pb-4">
+                <div class="relative flex flex-1 items-center justify-start">
+                  <multipleselect
+                    options={meta.priority}
+                    defaultValue={meta.priority[0]}
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary25: "#F3F4F6",
+                        primary: "#6366F1",
+                      },
+                    })}
+                    styles={meta.styles}
+                    className="w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none"
+                    classNamePrefix="select"
+                    name="status"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+              <div class="text-sm tracking-wide leading-none text-gray-500">
+                Task Value
+              </div>
+              <div class="flex self-stretch items-center justify-start pb-4">
+                <div class="relative flex flex-1 items-center justify-start">
+                  <multipleselect
+                    options={meta.taskv}
+                    defaultValue={meta.taskv[0]}
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary25: "#F3F4F6",
+                        primary: "#6366F1",
+                      },
+                    })}
+                    styles={meta.styles}
+                    className="w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none"
+                    classNamePrefix="select"
+                    name="status"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-1 w-full items-center justify-between">
+            <div class="flex flex-col items-center">
+              <div class="text-sm tracking-wide leading-none text-coolGray-500">
+                Subtask
+              </div>
+            </div>
+          </div>
+          <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
+            <div
+              id="listSubTask"
+              class="flex self-stretch flex-col space-y-3 items-start justify-start"
+            >
+              {meta.ttempSubTask.map((e) => {
+                var idsubtask = "subtask-" + e.index;
+                return (
+                  <div
+                    id={idsubtask}
+                    class="flex self-stretch flex-col items-center justify-start px-2.5 py-2.5 bg-gray-100 border border-gray-100 rounded"
+                  >
+                    <div class="flex w-full space-x-6 items-center justify-start">
+                      <div class="flex flex-1 items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight">
+                          {e.name}
+                        </div>
+                      </div>
+                      <div class="flex space-x-3 items-start justify-start">
+                        <a
+                          class="cursor-pointer"
+                          href="/m/pm/projects/task/subtask"
+                          // onClick={(event) => {
+                          //   meta.showModalSubTask(event, e.index);
+                          // }}
+                        >
+                          <img
+                            src="/fimgs/842_3221.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        </a>
+                        <div
+                          class="cursor-pointer"
+                          onClick={(event) => {
+                            meta.removeSubtask(event, e.index);
+                          }}
+                        >
+                          <img
+                            src="/fimgs/842_3223.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div class="flex self-stretch items-center justify-start">
+              <form
+                onSubmit={meta.subtask}
+                class="relative flex flex-1 items-center justify-start"
+              >
+                <m-input
+                  id="name"
+                  name="taskname"
+                  type="text"
+                  onSubmit={meta.subtask}
+                  placeholder="Create Subtask"
+                  onChange={meta.ubahNilai}
+                  class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                />
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

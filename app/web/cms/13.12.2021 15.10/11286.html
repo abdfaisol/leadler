@@ -1,0 +1,448 @@
+<>
+  <effect
+    meta={{
+      data_department: [],
+      state: {
+        name: "",
+      },
+      toggleProfile() {
+        this.showProfile = !this.showProfile;
+      },
+      filled() {
+        this.isFilled = !this.isFilled;
+        this.showModal = !this.showModal;
+      },
+      toggleModal() {
+        this.showModal = !this.showModal;
+      },
+      toggleModalE() {
+        this.showModalE = !this.showModalE;
+      },
+      toggleModalD() {
+        this.showModalD = !this.showModalD;
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        console.log(nilai);
+      },
+      submitData(event) {
+        api("/api/department/create", {
+          data: {
+            name: this.state.name,
+          },
+        }).then((e) => {
+          if (e.status == false) {
+            console.log("gagal");
+            console.log(e);
+            this.isFilled = this.isFilled;
+            this.showModal = !this.showModal;
+            event.preventDefault();
+          } else {
+            console.log(e);
+          }
+        });
+        // event.preventDefault();
+      },
+      editData(event, id) {
+        // ID Diisi dengan format integer
+        // console.log(id);
+        api("/api/department/delete", {
+          data: {
+            iddepartment: parseInt(id),
+          },
+        }).then((e) => {
+          if (e.status == false) {
+            console.log("gagal");
+            console.log(e);
+            event.preventDefault();
+          } else {
+            console.log(e);
+          }
+        });
+      },
+    }}
+    run={async () => {
+      runInAction(() => {
+        api("/api/department").then((e) => {
+          if (e.data_act) {
+            if (e.data_act.length > 0) {
+              meta.isFilled = !meta.isFilled;
+              meta.data_department = e.data_act;
+            }
+          }
+        });
+      });
+    }}
+  />
+  {meta.isFilled ? (
+    <>
+      <div class="flex flex-col self-stretch space-y-8 p-10 w-auto">
+        <div class="flex flex-col items-end justify-end">
+          <button
+            onClick={meta.toggleModal}
+            class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+          >
+            <img
+              src="/fimgs/603_427.x3.png"
+              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+            />
+            <div class="text-base font-medium tracking-wide leading-normal text-right text-white pl-1">
+              Create Departement
+            </div>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <div class="align-middle inline-block min-w-full">
+            <div class="overflow-hidden">
+              <table class="min-w-full divide-y-4 divide-gray-50">
+                <thead class="bg-white">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 tracking-wider text-left justify-center w-1/12"
+                    >
+                      <div class=" text-sm font-medium text-gray-500 text-start">
+                        ID
+                      </div>
+                    </th>
+                    <th
+                      scope="col"
+                      class="relative px-6 py-3 text-sm text-left justify-start"
+                    >
+                      <div class="text-sm font-medium text-coolGray-500 text-start">
+                        Departement Name
+                      </div>
+                    </th>
+                    <th
+                      scope="col"
+                      class="relative px-6 py-3 text-sm text-left justify-start"
+                    >
+                      <div class="text-sm font-medium text-coolGray-500 text-start">
+                        Action
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y-4 divide-gray-50">
+                  {Object.keys(meta.data_department).map((e, idx) => {
+                    let idData = meta.data_department[e].id;
+                    return (
+                      <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-start">
+                          <div class="text-sm text-gray-900">{idx + 1}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-start">
+                          <div class="text-sm text-gray-900">
+                            {meta.data_department[e].name}
+                          </div>
+                        </td>
+                        <td class="px-6 py-2 whitespace-nowrap text-center text-sm font-medium">
+                          <div class="flex flex-1 space-x-4 items-start justify-start">
+                            <div class="cursor-pointer">
+                              <button onClick={meta.toggleModalE}>
+                                <img
+                                  style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                                  src="/fimgs/295_279.x3.png"
+                                />
+                              </button>
+                            </div>
+                            <form
+                              onSubmit={(e) => {
+                                meta.deleteData(e, idData);
+                              }}
+                              class="cursor-pointer"
+                            >
+                              <button>
+                                <img
+                                  style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                                  src="/fimgs/295_281.x3.png"
+                                />
+                              </button>
+                            </form>
+                            <div class="cursor-pointer">
+                              <button onClick={meta.toggleModalD}>
+                                <img
+                                  style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                                  src="/fimgs/295_281.x3.png"
+                                />
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex space-x-6 items-start justify-start">
+          <div class="flex flex-1 space-x-4 items-start justify-start">
+            <button class="flex flex-col items-center justify-center px-4 py-2 border rounded border-indigo-500 hover:bg-white">
+              <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                Previously
+              </div>
+            </button>
+            <button class="flex flex-col items-center justify-center px-4 py-2 bg-white rounded border border-coolGray-300 text-coolGray-500 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white">
+              <div class="text-sm tracking-wide leading-tight">1</div>
+            </button>
+            <button class="flex flex-col items-center justify-center px-4 py-2 bg-white border rounded border-coolGray-300 text-coolGray-500 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white">
+              <div class="text-sm tracking-wide leading-tight">2</div>
+            </button>
+            <div class="flex flex-col items-center justify-center px-4 py-2 bg-white border rounded border-coolGray-300 text-coolGray-500 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white">
+              <div class="text-sm tracking-wide leading-tight">3</div>
+            </div>
+            <div class="flex flex-col items-center justify-center px-4 py-2 bg-white border rounded border-coolGray-300  text-coolGray-500 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white">
+              <div class="text-sm tracking-wide leading-tight">4</div>
+            </div>
+            <div class="flex flex-col items-center justify-center px-4 py-2 bg-white border rounded border-coolGray-300 text-coolGray-500 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white">
+              <div class="text-sm tracking-wide leading-tight">5</div>
+            </div>
+            <div class="flex flex-col items-center justify-center px-4 py-2 bg-white border rounded border-coolGray-300 text-coolGray-500 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white">
+              <div class="text-sm tracking-wide leading-tight">...</div>
+            </div>
+            <div class="flex flex-col items-center justify-center px-4 py-2 bg-white border rounded border-coolGray-300 text-coolGray-500 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white">
+              <div class="text-sm tracking-wide leading-tight">10</div>
+            </div>
+            <div class="flex flex-col items-center justify-center px-4 py-2 bg-indigo-500 border-indigo-500 rounded hover:bg-indigo-700 hover:border-indigo-700">
+              <div class="text-sm tracking-wide leading-tight text-white">
+                Next
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  ) : (
+    <div class="flex flex-1 self-stretch flex-col items-center justify-center">
+      <div class="flex flex-col space-y-6 items-center justify-center">
+        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+          Department is still empty
+        </div>
+        <button
+          onClick={meta.toggleModal}
+          class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+        >
+          <img
+            src="/fimgs/603_427.x3.png"
+            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+          />
+          <div class="text-base font-medium tracking-wide leading-normal text-right text-white pl-1">
+            Create Departement
+          </div>
+        </button>
+      </div>
+    </div>
+  )}
+  {meta.showModal ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 480px; width: 480px;"
+        >
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <div class="flex self-stretch items-center justify-between">
+                    <div class="flex items-start justify-start pl-28">
+                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                        Create Departement
+                      </div>
+                    </div>
+                    <form onSubmit={meta.toggleModal}>
+                      <button class="flex flex-col items-start justify-start">
+                        <img
+                          src="/fimgs/517_574.x1.svg"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                        />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                onSubmit={meta.submitData}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        Departement Name
+                      </div>
+                    </div>
+
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="name"
+                          onChange={meta.ubahNilai}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Save
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.showModalE ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 480px; width: 480px;"
+        >
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <div class="flex self-stretch items-center justify-between">
+                    <div class="flex items-start justify-start pl-32">
+                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                        Edit Departement
+                      </div>
+                    </div>
+                    <form onSubmit={meta.toggleModalE}>
+                      <button class="flex flex-col items-start justify-start">
+                        <img
+                          src="/fimgs/517_574.x1.svg"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                        />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                //onSubmit={meta.submitData}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        Departement Name
+                      </div>
+                    </div>
+
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="name"
+                          onChange={meta.ubahNilai}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Save
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.showModalD ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 325px; width: 325px;"
+        >
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="flex w-full flex-col items-start justify-start p-4 space-y-6 bg-white rounded">
+              <div class="flex w-full space-x-4 items-start justify-start">
+                <div>
+                  <img
+                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                    src="/fimgs/295_281.x3.png"
+                  />
+                </div>
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                      Delete Departement
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight">
+                      Are you sure to delete{" "}
+                      <small class="text-sm font-medium">"Production"?</small>{" "}
+                      You can’t undo this action
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex w-full space-x-6 items-start justify-end">
+                <div class="flex items-start justify-end">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                      <button onClick={meta.toggleModalD}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-start justify-end bg-red-500 rounded">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                      Delete
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+</>
