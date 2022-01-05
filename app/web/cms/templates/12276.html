@@ -31,41 +31,28 @@
       },
       add: { tekan: true },
       setMonth(newMonth) {
+        const months = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
         if (this.selectedMonth == null) {
           this.selectedMonth = new Date();
-          const months = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-          ];
+
           var yyyy = this.selectedMonth.getFullYear();
           this.selectedMonth =
             months[this.selectedMonth.getMonth()] + " " + yyyy;
         } else {
           this.selectedMonth = newMonth;
-          const months = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-          ];
           var yyyy = this.selectedMonth.getFullYear();
           this.selectedMonth =
             months[this.selectedMonth.getMonth()] + " " + yyyy;
@@ -73,7 +60,7 @@
       },
       getPreviousMonth() {
         const currentMonthInMilli = new Date(this.selectedMonth).getTime();
-        const oneMonth = 1000 * 60 * 60 * 24 * 30;
+        const oneMonth = 1000 * 60 * 60 * 24 * 28;
         const previousMonthInMilli = currentMonthInMilli - oneMonth;
         const previousMonth = new Date(previousMonthInMilli);
         this.setMonth(previousMonth);

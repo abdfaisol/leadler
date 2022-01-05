@@ -14,7 +14,7 @@
         tim2: false,
       },
       data_timeline: [],
-      selectedMonth: null,
+      selectedMonth: new Date(),
       add: { tekan: true },
       user: [
         { value: "0", label: "UI/UX Designer" },
@@ -146,6 +146,8 @@
       },
     }}
     run={async () => {
+      var tdate = new Date();
+      meta.setMonth(meta.selectedMonth);
       meta.actionstatus = {
         onChange: (e) => {
           runInAction(() => {
@@ -222,7 +224,7 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col self-stretch space-y-6 px-3 w-auto">
+    <div class="flex flex-col self-stretch space-y-6 px-5 w-auto">
       <div class="items-center justify-between">
         <div
           class="flex self-stretch items-center justify-between bg-white border-b border-coolGray-300 pr-2"

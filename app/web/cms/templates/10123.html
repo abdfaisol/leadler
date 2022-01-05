@@ -147,6 +147,8 @@
       },
     }}
     run={async () => {
+      var tdate = new Date();
+      meta.setMonth(meta.selectedMonth);
       meta.actionstatus = {
         onChange: (e) => {
           runInAction(() => {
@@ -175,7 +177,7 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col self-stretch space-y-6 pt-3 px-3 w-auto">
+    <div class="flex flex-col self-stretch space-y-6 pt-3 px-5 w-auto">
       <div class="items-center justify-between">
         <div
           class="flex self-stretch items-center justify-between bg-white border-b border-coolGray-300 pr-2"
