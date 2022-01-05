@@ -14,7 +14,6 @@ import {
 import type { BaseWindow } from 'web.init/src/window'
 import { niceCase } from 'web.utils/src/niceCase'
 import { picomatch } from 'web.utils/src/picomatch'
-import { removeCircular } from 'web.utils/src/removeCircular'
 import { useRender } from 'web.utils/src/useRender'
 import type {
   ITableColumn,
@@ -372,7 +371,7 @@ const generateDefaultLayout = async (state: IBaseFormContext) => {
   }
 }
 
-export const generateFieldsForLayout = async (
+const generateFieldsForLayout = async (
   layout: IFormLayout,
   state: IBaseFormContext,
   ctx: Context<IBaseFormContext>
@@ -817,20 +816,14 @@ export const createFormContext = (
             ) {
               delete data[k]
             }
-            if (def && def[k] && typeof data[k] !== def[k].type) {
-              if (def[k].type === 'number') {
+            if(def && def[k] && typeof data[k] !== def[k].type){
+              if(def[k].type === 'number'){
                 let cols = parseFloat(data[k])
                 set(state.db.data, k, cols)
                 data[k] = cols
-              } else if (def[k].type === 'boolean') {
-                data[k] = data[k] === "true"
               }
             }
-            if (
-              value === null ||
-              value === undefined ||
-              (Array.isArray(value) && value.length === 0)
-            ) {
+            if (value === null) {
               delete data[k]
             }
           }
@@ -846,7 +839,7 @@ export const createFormContext = (
                 if (
                   m.disconnect ||
                   m.create ||
-                  (m.connect && v.modelClass === _) ||
+                  m.connect ||
                   m.connectOrCreate
                 ) {
                   if (m.disconnect && !data[from]) {
@@ -858,7 +851,6 @@ export const createFormContext = (
                     v.modelClass
                   ].definition()) as ITableDefinitions
 
-                  let key = Object.keys(data[v.modelClass])[0]
                   if (data[v.modelClass] && data[v.modelClass][rel.pk]) {
                     // if (Object.keys(data[v.modelClass]).length === 1) {
                     data[v.modelClass] = {
@@ -871,22 +863,6 @@ export const createFormContext = (
                     //     update: data[v.modelClass],
                     //   }
                     // }
-                  } else if (
-                    data[v.modelClass] &&
-                    data[v.modelClass][key] &&
-                    key !== 'connect'
-                  ) {
-                    data[v.modelClass] = {
-                      connect: {
-                        [to]: data[v.modelClass][key],
-                      },
-                    }
-                  } else if (data[_] && data[_][rel.pk]) {
-                    data[_] = {
-                      connect: {
-                        [to]: data[_][to],
-                      },
-                    }
                   }
                 }
               }
@@ -899,11 +875,9 @@ export const createFormContext = (
           delete data[pk]
 
           let savedData = null as any
-          console.log('okeokoke', data)
+
           if (state.db.data.__meta.isNew) {
-            savedData = await db[state.db.tableName].create({
-              data: data,
-            })
+            savedData = await db[state.db.tableName].create({ data: data })
           } else {
             savedData = await db[state.db.tableName].update({
               data,
@@ -928,12 +902,11 @@ export const createFormContext = (
               if (crud.tree.children && crud.tree.children.list) {
                 const list = crud.tree.children.list as IBaseListContext
                 if (list.db.list) {
-                  // for (let [idx, row] of Object.entries(list.db.list) as any) {
-                  //   if (row[pk] === savedData[pk]) {
-                  //     weakUpdate(list.db.list[idx], state.db.data)
-                  //   }
-                  // }
-                  await list.db.query()
+                  for (let [idx, row] of Object.entries(list.db.list) as any) {
+                    if (row[pk] === savedData[pk]) {
+                      weakUpdate(list.db.list[idx], state.db.data)
+                    }
+                  }
                 }
               }
               crud.crud.setMode('list')

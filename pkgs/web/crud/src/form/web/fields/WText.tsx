@@ -34,14 +34,8 @@ export const WText = ({ name, internalChange, ctx }: IBaseFieldProps) => {
   }, [state.value])
 
   let type = 'text'
-  let rows = 1
-  let autoAdjustHeight = true
-  if (state.type === 'password') type = 'password'
+
   if (!meta.init) return <>not init</>
-  if(state.type === 'multiline' && (state.name === 'cctv' || state.name == 'ews')){
-    rows = 20
-    autoAdjustHeight = false
-  }
 
   return (
     <>
@@ -55,8 +49,8 @@ export const WText = ({ name, internalChange, ctx }: IBaseFieldProps) => {
         value={meta.value}
         type={type}
         multiline={state.type === 'multiline'}
-        autoAdjustHeight={autoAdjustHeight}
-        rows={rows}
+        autoAdjustHeight={true}
+        rows={1}
         onBlur={() => {
           if (state.type === 'money') {
             meta.value = money(meta.value)
@@ -87,13 +81,8 @@ export const WText = ({ name, internalChange, ctx }: IBaseFieldProps) => {
 
           if (value && ['decimal'].indexOf(state.type) >= 0) {
             // let cols = value.replace(/[^\d,-]/g, '')
-            let cols = value
-              .replace(',', '.')
-              .replace(/[^\d\.]/g, '')
-              .replace(/\./, 'x')
-              .replace(/\./g, '')
-              .replace(/x/, '.')
-            set(form.db.data, name, cols)
+            let cols = value.replace(',', '.').replace(/[^\d\.]/g, "").replace(/\./, "x").replace(/\./g, "").replace(/x/, ".")
+            set(form.db.data, name, cols) 
             // console.log(cols, 'masuk', typeof res, cols === value)
           }
           internalChange(value)

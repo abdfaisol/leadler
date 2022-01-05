@@ -1,0 +1,10 @@
+<>
+  <effect
+    meta={{}}
+    run={async () => {
+      api("/api/logout").then((e) => {
+        window.location.replace(window.location.origin);
+      });
+    }}
+  />
+</>

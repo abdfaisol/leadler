@@ -1,0 +1,276 @@
+<>
+  <effect
+    meta={{
+      showModal: false,
+      showPass: false,
+      input: {},
+      errors: {},
+      state: { token: params.token, password: "" },
+      handleSubmit(event) {
+        console.log(this.state);
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.state),
+        };
+        fetch(
+          window.location.origin + "/api/reset-password",
+          requestOptions
+        ).then((response) => {
+          response.json().then((e) => {
+            console.log(e);
+          });
+        });
+        if (this.validate()) {
+          console.log(this);
+          let input = {};
+          input["password"] = "";
+          input["cpassword"] = "";
+          this.input = input;
+          this.showModal = !this.showModal;
+        }
+        //window.location.replace(window.location.origin);
+        event.preventDefault();
+      },
+      validate() {
+        let input = this.input;
+        let errors = {};
+        let isValid = true;
+
+        if (!input["password"]) {
+          isValid = false;
+          errors["password"] = "This field is required.";
+        }
+
+        if (!input["cpassword"]) {
+          isValid = false;
+          errors["cpassword"] = "This field is required.";
+        }
+
+        if (input["password"] !== input["cpassword"]) {
+          isValid = false;
+          errors["cpassword"] = "Password doesn't match.";
+        }
+
+        this.errors = errors;
+        return isValid;
+      },
+      handleSubmit1(event) {
+        window.location.replace(window.location.origin + "/lupa-pass");
+        event.preventDefault();
+      },
+      handleSubmit2(event) {
+        window.location.replace(window.location.origin);
+        event.preventDefault();
+      },
+      ubahNilai(e) {
+        let input = this.input;
+        input[e.target.name] = e.target.value;
+        this.input = input;
+
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        // console.log(name);
+      },
+      handleInputChange(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        console.log(name + "   " + e.target.value);
+        this.state[name] = nilai;
+        // console.log(this.state.username);
+      },
+      togglePass() {
+        this.showPass = !this.showPass;
+        // console.log(this.showPass);
+      },
+      togglePass2() {
+        this.showPass2 = !this.showPass2;
+        // console.log(this.showPass);
+      },
+    }}
+    run={async () => {}}
+  />
+  <div class={`flex flex-col items-center justify-center bg-white m-auto`}>
+    <div class="flex flex-col items-center justify-center m-auto">
+      <div class="flex flex-1 self-stretch flex-col items-center justify-center border rounded border-coolGray-300 p-10">
+        <div class="flex self-stretch flex-col items-center justify-center">
+          <div class="flex flex-col space-y-6 items-center justify-center">
+            <div
+              class={`flex flex-1 self-stretch flex-col items-start justify-start bg-white`}
+            >
+              <form
+                class="flex self-stretch flex-col items-start justify-start"
+                onSubmit={meta.handleSubmit1}
+              >
+                <button class="flex space-x-2 items-start justify-start">
+                  <div class="flex flex-1 items-start justify-start">
+                    <img
+                      src="/fimgs/I205_215_201_147.x3.png"
+                      style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;background-image: url('/fimgs/bg-3ce3a3b71945e1763782c48530f736aac19630db');background-size:100% 100%;background-repeat:no-repeat;"
+                    />
+                  </div>
+                  <div class="flex items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+                      Back
+                    </div>
+                  </div>
+                </button>
+              </form>
+            </div>
+            <form
+              class="flex self-stretch flex-col space-y-10 items-start justify-start"
+              onSubmit={meta.handleSubmit}
+            >
+              <div class="flex self-stretch flex-col space-y-1.5 items-start justify-start">
+                <div class="flex self-stretch items-start justify-start">
+                  <div class="text-2xl font-semibold tracking-wide leading-loose text-coolGray-800">
+                    Reset Your Password
+                  </div>
+                </div>
+                <div class="flex self-stretch items-start justify-start">
+                  <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+                    Create New Password
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex self-stretch flex-col space-y-10 items-start justify-start">
+                <div class="flex self-stretch flex-col space-y-10 items-start justify-center">
+                  <div class="flex self-stretch flex-col space-y-1 items-start justify-start">
+                    <div class="flex self-stretch pb-4 items-start justify-start">
+                      <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
+                        Create New Password
+                      </div>
+                    </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                          <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                            <img
+                              src="/fimgs/I159_397_18_30.x3.png"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+                            />
+                          </div>
+                        </div>
+                        <input
+                          type={meta.showPass ? "text" : "password"}
+                          autoComplete="current-password"
+                          placeholder="Insert your new password"
+                          class={
+                            meta.errors.password
+                              ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                              : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                          }
+                          name="password"
+                          value={meta.input.password}
+                          onChange={meta.ubahNilai}
+                        />
+                        <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                          <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
+                            <div
+                              onClick={meta.togglePass}
+                              class="cursor-pointer"
+                            >
+                              {meta.showPass ? <eye-icon /> : <eye-slash />}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                      {meta.errors.password}
+                    </div>
+                  </div>
+                  <div class="flex self-stretch flex-col space-y-1 items-start justify-start">
+                    <div class="flex self-stretch pb-4 items-start justify-start">
+                      <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
+                        Confirm Password
+                      </div>
+                    </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                          <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                            <img
+                              src="/fimgs/I159_397_18_30.x3.png"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+                            />
+                          </div>
+                        </div>
+                        <input
+                          type={meta.showPass2 ? "text" : "password"}
+                          autoComplete="current-password"
+                          placeholder="Confirm your password"
+                          class={
+                            meta.errors.cpassword
+                              ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                              : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                          }
+                          name="cpassword"
+                          value={meta.input.cpassword}
+                          onChange={meta.ubahNilai}
+                        />
+                        <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                          <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
+                            <div
+                              onClick={meta.togglePass2}
+                              class="cursor-pointer"
+                            >
+                              {meta.showPass2 ? <eye-icon /> : <eye-slash />}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                      {meta.errors.cpassword}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                style="width: 413px; min-width: 413px; max-width: 413px; height: 40px; min-height: 40px; max-height: 40px;"
+              >
+                <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                  <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                    Reset Password
+                  </div>
+                </div>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {meta.showModal ? (
+    <>
+      <form onSubmit={meta.handleSubmit2}>
+        <div class="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+          <div class="relative w-auto my-6 mx-auto max-w-3xl">
+            {/*content*/}
+            <div class="border-0 rounded-lg shadow-lg relative flex flex-col p-14 w-full bg-white outline-none focus:outline-none">
+              {/*body*/}
+              <div class="flex flex-1 flex-col text-center pb-8 flex-auto">
+                Reset Password Successful
+              </div>
+              <div class="m-auto">
+                <button class="items-center justify-center">
+                  <div class="items-center justify-center px-8 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                      Back to login
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      </form>
+    </>
+  ) : null}
+</>

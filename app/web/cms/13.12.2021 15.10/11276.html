@@ -1,0 +1,225 @@
+<>
+  <effect
+    meta={{
+      data_projek: "",
+      member: "",
+      name: "",
+      team: "",
+      show: {
+        tim1: false,
+        tim2: false,
+      },
+      data_timeline: [],
+      selectedMonth: null,
+      add: { tekan: true },
+      setMonth(newMonth) {
+        if (this.selectedMonth == null) {
+          this.selectedMonth = new Date();
+          const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          var yyyy = this.selectedMonth.getFullYear();
+          this.selectedMonth =
+            months[this.selectedMonth.getMonth()] + " " + yyyy;
+        } else {
+          this.selectedMonth = newMonth;
+          const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          var yyyy = this.selectedMonth.getFullYear();
+          this.selectedMonth =
+            months[this.selectedMonth.getMonth()] + " " + yyyy;
+        }
+      },
+      getPreviousMonth() {
+        const currentMonthInMilli = new Date(this.selectedMonth).getTime();
+        const oneMonth = 1000 * 60 * 60 * 24 * 30;
+        const previousMonthInMilli = currentMonthInMilli - oneMonth;
+        const previousMonth = new Date(previousMonthInMilli);
+        this.setMonth(previousMonth);
+        console.log("test1");
+        console.log(currentMonthInMilli);
+        console.log(previousMonthInMilli);
+        console.log(previousMonth);
+      },
+      getNextMonth() {
+        const currentMonthInMilli = new Date(this.selectedMonth).getTime();
+        const oneMonth = 1000 * 60 * 60 * 24 * 31;
+        const nextMonthInMilli = currentMonthInMilli + oneMonth;
+        const nextMonth = new Date(nextMonthInMilli);
+        this.setMonth(nextMonth);
+        console.log("test1");
+        console.log(currentMonthInMilli);
+        console.log(nextMonthInMilli);
+        console.log(nextMonth);
+      },
+    }}
+    run={async () => {}}
+  />
+  <div class="flex flex-col self-stretch space-y-6 p-10 w-auto">
+    <div class="rounded">
+      <div
+        class="flex self-stretch items-center justify-between bg-white rounded-t border-b border-coolGray-300 px-8"
+        style="height: 50px; min-height: 50px; max-height: 50px;"
+      >
+        <div class="text-sm font-medium tracking-wide leading-tight text-center text-coolGray-900 rounded-l border-r border-coolGray-300 pr-3">
+          <label class="bg-white"></label>
+          <select
+            id="employee"
+            name="employee"
+            class="text-sm bg-white rounded-l py-3 outline-none"
+          >
+            <option value="volvo">All Team</option>
+            <option value="saab">Tim 4</option>
+            <option value="fiat">Tim 5</option>
+            <option value="audi">Tim 6</option>
+          </select>
+        </div>
+        <div class="flex space-x-2 items-center justify-center">
+          <div id="prev" onClick={meta.getPreviousMonth}>
+            <img
+              class="cursor-pointer"
+              src="/fimgs/638_776.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
+          <div class="flex flex-1 items-start justify-start">
+            <div
+              class="text-base font-medium tracking-wide leading-normal text-indigo-500"
+              id="date"
+            >
+              {meta.selectedMonth}
+            </div>
+          </div>
+          <div id="next" onClick={meta.getNextMonth}>
+            <img
+              class="cursor-pointer"
+              src="/fimgs/638_779.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
+        </div>
+        <div
+          class="flex items-center justify-between px-4 py-2 bg-coolGray-50 rounded-full"
+          style="height: 32px; min-height: 32px; max-height: 32px;"
+        >
+          <div class="flex flex-1 items-start justify-start">
+            <input
+              placeholder="Search Task"
+              class="text-xs tracking-wide leading-none text-coolGray-500 w-full bg-coolGray-50 placeholder-gray-400 focus:outline-none"
+            />
+          </div>
+          <img
+            src="/fimgs/638_750.x3.png"
+            class="cursor-pointer flex items-start justify-start"
+            style="width: 14px; min-width: 14px; max-width: 14px; height: 14px; min-height: 14px; max-height: 14px;"
+          />
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <div class="align-middle inline-block min-w-full">
+          <div class="overflow-hidden">
+            <table class="min-w-full bg-white">
+              <tr>
+                <td
+                  rowSpan="2"
+                  class="relative px-3 py-2 justify-center mr-auto border-r border-b border-coolGray-300"
+                >
+                  <div class=" text-sm font-medium text-gray-500 text-center">
+                    Project Name
+                  </div>
+                </td>
+                <td
+                  colSpan="4"
+                  class="relative px-6 py-2 justify-center border-b border-coolGray-300"
+                >
+                  <div class="text-sm font-medium text-coolGray-500 text-center">
+                    Week
+                  </div>
+                </td>
+              </tr>
+              <tr class="border-b border-coolGray-300">
+                <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                  <div class="text-sm font-medium text-coolGray-500 text-center">
+                    1
+                  </div>
+                </td>
+                <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                  <div class="text-sm font-medium text-coolGray-500 text-center">
+                    2
+                  </div>
+                </td>
+                <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                  <div class="text-sm font-medium text-coolGray-500 text-center">
+                    3
+                  </div>
+                </td>
+                <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                  <div class="text-sm font-medium text-coolGray-500 text-center">
+                    4
+                  </div>
+                </td>
+              </tr>
+              <tr class="border-b border-coolGray-300">
+                <td class="px-3 py-4 whitespace-normal text-left">
+                  <div class="text-sm text-gray-900">
+                    Pengembangan Aplikasi UMKM Kota Semarang
+                  </div>
+                </td>
+                <td
+                  class="flex-grow bg-orange-300 border border-coolGray-300"
+                  style="width: 18%; min-width: 18%; max-width: 18%;"
+                ></td>
+                <td
+                  class="flex-grow bg-orange-300 border border-coolGray-300"
+                  style="width: 18%; min-width: 18%; max-width: 18%;"
+                ></td>
+                <td
+                  class="flex-grow bg-orange-300 border border-coolGray-300"
+                  style="width: 18%; min-width: 18%; max-width: 18%;"
+                ></td>
+                <td
+                  class="flex-grow bg-orange-300"
+                  style="width: 18%; min-width: 18%; max-width: 18%;"
+                ></td>
+              </tr>
+              <tr class="border-b border-coolGray-300">
+                <td class="px-3 py-4 whitespace-normal text-left">
+                  <div class="text-sm text-gray-900">
+                    Pengembangan Aplikasi UMKM Kota Jakarta
+                  </div>
+                </td>
+                <td class="flex-grow bg-blue-300 border border-coolGray-300"></td>
+                <td class="flex-grow bg-blue-300 border border-coolGray-300"></td>
+                <td class="flex-grow bg-blue-300 border border-coolGray-300"></td>
+                <td class="flex-grow bg-blue-300"></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

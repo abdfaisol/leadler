@@ -1,0 +1,16 @@
+{
+  "content": {
+    "type": "API",
+    "structure": "",
+    "figma": {},
+    "server_on_load": "async ({\n  template,\n  params,\n  render,\n  db,\n  req,\n  reply,\n  user,\n  log,\n  ext,\n  isDev,\n}: Server) => {\n  const privateKey = \"Team 6 Andromedia\";\n  if (user.user.id) {\n    let token_private = ext.CryptoJS.SHA3(privateKey, {\n      outputLength: 512,\n    }).toString();\n    let a_data = ext.CryptoJS.AES.decrypt(user.user.id, token_private).toString(\n      ext.CryptoJS.enc.Utf8\n    );\n    let data = JSON.parse(a_data);\n    if (data) {\n      db.muser\n        .findUnique({\n          where: {\n            id: parseInt(data.id),\n          },\n          select: {\n            email: true,\n            muser_role: {\n              select: {\n                name: true,\n              },\n            },\n          },\n        })\n        .then((e) => {\n          if (\n            e.muser_role.name.toLowerCase() == \"project manager\" ||\n            e.muser_role.name.toLowerCase() == \"user\"\n          ) {\n            // reply.send({\n            //   status: false,\n            //   msg: req.body,\n            // });\n            if (parseInt(req.body.idteam) > 0) {\n              db.muser_has_mproject\n                .create({\n                  data: {\n                    idproject: parseInt(req.body.idproject),\n                    iduser: parseInt(req.body.iduser),\n                  },\n                })\n                .then((e) => {\n                  reply.send({\n                    status: true,\n                    data_act: e,\n                  });\n                })\n                .catch((e) => {\n                  reply.send({\n                    status: false,\n                    msg: e,\n                    data: req.body,\n                  });\n                });\n            } else {\n              db.muser_has_mproject\n                .create({\n                  data: {\n                    idproject: parseInt(req.body.idproject),\n                    iduser: parseInt(req.body.iduser),\n                  },\n                })\n                .then((e) => {\n                  reply.send({\n                    status: true,\n                    data_act: e,\n                  });\n                })\n                .catch((e) => {\n                  reply.send({\n                    status: false,\n                    msg: e,\n                    data: req.body,\n                  });\n                });\n            }\n          } else {\n            reply.send({\n              status: false,\n              msg: \"you dont have access the featured\",\n            });\n          }\n        })\n        .catch((e) => {\n          reply.send({\n            status: false,\n            msg: e,\n          });\n        });\n    } else {\n      reply.send({\n        status: false,\n        msg: \"invalid session id\",\n      });\n    }\n  } else {\n    reply.send({\n      status: false,\n      msg: \"session not found\",\n    });\n  }\n}"
+  },
+  "title": "project-add-member",
+  "type": "cms-template",
+  "lang": "",
+  "status": "SYSTEM",
+  "parent_id": "54643",
+  "slug": "/api/project/team/member/add",
+  "site": "*",
+  "id": "55436"
+}

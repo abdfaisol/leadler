@@ -3,7 +3,13 @@
     meta={{}}
     run={async () => {
       api("/api/logout").then((e) => {
+        console.log(e);
         window.location.replace(window.location.origin);
+        // if (e.id == "") {
+
+        // } else {
+        //   window.history.back();
+        // }
       });
     }}
   />

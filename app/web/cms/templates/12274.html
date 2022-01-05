@@ -1,10 +1,15 @@
 <>
   <effect
     meta={{
+      modalSubTask: false,
+
+      expandSubtask: [],
       state: {
         name: "",
         startdate: "",
         duedate: "",
+        labelstartdate: "",
+        labelduedate: "",
         status: [],
         cstatus: "",
         effort: "",
@@ -14,8 +19,26 @@
         description: "",
         cost: "0",
         taskname: "",
+        proggres: "0",
+        taskComplete: "0",
       },
+      stateSubTask: {
+        name: "",
+        startdate: "",
+        duedate: "",
+        status: [],
+        cstatus: "",
+        effort: "",
+        priority: "",
+        iddivision: "",
+        idtask: "",
+      },
+      division: [],
+      isLoading: false,
       dataSubTask: [],
+      dataSubTaskProgress: [],
+      dataSubTaskSubmit: [],
+      dataSubTaskComplete: [],
       link: {
         detail: "#",
         team: "#",
@@ -27,20 +50,12 @@
       cobaElement: [],
       print: true,
       data_task: [],
-      status: [
-        { value: "1", label: "TODO", color: "#4ADE80" },
-        {
-          value: "2",
-          label: "IN PROGRESS",
-          color: "#888DF1",
-        },
-        { value: "3", label: "SUBMITTED", color: "#2D34E6" },
-        { value: "4", label: "COMPLETE", color: "#F1B459" },
-      ],
+      status: [],
+      statusRaw: [],
       priority: [
-        { value: "L", label: "Low" },
-        { value: "M", label: "Medium" },
-        { value: "H", label: "High" },
+        { value: "1", label: "Low" },
+        { value: "2", label: "Medium" },
+        { value: "3", label: "High" },
       ],
       taskv: [
         { value: "1", label: "1 (Easy)" },
@@ -48,15 +63,23 @@
         { value: "3", label: "3 (Hard)" },
       ],
       statusx: [
-        { value: "1", label: "TODO", color: "#4ADE80" },
+        { value: "3", label: "TODO", color: "#4ADE80" },
         {
           value: "2",
           label: "IN PROGRESS",
           color: "#888DF1",
         },
-        { value: "3", label: "SUBMITTED", color: "#2D34E6" },
-        { value: "4", label: "COMPLETE", color: "#F1B459" },
+        { value: "1", label: "COMPLETE", color: "#F1B459" },
       ],
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value == value) {
+            out = idx;
+          }
+        });
+        return out;
+      },
       isStatus() {
         if (this.statusx[0]) {
           console.log("tes");
@@ -116,7 +139,11 @@
             ...styles,
             backgroundColor: data.color,
             "&:hover": {
-              cursor: "pointer",
+              backgroundColor: data.isDisabled
+                ? "#F3F4F6"
+                : data.isSelected
+                ? null
+                : "#F3F4F6",
             },
           };
         },
@@ -132,18 +159,60 @@
         this.showModal = !this.showModal;
         this.dataSubTask = [];
       },
-      toggleModal2() {
+      toggleModal2Close() {
         this.showModal2 = !this.showModal2;
+      },
+      toggleModal2(event, id) {
+        console.log(id);
+        this.showModal2 = !this.showModal2;
+        api("/api/project/task/show", {
+          data: {
+            idtask: id,
+            idproject: params.id,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.state.idtask = e.data_act.id;
+            this.state.name = e.data_act.name;
+            this.state.labelstartdate = dateFormat(
+              e.data_act.startdate,
+              "MMM dd, YYY"
+            );
+            this.state.labelduedate = dateFormat(
+              e.data_act.duedate,
+              "MMM dd, YYY"
+            );
+            this.state.startdate = dateFormat(
+              e.data_act.startdate,
+              "YYY-MM-dd"
+            );
+            this.state.duedate = dateFormat(e.data_act.duedate, "YYY-MM-dd");
+            this.state.priority = e.data_act.priority;
+            this.state.cstatus = e.data_act.mproject_status.name;
+            this.state.status = e.data_act.idstatus;
+            this.state.effort = e.data_act.effort;
+          }
+        });
       },
       toggleAdd() {
         this.showAdd = !this.showAdd;
+      },
+      idsubtask: 0,
+      // SUBTASK
+      ubahNilai2(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.ttempHistorySubTask[this.idsubtask][name] = nilai;
+        // this.dataSubTask[this.idsubtask][name] = nilai;
+        console.log("name => " + nilai);
       },
       removeSubtask(event, id) {
         console.log(event);
         var list = document.getElementById("subtask-" + id);
         // console.log(list);
         list.remove();
-        delete this.dataSubTask[id];
+        delete this.ttempSubTask[id];
         console.log(this.dataSubTask.length);
       },
       delete(id) {
@@ -151,9 +220,22 @@
           data: prevState.data.filter((el) => el != id),
         }));
       },
+      ttempSubTask: [],
+      showModalSubTask(event, id) {
+        this.toggleModal();
+        this.modalSubTask = true;
+        this.idsubtask = id;
+        // this.stateSubTask.name = this.ttempSubTask[meta.idsubtask].name;
+      },
+      backTask(e) {
+        this.modalSubTask = false;
+        this.toggleModal();
+        this.ttempHistorySubTask[this.idsubtask] = this.ttempSubTask[
+          this.idsubtask
+        ];
+        e.preventDefault();
+      },
       subtask(event) {
-        // var elmSubtask = document.getElementById("listSubTask");
-        // console.log("masuk pak eko");
         if (this.state.taskname == "") {
           console.log("tidak boleh kosong");
         } else {
@@ -170,20 +252,24 @@
             description: "",
             cost: "0",
             taskname: "",
+            index: 0,
           };
-          // console.log(
-          //   "[before] panjang array dataSubTask =>" + this.dataSubTask.length
-          // );
-          // console.log("[proses] memasukkan data =>");
-          // console.log(dataSub);
           var length = this.dataSubTask.push(dataSub);
           var idx = length - 1;
-          // console.log(length - 1);
-          // console.log(
-          //   "[after] panjang array dataSubTask =>" + this.dataSubTask.length
-          // );
+          dataSub.index = idx;
+          this.ttempSubTask[idx] = dataSub;
+          this.ttempHistorySubTask[idx] = dataSub;
           this.cobaElement.push({ index: idx, name: this.state.taskname });
         }
+        event.preventDefault();
+      },
+      ttempHistorySubTask: [],
+      saveSubtask(event) {
+        this.ttempSubTask[this.idsubtask] = this.ttempHistorySubTask[
+          this.idsubtask
+        ];
+        this.modalSubTask = false;
+        this.toggleModal();
         event.preventDefault();
       },
       submitData(event) {
@@ -213,13 +299,14 @@
             // this.isFilled = this.isFilled;
             // this.showModal = !this.showModal;
           } else {
-            console.log(e);
-            console.log("berhasil masuk");
-            console.log(data);
-            if (this.dataSubTask.length > 0) {
-              this.dataSubTask.map((idx) => {
-                console.log("memasukkan subtask : ");
-                console.log(idx);
+            // console.log(e);
+            // console.log("berhasil masuk");
+            // console.log(data);
+            this.isLoading = false;
+            if (this.ttempSubTask.length > 0) {
+              this.ttempSubTask.map((idx) => {
+                // console.log("memasukkan subtask : ");
+                // console.log(idx);
                 api("/api/project/subtask/create", {
                   data: {
                     idtask: e.data_act.id,
@@ -227,53 +314,306 @@
                     name: idx.name,
                     startdate: idx.startdate,
                     duedate: idx.duedate,
-                    idstatus: "3",
+                    idstatus: idx.status,
+                    effort: idx.effort,
+                    priority: idx.priority,
+                    iddivision: this.state.iddivision,
                   },
-                }).then((e) => {
-                  console.log(e);
-                });
+                }).then((e) => {});
+                this.reloadProject();
               });
+            } else {
+              this.reloadProject();
             }
+            this.toggleModal();
             // location.reload();
           }
         });
         event.preventDefault();
       },
-      updateStatus(event, id, idx) {
+      updateStatus(event, idtask, idx) {
         // meta.state.iddepartment = e.value;
         //     console.log(meta.state.iddepartment);
         console.log(
           "task dengan id : " +
-            id +
+            idtask +
             "berhasil diupdate dengan value : " +
             event.value
         );
-        console.log(this.data_task[idx].idstatus);
-        this.data_task[idx].idstatus = event.value;
+        // /api/project/status/update
+        api("/api/project/task/status/update", {
+          data: {
+            id: idtask,
+            idstatus: event.value,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.isLoading = false;
+            this.reloadProject();
+            console.log("reload");
+          }
+        });
+      },
+      updateTask(event) {
+        api("/api/project/task/update", {
+          data: {
+            desc: this.state.description,
+            idproject: params.id,
+            name: this.state.name,
+            startdate: this.state.startdate,
+            duedate: this.state.duedate,
+            idstatus: this.state.status,
+            effort: this.state.effort,
+            priority: this.state.priority,
+            iddivision: this.state.iddivision,
+            idtask: this.state.idtask,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.isLoading = false;
+            this.reloadProject();
+            console.log("reload");
+            this.toggleModal2Close();
+          }
+        });
+        event.preventDefault();
+        // console.log(this.data_task[idx].idstatus);
+        // this.data_task[idx].idstatus = event.value;
+      },
+      // Subtask expand
+      expand(id) {
+        var vv = [];
+        if (!this.expandSubtask[id]) {
+          vv[id] = true;
+        }
+        this.expandSubtask = vv;
+
+        this.expandData(id);
+        this.loadingexpand = false;
+      },
+      loadingexpand: false,
+      dataExpand: [],
+      expandData(id) {
+        console.log("EXPAND ID => " + id);
+        api("/api/project/task/subtask/show", {
+          data: {
+            idproject: params.id,
+            idparent: id,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            e.data_act.map((idx) => {
+              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+            });
+            this.dataExpand = e.data_act;
+            console.log(this.dataExpand.length);
+            this.loadingexpand = true;
+          }
+        });
+        // return printout;
+      },
+
+      reloadProject() {
+        // All Project
+        api("/api/project/show/" + params.id).then((e) => {
+          // console.log(e);
+          if (e.status == true) {
+            e.data_act.project_task.map((idx) => {
+              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+            });
+            this.data_task = e.data_act.project_task;
+          }
+          // In proggress
+          api("/api/project/show/" + params.id, {
+            data: {
+              idstatus: 2,
+            },
+          }).then((e) => {
+            console.log(e.data_act.project_task);
+            if (e.status == true) {
+              // console.log(e);
+              e.data_act.project_task.map((idx) => {
+                idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+              });
+              this.dataSubTaskProgress = e.data_act.project_task;
+            }
+            // Submitted
+            api("/api/project/show/" + params.id, {
+              data: {
+                idstatus: 6,
+              },
+            }).then((e) => {
+              if (e.status == true) {
+                // console.log(e);
+                e.data_act.project_task.map((idx) => {
+                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                });
+                this.dataSubTaskSubmit = e.data_act.project_task;
+              }
+              // Complete
+              api("/api/project/show/" + params.id, {
+                data: {
+                  idstatus: 1,
+                },
+              }).then((e) => {
+                if (e.status == true) {
+                  // console.log(e);
+                  e.data_act.project_task.map((idx) => {
+                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  });
+                  this.dataSubTaskComplete = e.data_act.project_task;
+                  this.isLoading = true;
+                }
+              });
+            });
+          });
+        });
+      },
+      arrayMove(arr, fromIndex, toIndex) {
+        var element = arr[fromIndex];
+        arr.splice(fromIndex, 1);
+        arr.splice(toIndex, 0, element);
       },
     }}
     run={async () => {
-      console.log("mendapatkan data: loading");
-      api("/api/project/show/" + params.id).then((e) => {
-        console.log(e);
+      // Complete
+      api("/api/status").then((e) => {
+        // console.log(e);
         if (e.status == true) {
-          console.log(e.data_act.project_task);
+          meta.statusRaw = e.data_act;
+          var ttemp_status = [];
+          e.data_act.map((idx) => {
+            ttemp_status[idx.value] = idx;
+            // console.log(ttemp_status);
+          });
+          meta.status = ttemp_status;
+        }
+      });
+      // Mendapatkan data projek
+      // All Project
+      api("/api/project/show/" + params.id).then((e) => {
+        // console.log(e);
+        if (e.status == true) {
           meta.state.judul = e.data_act.project.name;
-          meta.data_task = e.data_act.project_task;
+          e.data_act.project_task.map((idx) => {
+            idx.subtask = false;
+
+            idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+            idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+            console.log("ID TASK => " + idx.id);
+            console.log(idx);
+            api("/api/project/task/subtask/show", {
+              data: {
+                idproject: params.id,
+                idparent: idx.id,
+              },
+            }).then((e) => {
+              console.log(e);
+              if (e.status == true) {
+                if (e.data_act.length > 0) {
+                  idx.subtask = true;
+                }
+              }
+              meta.data_task.push(idx);
+            });
+          });
+          meta.division = e.data_act.project_division;
+
           meta.link.detail = "/pm/projects/" + params.id + "/detail";
           meta.link.team = "/pm/projects/" + params.id + "/team";
           meta.link.task = "/pm/projects/" + params.id + "/task";
           meta.link.timeline = "/pm/projects/" + params.id + "/timeline";
           meta.link.planning = "/pm/projects/" + params.id + "/planning";
           meta.link.file = "/pm/projects/" + params.id + "/file-management";
+          meta.state.taskComplete = e.data_act.resultTask.taskComplete;
+          meta.state.proggres = e.data_act.resultTask.completed;
+          console.log(e);
         }
+
+        // In proggress
+        api("/api/project/show/" + params.id, {
+          data: {
+            idstatus: 2,
+          },
+        }).then((e) => {
+          // console.log(e.data_act.project_task);
+          if (e.status == true) {
+            // console.log(e);
+            e.data_act.project_task.map((idx) => {
+              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+            });
+            meta.dataSubTaskProgress = e.data_act.project_task;
+          }
+          // Submitted
+          api("/api/project/show/" + params.id, {
+            data: {
+              idstatus: 6,
+            },
+          }).then((e) => {
+            if (e.status == true) {
+              // console.log(e);
+              e.data_act.project_task.map((idx) => {
+                idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+              });
+              meta.dataSubTaskSubmit = e.data_act.project_task;
+            }
+            // Complete
+            api("/api/project/show/" + params.id, {
+              data: {
+                idstatus: 1,
+              },
+            }).then((e) => {
+              if (e.status == true) {
+                // console.log(e);
+                e.data_act.project_task.map((idx) => {
+                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                });
+                meta.dataSubTaskComplete = e.data_act.project_task;
+                meta.isLoading = true;
+              }
+            });
+          });
+        });
       });
-      meta.state.iddivision = document.getElementById("employee").value;
+      // meta.state.iddivision = document.getElementById("employee").value;
+      // console.log("id division" + document.getElementById("employee").value);
       meta.actionstatus = {
         onChange: (e) => {
           runInAction(() => {
             meta.state.status = e.value;
             console.log(meta.state.status);
+          });
+        },
+      };
+      meta.actionstatus2 = {
+        onChange: (e, idx) => {
+          runInAction(() => {
+            meta.ttempHistorySubTask[idx].status = e.value;
+          });
+        },
+      };
+      meta.actioneffort2 = {
+        onChange: (e, idx) => {
+          runInAction(() => {
+            meta.ttempHistorySubTask[idx].effort = e.value;
+          });
+        },
+      };
+      meta.actionpriority2 = {
+        onChange: (e, idx) => {
+          runInAction(() => {
+            meta.ttempHistorySubTask[idx].priority = e.value;
           });
         },
       };
@@ -301,6 +641,16 @@
           });
         },
       };
+      meta.actiondivision = {
+        onChange: (e) => {
+          runInAction(() => {
+            // console.log("ID DIVISION " + meta.state.iddivision);
+            meta.state.iddivision = e.target.value;
+            // console.log();
+            // console.log("VALUE : " + e.target.value);
+          });
+        },
+      };
     }}
   />
   <div class="flex w-full self-stretch flex-col space-y-9 items-start justify-start px-10 pt-10">
@@ -316,11 +666,11 @@
             class="flex flex-col items-start justify-start"
             style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
           >
-            <bar />
+            <bar percent={meta.state.proggres} />
           </div>
           <div class="flex items-start justify-start">
             <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-              10 Task Done
+              {meta.state.taskComplete} Task Done
             </div>
           </div>
         </div>
@@ -386,10 +736,16 @@
             id="employee"
             name="employee"
             class="bg-white rounded-l outline-none"
+            onChange={(e) => {
+              meta.actiondivision.onChange(e);
+            }}
           >
-            <option value="1">UI/UX Designer</option>
-            <option value="2">Business Analyst</option>
-            <option value="3">Full Stack Developer</option>
+            {meta.division.map((e) => {
+              meta.state.iddivision = meta.division[0].id;
+              if (e.division != "project manager") {
+                return <option value={e.id}>{e.division}</option>;
+              }
+            })}
           </select>
         </div>
         <div class="flex items-start justify-start">
@@ -429,159 +785,767 @@
       </div>
       <div class="overflow-x-auto">
         <div class="w-full px-6 pb-6 align-middle inline-block">
-          <div class="overflow-hidden">
-            <table class="w-full divide-y-4 divide-gray-50">
-              <thead class="bg-white">
-                <tr>
-                  <th
-                    scope="col"
-                    class="pr-6 tracking-wider text-center justify-center mr-auto"
-                  >
-                    <div class="flex items-center justify-start ">
-                      <div class="flex text-sm tracking-wide px-6 py-3 bg-green-400 leading-tight text-center text-white">
-                        TODO
-                      </div>
-                      <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
-                        {meta.data_task.length} Task
-                      </div>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="relative px-6 py-3 text-sm text-left justify-start"
-                  >
-                    <div class="text-sm font-medium text-coolGray-500 text-start">
-                      Start Project
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="relative px-6 py-3 text-sm text-left justify-start"
-                  >
-                    <div class="text-sm font-medium text-coolGray-500 text-start">
-                      Due Date
-                    </div>
-                  </th>
-
-                  <th
-                    scope="col"
-                    class="relative px-6 py-3 text-sm text-center justify-start"
-                  >
-                    <div class="text-sm font-medium text-coolGray-500 text-start">
-                      Status
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="relative px-6 py-3 text-sm text-center justify-start"
-                  >
-                    <div class="text-sm font-medium text-coolGray-500 text-start">
-                      Priority
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="relative px-6 py-3 text-sm text-center justify-start"
-                  >
-                    <div class="text-sm font-medium text-coolGray-500 text-start">
-                      Task Value
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="relative px-6 py-3 text-sm text-center justify-start"
-                  >
-                    <div class="text-sm font-medium text-coolGray-500 text-start"></div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y-4 divide-gray-50">
-                {meta.data_task.map((e, idx) => {
-                  return (
+          {meta.isLoading ? (
+            <>
+              <div class="overflow-hidden">
+                <table class="w-full divide-y-4 mb-6 divide-gray-50">
+                  <thead class="bg-white">
                     <tr>
-                      <td
-                        class="px-6 py-3 whitespace-nowrap text-start cursor-pointer"
-                        onClick={meta.toggleModal2}
+                      <th
+                        scope="col"
+                        class="pr-6 tracking-wider text-center justify-center mr-auto"
                       >
-                        <div class="text-sm text-gray-900">{e.name}</div>
-                      </td>
-                      <td class="px-6 py-3 whitespace-nowrap text-start">
-                        <div class="text-xs tracking-wide leading-none text-green-500">
-                          {e.startdate}
-                        </div>
-                      </td>
-                      <td class="px-6 py-3 whitespace-nowrap text-start">
-                        <div class="text-xs tracking-wide leading-none text-red-500">
-                          {e.duedate}
-                        </div>
-                      </td>
-                      <td class="text-center py-0">
-                        <div class="flex items-center justify-center">
-                          <multipleselect
-                            onChange={(event) => {
-                              meta.updateStatus(event, e.id, idx);
-                            }}
-                            options={meta.statusx}
-                            defaultValue={meta.statusx[0]}
-                            menuPortalTarget={document.body}
-                            theme={(theme) => ({
-                              ...theme,
-                              borderRadius: 0,
-                              colors: {
-                                ...theme.colors,
-                                primary25: "#F3F4F6",
-                                primary: "#6366F1",
-                              },
-                            })}
-                            styles={meta.stylesx}
-                            style={
-                              e.idstatus == 1
-                                ? "background-color: #4ADE80;"
-                                : e.idstatus == 2
-                                ? "background-color: #888DF1;"
-                                : e.idstatus == 3
-                                ? "background-color: #2D34E6;"
-                                : e.idstatus == 4
-                                ? "background-color: #F1B459;"
-                                : "background-color: #4ADE80;"
-                            }
-                            className="w-40"
-                            classNamePrefix="select"
-                            name="status"
-                            // onChange={(e) => {
-                            //   meta.actionstatus.onChange(e);
-                            // }}
-                          />
-                        </div>
-                      </td>
-                      <td class="px-6 py-2 whitespace-nowrap text-center">
-                        <div class="flex items-center justify-center px-2 py-0.5 bg-green-50 border rounded-sm border-green-400">
-                          <div class="text-xs tracking-wide leading-none text-center text-green-400">
-                            Low
+                        <div class="flex items-center justify-start ">
+                          <div class="flex text-sm tracking-wide px-6 py-3 bg-green-400 leading-tight text-center text-white">
+                            TODO
+                          </div>
+                          <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
+                            {/*{meta.data_task.length} Task*/}
                           </div>
                         </div>
-                      </td>
-                      <td class="px-7 py-2 whitespace-nowrap text-center">
-                        <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
-                          <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
-                            5
-                          </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-left justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Start Project
                         </div>
-                      </td>
-                      <td class="px-6 py-2 whitespace-nowrap text-center">
-                        <div class="flex items-center justify-center">
-                          <img
-                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                            src="/fimgs/5_48.x3.png"
-                          />
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-left justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Due Date
                         </div>
-                      </td>
+                      </th>
+
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Status
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Priority
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Task Value
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start"></div>
+                      </th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                  </thead>
+                  <tbody class="bg-white divide-y-4 divide-gray-50">
+                    {meta.data_task.map((e, idx) => {
+                      var statusColor = meta.status[e.idstatus];
+                      var bgcolor = "background-color: " + statusColor.color;
+                      return (
+                        <>
+                          <tr>
+                            <td class="px-6 py-3 whitespace-nowrap text-start flex flex-row cursor-pointer relative">
+                              {e.subtask ? (
+                                <img
+                                  src="/fimgs/609_824.x3.png"
+                                  class="flex items-start justify-start"
+                                  style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                  onClick={(event) => {
+                                    meta.expand(e.id);
+                                  }}
+                                />
+                              ) : (
+                                ""
+                              )}
+
+                              <div
+                                class="text-sm text-gray-900 flex-grow"
+                                onClick={(event) => {
+                                  meta.toggleModal2(event, e.id);
+                                }}
+                              >
+                                {/*{e.subtask ? "ADA SUB" : e.name}*/}
+                                {e.name}
+                              </div>
+                            </td>
+                            <td class="px-6 py-3 whitespace-nowrap text-start">
+                              <div class="text-xs tracking-wide leading-none text-green-500">
+                                {e.startdate}
+                              </div>
+                            </td>
+                            <td class="px-6 py-3 whitespace-nowrap text-start">
+                              <div class="text-xs tracking-wide leading-none text-red-500">
+                                {e.duedate}
+                              </div>
+                            </td>
+                            <td class="text-center py-0">
+                              <div class="flex items-center justify-center">
+                                <multipleselect
+                                  onChange={(event) => {
+                                    meta.updateStatus(event, e.id, idx);
+                                  }}
+                                  options={meta.statusRaw}
+                                  defaultValue={meta.status[e.idstatus]}
+                                  menuPortalTarget={document.body}
+                                  theme={(theme) => ({
+                                    ...theme,
+                                    borderRadius: 0,
+                                    colors: {
+                                      ...theme.colors,
+                                      primary25: "#F3F4F6",
+                                      primary: "#6366F1",
+                                    },
+                                  })}
+                                  styles={meta.stylesx}
+                                  style={bgcolor}
+                                  className="w-40"
+                                  classNamePrefix="select"
+                                  name="status"
+                                  // onChange={(e) => {
+                                  //   meta.actionstatus.onChange(e);
+                                  // }}
+                                />
+                              </div>
+                            </td>
+                            <td class="px-6 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                                <div class="text-xs tracking-wide leading-none text-center text-white">
+                                  {e.mpriority.name}
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-7 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                                <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                  {e.effort}
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-6 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-center justify-center">
+                                <img
+                                  style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                  src="/fimgs/5_48.x3.png"
+                                />
+                              </div>
+                            </td>
+                          </tr>
+                          {meta.expandSubtask[e.id] ? (
+                            meta.loadingexpand ? (
+                              <>
+                                {meta.dataExpand.map((e, idx) => {
+                                  var statusColor = meta.status[e.idstatus];
+                                  var bgcolor =
+                                    "background-color: " + statusColor.color;
+                                  return (
+                                    <tr>
+                                      <td
+                                        class="px-6 py-3 pr-6 whitespace-nowrap text-start flex flex-row cursor-pointer relative"
+                                        onClick={(event) => {
+                                          meta.toggleModal2(event, e.id);
+                                        }}
+                                      >
+                                        <div class="text-sm text-gray-900 flex-grow">
+                                          {/*{e.subtask ? "ADA SUB" : e.name}*/}
+                                          {e.name}
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-3 whitespace-nowrap text-start">
+                                        <div class="text-xs tracking-wide leading-none text-green-500">
+                                          {e.startdate}
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-3 whitespace-nowrap text-start">
+                                        <div class="text-xs tracking-wide leading-none text-red-500">
+                                          {e.duedate}
+                                        </div>
+                                      </td>
+                                      <td class="text-center py-0">
+                                        <div class="flex items-center justify-center">
+                                          <multipleselect
+                                            onChange={(event) => {
+                                              meta.updateStatus(
+                                                event,
+                                                e.id,
+                                                idx
+                                              );
+                                            }}
+                                            options={meta.statusRaw}
+                                            defaultValue={
+                                              meta.status[e.idstatus]
+                                            }
+                                            menuPortalTarget={document.body}
+                                            theme={(theme) => ({
+                                              ...theme,
+                                              borderRadius: 0,
+                                              colors: {
+                                                ...theme.colors,
+                                                primary25: "#F3F4F6",
+                                                primary: "#6366F1",
+                                              },
+                                            })}
+                                            styles={meta.stylesx}
+                                            style={bgcolor}
+                                            className="w-40"
+                                            classNamePrefix="select"
+                                            name="status"
+                                            // onChange={(e) => {
+                                            //   meta.actionstatus.onChange(e);
+                                            // }}
+                                          />
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                                          <div class="text-xs tracking-wide leading-none text-center text-white">
+                                            {e.mpriority.name}
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td class="px-7 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                                          <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                            {e.effort}
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-center justify-center">
+                                          <img
+                                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                            src="/fimgs/5_48.x3.png"
+                                          />
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </>
+                            ) : (
+                              <div class="flex self-stretch flex-wrap items-center justify-center">
+                                <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                                  <div
+                                    class="loader-dots block relative w-22 h-6 mt-2"
+                                    style="width: 5rem;"
+                                  >
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          ) : null}
+                        </>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <table class="w-full divide-y-4 mb-6 divide-gray-50">
+                  <thead class="bg-white">
+                    <tr>
+                      <th
+                        scope="col"
+                        class="pr-6 tracking-wider text-center justify-center mr-auto"
+                      >
+                        <div class="flex items-center justify-start ">
+                          <div
+                            class="flex text-sm tracking-wide px-6 py-3 bg-green-400 leading-tight text-center text-white"
+                            style="background-color: #888DF1"
+                          >
+                            IN Progress
+                          </div>
+                          <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
+                            {/*{meta.data_task.length} Task*/}
+                          </div>
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-left justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Start Project
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-left justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Due Date
+                        </div>
+                      </th>
+
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Status
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Priority
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Task Value
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start"></div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y-4 divide-gray-50">
+                    {meta.dataSubTaskProgress.map((e, idx) => {
+                      return (
+                        <tr>
+                          <td
+                            class="px-6 py-3 whitespace-nowrap text-start cursor-pointer"
+                            onClick={meta.toggleModal2}
+                          >
+                            <div class="text-sm text-gray-900">{e.name}</div>
+                          </td>
+                          <td class="px-6 py-3 whitespace-nowrap text-start">
+                            <div class="text-xs tracking-wide leading-none text-green-500">
+                              {e.startdate}
+                            </div>
+                          </td>
+                          <td class="px-6 py-3 whitespace-nowrap text-start">
+                            <div class="text-xs tracking-wide leading-none text-red-500">
+                              {e.duedate}
+                            </div>
+                          </td>
+                          <td class="text-center py-0">
+                            <div class="flex items-center justify-center">
+                              <multipleselect
+                                onChange={(event) => {
+                                  meta.updateStatus(event, e.id, idx);
+                                }}
+                                options={meta.statusRaw}
+                                defaultValue={meta.status[e.idstatus]}
+                                menuPortalTarget={document.body}
+                                theme={(theme) => ({
+                                  ...theme,
+                                  borderRadius: 0,
+                                  colors: {
+                                    ...theme.colors,
+                                    primary25: "#F3F4F6",
+                                    primary: "#6366F1",
+                                  },
+                                })}
+                                styles={meta.stylesx}
+                                style={
+                                  e.idstatus == 1
+                                    ? "background-color: #4ADE80;"
+                                    : e.idstatus == 2
+                                    ? "background-color: #888DF1;"
+                                    : e.idstatus == 3
+                                    ? "background-color: #2D34E6;"
+                                    : e.idstatus == 4
+                                    ? "background-color: #F1B459;"
+                                    : "background-color: #4ADE80;"
+                                }
+                                className="w-40"
+                                classNamePrefix="select"
+                                name="status"
+                                // onChange={(e) => {
+                                //   meta.actionstatus.onChange(e);
+                                // }}
+                              />
+                            </div>
+                          </td>
+                          <td class="px-6 py-2 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                              <div class="text-xs tracking-wide leading-none text-center text-white">
+                                {e.mpriority.name}
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-7 py-2 whitespace-nowrap text-center">
+                            <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                              <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                {e.effort}
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-6 py-2 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center">
+                              <img
+                                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                src="/fimgs/5_48.x3.png"
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <table class="w-full divide-y-4 mb-6 divide-gray-50">
+                  <thead class="bg-white">
+                    <tr>
+                      <th
+                        scope="col"
+                        class="pr-6 tracking-wider text-center justify-center mr-auto"
+                      >
+                        <div class="flex items-center justify-start ">
+                          <div
+                            class="flex text-sm tracking-wide px-6 py-3 bg-green-400 leading-tight text-center text-white"
+                            style="background-color: #2D34E6"
+                          >
+                            SUBMITTED
+                          </div>
+                          <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
+                            {/*{meta.data_task.length} Task*/}
+                          </div>
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-left justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Start Project
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-left justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Due Date
+                        </div>
+                      </th>
+
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Status
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Priority
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Task Value
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start"></div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y-4 divide-gray-50">
+                    {meta.dataSubTaskSubmit.map((e, idx) => {
+                      var statusColor = meta.status[e.idstatus];
+                      var bgcolor = "background-color: " + statusColor.color;
+                      return (
+                        <tr>
+                          <td
+                            class="px-6 py-3 whitespace-nowrap text-start cursor-pointer"
+                            onClick={meta.toggleModal2}
+                          >
+                            <div class="text-sm text-gray-900">{e.name}</div>
+                          </td>
+                          <td class="px-6 py-3 whitespace-nowrap text-start">
+                            <div class="text-xs tracking-wide leading-none text-green-500">
+                              {e.startdate}
+                            </div>
+                          </td>
+                          <td class="px-6 py-3 whitespace-nowrap text-start">
+                            <div class="text-xs tracking-wide leading-none text-red-500">
+                              {e.duedate}
+                            </div>
+                          </td>
+                          <td class="text-center py-0">
+                            <div class="flex items-center justify-center">
+                              <multipleselect
+                                onChange={(event) => {
+                                  meta.updateStatus(event, e.id, idx);
+                                }}
+                                options={meta.statusRaw}
+                                defaultValue={meta.status[e.idstatus]}
+                                menuPortalTarget={document.body}
+                                theme={(theme) => ({
+                                  ...theme,
+                                  borderRadius: 0,
+                                  colors: {
+                                    ...theme.colors,
+                                    primary25: "#F3F4F6",
+                                    primary: "#6366F1",
+                                  },
+                                })}
+                                styles={meta.stylesx}
+                                style={bgcolor}
+                                className="w-40"
+                                classNamePrefix="select"
+                                name="status"
+                                // onChange={(e) => {
+                                //   meta.actionstatus.onChange(e);
+                                // }}
+                              />
+                            </div>
+                          </td>
+                          <td class="px-6 py-2 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                              <div class="text-xs tracking-wide leading-none text-center text-white">
+                                {e.mpriority.name}
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-7 py-2 whitespace-nowrap text-center">
+                            <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                              <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                {e.effort}
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-6 py-2 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center">
+                              <img
+                                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                src="/fimgs/5_48.x3.png"
+                              />
+                            </div>
+                          </td>
+                          <td>lah kok</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <table class="w-full divide-y-4 mb-6 divide-gray-50">
+                  <thead class="bg-white">
+                    <tr>
+                      <th
+                        scope="col"
+                        class="pr-6 tracking-wider text-center justify-center mr-auto"
+                      >
+                        <div class="flex items-center justify-start ">
+                          <div
+                            class="flex text-sm tracking-wide px-6 py-3 bg-green-400 leading-tight text-center text-white"
+                            style="background-color: #F1B459"
+                          >
+                            COMPLETE
+                          </div>
+                          <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
+                            {/*{meta.data_task.length} Task*/}
+                          </div>
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-left justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Start Project
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-left justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Due Date
+                        </div>
+                      </th>
+
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Status
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Priority
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start">
+                          Task Value
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="relative px-6 py-3 text-sm text-center justify-start"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-start"></div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y-4 divide-gray-50">
+                    {meta.dataSubTaskComplete.map((e, idx) => {
+                      var statusColor = meta.status[e.idstatus];
+                      var bgcolor = "background-color: " + statusColor.color;
+                      return (
+                        <tr>
+                          <td
+                            class="px-6 py-3 whitespace-nowrap text-start cursor-pointer"
+                            onClick={meta.toggleModal2}
+                          >
+                            <div class="text-sm text-gray-900">{e.name}</div>
+                          </td>
+                          <td class="px-6 py-3 whitespace-nowrap text-start">
+                            <div class="text-xs tracking-wide leading-none text-green-500">
+                              {e.startdate}
+                            </div>
+                          </td>
+                          <td class="px-6 py-3 whitespace-nowrap text-start">
+                            <div class="text-xs tracking-wide leading-none text-red-500">
+                              {e.duedate}
+                            </div>
+                          </td>
+                          <td class="text-center py-0">
+                            <div class="flex items-center justify-center">
+                              <multipleselect
+                                onChange={(event) => {
+                                  meta.updateStatus(event, e.id, idx);
+                                }}
+                                options={meta.statusRaw}
+                                defaultValue={meta.status[e.idstatus]}
+                                menuPortalTarget={document.body}
+                                theme={(theme) => ({
+                                  ...theme,
+                                  borderRadius: 0,
+                                  colors: {
+                                    ...theme.colors,
+                                    primary25: "#F3F4F6",
+                                    primary: "#6366F1",
+                                  },
+                                })}
+                                styles={meta.stylesx}
+                                style={bgcolor}
+                                className="w-40"
+                                classNamePrefix="select"
+                                name="status"
+                                // onChange={(e) => {
+                                //   meta.actionstatus.onChange(e);
+                                // }}
+                              />
+                            </div>
+                          </td>
+                          <td class="px-6 py-2 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                              <div class="text-xs tracking-wide leading-none text-center text-white">
+                                {e.mpriority.name}
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-7 py-2 whitespace-nowrap text-center">
+                            <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                              <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                {e.effort}
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-6 py-2 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center">
+                              <img
+                                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                src="/fimgs/5_48.x3.png"
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          ) : (
+            <div class="flex self-stretch flex-wrap items-center justify-center">
+              <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                <div
+                  class="loader-dots block relative w-22 h-6 mt-2"
+                  style="width: 5rem;"
+                >
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -628,6 +1592,7 @@
                           id="name"
                           name="name"
                           onChange={meta.ubahNilai}
+                          value={meta.state.name}
                           type="text"
                           placeholder=""
                           class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
@@ -641,8 +1606,17 @@
                     <div class="flex self-stretch items-center justify-start pb-2">
                       <div class="relative flex flex-1 items-center justify-start">
                         <multipleselect
-                          options={meta.status}
-                          defaultValue={meta.status[0]}
+                          defaultValue={
+                            meta.state.status == 0 || meta.state.status == ""
+                              ? meta.statusx[-1]
+                              : meta.statusx[
+                                  meta.searchIdx(
+                                    meta.state.status,
+                                    meta.statusx
+                                  )
+                                ]
+                          }
+                          options={meta.statusx}
                           theme={(theme) => ({
                             ...theme,
                             colors: {
@@ -672,6 +1646,7 @@
                               id="name"
                               name="startdate"
                               onChange={meta.ubahNilai}
+                              value={meta.state.startdate}
                               type="date"
                               placeholder=""
                               class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
@@ -688,6 +1663,7 @@
                             <input
                               id="name"
                               name="duedate"
+                              value={meta.state.duedate}
                               onChange={meta.ubahNilai}
                               type="date"
                               placeholder=""
@@ -705,8 +1681,18 @@
                         <div class="flex self-stretch items-center justify-start pb-2">
                           <div class="relative flex flex-1 items-center justify-start">
                             <multipleselect
+                              defaultValue={
+                                meta.state.priority == 0 ||
+                                meta.state.priority == ""
+                                  ? meta.priority[-1]
+                                  : meta.priority[
+                                      meta.searchIdx(
+                                        meta.state.priority,
+                                        meta.priority
+                                      )
+                                    ]
+                              }
                               options={meta.priority}
-                              defaultValue={meta.priority[0]}
                               theme={(theme) => ({
                                 ...theme,
                                 colors: {
@@ -734,7 +1720,17 @@
                           <div class="relative flex flex-1 items-center justify-start">
                             <multipleselect
                               options={meta.taskv}
-                              defaultValue={meta.taskv[0]}
+                              defaultValue={
+                                meta.state.effort == 0 ||
+                                meta.state.effort == ""
+                                  ? meta.taskv[-1]
+                                  : meta.taskv[
+                                      meta.searchIdx(
+                                        meta.state.effort,
+                                        meta.taskv
+                                      )
+                                    ]
+                              }
                               theme={(theme) => ({
                                 ...theme,
                                 colors: {
@@ -785,7 +1781,7 @@
                         id="listSubTask"
                         class="flex self-stretch flex-col space-y-3 items-start justify-start"
                       >
-                        {meta.cobaElement.map((e) => {
+                        {meta.ttempSubTask.map((e) => {
                           var idsubtask = "subtask-" + e.index;
                           return (
                             <div
@@ -799,7 +1795,12 @@
                                   </div>
                                 </div>
                                 <div class="flex space-x-5 items-start justify-start">
-                                  <div class="cursor-pointer">
+                                  <div
+                                    class="cursor-pointer"
+                                    onClick={(event) => {
+                                      meta.showModalSubTask(event, e.index);
+                                    }}
+                                  >
                                     <img
                                       src="/fimgs/295_279.x3.png"
                                       class="flex items-start justify-start"
@@ -887,7 +1888,7 @@
                           Task Detail
                         </div>
                       </div>
-                      <form onSubmit={meta.toggleModal2}>
+                      <form onSubmit={meta.toggleModal2Close}>
                         <button class="flex flex-col items-start justify-start">
                           <img
                             src="/fimgs/517_574.x1.svg"
@@ -904,7 +1905,7 @@
                       <div class="flex justify-center">
                         <div class="flex items-start justify-start px-6 py-2 bg-indigo-400">
                           <div class="text-sm tracking-wide leading-tight text-center text-white">
-                            IN PROGRESS
+                            {meta.state.cstatus}
                           </div>
                         </div>
                       </div>
@@ -914,7 +1915,7 @@
                             Start Task
                           </div>
                           <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
-                            26/09/2021
+                            {meta.state.labelstartdate}
                           </div>
                         </div>
                         <div class="flex flex-col self-stretch items-start justify-start">
@@ -922,7 +1923,7 @@
                             Due Date
                           </div>
                           <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
-                            26/11/2021
+                            {meta.state.labelduedate}
                           </div>
                         </div>
                       </div>
@@ -938,10 +1939,10 @@
                       <div class="relative flex flex-1 items-center justify-start">
                         <input
                           id="name"
-                          name="taskname"
+                          name="name"
                           onChange={meta.ubahNilai}
                           type="text"
-                          placeholder=""
+                          placeholder={meta.state.name}
                           class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
                         />
                       </div>
@@ -953,8 +1954,8 @@
                     <div class="flex self-stretch items-center justify-start pb-2">
                       <div class="relative flex flex-1 items-center justify-start">
                         <multipleselect
-                          options={meta.status}
-                          defaultValue={meta.status[0]}
+                          options={meta.statusx}
+                          defaultValue={meta.statusx[0]}
                           theme={(theme) => ({
                             ...theme,
                             colors: {
@@ -967,6 +1968,9 @@
                           className="w-full"
                           classNamePrefix="select"
                           name="status"
+                          onChange={(e) => {
+                            meta.actionstatus.onChange(e);
+                          }}
                         />
                       </div>
                     </div>
@@ -982,6 +1986,7 @@
                               name="startdate"
                               onChange={meta.ubahNilai}
                               type="date"
+                              value={meta.state.startdate}
                               placeholder=""
                               class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
                             />
@@ -999,6 +2004,7 @@
                               name="duedate"
                               onChange={meta.ubahNilai}
                               type="date"
+                              value={meta.state.duedate}
                               placeholder=""
                               class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
                             />
@@ -1028,6 +2034,9 @@
                               className="w-full"
                               classNamePrefix="select"
                               name="status"
+                              onChange={(e) => {
+                                meta.actionpriority.onChange(e);
+                              }}
                             />
                           </div>
                         </div>
@@ -1053,11 +2062,15 @@
                               className="w-full"
                               classNamePrefix="select"
                               name="status"
+                              onChange={(e) => {
+                                meta.actioneffort.onChange(e);
+                              }}
                             />
                           </div>
                         </div>
                       </div>
                     </div>
+                    {/*start comment*/}
                     <div class="flex flex-1 w-full items-center justify-between">
                       <div class="flex flex-col items-center">
                         <div class="text-sm tracking-wide leading-none text-coolGray-500">
@@ -1268,10 +2281,11 @@
                         </table>
                       </div>
                     </div>
+                    {/*end comment*/}
                   </div>
                   <form
                     class="flex flex-1 self-stretch flex-col items-start justify-start"
-                    onSubmit={meta.toggleModal2}
+                    onSubmit={meta.updateTask}
                   >
                     <button
                       type="submit"
@@ -1279,7 +2293,245 @@
                     >
                       <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
                         <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-                          Create Task
+                          Save
+                        </div>
+                      </div>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      </div>
+    </>
+  ) : null}
+  {meta.modalSubTask ? (
+    <>
+      <div class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed">
+        <div
+          class="z-50 relative p-3 mx-auto my-0 max-w-full"
+          style="min-width: 640px; width: 640px;"
+        >
+          <div class="relative w-auto mx-auto z-50 my-0 max-w-full">
+            {/*content*/}
+            <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              {/*body*/}
+              <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+                <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                  <div class="flex self-stretch flex-col items-start justify-start">
+                    <div class="flex self-stretch items-center">
+                      <form onSubmit={meta.backTask}>
+                        <button class="flex flex-col items-start justify-start">
+                          <img
+                            src="/fimgs/5_49.x3.png"
+                            style="width: 24px; min-width: 24px; max-width: 24px; height: 25px; min-height: 25px; max-height: 25px;"
+                          />
+                        </button>
+                      </form>
+                      <div class="flex items-center justify-center flex-grow">
+                        <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                          Subtask
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Task Name
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="name"
+                          onChange={meta.ubahNilai2}
+                          value={meta.ttempHistorySubTask[meta.idsubtask].name}
+                          type="text"
+                          placeholder=""
+                          class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Task Status
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-2">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.statusx}
+                          defaultValue={
+                            meta.ttempSubTask[meta.idsubtask].status == 0 ||
+                            meta.ttempSubTask[meta.idsubtask].status == ""
+                              ? meta.statusx[-1]
+                              : meta.statusx[
+                                  meta.searchIdx(
+                                    meta.ttempSubTask[meta.idsubtask].status,
+                                    meta.statusx
+                                  )
+                                ]
+                          }
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full"
+                          classNamePrefix="select"
+                          name="status"
+                          onChange={(e) => {
+                            meta.actionstatus2.onChange(e, meta.idsubtask);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div class="flex flex-1 w-full space-x-6 items-center">
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Start Date
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <input
+                              id="name"
+                              name="startdate"
+                              onChange={meta.ubahNilai2}
+                              type="date"
+                              value={
+                                meta.ttempHistorySubTask[meta.idsubtask]
+                                  .startdate
+                              }
+                              placeholder=""
+                              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Due Date
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <input
+                              id="name"
+                              name="duedate"
+                              onChange={meta.ubahNilai2}
+                              type="date"
+                              value={
+                                meta.ttempHistorySubTask[meta.idsubtask].duedate
+                              }
+                              placeholder=""
+                              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-1 w-full space-x-6 items-center">
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Priority
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <multipleselect
+                              options={meta.priority}
+                              defaultValue={
+                                meta.ttempSubTask[meta.idsubtask].priority ==
+                                  0 ||
+                                meta.ttempSubTask[meta.idsubtask].priority == ""
+                                  ? meta.priority[-1]
+                                  : meta.priority[
+                                      meta.searchIdx(
+                                        meta.ttempSubTask[meta.idsubtask]
+                                          .priority,
+                                        meta.priority
+                                      )
+                                    ]
+                              }
+                              theme={(theme) => ({
+                                ...theme,
+                                colors: {
+                                  ...theme.colors,
+                                  primary25: "#F3F4F6",
+                                  primary: "#6366F1",
+                                },
+                              })}
+                              styles={meta.styles}
+                              className="w-full"
+                              classNamePrefix="select"
+                              name="status"
+                              onChange={(e) => {
+                                meta.actionpriority2.onChange(
+                                  e,
+                                  meta.idsubtask
+                                );
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Task Value
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <multipleselect
+                              options={meta.taskv}
+                              defaultValue={
+                                meta.ttempSubTask[meta.idsubtask].effort == 0 ||
+                                meta.ttempSubTask[meta.idsubtask].effort == ""
+                                  ? meta.taskv[-1]
+                                  : meta.taskv[
+                                      meta.searchIdx(
+                                        meta.ttempSubTask[meta.idsubtask]
+                                          .effort,
+                                        meta.taskv
+                                      )
+                                    ]
+                              }
+                              theme={(theme) => ({
+                                ...theme,
+                                colors: {
+                                  ...theme.colors,
+                                  primary25: "#F3F4F6",
+                                  primary: "#6366F1",
+                                },
+                              })}
+                              styles={meta.styles}
+                              className="w-full"
+                              classNamePrefix="select"
+                              name="status"
+                              onChange={(e) => {
+                                meta.actioneffort2.onChange(e, meta.idsubtask);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <form
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    onSubmit={meta.saveSubtask}
+                  >
+                    <button
+                      type="submit"
+                      class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    >
+                      <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                        <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                          Save
                         </div>
                       </div>
                     </button>

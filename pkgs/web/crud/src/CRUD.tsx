@@ -59,9 +59,7 @@ export const CRUD = (props: ICRUD) => {
 
           return
         },
-        mode: !props.defaultMode
-          ? ((!parent && location.hash.length > 1 ? 'form' : 'list') as any)
-          : props.defaultMode,
+        mode: (!parent && location.hash.length > 1 ? 'form' : 'list') as any,
         title: '',
         formData:
           !parent && location.hash.length > 1

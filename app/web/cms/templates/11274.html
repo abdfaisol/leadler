@@ -5,6 +5,7 @@
       member: "",
       name: "",
       team: "",
+      idproject: 0,
       isLoading: false,
       state: {
         showModal: false,
@@ -14,16 +15,12 @@
         showModal5: false,
       },
       status: [
-        { value: "1", label: "TODO", color: "#4ADE80" },
-        {
-          value: "2",
-          label: "IN PROGRESS",
-          color: "#888DF1",
-        },
-        { value: "3", label: "SUBMITTED", color: "#2D34E6" },
-        { value: "4", label: "COMPLETE", color: "#F1B459" },
+        { value: "7", label: "next project" },
+        { value: "8", label: "progress" },
+        { value: "9", label: "uncompleted" },
+        { value: "10", label: "completed" },
       ],
-      state2: { title: "" },
+      state2: { title: "", desc: "", label: "", start: "", due: "" },
       add: { tekan: true },
       styles: {
         control: (base, state) => ({
@@ -95,7 +92,7 @@
       toggleMoreProject() {
         this.ShowMoreProject = !this.ShowMoreProject;
       },
-      toggleStatusProject() {
+      toggleStatusProject(e, id) {
         this.ShowMoreProject = false;
         this.ShowStatusProject = !this.ShowStatusProject;
       },
@@ -106,6 +103,13 @@
         this.state.showModal4 = false;
         this.state.showModal5 = false;
         e.preventDefault();
+      },
+      exitAllModal() {
+        this.state.showModal = false;
+        this.state.showModal2 = false;
+        this.state.showModal3 = false;
+        this.state.showModal4 = false;
+        this.state.showModal5 = false;
       },
       handleSubmit(e) {
         this.state.showModal = !this.state.showModal;
@@ -155,55 +159,50 @@
         let name = e.target.name;
         let nilai = e.target.value;
         this.state2[name] = nilai;
-        console.log(name);
+        // console.log(name);
       },
-      ubahNilai2(e) {
-        let name = e.target.name;
-        let nilai = e.target.value;
-        this.state2[name] = nilai;
-        console.log(name);
-      },
-      ubahNilai3(e) {
-        let name = e.target.name;
-        let nilai = e.target.value;
-        this.state2[name] = nilai;
-        console.log(name);
-      },
-      ubahNilai4(e) {
-        let name = e.target.name;
-        let nilai = e.target.value;
-        this.state2[name] = nilai;
-        console.log(name);
-      },
-      ubahNilai5(e) {
-        let name = e.target.name;
-        let nilai = e.target.value;
-        this.state2[name] = nilai;
-        console.log(name);
-      },
-      ubahNilai6(e) {
-        let name = e.target.name;
-        let nilai = e.target.value;
-        this.state2[name] = nilai;
-        console.log(name);
+      updateStatus(event) {
+        api("/api/project/status/update", {
+          data: {
+            idproject: this.idproject,
+            status: this.state.status,
+          },
+        }).then((e) => {
+          console.log(e);
+        });
+        // this.state.showModal = false;
+        // console.log(e);
+        event.preventDefault();
       },
       dataUser(e) {
+        this.team = "";
         let userDetail = [];
         api("/api/user").then((i) => {
-          i.data_act.map((res, index) => {
-            i.data_act[index] = { value: res.id, label: res.email };
-            userDetail.push(i.data_act[index]);
-          });
+          if (i.status == true) {
+            i.data_act.map((res, index) => {
+              if (res.muser_detail) {
+                userDetail.push({
+                  value: res.muser_detail.id,
+                  label: res.email,
+                });
+              }
+            });
+          }
         });
         return userDetail;
       },
       dataTeam(e) {
+        this.member = false;
         let result = [];
         api("/api/team").then((i) => {
-          i.data_act.map((res, index) => {
-            i.data_act[index] = { value: res.id, label: res.name };
-            result.push(i.data_act[index]);
-          });
+          if (i.status == true) {
+            if (i.data_act.length > 0) {
+              i.data_act.map((res, index) => {
+                i.data_act[index] = { value: res.id, label: res.name };
+                result.push(i.data_act[index]);
+              });
+            }
+          }
         });
         return result;
       },
@@ -218,13 +217,18 @@
         api("/api/project/create", {
           data: {
             name: this.state2.title,
-            desc: this.state2.desc,
+            desc: this.state2.desc.substring(0, 200),
+            startdate: this.state2.start,
+            duedate: this.state2.due,
+            label: this.state2.label,
             member: this.member,
             team: this.team,
           },
         }).then((e) => {
           if (e.status == true) {
-            location.reload();
+            this.exitAllModal();
+            this.isLoading = false;
+            this.reloadData();
           }
           console.log(e);
         });
@@ -247,22 +251,174 @@
           elem.classList.add("hidden");
         }
       },
+      // Script Delete Member
+      modalku: [],
+      dataku: [],
+      showModal: [],
+      toggleModal(id) {
+        var vv = [];
+        if (!this.showModal[id]) {
+          vv[id] = true;
+        }
+        this.showModal = vv;
+      },
+      deleteTeam: {
+        name: "asdasd",
+        idteam: 0,
+      },
+      confirmDelete: false,
+      delTeam(id) {
+        console.log("HAPUS DATA ID : " + id);
+        api("/api/project/delete", {
+          idproject: id,
+        }).then((e) => {
+          console.log(e);
+          this.confirmDelete = false;
+          if (e.status == true) {
+            this.isLoading = false;
+            this.reloadData();
+          }
+        });
+      },
+      modalDelete(id, name) {
+        this.deleteTeam.idteam = id;
+        this.deleteTeam.name = name;
+        // console.log("hapus tim " + name);
+        this.confirmDelete = true;
+      },
+      closeDelete() {
+        this.confirmDelete = false;
+      },
+      reloadData() {
+        api("/api/project").then((e) => {
+          // console.log(e);
+          if (e.status == true) {
+            if (e.data_act.length > 0) {
+              e.data_act.map((idx) => {
+                idx.startdate = dateFormat(idx.startdate, "dd MMMM YYY");
+                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                idx.nameTeam = "PERSONAL";
+                api("/api/project/team/show", {
+                  data: {
+                    idproject: idx.id,
+                  },
+                }).then((i) => {
+                  // console.log(i);
+                  if (i.status == true) {
+                    if (i.data_act.length > 0) {
+                      i.data_act.map((e) => {
+                        // console.log(e);
+                        if (e.idteam) {
+                          api("/api/team/show", {
+                            data: {
+                              idteam: e.idteam,
+                            },
+                          }).then((i) => {
+                            // console.log(i);
+                            if ((i.status = true)) {
+                              idx.nameTeam = i.data_act.name;
+                            }
+                          });
+                        }
+                      });
+                    }
+                  }
+                });
+                if (idx.status == "next project") {
+                  idx.colorstatus = "#2D34E6";
+                }
+                if (idx.status == "progress") {
+                  idx.colorstatus = "#E4944A";
+                }
+                if (idx.status == "uncompleted") {
+                  idx.colorstatus = "#EF4444";
+                }
+                if (idx.status == "completed") {
+                  idx.colorstatus = "#BBF7D0";
+                }
+                api("/api/project/show/" + idx.id).then((e1) => {
+                  if (e1.status == true) {
+                    idx.task = e1.data_act.resultTask;
+                    // idx.task = e1.data_act.resultTask;
+                    this.data_projek = [];
+                    this.data_projek.push(idx);
+                    this.isLoading = true;
+                  }
+                });
+              });
+            } else {
+              this.isLoading = true;
+            }
+          } else {
+            this.isLoading = true;
+          }
+        });
+      },
     }}
     run={async () => {
       var data_i = meta.dataProjek();
       api("/api/project").then((e) => {
-        // console.log(e);
-        e.data_act.map((idx) => {
-          api("/api/project/show/" + idx.id).then((e1) => {
-            if (e1.status == true) {
-              idx.task = e1.data_act.resultTask;
-              // idx.task = e1.data_act.resultTask;
-              meta.data_projek.push(idx);
-              meta.isLoading = true;
-            }
-            console.log(meta.data_projek.length);
-          });
-        });
+        console.log(e);
+        if (e.status == true) {
+          if (e.data_act.length > 0) {
+            e.data_act.map((idx) => {
+              idx.startdate = dateFormat(idx.startdate, "dd MMMM YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+              idx.nameTeam = "PERSONAL";
+              api("/api/project/team/show", {
+                data: {
+                  idproject: idx.id,
+                },
+              }).then((i) => {
+                // console.log(i);
+                if (i.status == true) {
+                  if (i.data_act.length > 0) {
+                    i.data_act.map((e) => {
+                      // console.log(e);
+                      if (e.idteam) {
+                        api("/api/team/show", {
+                          data: {
+                            idteam: e.idteam,
+                          },
+                        }).then((i) => {
+                          // console.log(i);
+                          if ((i.status = true)) {
+                            idx.nameTeam = i.data_act.name;
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+              if (idx.status == "next project") {
+                idx.colorstatus = "#2D34E6";
+              }
+              if (idx.status == "progress") {
+                idx.colorstatus = "#E4944A";
+              }
+              if (idx.status == "uncompleted") {
+                idx.colorstatus = "#EF4444";
+              }
+              if (idx.status == "completed") {
+                idx.colorstatus = "#BBF7D0";
+              }
+              api("/api/project/show/" + idx.id).then((e1) => {
+                if (e1.status == true) {
+                  idx.task = e1.data_act.resultTask;
+                  // idx.task = e1.data_act.resultTask;
+                  meta.data_projek = [];
+                  meta.data_projek.push(idx);
+                  meta.isLoading = true;
+                }
+              });
+            });
+          } else {
+            meta.isLoading = true;
+          }
+        } else {
+          meta.isLoading = true;
+        }
       });
       meta.actionmember = {
         onChange: (e) => {
@@ -416,96 +572,103 @@
           <div class="grid grid-cols-3 gap-8 flex-grow">
             {meta.data_projek.map((e, idx) => {
               var urlproject = "/pm/projects/" + e.id + "/detail";
+              var backgroundcolor = "background-color: " + e.colorstatus;
               return (
-                <>
+                <div
+                  class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
+                  style="height: 244px; min-height: 244px;"
+                >
                   <div
-                    class="flex flex-1 flex-col items-start justify-start px-4 py-6 bg-white rounded"
-                    style="height: 244px; min-height: 244px;"
+                    class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                    style="height: 196px; min-height: 196px; max-height: 196px;"
                   >
                     <div
-                      class="flex self-stretch flex-col space-y-8 items-start justify-start"
-                      style="height: 196px; min-height: 196px; max-height: 196px;"
+                      class="flex self-stretch items-start justify-between"
+                      style="height: 24px; min-height: 24px; max-height: 24px;"
                     >
-                      <div
-                        class="flex self-stretch items-start justify-between"
-                        style="height: 24px; min-height: 24px; max-height: 24px;"
-                      >
-                        <div class="flex items-center justify-start">
-                          <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
-                            Tim 6
-                          </div>
+                      <div class="flex items-center justify-start">
+                        <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                          {e.nameTeam}
                         </div>
-                        <div class="flex items-start px-2">
-                          <img
-                            onClick={(e) => {
-                              meta.showmodalku(idx);
-                            }}
-                            src="/fimgs/609_876.x3.png"
-                            class="flex items-start justify-start cursor-pointer"
-                            style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
-                          />
-
-                          <div class="absolute hidden" id={idx.toString()}>
-                            <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
-                              <div class="flex flex-col items-start justify-start bg-white">
-                                <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
-                                  <div class="flex self-stretch flex-col items-start justify-start">
-                                    <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50">
-                                      <div class="flex flex-1 space-x-2 items-center justify-start">
-                                        <img
-                                          src="/fimgs/545_1540.x3.png"
-                                          style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                        />
-                                        <div class="flex flex-1 items-start justify-start">
-                                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                            Edit Project
+                      </div>
+                      <div class="flex items-start">
+                        <img
+                          src="/fimgs/609_876.x3.png"
+                          class="flex items-start justify-start"
+                          style="width: 32.50px; min-width: 32.50px; max-width: 32.50px; height: 20px; min-height: 20px; max-height: 20px;"
+                          onClick={(e1) => {
+                            meta.toggleModal(e.id);
+                          }}
+                        />
+                        {meta.showModal[e.id] && (
+                          <>
+                            <div class="absolute">
+                              <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none z-40">
+                                <div class="flex flex-col items-start justify-start bg-white">
+                                  <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                    <div class="flex self-stretch flex-col items-start justify-start">
+                                      <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50">
+                                        <div class="flex flex-1 space-x-2 items-center justify-start">
+                                          <img
+                                            src="/fimgs/545_1540.x3.png"
+                                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                          />
+                                          <div class="flex flex-1 items-start justify-start">
+                                            <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                              Edit Project
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                    <div class="flex self-stretch items-center justify-start py-2 pl-4 cursor-pointer hover:bg-violet-50">
-                                      <div class="flex flex-1 space-x-2 items-center justify-start">
-                                        <img
-                                          src="/fimgs/545_1545.x3.png"
-                                          style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                        />
-                                        <div class="flex flex-1 items-start justify-start">
-                                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                            Important Project
+                                      <div class="flex self-stretch items-center justify-start py-2 pl-4 cursor-pointer hover:bg-violet-50">
+                                        <div class="flex flex-1 space-x-2 items-center justify-start">
+                                          <img
+                                            src="/fimgs/545_1545.x3.png"
+                                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                          />
+                                          <div class="flex flex-1 items-start justify-start">
+                                            <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                              Important Project
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div
+                                        onClick={(e1) => {
+                                          meta.statusModal(e1, e.id);
+                                        }}
+                                        class="flex self-stretch items-center justify-start py-2 pl-4 cursor-pointer hover:bg-violet-50"
+                                      >
+                                        <div class="flex flex-1 space-x-2 items-center justify-start">
+                                          <img
+                                            src="/fimgs/545_1550.x3.png"
+                                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                          />
+                                          <div class="flex flex-1 items-start justify-start">
+                                            <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                              Status Project
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
                                     </div>
                                     <div
-                                      onClick={(e) => {
-                                        meta.showmodalku2(idx);
-                                      }}
-                                      class="flex self-stretch items-center justify-start py-2 pl-4 cursor-pointer hover:bg-violet-50"
+                                      class="flex self-stretch flex-col space-y-2 items-start justify-start border-t"
+                                      onClick={(event) =>
+                                        meta.modalDelete(e.id, e.name)
+                                      }
                                     >
-                                      <div class="flex flex-1 space-x-2 items-center justify-start">
-                                        <img
-                                          src="/fimgs/545_1550.x3.png"
-                                          style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                        />
-                                        <div class="flex flex-1 items-start justify-start">
-                                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                            Status Project
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="flex self-stretch flex-col space-y-2 items-start justify-start border-t">
-                                    <div />
-                                    <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
-                                      <div class="flex flex-1 space-x-2 items-center justify-start">
-                                        <img
-                                          src="/fimgs/545_1557.x3.png"
-                                          style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-                                        />
-                                        <div class="flex flex-1 items-start justify-start">
-                                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
-                                            Delete
+                                      <div />
+                                      <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
+                                        <div class="flex flex-1 space-x-2 items-center justify-start">
+                                          <img
+                                            src="/fimgs/545_1557.x3.png"
+                                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                          />
+                                          <div class="flex flex-1 items-start justify-start">
+                                            <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                              Delete
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
@@ -514,129 +677,69 @@
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                      <a
-                        href={urlproject}
-                        class="flex self-stretch flex-col space-y-6 items-start justify-start"
-                        style="height: 140px; min-height: 140px; max-height: 140px;"
-                      >
-                        <div class="flex self-stretch items-start justify-start">
-                          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                            {e.name}
-                          </div>
-                        </div>
-                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-                          <bar percent={e.task.completed} />
-                          <div class="flex self-stretch items-start justify-start">
-                            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                              {e.task.taskComplete} Task Done
-                            </div>
-                          </div>
-                          <div class="flex self-stretch items-start justify-start">
-                            <div class="text-sm tracking-wide leading-tight">
-                              Due Date: {e.duedate}
-                            </div>
-                          </div>
-                          <div class="flex items-center justify-center px-2 py-0.5 bg-orange-400 bg-opacity-70 rounded-sm">
-                            <div class="text-xs tracking-wide leading-none text-center text-white">
-                              In Progress
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-
-                  {meta.ShowStatusProject && (
-                    <>
-                      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
-                        <div
-                          class="relative w-auto mx-auto max-w-3xl"
-                          style="min-width: 480px; width: 480px;"
-                        >
-                          {/*content*/}
-                          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                            {/*body*/}
-                            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
-                              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
-                                <div class="flex self-stretch flex-col items-start justify-start">
-                                  <div class="flex self-stretch items-center justify-between">
-                                    <div class="flex items-start justify-start pl-40">
-                                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                          </>
+                        )}
+                        <div class="absolute hidden" id={e.id}>
+                          <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
+                            <div
+                              class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative"
+                              style="width: 187px; min-width: 187px; max-width: 187px;"
+                            >
+                              <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
+                                <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                                  <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                                    <div
+                                      class="flex flex-1 items-start justify-start"
+                                      onClick={(e1) => {
+                                        meta.toggleModal(e1, e.id);
+                                      }}
+                                    >
+                                      <div class="text-base tracking-wide leading-normal text-coolGray-500">
                                         Status Project
                                       </div>
                                     </div>
-                                    <form onSubmit={meta.toggleStatusProject}>
-                                      <button class="flex flex-col items-start justify-start">
-                                        <img
-                                          src="/fimgs/517_574.x1.svg"
-                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
-                                        />
-                                      </button>
-                                    </form>
                                   </div>
                                 </div>
                               </div>
-                              <form
-                                class="flex flex-1 self-stretch flex-col items-start justify-start"
-                                // onSubmit={meta.submitData}
-                              >
-                                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
-                                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
-                                    <div class="flex self-stretch items-start justify-start">
-                                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
-                                        Add Status Project
-                                      </div>
-                                    </div>
-
-                                    <div class="flex self-stretch items-center justify-start">
-                                      <div class="relative flex flex-1 items-center justify-start">
-                                        <multipleselect
-                                          options={meta.status}
-                                          defaultValue={meta.status[0]}
-                                          theme={(theme) => ({
-                                            ...theme,
-                                            colors: {
-                                              ...theme.colors,
-                                              primary25: "#F3F4F6",
-                                              primary: "#6366F1",
-                                            },
-                                          })}
-                                          styles={meta.styles}
-                                          className="w-full"
-                                          classNamePrefix="select"
-                                          name="status"
-                                          onChange={(e) => {
-                                            meta.actionstatus.onChange(e);
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <button
-                                    type="submit"
-                                    class="flex flex-1 self-stretch flex-col items-start justify-start"
-                                    onClick={meta.toggleModalAT}
-                                  >
-                                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
-                                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-                                        Save
-                                      </div>
-                                    </div>
-                                  </button>
-                                </div>
-                              </form>
                             </div>
                           </div>
                         </div>
                       </div>
-                      {/*<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>*/}
-                    </>
-                  )}
-                </>
+                    </div>
+                    <a
+                      href={urlproject}
+                      class="flex self-stretch flex-col space-y-6 items-start justify-start"
+                      style="height: 140px; min-height: 140px; max-height: 140px;"
+                    >
+                      <div class="flex self-stretch items-start justify-start">
+                        <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                          {e.name}
+                        </div>
+                      </div>
+                      <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                        <bar percent={e.task.completed} />
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                            {e.task.taskComplete} Task Done
+                          </div>
+                        </div>
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight">
+                            Due Date: {e.duedate}
+                          </div>
+                        </div>
+                        <div
+                          class="flex items-center justify-center px-2 py-0.5 bg-orange-400 bg-opacity-70 rounded-sm"
+                          style={backgroundcolor}
+                        >
+                          <div class="text-xs tracking-wide leading-none text-center text-white">
+                            {e.status}
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
               );
             })}
           </div>
@@ -838,7 +941,7 @@
                       style="resize: none;"
                       name="desc"
                       value={meta.state2.desc}
-                      onChange={meta.ubahNilai2}
+                      onChange={meta.ubahNilai}
                       rows={4}
                       cols={50}
                     ></textarea>
@@ -914,11 +1017,11 @@
                       <div class="relative flex flex-1 items-center justify-start">
                         <input
                           id="name"
-                          name="project"
+                          name="label"
                           type="text"
                           placeholder=""
                           value={meta.state2.project}
-                          onChange={meta.ubahNilai3}
+                          onChange={meta.ubahNilai}
                           class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
                         />
                       </div>
@@ -938,7 +1041,7 @@
                           type="date"
                           placeholder=""
                           value={meta.state2.start}
-                          onChange={meta.ubahNilai4}
+                          onChange={meta.ubahNilai}
                           class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
                         />
                       </div>
@@ -954,7 +1057,7 @@
                           type="date"
                           placeholder=""
                           value={meta.state2.due}
-                          onChange={meta.ubahNilai5}
+                          onChange={meta.ubahNilai}
                           class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
                         />
                       </div>
@@ -1282,6 +1385,65 @@
                     </div>
                   </button>
                 </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.confirmDelete ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 325px; width: 325px;"
+        >
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            <div class="flex w-full flex-col items-start justify-start p-4 space-y-6 bg-white rounded">
+              <div class="flex w-full space-x-4 items-start justify-start">
+                <div>
+                  <img
+                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                    src="/fimgs/295_281.x3.png"
+                  />
+                </div>
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                      Remove Member
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight">
+                      Are you sure remove{" "}
+                      <small class="text-sm font-medium">
+                        "{meta.deleteTeam.name}"?
+                      </small>{" "}
+                      You can’t undo this action
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex w-full space-x-6 items-start justify-end">
+                <div class="flex items-start justify-end">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                      <button onClick={meta.closeDelete}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-start justify-end bg-red-500 rounded">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <button
+                      class="text-base font-medium tracking-wide leading-normal text-center text-white"
+                      onClick={(event) => meta.delTeam(meta.deleteTeam.idteam)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

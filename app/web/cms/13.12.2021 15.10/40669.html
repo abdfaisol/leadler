@@ -1,0 +1,32 @@
+<>
+  <effect
+    meta={{
+      value: "",
+      in_data: [
+        { value: "chocolate", label: "Chocolate" },
+        { value: "strawberry", label: "Strawberry" },
+        { value: "vanilla", label: "Vanilla" },
+      ],
+    }}
+    run={async () => {
+      meta.action = {
+        onChange: (e) => {
+          runInAction(() => {
+            // console.log(e);
+            // meta.value = e.value;
+            console.log(meta.value);
+          });
+        },
+      };
+    }}
+  />
+  <multipleselect
+    options={meta.in_data}
+    className="basic-multi-select"
+    classNamePrefix="select"
+    name="colors"
+    onChange={(e) => {
+      meta.action.onChange(e);
+    }}
+  />
+</>

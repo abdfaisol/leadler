@@ -1,0 +1,217 @@
+<>
+  <effect
+    meta={{
+      showModal: false,
+      input: {},
+      errors: {},
+      state: { email: "" },
+      state1: { print: false },
+
+      handleSubmit(event) {
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.state),
+        };
+        fetch(window.location.origin + "/api/email-reset", requestOptions).then(
+          (response) => {
+            response.json().then((e) => {
+              console.log(e);
+              console.log(this.state.email);
+            });
+          }
+        );
+        if (this.validate()) {
+          console.log(this);
+          let input = {};
+          input["email"] = "";
+          this.input = input;
+          this.showModal = !this.showModal;
+        }
+
+        this.state1.print = true;
+        console.log(this.state1.print);
+        //console.log(this.showModal);
+        event.preventDefault();
+      },
+      validate() {
+        let input = this.input;
+        let errors = {};
+        let isValid = true;
+
+        if (!input["email"]) {
+          isValid = false;
+          errors["email"] = "This field is required.";
+        }
+
+        if (typeof input["email"] !== "undefined") {
+          let pattern = RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+          ///^[a-zA-Z0-9._]+@[a-zA-Z]+(?:\.[a-zA-Z0-9-]+)*$/
+          if (!pattern.test(input["email"])) {
+            isValid = false;
+            errors["email"] = "Email address doesn't valid.";
+          }
+        }
+        this.errors = errors;
+        return isValid;
+      },
+      handleSubmit1(event) {
+        window.location.replace(window.location.origin);
+        event.preventDefault();
+      },
+      handleSubmit2(event) {
+        window.location.replace(window.location.origin);
+        event.preventDefault();
+      },
+      ubahNilai(e) {
+        let input = this.input;
+        input[e.target.name] = e.target.value;
+        this.input = input;
+
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        this.state1.print = false;
+        // console.log(name);
+      },
+      handleInputChange(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        console.log(name + "   " + e.target.value);
+        this.state[name] = nilai;
+        // console.log(this.state.username);
+      },
+    }}
+    run={async () => {}}
+  />
+  <div class={`flex flex-col items-center justify-center bg-white m-auto`}>
+    <div class="flex flex-col items-center justify-center m-auto">
+      <div class="flex flex-1 self-stretch flex-col items-center justify-center border rounded border-coolGray-300 py-20 px-20">
+        <div class="flex self-stretch flex-col items-center justify-center">
+          <div class="flex flex-col space-y-6 items-center justify-center">
+            <form
+              class="flex self-stretch flex-col space-y-10 items-start justify-start"
+              onSubmit={meta.handleSubmit1}
+            >
+              <div
+                class={`flex flex-1 self-stretch flex-col items-start justify-start bg-white`}
+              >
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <button class="flex space-x-2 items-start justify-start">
+                    <div class="flex flex-1 items-start justify-start">
+                      <img
+                        src="/fimgs/I205_215_201_147.x3.png"
+                        style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;background-image: url('/fimgs/bg-3ce3a3b71945e1763782c48530f736aac19630db');background-size:100% 100%;background-repeat:no-repeat;"
+                      />
+                    </div>
+                    <div class="flex items-start justify-start">
+                      <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+                        Back
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </form>
+            <form
+              class="flex self-stretch flex-col space-y-10 items-start justify-start"
+              onSubmit={meta.handleSubmit}
+            >
+              <div class="flex self-stretch flex-col space-y-1.5 items-start justify-start">
+                <div class="flex self-stretch items-start justify-start">
+                  <div class="text-2xl font-semibold tracking-wide leading-loose text-coolGray-800">
+                    Lupa Password?
+                  </div>
+                </div>
+                <div class="flex self-stretch items-start justify-start">
+                  <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+                    Masukkan email address akun anda
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex self-stretch flex-col space-y-10 items-start justify-start">
+                <div class="flex self-stretch flex-col space-y-1 items-start justify-center">
+                  <div class="flex self-stretch pb-4 items-start justify-start">
+                    <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
+                      Email Address
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-center justify-start">
+                    <div class="relative flex flex-1 items-center justify-start">
+                      <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                        <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                          <img
+                            src="/fimgs/I205_201_18_21.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-7f26b390a09bdf75f8aad23d0059860be6c55013');background-size:100% 100%;background-repeat:no-repeat;"
+                          />
+                        </div>
+                      </div>
+                      <input
+                        id="name"
+                        name="email"
+                        type="email"
+                        placeholder="Masukkan Email Anda"
+                        class={
+                          meta.errors.email
+                            ? "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-3 pl-12"
+                            : "text-sm sm:text-base relative w-full border rounded placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-3 pl-12"
+                        }
+                        value={meta.input.email}
+                        onChange={meta.ubahNilai}
+                      />
+                    </div>
+                  </div>
+                  <div class="text-xs font-normal tracking-wide leading-tight text-red-500">
+                    {meta.errors.email}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                style="width: 413px; min-width: 413px; max-width: 413px; height: 40px; min-height: 40px; max-height: 40px;"
+              >
+                <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                  <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                    Kirim
+                  </div>
+                </div>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {meta.showModal ? (
+    <>
+      <form onSubmit={meta.handleSubmit2}>
+        <div class="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+          <div class="relative w-auto my-6 mx-auto max-w-3xl">
+            {/*content*/}
+            <div class="border-0 rounded-lg shadow-lg relative flex flex-col p-14 w-full bg-white outline-none focus:outline-none">
+              {/*body*/}
+              <div class="flex flex-1 flex-col text-center pb-4 flex-auto">
+                Check Your Email Address:
+              </div>
+              <div class="flex flex-1 flex-col text-center text-xl font-semibold text-indigo-500 pb-6 flex-auto">
+                {meta.state1.print ? <div>{meta.state.email}</div> : null}
+              </div>
+              <div class="m-auto">
+                <button class="items-center justify-center">
+                  <div class="items-center justify-center px-8 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                      Back to login
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      </form>
+    </>
+  ) : null}
+</>

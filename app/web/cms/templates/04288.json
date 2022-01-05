@@ -1,0 +1,16 @@
+{
+  "title": "team-show",
+  "type": "cms-template",
+  "lang": "",
+  "status": "SYSTEM",
+  "parent_id": "54643",
+  "content": {
+    "type": "API",
+    "structure": "",
+    "server_on_load": "async ({\n  template,\n  params,\n  render,\n  db,\n  req,\n  reply,\n  user,\n  log,\n  ext,\n  isDev,\n}: Server) => {\n  const privateKey = \"Team 6 Andromedia\";\n  if (user.user.id) {\n    let token_private = ext.CryptoJS.SHA3(privateKey, {\n      outputLength: 512,\n    }).toString();\n    let a_data = ext.CryptoJS.AES.decrypt(user.user.id, token_private).toString(\n      ext.CryptoJS.enc.Utf8\n    );\n    let data = JSON.parse(a_data);\n    if (data) {\n      db.muser\n        .findUnique({\n          where: {\n            id: parseInt(data.id),\n          },\n          select: {\n            email: true,\n            muser_detail: true,\n            muser_role: {\n              select: {\n                name: true,\n              },\n            },\n          },\n        })\n        .then((e) => {\n          if (e.muser_role.name.toLowerCase() == \"admin\") {\n          }\n          if (e.muser_role.name.toLowerCase() == \"directors\") {\n          }\n          if (\n            e.muser_role.name.toLowerCase() == \"user\" ||\n            e.muser_role.name.toLowerCase() == \"project manager\"\n          ) {\n            db.muser_team\n              .findFirst({\n                where: {\n                  AND: [\n                    { iduser: e.muser_detail.id },\n                    { id: parseInt(req.body.data.idteam) },\n                  ],\n                },\n              })\n              .then((e0) => {\n                db.muser_team\n                  .findUnique({\n                    where: {\n                      id: parseInt(req.body.data.idteam),\n                    },\n                  })\n                  .then((e1) => {\n                    db.muser_team_role\n                      .findMany({\n                        where: {\n                          idteam: parseInt(req.body.data.idteam),\n                        },\n                        include: {\n                          muser_detail: true, // Return all fields\n                        },\n                      })\n                      .then((e2) => {\n                        reply.send({\n                          status: true,\n                          data_act: e1,\n                          data_team: e2,\n                        });\n                      });\n                  });\n              })\n              .catch((e) => {\n                reply.send({\n                  status: false,\n                  pesanindo: \"kamu tidak punya akses ke projek ini\",\n                  msg: e,\n                });\n              });\n          }\n          // Validasi Role\n        })\n        .catch((e) => {\n          reply.send({\n            status: false,\n            pesanindo: \"error nih atau id tidak diketahui\",\n            msg: e,\n          });\n        });\n    } else {\n      reply.send({\n        status: false,\n        msg: \"invalid session id\",\n      });\n    }\n  } else {\n    reply.send({\n      status: false,\n      msg: \"session not found\",\n    });\n  }\n}",
+    "figma": {}
+  },
+  "slug": "/api/team/show",
+  "site": "*",
+  "id": "04288"
+}
