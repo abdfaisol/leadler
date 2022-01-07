@@ -185,7 +185,7 @@
             />
           </a>
           <a
-            class="flex self-stretch space-x-3.5 items-start justify-start rounded pl-1.5 py-2 hover:bg-coolGray-100 hover:opacity-50"
+            class="flex self-stretch space-x-3.5 items-start justify-start bg-coolGray-50 rounded pl-1.5 py-2 hover:bg-coolGray-100 hover:opacity-50"
             href="/pm/change-pass"
           >
             <div class="flex flex-1 space-x-4 items-center justify-start">
@@ -327,7 +327,7 @@
                 type={meta.showXPass ? "text" : "password"}
                 autoComplete="current-password"
                 placeholder="Insert your current password"
-                class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
+                class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
                 name="xpassword"
                 value={meta.input.xpassword}
                 onChange={meta.ubahNilai}
@@ -374,7 +374,7 @@
                 type={meta.showPass ? "text" : "password"}
                 autoComplete="current-password"
                 placeholder="Insert your new password"
-                class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
+                class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
                 name="password"
                 value={meta.input.password}
                 onChange={meta.ubahNilai}
@@ -420,7 +420,7 @@
                 type={meta.showPass2 ? "text" : "password"}
                 autoComplete="current-password"
                 placeholder="Confirm your password"
-                class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
+                class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
                 name="cpassword"
                 value={meta.input.cpassword}
                 onChange={meta.ubahNilai}
