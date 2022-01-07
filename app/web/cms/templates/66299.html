@@ -25,6 +25,11 @@
         title = title.replace("/pm", "");
         return title;
       },
+      titleAcc() {
+        var title = "My Account";
+        title = title.replace("/pm/myaccount", "/pm/change-pass");
+        return title;
+      },
       titleNav() {
         var title = window.location.pathname;
         title = title.replace("/pm/", "");
@@ -257,14 +262,21 @@
           {meta.isActive("/pm") ||
           meta.isActive("/pm/projects") ||
           meta.isActive("/pm/teams") ||
-          meta.isActive("/pm/timeline") ? (
+          meta.isActive("/pm/timeline") ||
+          meta.isActive("/pm/myaccount") ||
+          meta.isActive("/pm/change-pass") ? (
             <div
               class="flex self-stretch space-x-32 w-full px-12 items-center justify-between bg-white shadow shadow-b"
               style="height: 70px; min-height: 70px; max-height: 70px;"
             >
               <div class="flex items-center justify-start">
                 <div class="text-2xl font-medium capitalize tracking-wide leading-loose text-coolGray-900">
-                  {meta.isActive("/pm") ? meta.titleNavA() : meta.titleNav()}
+                  {meta.isActive("/pm")
+                    ? meta.titleNavA()
+                    : meta.isActive("/pm/myaccount") ||
+                      meta.isActive("/pm/change-pass")
+                    ? meta.titleAcc()
+                    : meta.titleNav()}
                 </div>
               </div>
               <div class="flex space-x-14 items-center justify-end">

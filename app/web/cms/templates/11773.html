@@ -1,0 +1,389 @@
+<>
+  <effect
+    meta={{
+      datePicker: new Date(),
+      setStartDate(newDate) {
+        this.datePicker = newDate;
+      },
+      isOpen: false,
+      setIsOpen(open) {
+        this.isOpen = open;
+      },
+      handleChange(e) {
+        this.setIsOpen(!this.isOpen);
+        this.setStartDate(e);
+      },
+      handleClick(e) {
+        e.preventDefault();
+        this.setIsOpen(!this.isOpen);
+      },
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+      },
+    }}
+    run={async () => {}}
+  />
+  <div class="flex w-full space-x-6 items-start justify-start p-10">
+    <div class="flex w-1/3 flex-col space-y-6 items-start justify-start">
+      <div class="flex w-full space-x-6 items-start justify-start p-4 bg-white rounded">
+        <div class="flex items-start justify-start">
+          <img
+            src="/fimgs/727_1003.x3.png"
+            class="rounded-full"
+            style="width: 56px; min-width: 56px; max-width: 56px; height: 56px; min-height: 56px; max-height: 56px;"
+          />
+        </div>
+        <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
+          <div class="flex self-stretch items-start justify-start">
+            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+              Robert Andre
+            </div>
+          </div>
+          <div class="flex self-stretch items-start justify-start">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-400">
+              Project Manager
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col w-full space-y-4 items-start justify-start p-4 bg-white rounded">
+        <div class="flex items-start justify-start">
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+            Account
+          </div>
+        </div>
+        <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
+          <a
+            class="flex self-stretch space-x-3.5 items-start justify-start rounded pl-1.5 py-2 hover:bg-coolGray-100 hover:opacity-50"
+            href="/pm/myaccount"
+          >
+            <div class="flex flex-1 space-x-4 items-center justify-start">
+              <img
+                src="/fimgs/913_3611.x3.png"
+                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              />
+              <div class="flex flex-1 items-start justify-start">
+                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                  Profile
+                </div>
+              </div>
+            </div>
+            <img
+              src="/fimgs/913_3614.x3.png"
+              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+            />
+          </a>
+          <a
+            class="flex self-stretch space-x-3.5 items-start justify-start rounded pl-1.5 py-2 hover:bg-coolGray-100 hover:opacity-50"
+            href="/pm/change-pass"
+          >
+            <div class="flex flex-1 space-x-4 items-center justify-start">
+              <img
+                src="/fimgs/913_3617.x3.png"
+                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              />
+              <div class="flex flex-1 items-start justify-start">
+                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                  Change Password
+                </div>
+              </div>
+            </div>
+            <img
+              src="/fimgs/913_3614.x3.png"
+              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+            />
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col w-full space-y-4 items-start justify-start p-4 bg-white rounded">
+        <div class="flex items-start justify-start">
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+            Projects
+          </div>
+        </div>
+        <div class="flex flex-col w-full space-y-6 items-start justify-start">
+          <div class="flex self-stretch items-center justify-between">
+            <div class="flex space-x-2 items-center justify-start">
+              <img
+                src="/fimgs/724_1762.x3.png"
+                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+              />
+              <div class="flex items-center justify-start">
+                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                  In Progress
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-orange-400 bg-opacity-40 border rounded-sm border-orange-400">
+              <div class="text-xs tracking-wide leading-none text-orange-400">
+                1
+              </div>
+            </div>
+          </div>
+          <div class="flex self-stretch items-center justify-between">
+            <div class="flex space-x-2 items-center justify-start">
+              <img
+                src="/fimgs/724_1769.x3.png"
+                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+              />
+              <div class="flex items-center justify-start">
+                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                  Complete
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-green-200 border rounded-sm border-green-500">
+              <div class="text-xs tracking-wide leading-none text-green-500">
+                22
+              </div>
+            </div>
+          </div>
+          <div class="flex self-stretch items-center justify-between">
+            <div class="flex space-x-2 items-center justify-start">
+              <img
+                src="/fimgs/724_1776.x3.png"
+                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+              />
+              <div class="flex items-center justify-start">
+                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                  Unfinish
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-red-200 border rounded-sm border-red-500">
+              <div class="text-xs tracking-wide leading-none text-red-500">
+                3
+              </div>
+            </div>
+          </div>
+          <div class="flex self-stretch items-center justify-between">
+            <div class="flex space-x-2 items-center justify-start">
+              <img
+                src="/fimgs/724_1783.x3.png"
+                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+              />
+              <div class="flex items-center justify-start">
+                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                  Next Project
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-violet-300 border rounded-sm border-blue-700">
+              <div class="text-xs tracking-wide leading-none text-blue-700">
+                2
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col w-full items-center justify-start p-4 bg-white rounded">
+        <button class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 border rounded border-indigo-500 hover:bg-coolGray-100 hover:opacity-50">
+          <div class="text-base tracking-wide leading-normal text-center text-indigo-500">
+            Sign Out
+          </div>
+          <img
+            src="/fimgs/I724_1789_724_1719.x3.png"
+            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+          />
+        </button>
+      </div>
+    </div>
+    <div class="flex flex-1 self-stretch flex-col space-y-6 items-start justify-start p-6 bg-white rounded">
+      <div class="flex items-start justify-start">
+        <div class="text-base font-medium tracking-wide leading-none text-coolGray-900">
+          Edit Profile
+        </div>
+      </div>
+      <div class="flex self-stretch items-start justify-start">
+        <div class="flex items-center justify-center z-0">
+          <img
+            src="/fimgs/727_1003.x3.png"
+            style="width: 72px; min-width: 72px; max-width: 72px; height: 72px; min-height: 72px; max-height: 72px;"
+          />
+        </div>
+        <div
+          class="flex items-center justify-center z-10"
+          style="padding-top:2.7rem; margin-left:-1.5rem"
+        >
+          <img
+            src="/fimgs/727_1004.x3.png"
+            style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+          />
+        </div>
+      </div>
+      <div class="flex self-stretch flex-col space-y-2.5 items-start justify-start relative overflow-y-auto">
+        <div class="text-sm tracking-wide leading-none text-gray-500">
+          Full Name
+        </div>
+        <div class="flex self-stretch items-center justify-start pb-2">
+          <div class="relative flex flex-1 items-center justify-start">
+            <input
+              id="name"
+              name="fullname"
+              onChange={meta.ubahNilai}
+              type="text"
+              placeholder=""
+              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+        </div>
+        <div class="text-sm tracking-wide leading-none text-gray-500">
+          Division
+        </div>
+        <div class="flex self-stretch items-center justify-start pb-2">
+          <div class="relative flex flex-1 items-center justify-start">
+            <input
+              id="name"
+              name="division"
+              onChange={meta.ubahNilai}
+              type="text"
+              placeholder="Technology"
+              disabled
+              class="text-base relative w-full border rounded placeholder-gray-400 bg-coolGray-50 border-coolGray-50 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+        </div>
+        <div class="text-sm tracking-wide leading-none text-gray-500">Role</div>
+        <div class="flex self-stretch items-center justify-start pb-2">
+          <div class="relative flex flex-1 items-center justify-start">
+            <input
+              id="name"
+              name="role"
+              onChange={meta.ubahNilai}
+              type="text"
+              placeholder="Project Manager"
+              disabled
+              class="text-base relative w-full border rounded placeholder-gray-400 bg-coolGray-50 border-coolGray-50 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+        </div>
+        <div class="text-sm tracking-wide leading-none text-gray-500">
+          Email Address
+        </div>
+        <div class="flex self-stretch items-center justify-start pb-2">
+          <div class="relative flex flex-1 items-center justify-start">
+            <input
+              id="name"
+              name="email"
+              onChange={meta.ubahNilai}
+              type="email"
+              placeholder=""
+              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+        </div>
+        <div class="text-sm tracking-wide leading-none text-gray-500">NIK</div>
+        <div class="flex self-stretch items-center justify-start pb-2">
+          <div class="relative flex flex-1 items-center justify-start">
+            <input
+              id="name"
+              name="nik"
+              onChange={meta.ubahNilai}
+              type="number"
+              placeholder=""
+              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+        </div>
+        <div class="text-sm tracking-wide leading-none text-gray-500">
+          Phone Number
+        </div>
+        <div class="flex self-stretch items-center justify-start pb-2">
+          <div class="relative flex flex-1 items-center justify-start">
+            <input
+              id="name"
+              name="nik"
+              onChange={meta.ubahNilai}
+              type="number"
+              placeholder=""
+              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+            />
+          </div>
+        </div>
+        <div class="text-sm tracking-wide leading-none text-gray-500">
+          Place and Date of Birth
+        </div>
+        <div class="flex flex-1 w-full space-x-4 items-center">
+          <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+            <div class="flex self-stretch items-center justify-start pb-2">
+              <div class="relative flex flex-1 items-center justify-start">
+                <input
+                  id="name"
+                  name="birthplace"
+                  onChange={meta.ubahNilai}
+                  type="text"
+                  placeholder=""
+                  class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                />
+              </div>
+            </div>
+          </div>
+          <div>,</div>
+          <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+            <div class="flex self-stretch items-center justify-start pb-2">
+              <div class="relative flex flex-1 items-center justify-start">
+                <datepicker
+                  selected={meta.datePicker}
+                  dateFormat="MMMM d, yyyy"
+                  onChange={meta.handleChange}
+                  disabled
+                  class="text-base relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                />
+                <div
+                  class="absolute flex border border-transparent right-0 top-0 h-full"
+                  style="width: 2.3rem; min-width: 2.3rem; max-width: 2.3rem;"
+                >
+                  <div class="flex bg-white items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
+                    <div class="cursor-pointer" onClick={meta.handleClick}>
+                      <ai-calendar style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {meta.isOpen && (
+            <div class="absolute right-0" style="top:17.3rem">
+              <div class="flex flex-col items-start justify-start overflow-ellipsis z-50 relative">
+                <datepicker
+                  selected={meta.datePicker}
+                  onChange={meta.handleChange}
+                  inline
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      <button class="flex w-full items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+        <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+          Save Change
+        </div>
+      </button>
+    </div>
+  </div>
+</>
