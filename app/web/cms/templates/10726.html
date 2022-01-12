@@ -1,187 +1,855 @@
 <>
-  <effect meta={{}} run={async () => {}} />
-  <div class="flex flex-col items-start justify-start bg-coolGray-50">
-    <div class="flex w-full self-stretch items-start justify-center px-3 py-4 bg-white shadow shadow-b">
-      <div class="flex w-full space-x-5 items-center justify-start">
-        <a href="/m/pm/projects" class="flex items-center justify-start">
-          <img
-            src="/fimgs/I727_1000_1575_5334.x3.png"
-            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-          />
-          <div class="text-base tracking-wide leading-tight text-indigo-500">
-            Back
-          </div>
-        </a>
-      </div>
-    </div>
-    <div class="overflow-x-auto w-full">
-      <div class="flex flex-col self-stretch space-y-5 py-3 w-auto">
-        <div class="flex flex-col self-stretch items-start justify-start">
-          <div class="flex space-x-4 items-start justify-start px-5 py-4 bg-white">
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              style="width: 132px; min-width: 132px; max-width: 132px;"
-              href="/m/pm/projects/detail"
-            >
-              <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
-                Projects Detail
-              </div>
-            </a>
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/task"
-            >
-              <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                Task
-              </div>
-            </a>
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/planning"
-            >
-              <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                Planning
-              </div>
-            </a>
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/timeline"
-            >
-              <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                Timeline
-              </div>
-            </a>
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              style="width: 151px; min-width: 151px; max-width: 151px;"
-              href="/m/pm/projects/filemanagement"
-            >
-              <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
-                File Management
-              </div>
-            </a>
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-indigo-400"
-              href="/m/pm/projects/team"
-            >
-              <div class="text-sm tracking-wide leading-tight text-indigo-500">
-                Team
-              </div>
-            </a>
-          </div>
+  <effect
+    meta={{
+      member: [],
+      state: {
+        detailTeam: {
+          name: "",
+          idteam: 0,
+        },
+        member: [],
+        idAuthor: 0,
+      },
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      team: "",
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      state2: { title: "" },
+      modalku: [],
+      dataku: [],
+      dataUser(e) {
+        let userDetail = [];
+        api("/api/user").then((i) => {
+          i.data_act.map((res, index) => {
+            if (res.muser_detail) {
+              // var validasi = true;
+              // if(res.iduser )
+              var validasi = this.member.find(
+                ({ iduser }) => iduser === res.muser_detail.id
+              );
+              if (!validasi) {
+                i.data_act[index] = {
+                  value: res.muser_detail.id,
+                  label: res.email,
+                };
+                userDetail.push(i.data_act[index]);
+              }
+            }
+          });
+        });
+        return userDetail;
+      },
+      dataTeam(e) {
+        let result = [];
+        api("/api/team").then((i) => {
+          i.data_act.map((res, index) => {
+            i.data_act[index] = { value: res.id, label: res.name };
+            result.push(i.data_act[index]);
+          });
+        });
+        return result;
+      },
+      modalChangeTeam() {
+        this.validasiChangeTeam = false;
+        this.showModalChangeTeam = !this.showModalChangeTeam;
+      },
+      modalAddMember() {
+        this.showModalAddMember = !this.showModalAddMember;
+      },
+      showmodalku(id) {
+        var vv = [];
+        if (!this.modalku[id]) {
+          vv[id] = true;
+        }
+        this.modalku = vv;
+        var dataku = [];
+        if (!this.dataku[id]) {
+          dataku[id] = true;
+        }
+        this.dataku = dataku;
+        // this.modalku = !this.modalku;
+        var elem = document.getElementById(id);
+        console.log("DOOOOO +> ");
+        console.log(elem);
+        if (elem) {
+          if (elem.classList.contains("hidden")) {
+            elem.classList.remove("hidden");
+          } else {
+            elem.classList.add("hidden");
+          }
+        }
+      },
+      // Script Delete Member
+      deleteTeam: {
+        name: "asdasd",
+        idteam: 0,
+      },
+      confirmDelete: false,
+      delTeam(id) {
+        console.log("HAPUS DATA ID : " + id);
+        api("/api/project/team/remove", {
+          idmember: id,
+        }).then((e) => {
+          console.log(e);
+          this.confirmDelete = false;
+          this.loading.member = false;
+          this.reloadData();
+        });
+      },
+      modalDelete(id, name) {
+        this.deleteTeam.idteam = id;
+        this.deleteTeam.name = name;
+        // console.log("hapus tim " + name);
+        this.confirmDelete = true;
+      },
+      closeDelete() {
+        this.confirmDelete = false;
+      },
+      // Script add member
+      addMember(event) {
+        if (this.state.member.length > 0) {
+          this.state.member.map((e) => {
+            console.log(e);
+            this.runAddMember(e, this.state.detailTeam.idteam, params.id);
+            // console.log(sql);
+          });
+          this.modalAddMember();
+          this.loading.member = false;
+          this.reloadData();
+        } else {
+          console.log("MINIMAL 1 MEMBER");
+        }
+        event.preventDefault();
+      },
+      runAddMember(user, team, project) {
+        api("/api/project/team/member/add", {
+          iduser: user,
+          idteam: team,
+          idproject: project,
+        }).then((e) => {
+          console.log(e);
+        });
+      },
+      // Script Change Team
+      validasiChangeTeam: false,
+      changeTeam(event) {
+        if (this.validasiChangeTeam == true) {
+          var dd = this.runChangeTeam(this.team, params.id);
+
+          this.modalChangeTeam();
+        } else {
+          console.log("Kamu belum memilih tim");
+        }
+        event.preventDefault();
+      },
+      runChangeTeam(team, project) {
+        api("/api/project/team/change", {
+          idteam: team,
+          idproject: project,
+        }).then((e) => {
+          if (e.status == true) {
+            this.loading.member = false;
+            this.reloadData();
+          }
+          console.log(e);
+        });
+      },
+      // Script reload data
+      loading: { member: false },
+      reloadData() {
+        api("/api/project/team/show", {
+          data: {
+            idproject: params.id,
+          },
+        }).then((i) => {
+          console.log(i);
+          if (i.status == true) {
+            // meta.member = [];
+            // console.log(i.data_team);
+            this.member = i.data_act;
+            this.loading.member = true;
+          }
+        });
+      },
+      closeAllModal() {
+        this.showModalChangeTeam = false;
+        this.showModalAddMember = false;
+        this.confirmDelete = false;
+      },
+    }}
+    run={async () => {
+      console.log("ID DIVISI +> " + meta.state.iddivision);
+      api("/api/project/show/" + params.id).then((e) => {
+        console.log(e);
+        if (e.status == true) {
+          meta.state.idAuthor = e.data_act.project.iduserproject;
+          meta.link.detail =
+            "/m/pm/projects/" + e.data_act.project.id + "/detail";
+          meta.link.team = "/m/pm/projects/" + e.data_act.project.id + "/team";
+          meta.link.task = "/m/pm/projects/" + e.data_act.project.id + "/task";
+          meta.link.timeline =
+            "/m/pm/projects/" + e.data_act.project.id + "/timeline";
+          meta.link.planning =
+            "/m/pm/projects/" + e.data_act.project.id + "/planning";
+          meta.link.file =
+            "/m/pm/projects/" + e.data_act.project.id + "/file-management";
+          var detailTeam = {
+            idteam: 0,
+            name: "",
+          };
+          detailTeam.name = "PERSONAL";
+          api("/api/project/team/show", {
+            data: {
+              idproject: e.data_act.project.id,
+            },
+          }).then((i) => {
+            // console.log(i);
+            if (i.status == true) {
+              meta.member = i.data_act;
+              meta.loading.member = true;
+              if (i.data_act.length > 0) {
+                i.data_act.map((idx) => {
+                  // console.log(e);
+                  if (idx.idteam) {
+                    api("/api/team/show", {
+                      data: {
+                        idteam: idx.idteam,
+                      },
+                    }).then((i) => {
+                      console.log(i);
+                      if ((i.status = true)) {
+                        detailTeam.idteam = idx.team;
+                        detailTeam.name = i.data_act.name;
+                      }
+                    });
+                  }
+                });
+              }
+            }
+            meta.isLoading = true;
+          });
+          meta.state.detailTeam = detailTeam;
+          console.log(detailTeam);
+        }
+      });
+      meta.actionteam = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.team = e.value;
+            meta.validasiChangeTeam = true;
+          });
+        },
+      };
+      meta.actionmember = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.member = e.map((x) => x.value);
+            meta.team = 0;
+          });
+        },
+      };
+    }}
+  />
+  <div class="flex flex-col min-h-screen min-w-screen">
+    <div class="flex flex-col bg-coolGray-50 space-y-1 flex-grow">
+      <div class="flex w-full self-stretch items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+        <div class="flex w-full space-x-5 items-center justify-start">
+          <a href="/m/pm/projects" class="flex items-center justify-start">
+            <img
+              src="/fimgs/I727_1000_1575_5334.x3.png"
+              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+            />
+            <div class="text-base tracking-wide leading-tight text-indigo-500">
+              Back
+            </div>
+          </a>
         </div>
       </div>
-    </div>
-    <div class="flex flex-col w-full self-stretch space-y-5 pb-3 w-auto">
-      <div class="flex flex-col self-stretch space-y-6 items-start justify-start px-5 py-4 bg-white">
-        <div class="flex flex-col space-y-1 items-start justify-start">
-          <div class="flex items-start justify-start">
-            <div class="text-xs tracking-wide leading-none text-coolGray-500">
-              This is Project be commissioned by:
-            </div>
-          </div>
-          <div class="flex items-start justify-start">
-            <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-              Team 1
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-1 space-x-2 items-center justify-center">
-          <img
-            src="/fimgs/609_817.x3.png"
-            class="flex items-start justify-start"
-            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-          />
-          <div class="flex flex-1 flex-col items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                Royhan
-              </div>
-            </div>
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                Full Stact Developer
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-1 space-x-2 items-center justify-center">
-          <img
-            src="/fimgs/609_817.x3.png"
-            class="flex items-start justify-start"
-            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-          />
-          <div class="flex flex-1 flex-col items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                Bukhari
-              </div>
-            </div>
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                Full Stack Developer
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-1 space-x-2 items-center justify-center">
-          <img
-            src="/fimgs/609_817.x3.png"
-            class="flex items-start justify-start"
-            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-          />
-          <div class="flex flex-1 flex-col items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                Faisol
-              </div>
-            </div>
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                Full Stack Developer
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-1 space-x-2 items-center justify-center">
-          <img
-            src="/fimgs/609_817.x3.png"
-            class="flex items-start justify-start"
-            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-          />
-          <div class="flex flex-1 flex-col items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                Afif
-              </div>
-            </div>
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                UI/UX Designer
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-1 space-x-2 items-center justify-center">
-          <img
-            src="/fimgs/609_817.x3.png"
-            class="flex items-start justify-start"
-            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-          />
-          <div class="flex flex-1 flex-col items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                Zaki
-              </div>
-            </div>
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                Business Analyst
-              </div>
+      <div class="overflow-x-auto w-full sticky top-0 z-50 bg-white">
+        <div class="flex flex-col self-stretch space-y-2 w-auto">
+          <div class="flex flex-col self-stretch items-start justify-start">
+            <div class="flex space-x-4 items-start justify-start px-5 py-4 ">
+              <a
+                href={meta.link.detail}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+                style="width: 132px; min-width: 132px; max-width: 132px;"
+              >
+                <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
+                  Projects Detail
+                </div>
+              </a>
+              <a
+                href={meta.link.task}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                  Task
+                </div>
+              </a>
+              <a
+                href={meta.link.planning}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-coolGray-500 ">
+                  Planning
+                </div>
+              </a>
+              <a
+                href={meta.link.timeline}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                  Timeline
+                </div>
+              </a>
+              <a
+                href={meta.link.file}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+                style="width: 151px; min-width: 151px; max-width: 151px;"
+              >
+                <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
+                  File Management
+                </div>
+              </a>
+              <a
+                href={meta.link.team}
+                class="flex items-center justify-center px-4 py-2 border rounded  border-indigo-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                  Team
+                </div>
+              </a>
             </div>
           </div>
         </div>
       </div>
+      {meta.isLoading ? (
+        <>
+          <div class="flex self-stretch flex-col space-y-8 items-start justify-start">
+            <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-2 bg-white rounded">
+              <div class="flex self-stretch space-x-2 items-start justify-start">
+                <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+                      This project will be carried out by:
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+                      {/*Team 1*/}
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col items-start justify-start">
+                  <div class="flex items-start justify-start">
+                    <div
+                      class="flex items-start justify-start px-4 py-2 border rounded border-indigo-400 hover:border-indigo-700 cursor-pointer"
+                      onClick={meta.modalChangeTeam}
+                    >
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-indigo-500">
+                        Change Team
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex self-stretch flex-col items-start justify-start">
+                <div class="flex self-stretch flex-col items-start justify-start p-6 bg-coolGray-50 border rounded border-coolGray-300">
+                  <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                    <div class="flex self-stretch space-x-2.5 items-center justify-start">
+                      <div class="flex flex-1 items-start justify-start">
+                        <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                          List Member
+                        </div>
+                      </div>
+                      <div class="flex flex-col items-start justify-start">
+                        <div
+                          class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded cursor-pointer"
+                          onClick={meta.modalAddMember}
+                        >
+                          <img
+                            src="/fimgs/603_427.x3.png"
+                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                          />
+                          <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                            Add Member
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex self-stretch flex-col items-start justify-start  bg-coolGray-50 rounded">
+                      <div class="flex self-stretch flex-col items-start justify-start">
+                        {meta.loading.member ? (
+                          <>
+                            <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                              {meta.member.map((e, idx) => {
+                                if (e.id == meta.state.idAuthor) {
+                                  return (
+                                    <div class="flex self-stretch flex-col">
+                                      {!meta.dataku[e.id] && (
+                                        <div class="flex self-stretch items-center justify-start py-2 pr-4 rounded">
+                                          <div class="flex space-x-4 items-start justify-start w-full cursor-pointer">
+                                            <div class="flex items-start justify-start">
+                                              <img
+                                                src="/fimgs/I448_1610_1448_4295.x3.png"
+                                                class="rounded-full"
+                                                style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                                              />
+                                            </div>
+                                            <div class="flex flex-col items-start justify-start">
+                                              <div class="flex self-stretch items-start justify-start">
+                                                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                                  {e.muser_detail.fullname}
+                                                </div>
+                                              </div>
+                                              <div class="flex self-stretch items-start justify-start">
+                                                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                                                  Project Manager
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                } else {
+                                  return (
+                                    <div class="flex self-stretch flex-col">
+                                      {!meta.dataku[e.id] && (
+                                        <div
+                                          class="flex self-stretch items-center justify-start py-2 pr-4 rounded"
+                                          id={e.id}
+                                        >
+                                          <div
+                                            class="flex space-x-4 items-start justify-start w-full cursor-pointer"
+                                            onClick={(event) => {
+                                              meta.showmodalku(e.id);
+                                            }}
+                                          >
+                                            <div class="flex items-start justify-start">
+                                              <img
+                                                src="/fimgs/I448_1610_1448_4295.x3.png"
+                                                class="rounded-full"
+                                                style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                                              />
+                                            </div>
+                                            <div class="flex flex-col items-start justify-start">
+                                              <div class="flex self-stretch items-start justify-start">
+                                                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                                  {e.muser_detail.fullname}
+                                                </div>
+                                              </div>
+                                              <div class="flex self-stretch items-start justify-start">
+                                                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                                                  {
+                                                    e.muser_detail.mdivision
+                                                      .name
+                                                  }
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )}
+                                      {meta.modalku[e.id] && (
+                                        <div class="flex self-stretch items-center justify-between py-2 pr-4 pl-5 bg-white rounded">
+                                          <div
+                                            class="flex space-x-4 items-start justify-start w-full cursor-pointer"
+                                            onClick={(e) => {
+                                              meta.showmodalku(9);
+                                            }}
+                                          >
+                                            <div class="flex items-start justify-start">
+                                              <img
+                                                src="/fimgs/I448_1610_1448_4295.x3.png"
+                                                class="rounded-full"
+                                                style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                                              />
+                                            </div>
+                                            <div class="flex flex-col items-start justify-start">
+                                              <div class="flex self-stretch items-start justify-start">
+                                                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                                  {e.muser_detail.fullname}
+                                                </div>
+                                              </div>
+                                              <div class="flex self-stretch items-start justify-start">
+                                                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                                                  {
+                                                    e.muser_detail.mdivision
+                                                      .name
+                                                  }
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div
+                                            class="flex items-start justify-start"
+                                            onClick={(event) =>
+                                              meta.modalDelete(
+                                                e.id,
+                                                e.muser_detail.fullname
+                                              )
+                                            }
+                                          >
+                                            <img
+                                              src="/fimgs/295_281.x3.png"
+                                              class="cursor-pointer"
+                                              style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                                            />
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                }
+                              })}
+                            </div>
+                          </>
+                        ) : (
+                          <div class="px-3 py-4 whitespace-normal text-left">
+                            <div class="flex self-stretch flex-wrap items-center justify-center">
+                              <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                                <div
+                                  class="loader-dots block relative w-22 h-6 mt-2"
+                                  style="width: 5rem;"
+                                >
+                                  <div
+                                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                    style="top: 0; width: 0.75rem; height: 0.75rem;"
+                                  ></div>
+                                  <div
+                                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                  ></div>
+                                  <div
+                                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                  ></div>
+                                  <div
+                                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div class="flex self-stretch flex-wrap items-center justify-center flex-grow">
+          <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+            <div
+              class="loader-dots block relative w-22 h-6 mt-2"
+              style="width: 5rem;"
+            >
+              <div
+                class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                style="top: 0; width: 0.75rem; height: 0.75rem;"
+              ></div>
+              <div
+                class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+              ></div>
+              <div
+                class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+              ></div>
+              <div
+                class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+              ></div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   </div>
+  {meta.showModalChangeTeam && (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          className="opacity-25 fixed inset-0 z-50 bg-black w-screen h-screen"
+          onClick={meta.closeAllModal}
+        ></div>
+        <div class="relative w-full px-2" style=" z-index:60">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <div class="flex self-stretch items-start justify-between">
+                    <div></div>
+                    <div class="flex items-start justify-start">
+                      <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                        Change Team
+                      </div>
+                    </div>
+                    <img
+                      src="/fimgs/677_1939.x1.svg"
+                      style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                      onClick={meta.modalChangeTeam}
+                    />
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                // onSubmit={meta.submitData}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    {meta.state.detailTeam.idteam ? (
+                      <>
+                        <div class="text-sm tracking-wide leading-none text-gray-500">
+                          Team Now
+                        </div>
+                        <div class="flex self-stretch items-center justify-start pb-2.5">
+                          <div class="relative flex flex-1 items-center justify-start">
+                            <m-input
+                              id="name"
+                              name="project"
+                              type="text"
+                              placeholder=""
+                              value={meta.state.detailTeam.name}
+                              disabled
+                              class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : null}
+
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        Replace By
+                      </div>
+                    </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.dataTeam()}
+                          value={meta.state2.team}
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full"
+                          classNamePrefix="select"
+                          name="team"
+                          onChange={(e) => {
+                            meta.actionteam.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    onClick={meta.changeTeam}
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Save
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )}
+  {meta.showModalAddMember && (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          className="opacity-25 fixed inset-0 z-50 bg-black w-screen h-screen"
+          onClick={meta.closeAllModal}
+        ></div>
+        <div class="relative w-full px-2" style=" z-index:60">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <div class="flex self-stretch items-start justify-between">
+                    <div></div>
+                    <div class="flex items-start justify-start">
+                      <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                        Add Member
+                      </div>
+                    </div>
+                    <img
+                      src="/fimgs/677_1939.x1.svg"
+                      style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                      onClick={meta.modalAddMember}
+                    />
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                // onSubmit={meta.submitData}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        Search Employee
+                      </div>
+                    </div>
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.dataUser()}
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full"
+                          classNamePrefix="select"
+                          isMulti
+                          name="member"
+                          onChange={(e) => {
+                            meta.actionmember.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                    onClick={meta.addMember}
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Save
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )}
+  {meta.confirmDelete ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          className="opacity-25 fixed inset-0 z-50 bg-black w-screen h-screen"
+          onClick={meta.closeAllModal}
+        ></div>
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 325px; width: 325px;z-index:60"
+        >
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            <div class="flex w-full flex-col items-start justify-start p-4 space-y-6 bg-white rounded">
+              <div class="flex w-full space-x-4 items-start justify-start">
+                <div>
+                  <img
+                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                    src="/fimgs/295_281.x3.png"
+                  />
+                </div>
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                      Remove Member
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight">
+                      Are you sure remove{" "}
+                      <small class="text-sm font-medium">
+                        "{meta.deleteTeam.name}"?
+                      </small>{" "}
+                      You can’t undo this action
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex w-full space-x-6 items-start justify-end">
+                <div class="flex items-start justify-end">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                      <button onClick={meta.closeDelete}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-start justify-end bg-red-500 rounded">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <button
+                      class="text-base font-medium tracking-wide leading-normal text-center text-white"
+                      onClick={(event) => meta.delTeam(meta.deleteTeam.idteam)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
 </>

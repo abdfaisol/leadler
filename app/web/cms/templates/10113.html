@@ -1,30 +1,73 @@
 <>
   <effect
     meta={{
-      state: { email: "", password: "" },
-      showErrorMessage: false,
+      showModal: false,
+      showPass: false,
+      input: {},
+      errors: {},
+      state: { token: params.token, password: "" },
+      handleSubmit(event) {
+        console.log(this.state);
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.state),
+        };
+        fetch(
+          window.location.origin + "/api/reset-password",
+          requestOptions
+        ).then((response) => {
+          response.json().then((e) => {
+            console.log(e);
+          });
+        });
+        if (this.validate()) {
+          console.log(this);
+          let input = {};
+          input["password"] = "";
+          input["cpassword"] = "";
+          this.input = input;
+          this.showModal = !this.showModal;
+        }
+        //window.location.replace(window.location.origin);
+        event.preventDefault();
+      },
       validate() {
         let input = this.input;
         let errors = {};
         let isValid = true;
 
-        if (!input["email"]) {
+        if (!input["password"]) {
           isValid = false;
-          errors["email"] = "This field is required.";
+          errors["password"] = "This field is required.";
         }
 
-        if (typeof input["email"] !== "undefined") {
-          let pattern = RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
-          ///^[a-zA-Z0-9._]+@[a-zA-Z]+(?:\.[a-zA-Z0-9-]+)*$/
-          if (!pattern.test(input["email"])) {
-            isValid = false;
-            errors["email"] = "Email address doesn't valid.";
-          }
+        if (!input["cpassword"]) {
+          isValid = false;
+          errors["cpassword"] = "This field is required.";
         }
+
+        if (input["password"] !== input["cpassword"]) {
+          isValid = false;
+          errors["cpassword"] = "Password doesn't match.";
+        }
+
         this.errors = errors;
         return isValid;
       },
+      handleSubmit1(event) {
+        window.location.replace(window.location.origin + "/m/forget-pass");
+        event.preventDefault();
+      },
+      handleSubmit2(event) {
+        window.location.replace(window.location.origin);
+        event.preventDefault();
+      },
       ubahNilai(e) {
+        let input = this.input;
+        input[e.target.name] = e.target.value;
+        this.input = input;
+
         let name = e.target.name;
         let nilai = e.target.value;
         this.state[name] = nilai;
@@ -41,135 +84,160 @@
         this.showPass = !this.showPass;
         // console.log(this.showPass);
       },
+      togglePass2() {
+        this.showPass2 = !this.showPass2;
+        // console.log(this.showPass);
+      },
     }}
     run={async () => {}}
   />
   <div class="flex flex-col w-full h-full items-center justify-center bg-white m-auto">
+    <div class="flex w-full self-stretch items-start justify-center px-3 pt-4">
+      <form
+        class="flex w-full space-x-5 items-center justify-start"
+        onSubmit={meta.handleSubmit1}
+      >
+        <button class="flex items-center justify-start">
+          <img
+            src="/fimgs/I727_1000_1575_5334.x3.png"
+            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+          />
+          <div class="text-base tracking-wide leading-tight text-indigo-500">
+            Back
+          </div>
+        </button>
+      </form>
+    </div>
     <div class="flex flex-col w-full px-5 space-y-10 items-center justify-center m-auto">
       <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
         <div class="flex self-stretch items-start justify-start pb-2">
           <div class="text-xl font-semibold tracking-wide leading-none text-coolGray-800">
-            Welcome Back
+            Reset Your Password
           </div>
         </div>
         <div class="flex self-stretch items-start justify-start">
           <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-500">
-            Insert your email and password
+            Create New Password
           </div>
         </div>
       </div>
-      <div class="flex self-stretch flex-col space-y-6 items-start justify-start">
+      <form
+        class="flex self-stretch flex-col space-y-6 items-start justify-start"
+        onSubmit={meta.handleSubmit}
+      >
         <div class="flex self-stretch flex-col space-y-6 items-start justify-start">
           <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
             <div class="flex self-stretch items-start justify-start">
               <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
-                Email Address
+                Create New Password
               </div>
             </div>
-            <div class="flex self-stretch items-center justify-start">
-              <div class="relative flex flex-1 items-center justify-start">
-                <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
-                  <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
-                    <img
-                      src="/fimgs/I205_201_18_21.x3.png"
-                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-7f26b390a09bdf75f8aad23d0059860be6c55013');background-size:100% 100%;background-repeat:no-repeat;"
-                    />
+            <div class="flex flex-col self-stretch items-start justify-start">
+              <div class="flex self-stretch items-center justify-start">
+                <div class="relative flex flex-1 items-center justify-start">
+                  <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                    <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                      <img
+                        src="/fimgs/I159_397_18_30.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+                      />
+                    </div>
+                  </div>
+                  <m-input
+                    type={meta.showPass ? "text" : "password"}
+                    autoComplete="current-password"
+                    placeholder="Insert your new password"
+                    class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
+                    name="password"
+                    value={meta.input.password}
+                    onChange={meta.ubahNilai}
+                  />
+                  <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                    <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
+                      <div onClick={meta.togglePass} class="cursor-pointer">
+                        {meta.showPass ? (
+                          <img
+                            src="/fimgs/618_960.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        ) : (
+                          <img
+                            src="/fimgs/620_443.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <m-input
-                  id="email-address"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  placeholder="Insert your email here"
-                  class={
-                    meta.showErrorMessage
-                      ? "text-sm relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-2.5 pr-4 pl-12"
-                      : "text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 py-2.5 pr-4 pl-12"
-                  }
-                />
+              </div>
+              <div class="text-xs py-1 font-normal tracking-wide leading-tight text-red-500">
+                {meta.errors.password}
               </div>
             </div>
           </div>
           <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
             <div class="flex self-stretch items-start justify-start">
               <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-800">
-                Password
+                Confirm Password
               </div>
             </div>
-
-            <div class="flex self-stretch items-center justify-start">
-              <div class="relative flex flex-1 items-center justify-start">
-                <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
-                  <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
-                    <img
-                      src="/fimgs/I159_397_18_30.x3.png"
-                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
-                    />
+            <div class="flex flex-col self-stretch items-start justify-start">
+              <div class="flex self-stretch items-center justify-start">
+                <div class="relative flex flex-1 items-center justify-start">
+                  <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                    <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                      <img
+                        src="/fimgs/I159_397_18_30.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+                      />
+                    </div>
                   </div>
-                </div>
-                <m-input
-                  type="password"
-                  autoComplete="current-password"
-                  placeholder="Insert your password here"
-                  class={
-                    meta.showErrorMessage
-                      ? "text-sm relative w-full border rounded placeholder-gray-400 border-red-500 focus:outline-none py-2.5 pr-4 pl-12"
-                      : "text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 py-2.5 pr-4 pl-12"
-                  }
-                  name="password"
-                />
-                <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
-                  <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
-                    <div onClick={meta.togglePass} class="cursor-pointer">
-                      {meta.showPass ? (
-                        <img
-                          src="/fimgs/618_960.x3.png"
-                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                        />
-                      ) : (
-                        <img
-                          src="/fimgs/620_443.x3.png"
-                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                        />
-                      )}
+                  <m-input
+                    type={meta.showPass2 ? "text" : "password"}
+                    autoComplete="current-password"
+                    placeholder="Confirm your password"
+                    class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
+                    name="cpassword"
+                    value={meta.input.cpassword}
+                    onChange={meta.ubahNilai}
+                  />
+                  <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                    <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
+                      <div onClick={meta.togglePass2} class="cursor-pointer">
+                        {meta.showPass2 ? (
+                          <img
+                            src="/fimgs/618_960.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        ) : (
+                          <img
+                            src="/fimgs/620_443.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="text-sm flex self-stretch items-center justify-between">
-              <div
-                className={
-                  meta.showErrorMessage
-                    ? "text-sm flex self-stretch items-center justify-between"
-                    : "text-sm flex self-stretch items-center justify-end"
-                }
-              >
-                {meta.showErrorMessage ? (
-                  <div class="font-normal text-red-500">
-                    Email/Password anda salah, Silahkan coba lagi!
-                  </div>
-                ) : null}
+              <div class="text-xs font-normal pt-1 tracking-wide leading-tight text-red-500">
+                {meta.errors.cpassword}
               </div>
-              <a
-                href="/forget-pass"
-                className="font-medium text-indigo-500 hover:text-indigo-700"
-              >
-                Forget Password?
-              </a>
             </div>
           </div>
         </div>
-        <div class="flex self-stretch flex-col items-start justify-start">
+        <button
+          type="submit"
+          class="flex self-stretch flex-col items-start justify-start"
+        >
           <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 rounded">
             <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-              Login
+              Reset Password
             </div>
           </div>
-        </div>
-      </div>
+        </button>
+      </form>
     </div>
   </div>
 </>

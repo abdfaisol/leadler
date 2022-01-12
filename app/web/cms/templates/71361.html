@@ -1,0 +1,1329 @@
+<>
+  <effect
+    meta={{
+      modalSubTask: false,
+      state: {
+        name: "",
+        startdate: "",
+        duedate: "",
+        labelstartdate: "",
+        labelduedate: "",
+        status: [],
+        cstatus: "",
+        effort: "",
+        priority: "",
+        iddivision: "",
+        idtask: "",
+        description: "",
+        cost: "0",
+        taskname: "",
+        proggres: "0",
+        taskComplete: "0",
+      },
+      stateSubTask: {
+        name: "",
+        startdate: "",
+        duedate: "",
+        status: [],
+        cstatus: "",
+        effort: "",
+        priority: "",
+        iddivision: "",
+        idtask: "",
+      },
+      division: [],
+      isLoading: false,
+      dataSubTask: [],
+      dataSubTaskProgress: [],
+      dataSubTaskSubmit: [],
+      dataSubTaskComplete: [],
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      cobaElement: [],
+      print: true,
+      data_task: [],
+      status: [],
+      statusRaw: [],
+      priority: [
+        { value: "1", label: "Low" },
+        { value: "2", label: "Medium" },
+        { value: "3", label: "High" },
+      ],
+      taskv: [
+        { value: "1", label: "1 (Easy)" },
+        { value: "2", label: "2 (Intermediate)" },
+        { value: "3", label: "3 (Hard)" },
+      ],
+      statusx: [
+        { value: "3", label: "TODO", color: "#4ADE80" },
+        {
+          value: "2",
+          label: "IN PROGRESS",
+          color: "#888DF1",
+        },
+        { value: "6", label: "SUBMITED", color: "#F1B459" },
+        { value: "1", label: "COMPLETE", color: "#F1B459" },
+      ],
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value.toString() == value.toString()) {
+            out = idx;
+            console.log(
+              "VALUE : " +
+                e.value.toString() +
+                " DITEMUKAN DI INDEX " +
+                idx +
+                " DENGAN LABEL " +
+                e.label
+            );
+          }
+        });
+        return out;
+      },
+      isStatus() {
+        if (this.statusx[0]) {
+          console.log("tes");
+          return "w-40 bg-blue-300";
+        } else if (this.statusx[1]) {
+          console.log("tes2");
+          return "w-40 bg-orange-300";
+        } else if (this.statusx[2]) {
+          console.log("tes3");
+          return "w-40 bg-red-300";
+        } else {
+          console.log("tes4");
+          return "w-40 bg-green-300";
+        }
+      },
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      stylesx: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "2px",
+          paddingBottom: "2px",
+          border: "none",
+          boxShadow: "none",
+          backgroundColor: "transparent",
+        }),
+        input: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        singleValue: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        option: (styles, { data }) => {
+          return {
+            ...styles,
+            backgroundColor: data.color,
+            "&:hover": {
+              backgroundColor: data.isDisabled
+                ? "#F3F4F6"
+                : data.isSelected
+                ? null
+                : "#F3F4F6",
+            },
+          };
+        },
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        // console.log(nilai);
+      },
+      toggleModal() {
+        console.clear();
+        this.showModal = !this.showModal;
+        this.dataSubTask = [];
+      },
+      toggleModal2Close() {
+        this.showModal2 = !this.showModal2;
+        this.statusModal = "";
+        this.ttempHistorySubTask = [];
+      },
+      idtask: 0,
+      toggleModal2(event, idtask) {
+        console.clear();
+        console.log(idtask);
+        console.log("CHECK -1");
+        this.modalTaskEdit.all = [];
+        this.modalTaskEdit.progress = [];
+        this.modalTaskEdit.submit = [];
+        this.modalTaskEdit.complete = [];
+        this.dataExpand = [];
+        this.statusModal = "update modal";
+        console.log("CHECK 0");
+        this.showModal2 = !this.showModal2;
+        api("/api/project/task/show", {
+          data: {
+            idtask: idtask,
+            idproject: params.id,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.loadingexpand = false;
+            this.state.idtask = e.data_act.id;
+            console.log(this.state.idtask);
+            this.loadingexpandSub = false;
+            this.expandData(e.data_act.id, false);
+            this.state.name = e.data_act.name;
+            console.log(this.state.name);
+            this.state.labelstartdate = dateFormat(
+              e.data_act.startdate,
+              "MMM dd, YYY"
+            );
+            this.state.labelduedate = dateFormat(
+              e.data_act.duedate,
+              "MMM dd, YYY"
+            );
+            this.state.startdate = dateFormat(
+              e.data_act.startdate,
+              "YYY-MM-dd"
+            );
+            this.state.duedate = dateFormat(e.data_act.duedate, "YYY-MM-dd");
+            console.log(
+              "START DATE : " +
+                this.state.startdate +
+                " DUE DATE : " +
+                this.state.duedate
+            );
+            this.state.priority = e.data_act.priority;
+            this.state.cstatus = e.data_act.mproject_status.name;
+            this.state.status = e.data_act.idstatus;
+            this.state.effort = e.data_act.effort;
+            console.log("CHECK 1");
+          }
+        });
+      },
+      toggleAdd() {
+        this.showAdd = !this.showAdd;
+      },
+      idsubtask: 0,
+      // SUBTASK
+      detailSub: [],
+      showDetailEdit(id, idx) {
+        var vv = [];
+        if (!this.expandSubtask[id]) {
+          vv[id] = true;
+        }
+        console.log(id);
+        console.log(this.subtaskDetail[idx].desc);
+        var ttempdesc = "";
+        if (this.subtaskDetail[idx].desc) {
+          ttempdesc = this.subtaskDetail[idx].desc;
+        }
+        this.detailData[idx] = { desc: ttempdesc };
+        console.log(this.detailData[idx].desc);
+        this.detailSub = vv;
+      },
+      detailData: [],
+      updateDetailSub(e, id, idx) {
+        var vv = [];
+        vv[id] = false;
+        this.detailSub = vv;
+        this.subtaskDetail[idx].desc = this.detailData[idx].desc;
+        this.updateDesc(id, this.detailData[idx].desc);
+        e.preventDefault(id);
+      },
+      ubahNilai3(e, id, idx) {
+        this.detailData[idx].desc = e.target.value;
+      },
+      ubahNilai2(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.ttempHistorySubTask[this.idsubtask][name] = nilai;
+        // this.dataSubTask[this.idsubtask][name] = nilai;
+        console.log("name => " + nilai);
+      },
+      removeSubtask(event, id) {
+        console.log(event);
+        var list = document.getElementById("subtask-" + id);
+        // console.log(list);
+        list.remove();
+        delete this.ttempSubTask[id];
+        console.log(this.dataSubTask.length);
+      },
+      delete(id) {
+        this.setState((prevState) => ({
+          data: prevState.data.filter((el) => el != id),
+        }));
+      },
+      ttempSubTask: [],
+      showModalSubTask(event, id) {
+        this.modalSubTask = true;
+        this.idsubtask = id;
+        console.log(this.statusModal);
+        if (this.statusModal == "update modal") {
+          this.showModal2 = !this.showModal2;
+        } else {
+          this.toggleModal();
+        }
+      },
+      statusModal: "",
+      backTask(e) {
+        this.modalSubTask = false;
+
+        this.ttempHistorySubTask[this.idsubtask] = this.ttempSubTask[
+          this.idsubtask
+        ];
+        console.log(this.statusModal);
+        if (this.statusModal == "update modal") {
+          this.showModal2 = !this.showModal2;
+        } else {
+          this.toggleModal();
+        }
+        e.preventDefault();
+      },
+      subtask(event) {
+        if (this.state.taskname == "") {
+          console.log("tidak boleh kosong");
+        } else {
+          var dataSub = {
+            name: this.state.taskname,
+            startdate: "",
+            duedate: "",
+            status: this.statusRaw[0].value,
+            cstatus: "",
+            effort: 1,
+            priority: 1,
+            iddivision: "",
+            idtask: "",
+            description: "",
+            cost: "0",
+            taskname: "",
+            index: 0,
+          };
+          var length = this.dataSubTask.push(dataSub);
+          var idx = length - 1;
+          dataSub.index = idx;
+          this.ttempSubTask[idx] = dataSub;
+          this.ttempHistorySubTask[idx] = dataSub;
+          this.cobaElement.push({ index: idx, name: this.state.taskname });
+        }
+        event.preventDefault();
+      },
+      ttempHistorySubTask: [],
+      saveSubtask(event) {
+        this.ttempSubTask[this.idsubtask] = this.ttempHistorySubTask[
+          this.idsubtask
+        ];
+        if (this.statusModal == "update modal") {
+          this.showModal2 = !this.showModal2;
+        } else {
+          this.toggleModal();
+        }
+        this.modalSubTask = false;
+        event.preventDefault();
+      },
+      submitData(event) {
+        let data = {
+          desc: this.state.description,
+          estimated_cost: parseInt(this.state.cost),
+          idproject: params.id,
+          name: this.state.name,
+          startdate: this.state.startdate,
+          duedate: this.state.duedate,
+          idstatus: this.state.status,
+          effort: this.state.effort,
+          priority: this.state.priority,
+          iddivision: this.state.iddivision,
+        };
+        console.log("mempersiapkan data");
+        console.log(data);
+        console.log("memasukkan data");
+        api("/api/project/task/create", {
+          data: data,
+        }).then((e) => {
+          console.log(e);
+          if (e.status == false) {
+            console.log(e);
+            console.log("gagal masuk");
+            console.log(data);
+            // this.isFilled = this.isFilled;
+            // this.showModal = !this.showModal;
+          } else {
+            // console.log(e);
+            // console.log("berhasil masuk");
+            // console.log(data);
+            this.isLoading = false;
+            if (this.ttempSubTask.length > 0) {
+              this.ttempSubTask.map((idx) => {
+                // console.log("memasukkan subtask : ");
+                // console.log(idx);
+                api("/api/project/subtask/create", {
+                  data: {
+                    idtask: e.data_act.id,
+                    idproject: params.id,
+                    name: idx.name,
+                    startdate: idx.startdate,
+                    duedate: idx.duedate,
+                    idstatus: idx.status,
+                    effort: idx.effort,
+                    priority: idx.priority,
+                    iddivision: this.state.iddivision,
+                  },
+                }).then((e) => {});
+                this.reloadProject();
+              });
+            } else {
+              this.reloadProject();
+            }
+            this.toggleModal();
+            // location.reload();
+          }
+        });
+        event.preventDefault();
+      },
+      updateStatus(event, idtask, idx) {
+        // meta.state.iddepartment = e.value;
+        //     console.log(meta.state.iddepartment);
+
+        // /api/project/status/update
+        var status = 0;
+        if (this.statusModal == "update modal") {
+          status = event.target.value;
+        } else {
+          status = event.value;
+        }
+        console.log(
+          "task dengan id : " +
+            idtask +
+            "berhasil diupdate dengan value : " +
+            status
+        );
+        api("/api/project/task/status/update", {
+          data: {
+            id: idtask,
+            idstatus: status,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            if (this.statusModal == "update modal") {
+              this.loadingexpandSub = false;
+              this.expandData(this.state.idtask);
+            } else {
+              this.isLoading = false;
+              this.reloadProject();
+            }
+
+            console.log("reload");
+          }
+        });
+      },
+      updateDesc(idtask, description) {
+        // /api/project/status/update
+        api("/api/project/task/desc/update", {
+          data: {
+            id: idtask,
+            desc: description,
+          },
+        }).then((e) => {
+          console.log(e);
+        });
+      },
+      updateTask(event) {
+        console.clear();
+        api("/api/project/task/update", {
+          data: {
+            desc: this.state.description,
+            idproject: params.id,
+            name: this.state.name,
+            startdate: this.state.startdate,
+            duedate: this.state.duedate,
+            idstatus: this.state.status,
+            effort: this.state.effort,
+            priority: this.state.priority,
+            iddivision: this.state.iddivision,
+            idtask: this.state.idtask,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.isLoading = false;
+            if (this.ttempSubTask.length > 0) {
+              this.ttempSubTask.map((idx) => {
+                this.iddivision = e.data_act.iddivision;
+                api("/api/project/subtask/create", {
+                  data: {
+                    idtask: this.state.idtask,
+                    idproject: params.id,
+                    name: idx.name,
+                    startdate: idx.startdate,
+                    duedate: idx.duedate,
+                    idstatus: idx.status,
+                    effort: idx.effort,
+                    priority: idx.priority,
+                    iddivision: this.state.iddivision,
+                  },
+                }).then((e) => {
+                  console.log("sub task");
+                  console.log(e);
+                  this.ttempSubTask = [];
+                  this.reloadProject();
+                });
+              });
+            } else {
+              this.reloadProject();
+            }
+            console.log("reload");
+            this.toggleModal2Close();
+          }
+        });
+        event.preventDefault();
+        // console.log(this.data_task[idx].idstatus);
+        // this.data_task[idx].idstatus = event.value;
+      },
+      // Subtask expand
+      expandSubtask: {
+        all: [],
+        progress: [],
+        submit: [],
+        complete: [],
+      },
+      expand(id, statusku) {
+        console.clear();
+        // console.log
+        console.log(statusku);
+        var vv = [];
+        if (statusku == "all") {
+          if (!this.expandSubtask.all[id]) {
+            vv[id] = true;
+          }
+          this.loading.all = false;
+          this.expandSubtask.all = vv;
+        } else if (statusku == "progress") {
+          if (!this.expandSubtask.progress[id]) {
+            vv[id] = true;
+          }
+          this.loading.progress = false;
+          this.expandSubtask.progress = vv;
+        } else if (statusku == "submit") {
+          if (!this.expandSubtask.submit[id]) {
+            vv[id] = true;
+          }
+          this.loading.submit = false;
+          this.expandSubtask.submit = vv;
+        } else if (statusku == "complete") {
+          if (!this.expandSubtask.complete[id]) {
+            vv[id] = true;
+          }
+          this.loading.complete = false;
+          this.expandSubtask.complete = vv;
+        }
+        console.log("TES");
+        this.expandData(id, statusku);
+      },
+      loading: {
+        all: [],
+        progress: [],
+        submit: [],
+        complete: [],
+      },
+      expandProgress(id) {
+        var vv = [];
+        if (!this.expandSubtask[id]) {
+          vv[id] = true;
+        }
+        this.expandSubtask = vv;
+
+        this.expandData(id);
+        this.loadingexpand = false;
+      },
+      loadingexpand: false,
+      dataExpand: {
+        all: [],
+        progress: [],
+        submit: [],
+        complete: [],
+      },
+      subtaskDetail: [],
+      expandData(id, statusku) {
+        console.log(statusku);
+        console.log("EXPAND ID => " + id);
+        // console.log("ID PROJECT : " + params.id);
+        api("/api/project/task/subtask/show", {
+          data: {
+            idproject: params.id,
+            idparent: id,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            e.data_act.map((idx) => {
+              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+            });
+            if (statusku) {
+              if (statusku == "all") {
+                this.loading.all = true;
+                this.dataExpand.all = e.data_act;
+              } else if (statusku == "progress") {
+                this.loading.progress = true;
+                this.dataExpand.progress = e.data_act;
+              } else if (statusku == "submit") {
+                this.loading.submit = true;
+                this.dataExpand.submit = e.data_act;
+              } else if (statusku == "complete") {
+                this.loading.complete = true;
+                this.dataExpand.complete = e.data_act;
+              }
+            } else {
+              this.dataExpand = e.data_act;
+              this.subtaskDetail = e.data_act;
+            }
+            this.loadingexpand = true;
+            this.loadingexpandSub = true;
+          }
+        });
+        // return printout;
+      },
+      reloadProject() {
+        var iddivision = this.iddivision;
+        this.data_task = [];
+        console.log("TODO dengan id divisi " + iddivision);
+        api("/api/project/show/" + params.id, {
+          data: {
+            iddivision: iddivision,
+          },
+          keyword: this.keywordSearch,
+        }).then((e) => {
+          // console.log(e);
+          console.log("ID DIVISION CHECK 1 => " + iddivision);
+          if (e.status == true) {
+            e.data_act.project_task.map((idx) => {
+              idx.subtask = false;
+              console.log("ID DIVISION CHECK 2 => " + iddivision);
+              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+              api("/api/project/task/subtask/show", {
+                data: {
+                  idproject: params.id,
+                  idparent: idx.id,
+                },
+                keyword: this.keywordSearch,
+              }).then((e) => {
+                console.log(e);
+                console.log("ID DIVISION CHECK 3 => " + iddivision);
+                if (e.status == true) {
+                  if (e.data_act.length > 0) {
+                    idx.subtask = true;
+                  }
+                  console.log("ID DIVISION CHECK 4 => " + iddivision);
+                }
+                console.log("ID DIVISION CHECK 5 => " + iddivision);
+                this.data_task.push(idx);
+              });
+            });
+          }
+          console.log("ID DIVISION CHECK 6 => " + iddivision);
+          this.dataSubTaskProgress = [];
+          // In proggress
+          api("/api/project/show/" + params.id, {
+            data: {
+              idstatus: 2,
+              iddivision: iddivision,
+            },
+            keyword: this.keywordSearch,
+          }).then((e) => {
+            console.log("IN PROGGRES dengan id divisi " + iddivision);
+            console.log(e);
+            if (e.status == true) {
+              // console.log(e);
+              e.data_act.project_task.map((idx) => {
+                idx.subtask = false;
+                idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                api("/api/project/task/subtask/show", {
+                  data: {
+                    idproject: params.id,
+                    idparent: idx.id,
+                  },
+                }).then((e) => {
+                  // console.log(e);
+
+                  if (e.status == true) {
+                    if (e.data_act.length > 0) {
+                      idx.subtask = true;
+                    }
+                  }
+                  this.dataSubTaskProgress.push(idx);
+                });
+              });
+            }
+            // Submitted
+            this.dataSubTaskSubmit = [];
+            api("/api/project/show/" + params.id, {
+              data: {
+                idstatus: 6,
+                iddivision: iddivision,
+              },
+              keyword: this.keywordSearch,
+            }).then((e) => {
+              console.log("SUBMIT dengan id divisi " + iddivision);
+              if (e.status == true) {
+                // console.log(e);
+
+                e.data_act.project_task.map((idx) => {
+                  idx.subtask = false;
+                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  // console.log("ID TASK => " + idx.id);
+                  // console.log(idx);
+                  api("/api/project/task/subtask/show", {
+                    data: {
+                      idproject: params.id,
+                      idparent: idx.id,
+                    },
+                  }).then((e) => {
+                    // console.log(e);
+                    if (e.status == true) {
+                      if (e.data_act.length > 0) {
+                        idx.subtask = true;
+                      }
+                    }
+                    this.dataSubTaskSubmit.push(idx);
+                  });
+                });
+              }
+              // Complete
+              this.dataSubTaskComplete = [];
+              api("/api/project/show/" + params.id, {
+                data: {
+                  idstatus: 1,
+                  iddivision: iddivision,
+                },
+                keyword: this.keywordSearch,
+              }).then((e) => {
+                console.log("COMPLETE dengan id divisi " + iddivision);
+                if (e.status == true) {
+                  e.data_act.project_task.map((idx) => {
+                    idx.subtask = false;
+                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                    // console.log("ID TASK => " + idx.id);
+                    // console.log(idx);
+                    api("/api/project/task/subtask/show", {
+                      data: {
+                        idproject: params.id,
+                        idparent: idx.id,
+                      },
+                    }).then((e) => {
+                      // console.log(e);
+
+                      if (e.status == true) {
+                        if (e.data_act.length > 0) {
+                          idx.subtask = true;
+                        }
+                      }
+                      this.dataSubTaskComplete.push(idx);
+                    });
+                  });
+                  this.isLoading = true;
+                }
+              });
+            });
+          });
+        });
+      },
+      arrayMove(arr, fromIndex, toIndex) {
+        var element = arr[fromIndex];
+        arr.splice(fromIndex, 1);
+        arr.splice(toIndex, 0, element);
+      },
+      modalDescription: [],
+      showModalDesc(id) {
+        var vv = [];
+        if (!this.expandSubtask[id]) {
+          vv[id] = true;
+        }
+        this.modalDescription = vv;
+      },
+      keywordSearch: "",
+      iddivision: 0,
+      modalTaskEdit: {
+        all: [],
+        progress: [],
+        submit: [],
+        complete: [],
+      },
+      showEditTask(id) {
+        var vv = [];
+        this.modalTaskEdit.all = [];
+        this.modalTaskEdit.progress = [];
+        this.modalTaskEdit.submit = [];
+        this.modalTaskEdit.complete = [];
+        if (!this.modalTaskEdit.all[id]) {
+          vv[id] = true;
+        }
+        this.modalTaskEdit.all = vv;
+      },
+      showEditTaskProgress(id) {
+        var vv = [];
+        this.modalTaskEdit.all = [];
+        this.modalTaskEdit.progress = [];
+        this.modalTaskEdit.submit = [];
+        this.modalTaskEdit.complete = [];
+        if (!this.modalTaskEdit.progress[id]) {
+          vv[id] = true;
+        }
+        this.modalTaskEdit.progress = vv;
+      },
+      showEditTaskSubmit(id) {
+        var vv = [];
+        this.modalTaskEdit.all = [];
+        this.modalTaskEdit.progress = [];
+        this.modalTaskEdit.submit = [];
+        this.modalTaskEdit.complete = [];
+        if (!this.modalTaskEdit.submit[id]) {
+          vv[id] = true;
+        }
+        this.modalTaskEdit.submit = vv;
+      },
+      showEditTaskComplete(id) {
+        var vv = [];
+        this.modalTaskEdit.all = [];
+        this.modalTaskEdit.progress = [];
+        this.modalTaskEdit.submit = [];
+        this.modalTaskEdit.complete = [];
+        if (!this.modalTaskEdit.complete[id]) {
+          vv[id] = true;
+        }
+        this.modalTaskEdit.complete = vv;
+      },
+      deleteTeam: {
+        name: "asdasd",
+        idteam: 0,
+      },
+      modalDelete(id, name) {
+        this.deleteTeam.idteam = id;
+        this.deleteTeam.name = name;
+        // console.log("hapus tim " + name);
+        this.modalTaskEdit = [];
+        this.confirmDelete = true;
+      },
+      deleteTask(id) {
+        api("/api/project/task/delete", {
+          idtask: id,
+        }).then((e) => {
+          console.log(e);
+          this.confirmDelete = false;
+          if (e.status == true) {
+            this.isLoading = false;
+            this.reloadData();
+          }
+        });
+      },
+      closeDelete() {
+        this.confirmDelete = false;
+      },
+    }}
+    run={async () => {
+      // Complete
+      api("/api/status").then((e) => {
+        console.clear();
+        console.log(e);
+        if (e.status == true) {
+          meta.statusRaw = e.data_act;
+          var ttemp_status = [];
+          e.data_act.map((idx) => {
+            ttemp_status[idx.value] = idx;
+            // console.log(ttemp_status);
+          });
+          meta.status = ttemp_status;
+        }
+      });
+      // Mendapatkan data projek
+      api("/api/session").then((e) => {
+        // console.log(e);
+        if (e.status == true || e.status == "true") {
+          api("/api/project/show/" + params.id).then((e0) => {
+            if (
+              e.data_act.muser_role.name.toLowerCase() == "project manager" ||
+              e.data_act.muser_role.name.toLowerCase() == "admin"
+            ) {
+              if (e0.data_act.project_division.length) {
+                meta.state.iddivision = e0.data_act.project_division[0].id;
+              }
+            } else {
+              meta.state.iddivision = e.data_act.muser_detail.iddivision;
+            }
+            console.log(meta.state.iddivision);
+            // All Project
+            api("/api/project/show/" + params.id, {
+              data: {
+                iddivision: meta.state.iddivision,
+              },
+            }).then((e) => {
+              if (e.status == true) {
+                meta.state.judul = e.data_act.project.name;
+                e.data_act.project_task.map((idx) => {
+                  idx.subtask = false;
+
+                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  // console.log("ID TASK => " + idx.id);
+                  // console.log(idx);
+                  api("/api/project/task/subtask/show", {
+                    data: {
+                      idproject: params.id,
+                      idparent: idx.id,
+                    },
+                  }).then((e) => {
+                    // console.log(e);
+                    if (e.status == true) {
+                      if (e.data_act.length > 0) {
+                        idx.subtask = true;
+                      }
+                    }
+                    meta.data_task.push(idx);
+                  });
+                });
+                meta.division = e.data_act.project_division;
+                // console.log("ID DIVISION" + meta.state.iddivision);
+                meta.link.detail = "/pm/projects/" + params.id + "/detail";
+                meta.link.team = "/pm/projects/" + params.id + "/team";
+                meta.link.task = "/pm/projects/" + params.id + "/task";
+                meta.link.timeline = "/pm/projects/" + params.id + "/timeline";
+                meta.link.planning = "/pm/projects/" + params.id + "/planning";
+                meta.link.file =
+                  "/pm/projects/" + params.id + "/file-management";
+                meta.state.taskComplete = e.data_act.resultTask.taskComplete;
+                meta.state.proggres = e.data_act.resultTask.completed;
+                // console.log(e);
+              }
+              // In proggress
+              api("/api/project/show/" + params.id, {
+                data: {
+                  idstatus: 2,
+                  iddivision: meta.state.iddivision,
+                },
+              }).then((e) => {
+                // console.log(e.data_act.project_task);
+                if (e.status == true) {
+                  // console.log(e);
+                  e.data_act.project_task.map((idx) => {
+                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  });
+                  meta.dataSubTaskProgress = e.data_act.project_task;
+                }
+                // Submitted
+                api("/api/project/show/" + params.id, {
+                  data: {
+                    idstatus: 6,
+                    iddivision: meta.state.iddivision,
+                  },
+                }).then((e) => {
+                  if (e.status == true) {
+                    // console.log(e);
+                    e.data_act.project_task.map((idx) => {
+                      idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                      idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                    });
+                    meta.dataSubTaskSubmit = e.data_act.project_task;
+                  }
+                  // Complete
+                  api("/api/project/show/" + params.id, {
+                    data: {
+                      idstatus: 1,
+                      iddivision: meta.state.iddivision,
+                    },
+                  }).then((e) => {
+                    if (e.status == true) {
+                      // console.log(e);
+                      e.data_act.project_task.map((idx) => {
+                        idx.startdate = dateFormat(
+                          idx.startdate,
+                          "MMM dd, YYY"
+                        );
+                        idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                      });
+                      meta.dataSubTaskComplete = e.data_act.project_task;
+                      meta.isLoading = true;
+                    }
+                  });
+                });
+              });
+            });
+          });
+        }
+      });
+      meta.actionstatus = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.status = e.value;
+            console.log(meta.state.status);
+          });
+        },
+      };
+      meta.actionstatus2 = {
+        onChange: (e, idx) => {
+          runInAction(() => {
+            meta.ttempHistorySubTask[idx].status = e.value;
+          });
+        },
+      };
+      meta.actioneffort2 = {
+        onChange: (e, idx) => {
+          runInAction(() => {
+            meta.ttempHistorySubTask[idx].effort = e.value;
+          });
+        },
+      };
+      meta.actionpriority2 = {
+        onChange: (e, idx) => {
+          runInAction(() => {
+            meta.ttempHistorySubTask[idx].priority = e.value;
+          });
+        },
+      };
+      meta.actioncstatus = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.cstatus = e.color;
+            console.log(meta.state.cstatus);
+          });
+        },
+      };
+      meta.actioneffort = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.effort = e.value;
+            console.log(meta.state.effort);
+          });
+        },
+      };
+      meta.actionpriority = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.priority = e.value;
+            console.log(meta.state.priority);
+          });
+        },
+      };
+      meta.actiondivision = {
+        onChange: (e) => {
+          runInAction(() => {
+            console.clear();
+            console.log("ID DIVISION " + e.target.value);
+            meta.state.iddivision = e.target.value;
+            meta.iddivision = e.target.value;
+            console.log("ID DIVISION " + meta.state.iddivision);
+            meta.isLoading = false;
+            meta.reloadProject();
+            // console.log();
+            // console.log("VALUE : " + e.target.value);
+          });
+        },
+      };
+      meta.actionsearch = {
+        onChange: (e) => {
+          runInAction(() => {
+            console.clear();
+            console.log("DIVISI" + meta.iddivision);
+            console.log(e.target.value);
+            // meta.state.iddivision =
+            meta.keywordSearch = e.target.value;
+            meta.isLoading = false;
+            meta.reloadProject();
+            // meta.search(e.target.value);
+          });
+        },
+      };
+    }}
+  />
+  {meta.data_task.map((e, idx) => {
+    var statusColor = meta.status[e.idstatus];
+    var bgcolor = "background-color: " + statusColor.color;
+    return (
+      <>
+        <tr>
+          <td class="px-6 py-3 whitespace-nowrap text-start flex flex-row cursor-pointer relative">
+            {e.subtask ? (
+              <img
+                src="/fimgs/609_824.x3.png"
+                class="flex items-start justify-start"
+                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                onClick={(event) => {
+                  meta.expand(e.id, "all");
+                }}
+              />
+            ) : (
+              ""
+            )}
+
+            <div
+              class="text-sm text-gray-900 flex-grow"
+              onClick={(event) => {
+                meta.toggleModal2(event, e.id);
+              }}
+            >
+              {e.name}
+            </div>
+          </td>
+          <td class="px-6 py-3 whitespace-nowrap text-start">
+            <div class="text-xs tracking-wide leading-none text-green-500">
+              {e.startdate}
+            </div>
+          </td>
+          <td class="px-6 py-3 whitespace-nowrap text-start">
+            <div class="text-xs tracking-wide leading-none text-red-500">
+              {e.duedate}
+            </div>
+          </td>
+          <td class="text-center py-0">
+            <div class="flex items-center justify-center">
+              <multipleselect
+                onChange={(event) => {
+                  meta.updateStatus(event, e.id, idx);
+                }}
+                options={meta.statusRaw}
+                defaultValue={meta.status[e.idstatus]}
+                menuPortalTarget={document.body}
+                theme={(theme) => ({
+                  ...theme,
+                  borderRadius: 0,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#F3F4F6",
+                    primary: "#6366F1",
+                  },
+                })}
+                styles={meta.stylesx}
+                style={bgcolor}
+                className="w-40"
+                classNamePrefix="select"
+                name="status"
+                // onChange={(e) => {
+                //   meta.actionstatus.onChange(e);
+                // }}
+              />
+            </div>
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-center">
+            <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+              <div class="text-xs tracking-wide leading-none text-center text-white">
+                {e.mpriority.name}
+              </div>
+            </div>
+          </td>
+          <td class="px-7 py-2 whitespace-nowrap text-center">
+            <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+              <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                {e.effort}
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-center">
+            <div class="flex items-center justify-center">
+              <img
+                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                src="/fimgs/5_48.x3.png"
+                onClick={(event) => {
+                  meta.showEditTask(e.id);
+                }}
+              />
+              {meta.modalTaskEdit.all[e.id] && (
+                <>
+                  <div class="absolute">
+                    <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none z-40">
+                      <div class="flex flex-col items-start justify-start bg-white">
+                        <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                          <div class="flex self-stretch flex-col items-start justify-start">
+                            <div
+                              class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50"
+                              onClick={(event) => {
+                                meta.toggleModal2(event, e.id);
+                              }}
+                            >
+                              <div class="flex flex-1 space-x-2 items-center justify-start">
+                                <img
+                                  src="/fimgs/545_1540.x3.png"
+                                  style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                />
+                                <div class="flex flex-1 items-start justify-start">
+                                  <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                    Edit Project
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="flex self-stretch flex-col space-y-2 items-start justify-start border-t"
+                            onClick={(event) => meta.modalDelete(e.id, e.name)}
+                          >
+                            <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
+                              <div class="flex flex-1 space-x-2 items-center justify-start">
+                                <img
+                                  src="/fimgs/545_1557.x3.png"
+                                  style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                />
+                                <div class="flex flex-1 items-start justify-start">
+                                  <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                    Delete
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </td>
+        </tr>
+        {meta.expandSubtask.all[e.id] ? (
+          meta.loading.all ? (
+            <>
+              {meta.dataExpand.all.map((e, idx) => {
+                var statusColor = meta.status[e.idstatus];
+                var bgcolor = "background-color: " + statusColor.color;
+                return (
+                  <tr>
+                    <td
+                      class="px-6 py-3 pr-6 whitespace-nowrap text-start flex flex-row cursor-pointer relative"
+                      onClick={(event) => {
+                        meta.toggleModal2(event, e.id);
+                      }}
+                    >
+                      <div class="text-sm text-gray-900 flex-grow">
+                        {/*{e.subtask ? "ADA SUB" : e.name}*/}
+                        {e.name}
+                      </div>
+                    </td>
+                    <td class="px-6 py-3 whitespace-nowrap text-start">
+                      <div class="text-xs tracking-wide leading-none text-green-500">
+                        {e.startdate}
+                      </div>
+                    </td>
+                    <td class="px-6 py-3 whitespace-nowrap text-start">
+                      <div class="text-xs tracking-wide leading-none text-red-500">
+                        {e.duedate}
+                      </div>
+                    </td>
+                    <td class="text-center py-0">
+                      <div class="flex items-center justify-center">
+                        <multipleselect
+                          onChange={(event) => {
+                            meta.updateStatus(event, e.id, idx);
+                          }}
+                          options={meta.statusRaw}
+                          defaultValue={meta.status[e.idstatus]}
+                          menuPortalTarget={document.body}
+                          theme={(theme) => ({
+                            ...theme,
+                            borderRadius: 0,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.stylesx}
+                          style={bgcolor}
+                          className="w-40"
+                          classNamePrefix="select"
+                          name="status"
+                          // onChange={(e) => {
+                          //   meta.actionstatus.onChange(e);
+                          // }}
+                        />
+                      </div>
+                    </td>
+                    <td class="px-6 py-2 whitespace-nowrap text-center">
+                      <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                        <div class="text-xs tracking-wide leading-none text-center text-white">
+                          {e.mpriority.name}
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-7 py-2 whitespace-nowrap text-center">
+                      <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                        <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                          {e.effort}
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-2 whitespace-nowrap text-center">
+                      <div class="flex items-center justify-center">
+                        <img
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                          src="/fimgs/5_48.x3.png"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </>
+          ) : (
+            <tr class="flex self-stretch flex-wrap items-center justify-center">
+              <td
+                class="py-2 px-6 rounded-lg flex items-center flex-col"
+                colSpan={7}
+              >
+                <div
+                  class="loader-dots block relative w-22 h-6 mt-2"
+                  style="width: 5rem;"
+                >
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                </div>
+              </td>
+            </tr>
+          )
+        ) : null}
+      </>
+    );
+  })}
+</>

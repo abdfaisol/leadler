@@ -1,1 +1,16 @@
-<m-page class="bg-coolGray-50">{children}</m-page>
+<>
+  <effect
+    meta={{
+      // SHOW DATEPICKER
+      showDatePicker(e) {
+        document.getElementById("root").classList.add("z-0");
+        console.log("COBA DULU");
+        document
+          .getElementsByClassName("css-k008qs")[0]
+          .classList.add("grid grid-cols-2");
+      },
+    }}
+    run={async () => {}}
+  />
+  <m-page style="background-color: #fff;">{children}</m-page>
+</>

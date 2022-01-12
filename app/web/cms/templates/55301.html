@@ -1,0 +1,788 @@
+<>
+  <effect
+    meta={{
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+        proggres: "0",
+        taskComplete: "0",
+      },
+      listFile: [],
+      state: {
+        judul: "Loading",
+        name: "#",
+        file: {
+          status: false,
+          path: "#",
+        },
+        iddivision: 0,
+      },
+      isLoading: false,
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        // console.log(nilai);
+      },
+      responseUpload: "",
+      upload: async (file) => {
+        const formData = _FormData();
+        formData.append("path", "users\\" + params.id);
+        formData.append("file", file);
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        return await response.json();
+      },
+      validasiUpload() {
+        this.state.file.status = true;
+      },
+      toggleModal() {
+        this.showModal = !this.showModal;
+        this.state.file.status = false;
+      },
+      toggleModal1() {
+        this.showModal1 = !this.showModal1;
+      },
+      submitData(event) {
+        if (
+          this.state.file.status == false ||
+          this.state.file.status == "false"
+        ) {
+          console.log("upload gagal, silahkan upload ulang");
+        } else {
+          console.log("Upload berhasil");
+          let data = {
+            name: this.state.name,
+            url: this.state.file.path,
+            idproject: params.id,
+          };
+          console.log("bersiap upload data");
+          console.log(data);
+          console.log("upload data");
+          api("/api/project/upload/create", {
+            data: data,
+          }).then((e) => {
+            if (e.status == true) {
+              console.log("Success");
+              console.log(e);
+              console.log(data);
+              this.isFilled = this.isFilled;
+              this.showModal = !this.showModal;
+              this.isLoading = true;
+              this.reloadData();
+            } else {
+              console.log("failed");
+              console.log(e);
+              console.log(data);
+            }
+          });
+        }
+        this.state.file.status = false;
+        event.preventDefault();
+      },
+      reloadData() {
+        api("/api/project/upload", {
+          data: {
+            idproject: params.id,
+            iddivision: this.state.iddivision,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.listFile = e.data_act;
+            this.isLoading = true;
+          }
+        });
+      },
+      statusModal: [],
+      showmodalku(id) {
+        var vv = [];
+        if (!this.statusModal[id]) {
+          console.log("ID FILE " + id);
+          vv[id] = true;
+        }
+        this.statusModal = vv;
+      },
+      showDetail: false,
+      idfile: 0,
+      showdetailku(id) {
+        this.idfile = id;
+        this.showDetail = !this.showDetail;
+        this.showFile(id);
+        this.statusModal = [];
+      },
+      update(id, desc) {
+        api("/api/project/file/update", {
+          data: {
+            idfile: id,
+            description: desc.substring(0, 200),
+          },
+        }).then((e) => {
+          console.log(e);
+        });
+      },
+      updateDesc(e) {
+        this.update(this.idfile, e.target.value);
+        this.detailFile.desc = e.target.value;
+        // console.log(name);
+      },
+      detailFile: {
+        name: "",
+        division: "",
+        owner: "",
+        desc: "",
+        iduser: 0,
+      },
+      showFile(id) {
+        api("/api/project/file/show/" + id).then((e) => {
+          if (e.status == true) {
+            this.detailFile.name = e.data_act.name;
+            this.detailFile.division = e.data_act.mdivision.name;
+            this.detailFile.owner = e.data_act.muser_detail.fullname;
+            this.detailFile.desc = e.data_act.desc;
+            this.detailFile.iduser = e.data_act.iduser;
+          }
+        });
+      },
+      division: [],
+      deleteTeam: {
+        name: "asdasd",
+        idteam: 0,
+      },
+      confirmDelete: false,
+      delTeam(id) {
+        console.log("HAPUS DATA ID : " + id);
+        api("/api/project/file/delete", {
+          idfile: id,
+        }).then((e) => {
+          console.log(e);
+          this.confirmDelete = false;
+          if (e.status == true) {
+            this.isLoading = false;
+            this.reloadData();
+          }
+        });
+      },
+      modalDelete(id, name) {
+        this.deleteTeam.idteam = id;
+        this.deleteTeam.name = name;
+        // console.log("hapus tim " + name);
+        this.confirmDelete = true;
+        this.showmodalku(id);
+      },
+      closeDelete() {
+        this.confirmDelete = false;
+      },
+      search(key) {
+        api("/api/project/file/search", {
+          idproject: params.id,
+          iddivision: this.state.iddivision,
+          keyword: key,
+        }).then((e) => {
+          if (e.status == true) {
+            this.listFile = e.data_act;
+            this.isLoading = true;
+          }
+        });
+      },
+      iduser: 0,
+    }}
+    run={async () => {
+      console.log("mendapatkan data: loading");
+      api("/api/project/show/" + params.id).then((e) => {
+        // console.log(e);
+        if (e.status == true) {
+          meta.state.taskComplete = e.data_act.resultTask.taskComplete;
+          meta.state.proggres = e.data_act.resultTask.completed;
+          meta.state.judul = e.data_act.project.name;
+          meta.link.detail = "/user/projects/" + params.id + "/detail";
+          meta.link.team = "/user/projects/" + params.id + "/team";
+          meta.link.task = "/user/projects/" + params.id + "/task";
+          meta.link.timeline = "/user/projects/" + params.id + "/timeline";
+          meta.link.planning = "/user/projects/" + params.id + "/planning";
+          meta.link.file = "/user/projects/" + params.id + "/file-management";
+          meta.division = e.data_act.project_division;
+        }
+      });
+      api("/api/session").then((e) => {
+        console.log(e);
+        if (e.status == true || e.status == "true") {
+          api("/api/project/show/" + params.id).then((e0) => {
+            meta.state.iddivision = e.data_act.muser_detail.iddivision;
+            meta.iduser = e.data_act.muser_detail.id;
+            // All Project
+            api("/api/project/upload", {
+              data: {
+                idproject: params.id,
+                iddivision: meta.state.iddivision,
+              },
+            }).then((e) => {
+              console.log(e);
+              if (e.status == true) {
+                meta.listFile = e.data_act;
+                meta.isLoading = true;
+              }
+            });
+          });
+        }
+      });
+      meta.actiondivision = {
+        onChange: (e) => {
+          runInAction(() => {
+            // console.log("ID DIVISION " + meta.state.iddivision);
+            meta.state.iddivision = e.target.value;
+            meta.isLoading = false;
+            meta.reloadData();
+            // console.log();
+            // console.log("VALUE : " + e.target.value);
+          });
+        },
+      };
+      meta.actionsearch = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.isLoading = false;
+            meta.search(e.target.value);
+          });
+        },
+      };
+    }}
+  />
+  <div class="flex w-full self-stretch flex-col space-y-9 items-start justify-start px-10 pt-10">
+    <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
+      <div class="flex w-full items-start justify-between">
+        <div class="flex items-start justify-start">
+          <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+            {meta.state.judul}
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2 items-start justify-start">
+          <div
+            class="flex flex-col items-start justify-start"
+            style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
+          >
+            <bar percent={meta.state.proggres} />
+          </div>
+          <div class="flex items-start justify-start">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+              {meta.state.taskComplete} Task Done
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex space-x-8 items-center justify-start">
+        <a
+          href={meta.link.detail}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Project Detail
+          </div>
+        </a>
+        <a
+          href={meta.link.task}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Task
+          </div>
+        </a>
+        <a
+          href={meta.link.planning}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Planning
+          </div>
+        </a>
+        <a
+          href={meta.link.timeline}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Timeline
+          </div>
+        </a>
+        <a
+          href={meta.link.file}
+          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+            File Management
+          </div>
+        </a>
+        <a
+          href={meta.link.team}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Team
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col self-stretch space-y-8 p-10 w-auto">
+    <div class="flex self-stretch items-center justify-between px-6 py-2.5 bg-white rounded-t">
+      <div class="text-sm font-medium tracking-wide leading-tight text-center text-coolGray-900 rounded-l border-r border-coolGray-300 pr-3">
+        <label class="bg-white"></label>
+        <select
+          id="employee"
+          name="employee"
+          class="bg-white rounded-l outline-none"
+          onChange={(e) => {
+            meta.actiondivision.onChange(e);
+          }}
+        >
+          {meta.division.map((e) => {
+            if (e.id == meta.state.iddivision) {
+              return (
+                <option value={e.id} selected>
+                  {e.division}
+                </option>
+              );
+            } else {
+              return <option value={e.id}>{e.division}</option>;
+            }
+          })}
+        </select>
+      </div>
+      <div class="flex items-start justify-start">
+        <div class="flex items-center justify-between px-4 py-2 bg-coolGray-100 rounded w-48">
+          <div class="flex items-start justify-start">
+            <input
+              placeholder="Search Task"
+              class="text-xs tracking-wide leading-none text-start bg-coolGray-100 text-coolGray-500 focus:outline-none"
+              onChange={(e) => {
+                meta.actionsearch.onChange(e);
+              }}
+            />
+          </div>
+          <div class="flex items-start justify-start">
+            <img
+              src="/fimgs/320_715.x3.png"
+              style="width: 14px; min-width: 14px; max-width: 14px; height: 14px; min-height: 14px; max-height: 14px;"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex self-stretch flex-col items-end justify-start px-6">
+      <div class="flex flex-col items-end justify-end pt-10 pb-6">
+        <div class="flex flex-col items-start justify-start">
+          <button
+            class="flex space-x-3 items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+            onClick={meta.toggleModal}
+          >
+            <img
+              src="/fimgs/5_50.x3.png"
+              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+            />
+            <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+              Upload File
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+    {/*file uploaded*/}
+    <div
+      class={
+        meta.showDetail
+          ? "self-stretch grid grid-cols-3 gap-3"
+          : "flex self-stretch flex-wrap items-start justify-start"
+      }
+    >
+      <div
+        class={
+          meta.showDetail
+            ? "grid grid-cols-2 gap-8 flex-grow col-span-2"
+            : "grid grid-cols-3 gap-8 flex-grow"
+        }
+      >
+        {meta.isLoading ? (
+          <>
+            {meta.listFile.map((e) => {
+              var fileUrl = "/upload/" + e.url;
+              return (
+                <div class="flex flex-wrap content-between border rounded border-coolGray-300">
+                  <img src={fileUrl} />
+                  <div class="flex self-stretch w-full space-x-2.5 items-center justify-center p-4 bg-white shadow-inner rounded-bl rounded-br">
+                    <div class="flex flex-1 space-x-2.5 items-center justify-start">
+                      <img
+                        src="/fimgs/398_733.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                      />
+                      <div class="flex flex-1 items-start justify-start">
+                        <div class="text-xs tracking-wide leading-none text-coolGray-900">
+                          {e.name}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex items-start">
+                      <img
+                        src="/fimgs/398_736.x3.png"
+                        onClick={(event) => {
+                          meta.showmodalku(e.id);
+                        }}
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                      />
+                      {meta.statusModal[e.id] && (
+                        <>
+                          <div class="absolute">
+                            <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
+                              <div
+                                class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative"
+                                style="width: 187px; min-width: 187px; max-width: 187px; "
+                              >
+                                <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
+                                  <div
+                                    class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50"
+                                    onClick={(event) => {
+                                      meta.showdetailku(e.id);
+                                    }}
+                                  >
+                                    <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                                      <img
+                                        src="/fimgs/404_669.x3.png"
+                                        style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                      />
+                                      <div class="flex flex-1 items-start justify-start">
+                                        <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                          View Detail
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                                    <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                                      <img
+                                        src="/fimgs/404_674.x3.png"
+                                        style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                      />
+                                      <div class="flex flex-1 items-start justify-start">
+                                        <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                          Download
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="border-coolGray-300" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        ) : (
+          <div class="border-b border-coolGray-300">
+            <div class="px-3 py-4 whitespace-normal text-left" colSpan={5}>
+              <div class="flex self-stretch flex-wrap items-center justify-center">
+                <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                  <div
+                    class="loader-dots block relative w-22 h-6 mt-2"
+                    style="width: 5rem;"
+                  >
+                    <div
+                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                      style="top: 0; width: 0.75rem; height: 0.75rem;"
+                    ></div>
+                    <div
+                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                    ></div>
+                    <div
+                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                    ></div>
+                    <div
+                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      {meta.showDetail && (
+        <>
+          <div class="bg-white">
+            <div class="flex flex-col items-start justify-start bg-white sticky top-0">
+              <div class="flex flex-col items-start justify-center py-6 shadow-inner w-full">
+                <div class="flex self-stretch items-center justify-center pr-10 flex-grow">
+                  <div class="flex flex-1 space-x-4 items-center justify-start">
+                    <img
+                      src="/fimgs/558_1421.x1.svg"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                    />
+                    <div class="flex items-start justify-start">
+                      <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                        Detail File
+                      </div>
+                    </div>
+                  </div>
+                  <img
+                    src="/fimgs/558_1424.x1.svg"
+                    style={`width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;`}
+                    onClick={(event) => {
+                      meta.showdetailku(0);
+                    }}
+                  />
+                </div>
+              </div>
+              <div class="flex items-start justify-start pt-4 pb-8 bg-white w-full pl-6 pr-6">
+                <div class="flex flex-col space-y-4 items-start justify-start relative overflow-y-auto  w-full">
+                  <div class="flex flex-col space-y-4 items-start justify-start">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-start justify-start">
+                        <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                          Owner:
+                        </div>
+                      </div>
+                      <div class="flex items-start justify-start">
+                        <div class="text-xs tracking-wide leading-none text-coolGray-900">
+                          {meta.detailFile.owner}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-start justify-start">
+                        <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                          Departmen:
+                        </div>
+                      </div>
+                      <div class="flex items-start justify-start">
+                        <div class="text-xs tracking-wide leading-none text-coolGray-900">
+                          {meta.detailFile.division}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-start justify-start">
+                    <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                      Description File
+                    </div>
+                  </div>
+                  {meta.detailFile.iduser == meta.iduser ? (
+                    <>
+                      <div class="flex flex-col items-start justify-start p-4 border rounded border-coolGray-300 w-full">
+                        <div class="flex items-start justify-start w-full">
+                          <textarea
+                            class="text-xs tracking-wide leading-none text-coolGray-500 whitespace-normal  w-full"
+                            style="min-height: 200px"
+                            onChange={meta.updateDesc}
+                            value={meta.detailFile.desc}
+                          ></textarea>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div class="flex flex-col items-start justify-start p-4 w-full">
+                        <div class="flex items-start justify-start w-full">
+                          <div class="text-xs tracking-wide leading-none text-coolGray-500 whitespace-normal  w-full">
+                            {meta.detailFile.desc}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+
+  {meta.showModal ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 480px; width: 480px;"
+        >
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <div class="flex self-stretch items-center justify-between">
+                    <div
+                      class="flex items-start justify-start"
+                      style="padding-left: 160px;"
+                    >
+                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                        Upload File
+                      </div>
+                    </div>
+                    <form onSubmit={meta.toggleModal}>
+                      <button class="flex flex-col items-center justify-end">
+                        <img
+                          src="/fimgs/517_574.x1.svg"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                        />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                onSubmit={meta.submitData}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        File Name
+                      </div>
+                    </div>
+
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <input
+                          id="name"
+                          name="name"
+                          type="text"
+                          onChange={meta.ubahNilai}
+                          placeholder="Landing Page"
+                          class="text-base relative w-full border rounded placeholder-coolGray-900 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        Choose File
+                      </div>
+                    </div>
+
+                    <div
+                      class="flex self-stretch items-center justify-start py-3 bg-white border rounded border-indigo-500"
+                      style="border-style: dashed;"
+                    >
+                      <div class="flex flex-1 items-center justify-center">
+                        <input
+                          type="file"
+                          accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+                          id="file"
+                          style="height: 0; overflow: hidden; width: 0;"
+                          onChange={(e) => {
+                            runInAction(async () => {
+                              console.log("upload file");
+                              console.log(e.target.files[0]);
+                              const upload = await meta.upload(
+                                e.target.files[0]
+                              );
+                              meta.validasiUpload();
+                              meta.state.file = upload;
+                            });
+                          }}
+                        />
+                        <label
+                          htmlFor="file"
+                          class="w-full text-base tracking-wide leading-normal text-center text-indigo-500"
+                        >
+                          Choose File
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Upload Now
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.confirmDelete ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 325px; width: 325px;"
+        >
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            <div class="flex w-full flex-col items-start justify-start p-4 space-y-6 bg-white rounded">
+              <div class="flex w-full space-x-4 items-start justify-start">
+                <div>
+                  <img
+                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                    src="/fimgs/295_281.x3.png"
+                  />
+                </div>
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                      Delete File
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight">
+                      Are you sure remove{" "}
+                      <small class="text-sm font-medium">
+                        "{meta.deleteTeam.name}"?
+                      </small>{" "}
+                      You can’t undo this action
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex w-full space-x-6 items-start justify-end">
+                <div class="flex items-start justify-end">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                      <button onClick={meta.closeDelete}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-start justify-end bg-red-500 rounded">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <button
+                      class="text-base font-medium tracking-wide leading-normal text-center text-white"
+                      onClick={(event) => meta.delTeam(meta.deleteTeam.idteam)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+</>

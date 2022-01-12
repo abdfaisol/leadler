@@ -1,0 +1,519 @@
+<>
+  <effect
+    meta={{
+      dashboard: {
+        nextproject: 0,
+        progress: 0,
+        complete: 0,
+        unfinish: 0,
+      },
+      dataStatus: [
+        { value: "7", label: "next project" },
+        { value: "8", label: "progress" },
+        { value: "9", label: "uncompleted" },
+        { value: "10", label: "completed" },
+      ],
+      data_projek: [],
+      member: "",
+      name: "",
+      team: "",
+      idproject: 0,
+      isLoading: false,
+      state: {
+        showModal: false,
+        showModal2: false,
+        showModal3: false,
+        showModal4: false,
+        showModal5: false,
+        showModalStatus: false,
+      },
+      status: [
+        { value: "7", label: "next project" },
+        { value: "8", label: "progress" },
+        { value: "9", label: "uncompleted" },
+        { value: "10", label: "completed" },
+      ],
+      statusx: [
+        { value: "3", label: "TODO", color: "#4ADE80" },
+        {
+          value: "2",
+          label: "IN PROGRESS",
+          color: "#888DF1",
+        },
+        { value: "6", label: "SUBMITED", color: "#F1B459" },
+      ],
+      statusAll: [
+        { value: "3", label: "TODO", color: "#4ADE80" },
+        { value: "2", label: "IN PROGRESS", color: "#888DF1" },
+        { value: "6", label: "SUBMITTED", color: "#2D34E6" },
+        { value: "4", label: "REVIEW", color: "#CFE100" },
+        { value: "5", label: "REVISION", color: "#EF4444" },
+        { value: "1", label: "COMPLETE", color: "#F1B459" },
+      ],
+      state2: { title: "", desc: "", label: "", start: "", due: "" },
+      add: { tekan: true },
+      stylesx: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "2px",
+          paddingBottom: "2px",
+          border: "none",
+          boxShadow: "none",
+          backgroundColor: "transparent",
+        }),
+        input: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        singleValue: (base) => ({
+          ...base,
+          color: "#fff",
+        }),
+        option: (styles, { data }) => {
+          return {
+            ...styles,
+            backgroundColor: data.color,
+            "&:hover": {
+              backgroundColor: data.isDisabled
+                ? "#F3F4F6"
+                : data.isSelected
+                ? null
+                : "#F3F4F6",
+            },
+          };
+        },
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state2[name] = nilai;
+        // console.log(name);
+      },
+      dataProjek() {
+        let result = [];
+        api("/api/project").then((e) => {
+          result["result"] = e;
+        });
+        return result;
+      },
+      closeDelete() {
+        this.confirmDelete = false;
+      },
+      reloadData() {
+        this.dashboard.nextproject = 0;
+        this.dashboard.progress = 0;
+        this.dashboard.unfinish = 0;
+        this.dashboard.complete = 0;
+        api("/api/project").then((e) => {
+          console.clear();
+          console.log(e);
+          this.data_projek = [];
+          if (e.status == true) {
+            if (e.data_act.length > 0) {
+              e.data_act.map((idx) => {
+                idx.startdate = dateFormat(idx.startdate, "dd MMMM YYY");
+                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                idx.nameTeam = "PERSONAL";
+                idx.important = false;
+                api("/api/project/important/search", {
+                  idproject: idx.id,
+                }).then((i) => {
+                  // console.log(i);
+                  if (i.status == true) {
+                    if (i.data_act) {
+                      idx.important = true;
+                    }
+                  }
+                });
+                api("/api/project/team/show", {
+                  data: {
+                    idproject: idx.id,
+                  },
+                }).then((i) => {
+                  if (i.status == true) {
+                    if (i.data_act.length > 0) {
+                      i.data_act.map((e) => {
+                        // console.log(e);
+                        if (e.idteam) {
+                          api("/api/team/show", {
+                            data: {
+                              idteam: e.idteam,
+                            },
+                          }).then((i) => {
+                            console.log("data team");
+                            console.log(i);
+                            if ((i.status = true)) {
+                              idx.nameTeam = i.data_act.name;
+                            }
+                          });
+                        }
+                      });
+                    }
+                  }
+                });
+                if (idx.status == "next project") {
+                  idx.colorstatus = "#2D34E6";
+                }
+                if (idx.status == "progress") {
+                  idx.colorstatus = "#E4944A";
+                }
+                if (idx.status == "uncompleted") {
+                  idx.colorstatus = "#EF4444";
+                }
+                if (idx.status == "completed") {
+                  idx.colorstatus = "#BBF7D0";
+                }
+
+                console.log("ID PROJECT : " + idx.id);
+                console.log("ID STATUS : " + this.idstatus);
+                api("/api/project/show/" + idx.id).then((e1) => {
+                  console.log("ID PROJECT DETAIL: " + idx.id);
+                  console.log(e1);
+                  this.isLoading = true;
+                  if (e1.status == true) {
+                    // console.log(e1.data_act.project);
+                    if (e1.data_act.project) {
+                      idx.task = e1.data_act.resultTask;
+                      if (idx.important) {
+                        this.data_projek.push(idx);
+                      }
+                    }
+                  }
+                });
+                console.log(idx);
+              });
+            } else {
+              this.isLoading = true;
+            }
+            if (e.dashboard) {
+              e.dashboard.map((idx) => {
+                if (idx.name == "next project") {
+                  this.dashboard.nextproject = idx.nproject;
+                }
+                if (idx.name == "progress") {
+                  this.dashboard.progress = idx.nproject;
+                }
+                if (idx.name == "uncompleted") {
+                  this.dashboard.unfinish = idx.nproject;
+                }
+                if (idx.name == "completed") {
+                  this.dashboard.complete = idx.nproject;
+                }
+              });
+            }
+          } else {
+            this.isLoading = true;
+          }
+        });
+      },
+      idstatus: 0,
+      task: [],
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value.toString() == value.toString()) {
+            out = idx;
+            console.log(
+              "VALUE : " +
+                e.value.toString() +
+                " DITEMUKAN DI INDEX " +
+                idx +
+                " DENGAN LABEL " +
+                e.label
+            );
+          }
+        });
+        return out;
+      },
+      updateStatus(idtask, status) {
+        api("/api/project/task/status/update", {
+          data: {
+            id: idtask,
+            idstatus: status,
+          },
+        }).then((e) => {
+          console.log(e);
+        });
+      },
+    }}
+    run={async () => {
+      var data_i = meta.dataProjek();
+      api("/api/project").then((e) => {
+        console.clear();
+        meta.isLoading = true;
+        api("/api/task").then((e) => {
+          console.log(e);
+          meta.task = e.data_act;
+        });
+        if (e.dashboard) {
+          e.dashboard.map((idx) => {
+            if (idx.name == "next project") {
+              meta.dashboard.nextproject = idx.nproject;
+            }
+            if (idx.name == "progress") {
+              meta.dashboard.progress = idx.nproject;
+            }
+            if (idx.name == "uncompleted") {
+              meta.dashboard.unfinish = idx.nproject;
+            }
+            if (idx.name == "completed") {
+              meta.dashboard.complete = idx.nproject;
+            }
+          });
+        }
+      });
+      // console.log(meta.data_projek);
+      meta.actionstatus = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.status = e.value;
+            console.log(meta.state.status);
+          });
+        },
+      };
+    }}
+  />
+  <div class="my-4 mx-4 space-y-4">
+    <div class="flex self-stretch items-center justify-between space-x-4">
+      <div class="flex items-center justify-start">
+        <img
+          src="/fimgs/612_2197.x3.png"
+          style="width: 87px; min-width: 87px; max-width: 87px; height: 18px; min-height: 18px; max-height: 18px;"
+        />
+      </div>
+    </div>
+    <div class="flex items-start justify-start space-x-4">
+      <div class="text-lg font-medium tracking-wide leading-relaxed text-coolGray-900">
+        Analytics
+      </div>
+    </div>
+    <div class="flex self-stretch flex-col space-y-2 items-center justify-center">
+      <div class="grid grid-cols-2 flex-grow w-full gap-4">
+        <div class="flex flex-1 flex-col items-start justify-center py-4 pl-4 pr-2 bg-white rounded">
+          <div class="flex self-stretch space-x-2.5 items-start justify-start">
+            <div class="flex items-center justify-center p-1.5 bg-orange-400 rounded">
+              <img
+                src="/fimgs/609_837.x3.png"
+                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+              />
+            </div>
+            <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                  In Progress
+                </div>
+              </div>
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-lg font-medium tracking-wide leading-relaxed text-coolGray-900">
+                  {meta.dashboard.progress}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-1 flex-col items-start justify-center py-4 pl-4 pr-2 bg-white rounded">
+          <div class="flex self-stretch space-x-2.5 items-start justify-start">
+            <div class="flex items-center justify-center p-1.5 bg-green-500 rounded">
+              <img
+                src="/fimgs/609_845.x3.png"
+                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+              />
+            </div>
+            <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                  Complete
+                </div>
+              </div>
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-lg font-medium tracking-wide leading-relaxed text-coolGray-900">
+                  {meta.dashboard.complete}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-1 flex-col items-start justify-center py-4 pl-4 pr-2 bg-white rounded">
+          <div class="flex self-stretch space-x-2.5 items-start justify-start">
+            <img
+              src="/fimgs/609_853.x3.png"
+              class="flex items-center justify-center p-1.5 bg-red-500 rounded"
+              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+            />
+            <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                  Unfinish
+                </div>
+              </div>
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-lg font-medium tracking-wide leading-relaxed text-coolGray-900">
+                  {meta.dashboard.unfinish}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-1 flex-col items-start justify-center py-4 pl-4 pr-2 bg-white rounded">
+          <div class="flex self-stretch space-x-2.5 items-start justify-start">
+            <div class="flex items-center justify-center p-1.5 bg-blue-700 rounded">
+              <img
+                src="/fimgs/609_829.x3.png"
+                style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+              />
+            </div>
+            <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                  Next Project
+                </div>
+              </div>
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-lg font-medium tracking-wide leading-relaxed text-coolGray-900">
+                  {meta.dashboard.nextproject}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex self-stretch items-center justify-between space-x-4">
+      <div class="flex items-start justify-start space-x-4">
+        <div class="text-lg font-medium tracking-wide leading-relaxed text-coolGray-900">
+          My Task
+        </div>
+      </div>
+    </div>
+    {meta.isLoading ? (
+      <>
+        <div class="w-full align-middle inline-block">
+          <table class="w-full divide-y-4 divide-gray-50">
+            <thead class="bg-white">
+              <tr>
+                <th
+                  scope="col"
+                  class="tracking-wider text-center justify-center mr-auto"
+                >
+                  <div class="flex items-center justify-start ">
+                    <div class="text-xs tracking-wide px-2 py-3 bg-green-400 leading-tight text-center text-white">
+                      TODO
+                    </div>
+                    <div class="pl-4 text-xs font-medium text-gray-500 text-center ">
+                      {meta.task.length} Task
+                    </div>
+                  </div>
+                </th>
+                <th
+                  scope="col"
+                  class="relative px-1 py-3 text-xs text-center justify-start"
+                >
+                  <div class="text-xs font-medium text-coolGray-500 text-start">
+                    Status
+                  </div>
+                </th>
+                <th
+                  scope="col"
+                  class="relative px-1 py-3 text-sm text-center justify-start"
+                >
+                  <div class="text-sm font-medium text-coolGray-500 text-start">
+                    Priority
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y-4 divide-gray-50">
+              {meta.task.map((e) => {
+                return (
+                  <tr>
+                    <td class="px-2 py-2 whitespace-nowrap text-start cursor-pointer">
+                      <div class="text-xs text-gray-900">{e.name}</div>
+                    </td>
+                    <td class="text-center py-0">
+                      <div class="flex items-center justify-center">
+                        <multipleselect
+                          options={meta.statusx}
+                          defaultValue={
+                            e.idstatus == 0 || e.idstatus == ""
+                              ? meta.statusx[-1]
+                              : meta.statusAll[
+                                  meta.searchIdx(e.idstatus, meta.statusAll)
+                                ]
+                          }
+                          theme={(theme) => ({
+                            ...theme,
+                            borderRadius: 0,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          onChange={(event) => {
+                            meta.updateStatus(e.id, event.value);
+                          }}
+                          style={
+                            e.idstatus == 3
+                              ? "background-color: #4ADE80;"
+                              : e.idstatus == 2
+                              ? "background-color: #888DF1;"
+                              : e.idstatus == 6
+                              ? "background-color: #2D34E6;"
+                              : e.idstatus == 5
+                              ? "background-color: #EF4444;"
+                              : e.idstatus == 4
+                              ? "background-color: #CFE100;"
+                              : "background-color: #4ADE80;"
+                          }
+                          styles={meta.stylesx}
+                          className="max-w-28 w-28 min-w-28 text-xs"
+                          classNamePrefix="select"
+                          name="status"
+                        />
+                      </div>
+                    </td>
+                    <td class="px-1 py-2 whitespace-nowrap items-center">
+                      <div class="flex items-center justify-center">
+                        <div class="flex items-center justify-center px-1 py-0.5 bg-indigo-500 rounded-full">
+                          <div class="text-xs tracking-wide leading-none text-center text-white">
+                            {e.namepriority}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </>
+    ) : (
+      <div class="flex self-stretch flex-wrap items-center justify-center">
+        <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+          <div
+            class="loader-dots block relative w-22 h-6 mt-2"
+            style="width: 5rem;"
+          >
+            <div
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; width: 0.75rem; height: 0.75rem;"
+            ></div>
+            <div
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+            ></div>
+            <div
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+            ></div>
+            <div
+              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+            ></div>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</>

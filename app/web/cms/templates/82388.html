@@ -2,6 +2,7 @@
   <effect
     meta={{
       isActive(route) {
+        console.log(window.location.pathname);
         if (route == window.location.pathname) {
           return "bg-violet-100";
         } else {
@@ -21,20 +22,20 @@
     }}
     run={async () => {}}
   />
-  <m-page class="content-between pt-2 bg-coolGray-100">
-    <div class="flex flex-col items-center justify-center h-full">
-      {children}
+  <m-page class="w-screen pt-2 bg-coolGray-100 flex flex-row">
+    <div class="flex flex-col items-center justify-center flex-grow overflow-y-auto relative">
+      <div class="absolute top-0 left-0 w-full">{children}</div>
     </div>
     <div class="flex flex-col items-center justify-center">
-      <div class="flex flex-col items-center justify-between px-5 py-4 bg-white shadow w-full fixed bottom-0">
+      <div class="flex flex-col items-center justify-between px-5 py-4 bg-white shadow w-full bottom-0 ">
         <div class="flex space-x-10 items-center justify-center w-full">
           <a
-            href="/m/pm/"
+            href="/m/pm"
             class="flex flex-col items-center justify-center cursor-pointer"
           >
             <img
               src={
-                meta.isActive("/m/pm/")
+                meta.isActive("/m/pm")
                   ? "/fimgs/612_2567.x3.png"
                   : "/fimgs/612_2568.x3.png"
               }
@@ -43,7 +44,7 @@
             <div class="flex items-start justify-start">
               <div
                 class={
-                  meta.isActive("/m/pm/")
+                  meta.isActive("/m/pm")
                     ? "text-sm tracking-wide leading-tight text-indigo-500"
                     : "text-sm tracking-wide leading-tight text-coolGray-400"
                 }
@@ -60,7 +61,7 @@
               src={
                 meta.isActive("/m/pm/projects")
                   ? "/fimgs/45_104.x3.png"
-                  : "/fimgs/612_2571.x3.png"
+                  : "/fimgs/45_103.x3.png"
               }
               style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
             />
@@ -76,9 +77,16 @@
               </div>
             </div>
           </a>
-          <div class="flex flex-col items-center justify-center">
+          <a
+            href="/m/pm/timeline"
+            class="flex flex-col items-center justify-center"
+          >
             <img
-              src="/fimgs/612_2575.x3.png"
+              src={
+                meta.isActive("/m/pm/timeline")
+                  ? "/fimgs/621_455.x3.png"
+                  : "/fimgs/621_453.x3.png"
+              }
               style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
             />
             <div class="flex items-start justify-start">
@@ -86,8 +94,11 @@
                 Timeline
               </div>
             </div>
-          </div>
-          <div class="flex flex-col items-center justify-center">
+          </a>
+          <a
+            href="/m/pm/account"
+            class="flex flex-col items-center justify-center"
+          >
             <img
               src="/fimgs/612_2579.x3.png"
               style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
@@ -97,7 +108,7 @@
                 Account
               </div>
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>

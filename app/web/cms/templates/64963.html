@@ -1,0 +1,183 @@
+<>
+  <effect
+    meta={{
+      // Primary Data
+      state: {
+        name: "",
+        team: [],
+        member: [],
+      },
+      // STYLE MULTIPLE SELECT
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      // Onchange Value Name
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        console.log(nilai);
+      },
+      // SUBMIT DATA TEAM OR CREATE NEW TEAM
+      submitData(event) {
+        console.clear();
+        console.log("nama tim => " + this.state.name);
+        this.state.member.map((e) => {
+          console.log(e);
+        });
+        api("/api/team/create", {
+          data: {
+            name: this.state.name,
+            member: this.state.member,
+          },
+        }).then((e) => {
+          var host = window.location.origin;
+          window.location.replace(host + "/m/pm/account");
+        });
+        event.preventDefault();
+      },
+      // DATA USER
+      dataUser(e) {
+        let userDetail = [];
+        api("/api/user").then((i) => {
+          if (i.status == true) {
+            // console.log(i.data_act);
+            i.data_act.map((res, index) => {
+              if (res.muser_detail) {
+                api("/api/team/member/search", {
+                  iduser: res.muser_detail.id,
+                }).then((e1) => {
+                  // console.log("iduser yang dicari => " + res.muser_detail.id);
+                  // console.log("hasil pencarian => ");
+                  // console.log(e1);
+                  if (e1.status == true) {
+                    if (e1.data_act.length == 0) {
+                      userDetail.push({
+                        value: res.muser_detail.id,
+                        label: res.email,
+                      });
+                    }
+                  }
+                });
+              }
+            });
+          }
+        });
+        return userDetail;
+      },
+    }}
+    run={async () => {
+      meta.actionmember = {
+        onChange: (e) => {
+          runInAction(() => {
+            var ttempMember = [];
+            e.map((x) => ttempMember.push(x.value));
+            meta.state.member = ttempMember;
+            meta.team = 0;
+            console.log(ttempMember);
+          });
+        },
+      };
+    }}
+  />
+  <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50 flex-grow">
+    <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+      <div class="flex w-full space-x-5 items-center justify-start">
+        <a href="/m/pm/account" class="flex items-center justify-start">
+          <img
+            src="/fimgs/I727_1000_1575_5334.x3.png"
+            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+          />
+          <div class="text-base tracking-wide leading-tight text-indigo-500">
+            Back
+          </div>
+        </a>
+        <div class="flex items-center justify-center">
+          <div class="text-base tracking-wide leading-normal text-coolGray-900">
+            Create Team
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col w-full self-stretch w-auto flex-grow">
+      <div class="relative flex-grow flex flex-col overflow-y-auto">
+        <div class="absolute top-0 left-0 flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+          <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto">
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Team Name
+            </div>
+            <div class="flex self-stretch items-center justify-start pb-2">
+              <m-input
+                id="name"
+                name="name"
+                value={meta.state.name}
+                onChange={meta.ubahNilai}
+                type="text"
+                placeholder=""
+                class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+              />
+            </div>
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Add Member
+            </div>
+            <div class="flex self-stretch items-center justify-start pb-2">
+              <multipleselect
+                options={meta.dataUser()}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#F3F4F6",
+                    primary: "#6366F1",
+                  },
+                })}
+                styles={meta.styles}
+                className="w-full"
+                classNamePrefix="select"
+                isMulti
+                name="member"
+                onChange={(e) => {
+                  meta.actionmember.onChange(e);
+                }}
+              />
+            </div>
+            <form
+              onSubmit={meta.submitData}
+              class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto"
+            >
+              <button
+                type="submit"
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+              >
+                <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                  <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                    Create Team
+                  </div>
+                </div>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

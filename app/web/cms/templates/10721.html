@@ -1,5 +1,52 @@
 <>
-  <effect meta={{}} run={async () => {}} />
+  <effect
+    meta={{
+      state: {
+        judul: "Loading",
+        deskripsi: "Loading",
+        label: "Loading",
+        startdate: "26/09/2021",
+        duedate: "26/09/2021",
+        proggres: "0",
+        taskComplete: "0",
+      },
+      link: {
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+    }}
+    run={async () => {
+      api("/api/project/show/" + params.id).then((e) => {
+        console.log(e);
+        if (e.status == true) {
+          meta.state.judul = e.data_act.project.name;
+          meta.state.deskripsi = e.data_act.project.desc;
+          meta.state.label = e.data_act.project.label;
+          meta.state.startdate = dateFormat(
+            e.data_act.project.startdate,
+            "dd MMMM YYY"
+          );
+          meta.state.duedate = dateFormat(
+            e.data_act.project.duedate,
+            "dd MMMM YYY"
+          );
+          meta.state.taskComplete = e.data_act.resultTask.taskComplete;
+          meta.state.proggres = e.data_act.resultTask.completed;
+          meta.link.team = "/m/pm/projects/" + e.data_act.project.id + "/team";
+          meta.link.task = "/m/pm/projects/" + e.data_act.project.id + "/task";
+          meta.link.timeline =
+            "/m/pm/projects/" + e.data_act.project.id + "/timeline";
+          meta.link.planning =
+            "/m/pm/projects/" + e.data_act.project.id + "/planning";
+          meta.link.file =
+            "/m/pm/projects/" + e.data_act.project.id + "/file-management";
+        }
+      });
+    }}
+  />
   <div class="flex flex-col items-start justify-start bg-coolGray-50">
     <div class="flex w-full self-stretch items-start justify-center px-3 py-4 bg-white shadow shadow-b">
       <div class="flex w-full space-x-5 items-center justify-start">
@@ -14,55 +61,55 @@
         </a>
       </div>
     </div>
-    <div class="overflow-x-auto w-full">
+    <div class="overflow-x-auto w-full sticky top-0">
       <div class="flex flex-col self-stretch space-y-5 py-3 w-auto">
         <div class="flex flex-col self-stretch items-start justify-start">
           <div class="flex space-x-4 items-start justify-start px-5 py-4 bg-white">
             <a
+              href={meta.link.detail}
               class="flex items-center justify-center px-4 py-2 border rounded border-indigo-400"
               style="width: 132px; min-width: 132px; max-width: 132px;"
-              href="/m/pm/projects/detail"
             >
               <div class="text-sm tracking-wide leading-tight text-center text-indigo-500">
                 Projects Detail
               </div>
             </a>
             <a
+              href={meta.link.task}
               class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/task"
             >
               <div class="text-sm tracking-wide leading-tight text-coolGray-500">
                 Task
               </div>
             </a>
             <a
+              href={meta.link.planning}
               class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/planning"
             >
               <div class="text-sm tracking-wide leading-tight text-coolGray-500">
                 Planning
               </div>
             </a>
             <a
+              href={meta.link.timeline}
               class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/timeline"
             >
               <div class="text-sm tracking-wide leading-tight text-coolGray-500">
                 Timeline
               </div>
             </a>
             <a
+              href={meta.link.file}
               class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
               style="width: 151px; min-width: 151px; max-width: 151px;"
-              href="/m/pm/projects/filemanagement"
             >
               <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
                 File Management
               </div>
             </a>
             <a
+              href={meta.link.team}
               class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/team"
             >
               <div class="text-sm tracking-wide leading-tight text-coolGray-500">
                 Team
@@ -84,7 +131,7 @@
               </div>
               <div class="flex items-start justify-start">
                 <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                  Pengembangan Aplikasi UMKM Kota Semarang
+                  {meta.state.judul}
                 </div>
               </div>
             </div>
@@ -96,17 +143,7 @@
               </div>
               <div class="flex items-start justify-start">
                 <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                  Pengembangan Aplikasi UMKM Kota Semarang dibuat untuk
-                  memberikan kemudahan bagi masyarakat yang bergerak di bidang
-                  bisnis terutama pada UMKM. Hal ini didasarkan pada masih
-                  banyak masyarakat yang belum memanfaatkan teknologi pemasaran
-                  seperti E-commerce dan lainnya. Penelitian ini menggunakan
-                  model pengembangan SDLC. Model analisisnya menggunakan Use
-                  Case, Activity, Class Diagram, E-R Diagram dan kamus data.
-                  Manfaatnya dapat memberikan kemudahan dalam memasarkan produk
-                  UMKM kota semarang agar lebih dikenal oleh masyarakat lokal
-                  maupun luar daerah. Dalam Aplikasi ini masyarakat dapat
-                  menjual produk UMKM melalui bantuan teknologi.{" "}
+                  {meta.state.deskripsi}
                 </div>
               </div>
             </div>
@@ -117,10 +154,10 @@
                 </div>
               </div>
               <div class="flex self-stretch flex-col space-y-1 items-start justify-start">
-                <bar />
+                <bar percent={meta.state.proggres} />
                 <div class="flex self-stretch items-start justify-start">
                   <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                    10 Task Done
+                    {meta.state.taskComplete} Task Done
                   </div>
                 </div>
               </div>
@@ -140,7 +177,7 @@
                 </div>
                 <div class="flex self-stretch items-start justify-start">
                   <div class="text-sm font-medium tracking-wide leading-tight text-justify text-coolGray-900">
-                    Pemkot Semarang
+                    {meta.state.label}
                   </div>
                 </div>
               </div>
@@ -158,7 +195,7 @@
                 </div>
                 <div class="flex self-stretch items-start justify-start">
                   <div class="text-sm font-medium tracking-wide leading-tight text-justify text-coolGray-900">
-                    26/09/2021
+                    {meta.state.startdate}
                   </div>
                 </div>
               </div>
@@ -176,7 +213,7 @@
                 </div>
                 <div class="flex self-stretch items-start justify-start">
                   <div class="text-sm font-medium tracking-wide leading-tight text-justify text-coolGray-900">
-                    26/11/2021
+                    {meta.state.duedate}
                   </div>
                 </div>
               </div>

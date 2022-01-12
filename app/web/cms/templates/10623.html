@@ -1,5 +1,42 @@
 <>
-  <effect meta={{}} run={async () => {}} />
+  <effect
+    meta={{
+      // SHOW MODAL EDIT
+      showModal: false,
+      toggleModal() {
+        this.showModal = !this.showModal;
+      },
+      // Data Primary
+      state: {
+        name: "",
+        member: [],
+      },
+      member: [],
+      detailTeam: {
+        name: "",
+        idTeam: 0,
+      },
+      // VARIABEL LOADING
+      loading: { member: false },
+    }}
+    run={async () => {
+      api("/api/team/show", {
+        data: {
+          idteam: params.id,
+        },
+      }).then((i) => {
+        console.log(i);
+        if (i.status == true) {
+          // meta.member = [];
+          // console.log(i.data_team);
+          meta.loading.member = true;
+          meta.member = i.data_team;
+          meta.detailTeam.idteam = i.data_act.id;
+          meta.state.name = i.data_act.name;
+        }
+      });
+    }}
+  />
   <div class="flex flex-col items-start justify-start bg-coolGray-50">
     <div class="flex w-full self-stretch items-start justify-center px-3 py-4 bg-white shadow shadow-b">
       <div class="flex w-full space-x-5 items-center justify-start">
@@ -14,16 +51,66 @@
         </a>
         <div class="flex items-center justify-center">
           <div class="text-base tracking-wide leading-normal text-coolGray-900">
-            Team 1
+            {meta.state.name}
           </div>
         </div>
       </div>
-      <a href="/m/pm/account/team/edit" class="flex items-center justify-end">
+      <div
+        class="flex items-center justify-end relative"
+        onClick={meta.toggleModal}
+      >
         <img
           src="/fimgs/I745_1356_1630_7652.x3.png"
           style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
         />
-      </a>
+        {meta.showModal && (
+          <>
+            <div class="absolute bottom-0">
+              <div class="transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none">
+                <div class="flex flex-col items-start justify-start overflow-ellipsis inset-0 z-50 relative">
+                  <div class="flex flex-1 self-stretch flex-col space-y-1 items-start justify-start bg-white rounded">
+                    <div class="flex self-stretch items-center justify-start py-2 pl-4 hover:bg-violet-50">
+                      <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                        <div class="pr-2">
+                          <img
+                            class="transition duration-150 ease-out hover:ease-in"
+                            src="/fimgs/1454_4082.x3.png"
+                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                          />
+                        </div>
+                        <a
+                          href={"/m/pm/account/team/edit/" + params.id}
+                          class="flex flex-1 items-start justify-start"
+                        >
+                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                            Edit Team
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="border-coolGray-300" />
+                    <div class="flex self-stretch items-center justify-start py-2 pl-4 rounded-bl rounded-br hover:bg-violet-50">
+                      <div class="flex flex-1 space-x-2 items-center justify-start cursor-pointer">
+                        <div class="pr-2">
+                          <img
+                            src="/fimgs/404_679.x3.png"
+                            style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                          />
+                        </div>
+                        <div class="flex flex-1 items-start justify-start">
+                          <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                            Delete
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </div>
     <div class="flex flex-col w-full self-stretch space-y-5 py-3 w-auto">
       <div class="flex flex-col self-stretch space-y-6 items-start justify-start px-5 py-6 bg-white">
@@ -33,113 +120,64 @@
               List Member
             </div>
           </div>
-          <div class="flex space-x-1 items-center justify-start">
-            <div class="flex items-center justify-start">
-              <div class="text-xs tracking-wide leading-none text-indigo-500">
-                Add Member
-              </div>
-            </div>
-            <img
-              src="/fimgs/745_1364.x3.png"
-              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
-            />
-          </div>
         </div>
-        <div class="flex flex-1 space-x-2 items-center justify-center">
-          <img
-            src="/fimgs/609_817.x3.png"
-            class="flex items-start justify-start"
-            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-          />
-          <div class="flex flex-1 flex-col items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                Royhan
-              </div>
-            </div>
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                Full Stact Developer
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-1 space-x-2 items-center justify-center">
-          <img
-            src="/fimgs/609_817.x3.png"
-            class="flex items-start justify-start"
-            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-          />
-          <div class="flex flex-1 flex-col items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                Bukhari
-              </div>
-            </div>
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                Full Stack Developer
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-1 space-x-2 items-center justify-center">
-          <img
-            src="/fimgs/609_817.x3.png"
-            class="flex items-start justify-start"
-            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-          />
-          <div class="flex flex-1 flex-col items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                Faisol
-              </div>
-            </div>
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                Full Stack Developer
+        {meta.loading.member ? (
+          <>
+            {meta.member.map((e, idx) => {
+              return (
+                <div class="flex self-stretch flex-col">
+                  <div class="flex flex-1 space-x-2 items-center justify-center">
+                    <img
+                      src="/fimgs/609_817.x3.png"
+                      class="flex items-start justify-start"
+                      style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                    />
+                    <div class="flex flex-1 flex-col items-start justify-start">
+                      <div class="flex self-stretch items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                          {e.muser_detail.fullname}
+                        </div>
+                      </div>
+                      <div class="flex self-stretch items-start justify-start">
+                        <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                          Full Stact Developer
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        ) : (
+          <div class="px-3 py-4 whitespace-normal text-left">
+            <div class="flex self-stretch flex-wrap items-center justify-center">
+              <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                <div
+                  class="loader-dots block relative w-22 h-6 mt-2"
+                  style="width: 5rem;"
+                >
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="flex flex-1 space-x-2 items-center justify-center">
-          <img
-            src="/fimgs/609_817.x3.png"
-            class="flex items-start justify-start"
-            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-          />
-          <div class="flex flex-1 flex-col items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                Afif
-              </div>
-            </div>
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                UI/UX Designer
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-1 space-x-2 items-center justify-center">
-          <img
-            src="/fimgs/609_817.x3.png"
-            class="flex items-start justify-start"
-            style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
-          />
-          <div class="flex flex-1 flex-col items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                Zaki
-              </div>
-            </div>
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                Business Analyst
-              </div>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   </div>

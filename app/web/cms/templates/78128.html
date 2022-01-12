@@ -1,0 +1,158 @@
+<>
+  <effect
+    meta={{
+      isLoading: false,
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.detailFile[name] = nilai;
+        // console.log(name);
+      },
+      submitData(event) {
+        this.update(this.idfile, e.target.value);
+        event.preventDefault();
+      },
+      // UPLOAD FILE
+      responseUpload: "",
+      upload: async (file, iduser) => {
+        const formData = _FormData();
+        formData.append("path", "users\\" + iduser);
+        formData.append("file", file);
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        return await response.json();
+      },
+      update(id, desc) {
+        console.log("ID FILE +> " + id + " dengan desc +> " + desc);
+        api("/api/project/file/update", {
+          data: {
+            idfile: id,
+            description: desc.substring(0, 200),
+          },
+        }).then((e) => {
+          console.log(e);
+        });
+      },
+      detailFile: {
+        name: "",
+        division: "",
+        owner: "",
+        desc: "",
+      },
+      showFile(id) {
+        api("/api/project/file/show/" + id).then((e) => {
+          if (e.status == true) {
+            this.detailFile.name = e.data_act.name;
+            this.detailFile.division = e.data_act.mdivision.name;
+            this.detailFile.owner = e.data_act.muser_detail.fullname;
+            this.detailFile.desc = e.data_act.desc ? e.data_act.desc : "";
+            this.mainLoading = false;
+          }
+        });
+      },
+      idfile: 0,
+      mainLoading: true,
+    }}
+    run={async () => {
+      if (window.user.idfile) {
+        meta.idfile = window.user.idfile;
+        console.log(window.user.idfile);
+        meta.showFile(window.user.idfile);
+      } else {
+        var host = window.location.origin;
+        window.location.replace(
+          host + "/m/pm/projects/" + params.id + "/file-management"
+        );
+      }
+    }}
+  />
+  {meta.mainLoading ? (
+    <>
+      <loadku />
+    </>
+  ) : (
+    <>
+      <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50 flex-grow">
+        <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+          <div class="flex w-full space-x-5 items-center justify-start">
+            <a
+              href={"/m/pm/projects/" + params.id + "/file-management"}
+              class="flex items-center justify-start"
+            >
+              <img
+                src="/fimgs/I727_1000_1575_5334.x3.png"
+                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              />
+              <div class="text-base tracking-wide leading-tight text-indigo-500">
+                Back
+              </div>
+            </a>
+            <div class="flex items-center justify-center">
+              <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                File Detail
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col w-full self-stretch w-auto flex-grow">
+          <div class="relative flex-grow flex flex-col overflow-y-auto">
+            <div class="absolute top-0 left-0 flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+              <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto">
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Name
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500 mb-4">
+                  {meta.detailFile.name}
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Owner:
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500 mb-4">
+                  {meta.detailFile.owner}
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Division:
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500 mb-4">
+                  {meta.detailFile.division}
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Description
+                </div>
+                <div class="flex self-stretch items-center justify-start pb-2 border border-gray-300  rounded ">
+                  <textarea
+                    id="name"
+                    name="desc"
+                    value={meta.detailFile.desc}
+                    onChange={meta.ubahNilai}
+                    placeholder=""
+                    class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 py-2.5 px-2.5"
+                    style="height: 250px"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white shadow">
+            <a
+              href={"/m/pm/projects/" + params.id + "/file-management"}
+              class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+            >
+              <button
+                onClick={(e) => {
+                  meta.update(meta.idfile, meta.detailFile.desc);
+                }}
+                class="text-sm tracking-wide leading-tight text-center text-white"
+              >
+                Save Changes
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </>
+  )}
+</>

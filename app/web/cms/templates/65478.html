@@ -1,0 +1,367 @@
+<>
+  <effect
+    meta={{
+      mainLoading: false,
+      state: {
+        name: "",
+        desc: "",
+        label: "",
+        startdate: "",
+        duedate: "",
+        member: [],
+        memberEmail: [],
+        team: "",
+        teamName: "",
+      },
+      idproject: 0,
+      submitData(event) {
+        event.preventDefault();
+        this.mainLoading = true;
+        api("/api/project/create", {
+          data: {
+            name: this.state.name,
+            desc: this.state.desc.substring(0, 200),
+            startdate: this.state.startdate,
+            duedate: this.state.duedate,
+            label: this.state.label,
+            member: this.state.member,
+            team: this.state.team,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.mainLoading = false;
+            if (e.data_act.id) {
+              this.idproject = e.data_act.id;
+              this.berhasil = true;
+            }
+          }
+          console.log(e);
+        });
+      },
+      berhasil: false,
+      actionUpdateProject(e) {
+        e.preventDefault();
+        this.mainLoading = true;
+        api("/api/project/update", {
+          data: {
+            idproject: this.idproject,
+            name: this.state.name,
+            desc: this.state.desc.substring(0, 200),
+            startdate: this.state.startdate,
+            duedate: this.state.duedate,
+            label: this.state.label,
+          },
+        }).then((e) => {
+          console.log(e);
+          this.mainLoading = false;
+          this.berhasil = true;
+          // this.isLoading = false;
+        });
+      },
+    }}
+    run={async () => {
+      console.log(window.user);
+      if (window.user.idproject) {
+        meta.idproject = window.user.idproject;
+      }
+      if (window.user.project) {
+        meta.state.name = window.user.project.state.name;
+        meta.state.desc = window.user.project.state.desc;
+        meta.state.label = window.user.project.state.label;
+        meta.state.startdate = window.user.project.state.startdate;
+        meta.state.duedate = window.user.project.state.duedate;
+        meta.state.team = window.user.project.state.team;
+        meta.state.teamName = window.user.project.state.teamName;
+        meta.state.member = window.user.project.state.member;
+        meta.state.memberEmail = window.user.project.state.memberEmail;
+      } else {
+        window.user.project = {
+          state: {
+            name: "",
+            desc: "",
+            label: "",
+            startdate: "",
+            duedate: "",
+            member: [],
+            team: "",
+            memberEmail: [],
+          },
+        };
+      }
+    }}
+  />
+  {meta.mainLoading ? (
+    <>
+      <loadku />
+    </>
+  ) : (
+    <>
+      <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50 flex-grow">
+        <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+          <div class="flex w-full space-x-5 items-center justify-start">
+            <a
+              href={
+                window.user.idproject
+                  ? "/m/pm/projects/create/2"
+                  : "/m/pm/projects/create/3"
+              }
+              class="flex items-center justify-start"
+            >
+              <img
+                src="/fimgs/I727_1000_1575_5334.x3.png"
+                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              />
+              <div class="text-base tracking-wide leading-tight text-indigo-500">
+                Back
+              </div>
+            </a>
+            <div class="flex items-center justify-center">
+              <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                Create Project
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col w-full self-stretch w-auto flex-grow">
+          <div class="relative flex-grow flex flex-col overflow-y-auto">
+            <div class="absolute top-0 left-0 flex self-stretch w-full flex-col space-y-2 items-center justify-start px-2 py-2 bg-white">
+              <div class="flex flex-col self-stretch w-auto">
+                <div class="flex items-start justify-start px-5 py-4 bg-white">
+                  <div class="flex flex-col space-y-6 items-start justify-start relative">
+                    <div class="flex flex-col space-y-4 items-start justify-start">
+                      <a
+                        href="/m/pm/projects/create/1"
+                        class="flex self-stretch flex-col space-y-1 items-start justify-start"
+                      >
+                        <div class="flex self-stretch items-start justify-start">
+                          <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
+                            Project Name
+                          </div>
+                        </div>
+                        <div class="flex items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                            {meta.state.name}
+                          </div>
+                        </div>
+                      </a>
+                      <a
+                        href="/m/pm/projects/create/1"
+                        class="flex self-stretch flex-col space-y-1 items-start justify-start"
+                      >
+                        <div class="flex items-start justify-start">
+                          <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
+                            Project Description
+                          </div>
+                        </div>
+                        <div class="flex items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                            {meta.state.desc}
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="flex flex-col space-y-4 items-start justify-start">
+                      <a
+                        href="/m/pm/projects/create/2"
+                        class="flex self-stretch space-x-4 items-start justify-start"
+                      >
+                        <img
+                          src="/fimgs/824_2235.x3.png"
+                          style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                        />
+                        <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-xs tracking-wide leading-none text-justify text-coolGray-500">
+                              Project Create For
+                            </div>
+                          </div>
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm font-medium tracking-wide leading-tight text-justify text-coolGray-900">
+                              {meta.state.label}
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                      <a
+                        href="/m/pm/projects/create/2"
+                        class="flex self-stretch space-x-4 items-start justify-start"
+                      >
+                        <img
+                          src="/fimgs/824_2243.x3.png"
+                          style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                        />
+                        <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-xs tracking-wide leading-none text-justify text-coolGray-500">
+                              Start Project
+                            </div>
+                          </div>
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm font-medium tracking-wide leading-tight text-justify text-coolGray-900">
+                              {dateFormat(meta.state.startdate, "MMM dd, YYY")}
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                      <a
+                        href="/m/pm/projects/create/2"
+                        class="flex self-stretch space-x-4 items-start justify-start"
+                      >
+                        <img
+                          src="/fimgs/824_2251.x3.png"
+                          style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                        />
+                        <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-xs tracking-wide leading-none text-justify text-coolGray-500">
+                              Due Date
+                            </div>
+                          </div>
+                          <div class="flex self-stretch items-start justify-start">
+                            <div class="text-sm font-medium tracking-wide leading-tight text-justify text-coolGray-900">
+                              {dateFormat(meta.state.duedate, "MMM dd, YYY")}
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                      {window.user.idproject ? null : (
+                        <>
+                          <a
+                            href="/m/pm/projects/create/3"
+                            class="flex self-stretch space-x-4 items-start justify-start"
+                          >
+                            <img
+                              src="/fimgs/824_2235.x3.png"
+                              style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                            />
+                            <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
+                              <div class="flex self-stretch items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-justify text-coolGray-500">
+                                  Assigned
+                                </div>
+                              </div>
+                              <div class="flex self-stretch items-start justify-start">
+                                <div class="text-sm font-medium tracking-wide leading-tight text-justify text-coolGray-900">
+                                  {meta.state.team ? (
+                                    <>
+                                      <span>{meta.state.teamName}</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span>
+                                        {meta.state.memberEmail.map((e) => {
+                                          return <span> {e + ", "}</span>;
+                                        })}
+                                      </span>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white shadow">
+            {window.user.idproject ? (
+              <>
+                <form
+                  onSubmit={meta.actionUpdateProject}
+                  class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+                >
+                  <button class="text-sm tracking-wide leading-tight text-center text-white">
+                    Save
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <form
+                  onSubmit={meta.submitData}
+                  class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+                >
+                  <button class="text-sm tracking-wide leading-tight text-center text-white">
+                    Create
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  )}
+  {meta.berhasil ? (
+    <>
+      <>
+        <div
+          class="flex flex-row justify-center items-center px-5 py-4 rounded-tl-lg rounded-tr-lg fixed inset-0 w-screen"
+          style="z-index: 60;"
+        >
+          <div class="flex flex-col space-y-5">
+            <div class="flex flex-col items-center justify-start p-8 bg-white rounded">
+              <div class="flex flex-col space-y-16 items-center justify-start">
+                <div class="flex flex-col space-y-11 items-center justify-start">
+                  <img
+                    src="/fimgs/2213_6932.x1.svg"
+                    class="flex flex-col items-start justify-start shadow"
+                    style="width: 186.46px; min-width: 186.46px; max-width: 186.46px; height: 183.92px; min-height: 183.92px; max-height: 183.92px;"
+                  />
+                  <div class="flex flex-col space-y-2 items-center justify-start">
+                    <div class="flex items-start justify-start">
+                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                        {window.user.idproject
+                          ? "Project Successfully Updated"
+                          : "Project Successfully Created"}
+                      </div>
+                    </div>
+                    <div class="flex items-start justify-start">
+                      <div class="text-base tracking-wide leading-normal text-center text-coolGray-500">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        Egestas tristique amet in a elementum.{" "}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex space-x-6 items-start justify-start">
+                  <a
+                    href="/m/pm/projects"
+                    class="flex items-start justify-start"
+                  >
+                    <div class="flex items-start justify-start px-4 py-2 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                        Skip
+                      </div>
+                    </div>
+                  </a>
+                  <a
+                    href={"/m/pm/projects/" + meta.idproject + "/detail"}
+                    class="flex items-start justify-start bg-indigo-500 rounded"
+                  >
+                    <div class="flex items-start justify-start px-4 py-2 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Go to Project
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="opacity-25 fixed inset-0 z-40 bg-black"
+          style="z-index: 50"
+          onClick={meta.closeModalEdit}
+        ></div>
+      </>
+    </>
+  ) : null}
+</>

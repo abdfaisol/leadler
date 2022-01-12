@@ -4,30 +4,41 @@
       showPass: false,
       input: {},
       errors: {},
-      state: { token: params.token, password: "" },
+      state: { token: params.token, password: "", passwordCurrent: "" },
       handleSubmit(event) {
         console.log(this.state);
-        const requestOptions = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(this.state),
-        };
-        fetch(
-          window.location.origin + "/api/reset-password",
-          requestOptions
-        ).then((response) => {
-          response.json().then((e) => {
-            console.log(e);
-          });
-        });
+        // /api/password/update
+        // api("/api/password/update", {
+        //   password : this.input["xpassword"]
+        // }).then((e) => {
+        //   // if (e.status == true) {
+        //   //   var host = window.location.origin;
+        //   //   window.location.replace(host + "/m/pm/account");
+        //   // }
+        //   console.log(e);
+        // });
+        console.log(this.input["xpassword"]);
+        console.log(this.state.passwordCurrent);
         if (this.validate()) {
           console.log(this);
-          let input = {};
-          input["xpassword"] = "";
-          input["password"] = "";
-          input["cpassword"] = "";
-          this.input = input;
-          this.showModal = !this.showModal;
+          api("/api/password/update", {
+            password: this.input["password"],
+          }).then((e) => {
+            // console.log(e);
+            api("/api/session").then((e) => {
+              console.clear();
+              console.log(e.passwordDecrypt);
+              this.state.passwordCurrent = e.passwordDecrypt;
+              var host = window.location.origin;
+              window.location.replace(host + "/m/pm/account");
+            });
+            let input = {};
+            input["xpassword"] = "";
+            input["password"] = "";
+            input["cpassword"] = "";
+            this.input = input;
+            this.showModal = !this.showModal;
+          });
         }
         //window.location.replace(window.location.origin);
         event.preventDefault();
@@ -36,12 +47,14 @@
         let input = this.input;
         let errors = {};
         let isValid = true;
-
         if (!input["xpassword"]) {
           isValid = false;
           errors["xpassword"] = "This field is required.";
         }
-
+        if (input["xpassword"] !== this.state.passwordCurrent) {
+          isValid = false;
+          errors["xpassword"] = "Password doesn't match.";
+        }
         if (!input["password"]) {
           isValid = false;
           errors["password"] = "This field is required.";
@@ -94,7 +107,13 @@
         // console.log(this.showPass);
       },
     }}
-    run={async () => {}}
+    run={async () => {
+      api("/api/session").then((e) => {
+        console.clear();
+        // console.log(e.passwordDecrypt);
+        meta.state.passwordCurrent = e.passwordDecrypt;
+      });
+    }}
   />
   <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50">
     <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
@@ -117,10 +136,7 @@
     </div>
     <div class="flex flex-col w-full self-stretch space-y-5 py-3 w-auto">
       <div class="flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
-        <form
-          onSubmit={meta.handleSubmit}
-          class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto"
-        >
+        <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto">
           <div class="text-sm tracking-wide leading-none text-gray-500">
             Current Password
           </div>
@@ -260,17 +276,22 @@
               {meta.errors.cpassword}
             </div>
           </div>
-          {/*<button*/}
-          {/*type="submit"*/}
-          {/*class="flex flex-1 self-stretch flex-col items-start justify-start"*/}
-          {/*>*/}
-          {/*<div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">*/}
-          {/*<div class="text-base font-medium tracking-wide leading-normal text-center text-white">*/}
-          {/*Test Password*/}
-          {/*</div>*/}
-          {/*</div>*/}
-          {/*</button>*/}
-        </form>
+          <form
+            onSubmit={meta.handleSubmit}
+            class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto"
+          >
+            <button
+              type="submit"
+              class="flex flex-1 self-stretch flex-col items-start justify-start"
+            >
+              <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                  Change Password
+                </div>
+              </div>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

@@ -1,0 +1,138 @@
+<>
+  <effect
+    meta={{
+      mainLoading: false,
+      state: {
+        name: "",
+        desc: "",
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        window.user.project.state[name] = nilai;
+        // console.log(name);
+      },
+      showProject(id) {
+        api("/api/project/show/" + id).then((e) => {
+          if (e.status == true) {
+            window.user.project = {
+              state: {
+                name: e.data_act.project.name,
+                desc: e.data_act.project.desc,
+                label: e.data_act.project.label,
+                startdate: dateFormat(
+                  e.data_act.project.startdate,
+                  "YYY-MM-dd"
+                ),
+                duedate: dateFormat(e.data_act.project.duedate, "YYY-MM-dd"),
+              },
+            };
+            this.state.name = window.user.project.state.name;
+            this.state.desc = window.user.project.state.desc;
+            this.mainLoading = false;
+          }
+        });
+      },
+    }}
+    run={async () => {
+      if (window.user.idproject) {
+        meta.mainLoading = true;
+        meta.showProject(window.user.idproject);
+      } else {
+        if (window.user.project) {
+          meta.state.name = window.user.project.state.name;
+          meta.state.desc = window.user.project.state.desc;
+        } else {
+          window.user.project = {
+            state: {
+              name: "",
+              desc: "",
+              label: "",
+              startdate: "",
+              duedate: "",
+              member: [],
+              team: "",
+              memberEmail: [],
+            },
+          };
+        }
+      }
+    }}
+  />
+  {meta.mainLoading ? (
+    <>
+      <loadku />
+    </>
+  ) : (
+    <>
+      <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50 flex-grow">
+        <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+          <div class="flex w-full space-x-5 items-center justify-start">
+            <a href="/m/pm/projects/" class="flex items-center justify-start">
+              <img
+                src="/fimgs/I727_1000_1575_5334.x3.png"
+                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              />
+              <div class="text-base tracking-wide leading-tight text-indigo-500">
+                Back
+              </div>
+            </a>
+            <div class="flex items-center justify-center">
+              <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                Create Project
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col w-full self-stretch w-auto flex-grow">
+          <div class="relative flex-grow flex flex-col overflow-y-auto">
+            <div class="absolute top-0 left-0 flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+              <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto">
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Name
+                </div>
+                <div class="flex self-stretch items-center justify-start pb-4 rounded ">
+                  <m-input
+                    id="name"
+                    name="name"
+                    type="text"
+                    value={meta.state.name}
+                    onChange={meta.ubahNilai}
+                    placeholder=""
+                    class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 py-2.5 px-2.5"
+                  />
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Description
+                </div>
+                <div class="flex self-stretch items-center justify-start pb-2 border border-gray-300  rounded ">
+                  <textarea
+                    id="name"
+                    name="desc"
+                    value={meta.state.desc}
+                    onChange={meta.ubahNilai}
+                    placeholder=""
+                    class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 py-2.5 px-2.5"
+                    style="height: 250px"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white shadow">
+            <a
+              href="/m/pm/projects/create/2"
+              class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+            >
+              <button class="text-sm tracking-wide leading-tight text-center text-white">
+                Next
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </>
+  )}
+</>

@@ -1,0 +1,178 @@
+<>
+  <effect
+    meta={{
+      mainLoading: false,
+      state: {
+        name: "",
+        desc: "",
+        startdate: "",
+        duedate: "",
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        window.user.project.state[name] = nilai;
+        // console.log(name);
+      },
+      showDatePicker(e) {
+        document.getElementById("root").classList.add("z-0");
+        var dd = document.getElementsByClassName("css-k008qs")[0];
+        var cc = document.getElementsByClassName("css-18puooo")[0];
+        if (dd) {
+          console.log("ada");
+          dd.style =
+            "display:grid;		grid-template-columns: repeat(3, minmax(0, 1fr));";
+        } else {
+          console.log("TIDAK ADA");
+        }
+        console.log(dd);
+        console.log("COBA DULU");
+        console.log("");
+      },
+      idproject: false,
+    }}
+    run={async () => {
+      console.log(window.user);
+      if (window.user.project) {
+        meta.state.name = window.user.project.state.name;
+        meta.state.label = window.user.project.state.label;
+        meta.state.startdate = window.user.project.state.startdate;
+        meta.state.duedate = window.user.project.state.duedate;
+      } else {
+        window.user.project = {
+          state: {
+            name: "",
+            desc: "",
+            label: "",
+            startdate: "",
+            duedate: "",
+            member: [],
+            team: "",
+            memberEmail: [],
+          },
+        };
+      }
+    }}
+  />
+  {meta.mainLoading ? (
+    <>
+      <loadku />
+    </>
+  ) : (
+    <>
+      <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50 flex-grow">
+        <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+          <div class="flex w-full space-x-5 items-center justify-start">
+            <a
+              href="/m/pm/projects/create/1"
+              class="flex items-center justify-start"
+            >
+              <img
+                src="/fimgs/I727_1000_1575_5334.x3.png"
+                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              />
+              <div class="text-base tracking-wide leading-tight text-indigo-500">
+                Back
+              </div>
+            </a>
+            <div class="flex items-center justify-center">
+              <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                Create Project
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col w-full self-stretch w-auto flex-grow">
+          <div class="relative flex-grow flex flex-col overflow-y-auto">
+            <div class="absolute top-0 left-0 flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+              <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto">
+                <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
+                  Pengembangan Aplikasi UMKM Kota Semarang
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Project Create For
+                </div>
+                <div class="flex self-stretch items-center justify-start pb-4 rounded ">
+                  <m-input
+                    id="name"
+                    name="label"
+                    type="text"
+                    value={meta.state.label}
+                    onChange={meta.ubahNilai}
+                    placeholder=""
+                    class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 py-2.5 px-2.5"
+                  />
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Start Project
+                </div>
+                <div
+                  class="flex self-stretch items-center justify-start pb-4 rounded border-gray-300 py-2.5 px-2.5 border"
+                  onClick={(e) => {
+                    meta.showDatePicker(e);
+                  }}
+                >
+                  <datepicker
+                    disableMaskedInput
+                    disableOpenPicker
+                    showToolbar={false}
+                    value={meta.state.startdate}
+                    label="Start Date"
+                    onChange={(e) => {
+                      meta.state.startdate = e;
+                      window.user.project.state.startdate = e;
+                    }}
+                    onClick={(e) => {
+                      meta.showDatePicker(e);
+                    }}
+                  />
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Due Project
+                </div>
+                <div
+                  class="flex self-stretch items-center justify-start pb-4 rounded border-gray-300 py-2.5 px-2.5 border"
+                  onClick={(e) => {
+                    meta.showDatePicker(e);
+                  }}
+                >
+                  <datepicker
+                    disableMaskedInput
+                    disableOpenPicker
+                    showToolbar={false}
+                    value={meta.state.duedate}
+                    minDate={meta.state.startdate}
+                    label="Start Date"
+                    onChange={(e) => {
+                      meta.state.duedate = e;
+                      window.user.project.state.duedate = e;
+                    }}
+                    onClick={(e) => {
+                      meta.showDatePicker(e);
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white shadow">
+            <a
+              href={
+                window.user.idproject
+                  ? "/m/pm/projects/create/4"
+                  : "/m/pm/projects/create/3"
+              }
+              class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+            >
+              <button class="text-sm tracking-wide leading-tight text-center text-white">
+                Next
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </>
+  )}
+</>

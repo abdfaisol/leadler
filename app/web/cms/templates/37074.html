@@ -1,0 +1,337 @@
+<>
+  <effect
+    meta={{
+      mainLoading: false,
+      state: {
+        name: "",
+        desc: "",
+        startdate: "",
+        duedate: "",
+        member: [],
+        team: "",
+        memberIDX: [],
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        window.user.project.state[name] = nilai;
+        // console.log(name);
+      },
+      add: { tekan: true },
+      toggleTekan() {
+        this.add.tekan = !this.add.tekan;
+      },
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      showDatePicker(e) {
+        document.getElementById("root").classList.add("z-0");
+        var dd = document.getElementsByClassName("css-k008qs")[0];
+        var cc = document.getElementsByClassName("css-18puooo")[0];
+        if (dd) {
+          console.log("ada");
+          dd.style =
+            "display:grid;		grid-template-columns: repeat(3, minmax(0, 1fr));";
+        } else {
+          console.log("TIDAK ADA");
+        }
+        console.log(dd);
+        console.log("COBA DULU");
+        console.log("");
+      },
+      dataUser(e) {
+        this.team = "";
+        let userDetail = [];
+        api("/api/user").then((i) => {
+          if (i.status == true) {
+            i.data_act.map((res, index) => {
+              if (res.muser_detail) {
+                userDetail.push({
+                  value: res.muser_detail.id,
+                  label: res.email,
+                });
+              }
+            });
+          }
+        });
+        return userDetail;
+      },
+      dataTeam(e) {
+        this.member = false;
+        let result = [];
+        api("/api/team").then((i) => {
+          if (i.status == true) {
+            if (i.data_act.length > 0) {
+              i.data_act.map((res, index) => {
+                i.data_act[index] = { value: res.id, label: res.name };
+                result.push(i.data_act[index]);
+              });
+            }
+          }
+        });
+        return result;
+      },
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value == value) {
+            out = idx;
+          }
+        });
+        return out;
+      },
+    }}
+    run={async () => {
+      console.log(window.user);
+      if (window.user.project) {
+        meta.state.name = window.user.project.state.name;
+        meta.state.team = window.user.project.state.team;
+        meta.state.member = window.user.project.state.member;
+        meta.state.memberIDX = [];
+        if (meta.state.member) {
+          meta.state.member.map((e) => {
+            var listUser = meta.dataUser();
+            meta.state.memberIDX.push(listUser[meta.searchIdx(e, listUser)]);
+          });
+        }
+        window.user.project.state.memberEmail = [];
+      } else {
+        window.user.project = {
+          state: {
+            name: "",
+            desc: "",
+            label: "",
+            startdate: "",
+            duedate: "",
+            member: [],
+            team: "",
+            memberEmail: [],
+            teamName: "",
+          },
+        };
+      }
+      meta.actionmember = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.member = e.map((x) => x.value);
+            window.user.project.state.member = e.map((x) => x.value);
+            window.user.project.state.memberEmail = e.map((x) => x.label);
+            window.user.project.state.team = 0;
+            meta.state.memberIDX = e;
+            meta.state.team = 0;
+          });
+        },
+      };
+      meta.actionteam = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.team = e.value;
+            meta.state.member = [];
+            window.user.project.state.member = [];
+            window.user.project.state.team = e.value;
+            window.user.project.state.teamName = e.label;
+            window.user.project.state.memberEmail = [];
+            meta.state.memberIDX = [];
+          });
+        },
+      };
+    }}
+  />
+  {meta.mainLoading ? (
+    <>
+      <loadku />
+    </>
+  ) : (
+    <>
+      <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50 flex-grow">
+        <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+          <div class="flex w-full space-x-5 items-center justify-start">
+            <a
+              href="/m/pm/projects/create/2"
+              class="flex items-center justify-start"
+            >
+              <img
+                src="/fimgs/I727_1000_1575_5334.x3.png"
+                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              />
+              <div class="text-base tracking-wide leading-tight text-indigo-500">
+                Back
+              </div>
+            </a>
+            <div class="flex items-center justify-center">
+              <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                Create Project
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col w-full self-stretch w-auto flex-grow">
+          <div class="relative flex-grow flex flex-col overflow-y-auto">
+            <div class="absolute top-0 left-0 flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white h-full">
+              <div class="flex flex-col w-full h-full space-y-2.5 items-start justify-start relative ">
+                <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 pb-4">
+                  Pengembangan Aplikasi UMKM Kota Semarang
+                </div>
+                <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                  <div class="flex self-stretch flex-col space-y-2 items-start justify-center">
+                    <div class="flex self-stretch space-x-4 items-start justify-start">
+                      <div class="cursor-pointer" onClick={meta.toggleTekan}>
+                        {meta.add.tekan ? (
+                          <div class="cursor-pointer flex flex-row items-center space-x-2 justify-center bg-white border rounded border-indigo-500 px-2 py-2">
+                            <div class="flex items-start justify-start">
+                              <img
+                                src="/fimgs/560_382.x1.svg"
+                                class="flex items-start justify-start"
+                                style="width: 25px; min-width: 25px; max-width: 25px; height: 25px; min-height: 25px; max-height: 25px;"
+                              />
+                            </div>
+                            <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                              Add Team
+                            </div>
+                          </div>
+                        ) : (
+                          <div class="cursor-pointer flex flex-row items-center space-x-2 justify-center bg-white border rounded border-gray-300 px-2 py-2">
+                            <div class="flex items-start justify-start">
+                              <img
+                                src="/fimgs/561_387.x1.svg"
+                                class="flex items-start justify-start"
+                                style="width: 25px; min-width: 25px; max-width: 25px; height: 25px; min-height: 25px; max-height: 25px;"
+                              />
+                            </div>
+                            <div class="text-sm tracking-wide leading-tight text-gray-500">
+                              Add Team
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div class="cursor-pointer" onClick={meta.toggleTekan}>
+                        {meta.add.tekan ? (
+                          <div class="flex flex-row items-center space-x-2 justify-center bg-white border rounded border-gray-300 px-2 py-2">
+                            <div class="flex items-start justify-start">
+                              <img
+                                src="/fimgs/541_407.x1.svg"
+                                class="flex items-start justify-start"
+                                style="width: 25px; min-width: 25px; max-width: 25px; height: 25px; min-height: 25px; max-height: 25px;"
+                              />
+                            </div>
+                            <div class="text-sm tracking-wide leading-tight text-gray-500">
+                              Add People
+                            </div>
+                          </div>
+                        ) : (
+                          <div class="flex flex-row items-center space-x-2 justify-center bg-white border rounded border-indigo-500 px-2 py-2">
+                            <div class="flex items-start justify-start">
+                              <img
+                                src="/fimgs/561_392.x1.svg"
+                                class="flex items-start justify-start"
+                                style="width: 25px; min-width: 25px; max-width: 25px; height: 25px; min-height: 25px; max-height: 25px;"
+                              />
+                            </div>
+                            <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                              Add People
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {meta.add.tekan ? (
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.dataTeam()}
+                          defaultValue={
+                            meta.state.team
+                              ? meta.dataTeam()[
+                                  meta.searchIdx(
+                                    meta.state.team,
+                                    meta.dataTeam()
+                                  )
+                                ]
+                              : null
+                          }
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full"
+                          classNamePrefix="select"
+                          name="team"
+                          onChange={(e) => {
+                            meta.actionteam.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.dataUser()}
+                          value={meta.state.memberIDX}
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full"
+                          classNamePrefix="select"
+                          isMulti
+                          name="member"
+                          onChange={(e) => {
+                            meta.actionmember.onChange(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white shadow">
+            <a
+              href="/m/pm/projects/create/4"
+              class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+            >
+              <button class="text-sm tracking-wide leading-tight text-center text-white">
+                Next
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </>
+  )}
+</>

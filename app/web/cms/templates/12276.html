@@ -31,38 +31,53 @@
       },
       add: { tekan: true },
       setMonth(newMonth) {
-        const months = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ];
         if (this.selectedMonth == null) {
           this.selectedMonth = new Date();
-
+          const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
           var yyyy = this.selectedMonth.getFullYear();
           this.selectedMonth =
             months[this.selectedMonth.getMonth()] + " " + yyyy;
         } else {
           this.selectedMonth = newMonth;
+          const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
           var yyyy = this.selectedMonth.getFullYear();
           this.selectedMonth =
             months[this.selectedMonth.getMonth()] + " " + yyyy;
         }
       },
+      timeSet: "0",
       getPreviousMonth() {
         const currentMonthInMilli = new Date(this.selectedMonth).getTime();
-        const oneMonth = 1000 * 60 * 60 * 24 * 28;
+        const oneMonth = 1000 * 60 * 60 * 24 * 30;
         const previousMonthInMilli = currentMonthInMilli - oneMonth;
         const previousMonth = new Date(previousMonthInMilli);
+        this.timeSet = previousMonth;
         this.setMonth(previousMonth);
         this.reloadData(previousMonth);
       },
@@ -71,43 +86,57 @@
         const oneMonth = 1000 * 60 * 60 * 24 * 31;
         const nextMonthInMilli = currentMonthInMilli + oneMonth;
         const nextMonth = new Date(nextMonthInMilli);
+        this.timeSet = nextMonth;
         this.setMonth(nextMonth);
         this.reloadData(nextMonth);
       },
+      keywordSearch: "",
       reloadData(month) {
+        console.clear();
+        // console.log(month);
         this.isLoading = false;
         var mmth = ("0" + (month.getMonth() + 1)).slice(-2);
-        console.log("year ==> " + mmth);
-        // console.log("month ==> " + xmonth);
+        console.log("year ==> " + month.getFullYear());
+        console.log("month ==> " + mmth);
+        console.log("division ==> " + this.iddivision);
         api("/api/project/task/timeline", {
           data: {
             idproject: params.id,
             month: ("0" + (month.getMonth() + 1)).slice(-2),
             year: month.getFullYear(),
           },
+          keyword: this.keywordSearch,
+          iddivision: this.iddivision,
         })
           .then((e) => {
-            console.log(e);
+            // console.log(e);
             if (e.status == true) {
-              e.data_act.timeline.map((e) => {
-                // console.log(e);
-                console.log(
-                  e.startdate.split("-")[0] + "-" + e.startdate.split("-")[1]
-                );
-                var startDateku = new Date(
-                  e.startdate.split("-")[0],
-                  parseInt(e.startdate.split("-")[1]) - 1
-                );
-                var dueDateku = new Date(
-                  e.duedate.split("-")[0],
-                  parseInt(e.duedate.split("-")[1]) - 1
-                );
-                var dateku = new Date(
-                  this.time.year,
-                  parseInt(this.time.month) - 1
-                );
-                var label = [];
-                if (dateku >= startDateku) {
+              this.data_timeline = [];
+              if (e.data_act.timeline) {
+                e.data_act.timeline.map((e) => {
+                  // console.log("CHECK 1");
+                  // console.log(e);
+                  // console.log(
+                  //   e.startdate.split("-")[0] + "-" + e.startdate.split("-")[1]
+                  // );
+                  // console.log("CHECK 1");
+                  var startDateku = new Date(
+                    e.startdate.split("-")[0],
+                    parseInt(e.startdate.split("-")[1]) - 1
+                  );
+                  var dueDateku = new Date(
+                    e.duedate.split("-")[0],
+                    parseInt(e.duedate.split("-")[1]) - 1
+                  );
+                  var dateku = new Date(
+                    this.time.year,
+                    parseInt(this.time.month) - 1
+                  );
+                  var label = [];
+                  // console.log("CHECK 2");
+                  // console.log(dateku);
+                  // console.log(startDateku);
+                  // console.log("CHECK 3");
                   if (dateku < dueDateku) {
                     for (let i = 1; i <= 4; i++) {
                       label[i] =
@@ -116,7 +145,7 @@
                   } else {
                     var startWeek = parseInt(e.startweeks);
                     var dueWeek = parseInt(e.dueweeks);
-                    console.log(startWeek + " and " + dueWeek);
+                    // console.log(startWeek + " and " + dueWeek);
                     for (let i = 1; i <= 4; i++) {
                       console.log(i);
                       var tes = true;
@@ -127,17 +156,20 @@
                         tes = false;
                         label[i] = "flex-grow border border-coolGray-300";
                       }
-                      console.log(tes);
+                      // console.log(tes);
                     }
                   }
+
                   e.labelTime = label;
-                  console.log(label);
-                  console.log(e);
-                }
-              });
+                  // console.log(label);
+                  // console.log(e);
+                });
+                // console.log(e);
+                this.data_timeline = e.data_act.timeline;
+              }
               this.isLoading = true;
               // document.getElementById("loading").remove();
-              this.data_timeline = e.data_act.timeline;
+
               // console.log(this.data_timeline.length);
               // console.log(e);
             }
@@ -146,107 +178,167 @@
             console.log(e);
           });
       },
+      iddivision: 0,
+      division: [],
     }}
     run={async () => {
       var tdate = new Date();
       meta.setMonth(meta.selectedMonth);
-      api("/api/project/show/" + params.id).then((e) => {
+      console.log(tdate);
+      console.log("month XIXIXI==> " + ("0" + tdate.getMonth() + 1).slice(-2));
+      console.log("month XIXIXI==> " + tdate.getMonth());
+      meta.timeSet = tdate;
+      api("/api/session").then((e) => {
         // console.log(e);
-        if (e.status == true) {
-          meta.state.judul = e.data_act.project.name;
-          meta.state.deskripsi = e.data_act.project.desc;
-          meta.state.label = e.data_act.project.label;
-          meta.state.startdate = dateFormat(
-            e.data_act.project.startdate,
-            "dd MMMM YYY"
-          );
-          meta.state.duedate = dateFormat(
-            e.data_act.project.duedate,
-            "dd MMMM YYY"
-          );
-          meta.state.taskComplete = e.data_act.resultTask.taskComplete;
-          meta.state.proggres = e.data_act.resultTask.completed;
-          meta.link.team = "/pm/projects/" + e.data_act.project.id + "/team";
-          meta.link.task = "/pm/projects/" + e.data_act.project.id + "/task";
-          meta.link.timeline =
-            "/pm/projects/" + e.data_act.project.id + "/timeline";
-          meta.link.planning =
-            "/pm/projects/" + e.data_act.project.id + "/planning";
-          meta.link.file =
-            "/pm/projects/" + e.data_act.project.id + "/file-management";
-        }
-      });
-      console.log("Mendapatkan data timeline : loading");
-      api("/api/project/task/timeline", {
-        data: {
-          idproject: params.id,
-          month: ("0" + tdate.getMonth()).slice(-2),
-          year: tdate.getFullYear(),
-        },
-      })
-        .then((e) => {
-          console.log(e);
-          if (e.status == true) {
-            e.data_act.timeline.map((e) => {
-              // console.log(e);
-              console.log(
-                e.startdate.split("-")[0] + "-" + e.startdate.split("-")[1]
-              );
-              var startDateku = new Date(
-                e.startdate.split("-")[0],
-                parseInt(e.startdate.split("-")[1]) - 1
-              );
-              var dueDateku = new Date(
-                e.duedate.split("-")[0],
-                parseInt(e.duedate.split("-")[1]) - 1
-              );
-              var dateku = new Date(
-                meta.time.year,
-                parseInt(meta.time.month) - 1
-              );
-              console.log("tanggal mulai " + startDateku);
-              console.log("tanggal akhir " + dueDateku);
-              console.log("waktu yang dipilih " + dateku);
-              var label = [];
-              if (dateku >= startDateku) {
-                if (dateku < dueDateku) {
-                  for (let i = 1; i <= 4; i++) {
-                    label[i] =
-                      "flex-grow bg-blue-300 border border-coolGray-300";
-                  }
-                } else {
-                  var startWeek = parseInt(e.startweeks);
-                  var dueWeek = parseInt(e.dueweeks);
-                  console.log(startWeek + " and " + dueWeek);
-                  for (let i = 1; i <= 4; i++) {
-                    console.log(i);
-                    var tes = true;
-                    if (i >= startWeek && i <= dueWeek) {
-                      label[i] =
-                        "flex-grow bg-blue-300 border border-coolGray-300";
-                    } else {
-                      tes = false;
-                      label[i] = "flex-grow border border-coolGray-300";
-                    }
-                    console.log(tes);
-                  }
-                }
-                e.labelTime = label;
-                console.log(label);
+        if (e.status == true || e.status == "true") {
+          api("/api/project/show/" + params.id).then((e0) => {
+            var iddivisi = 0;
+            if (
+              e.data_act.muser_role.name.toLowerCase() == "project manager" ||
+              e.data_act.muser_role.name.toLowerCase() == "admin"
+            ) {
+              if (e0.data_act.project_division.length) {
+                iddivisi = e0.data_act.project_division[0].id;
+              }
+            } else {
+              iddivisi = e.data_act.muser_detail.iddivision;
+            }
+            meta.iddivision = iddivisi;
+            console.log(iddivisi);
+            api("/api/project/task/timeline", {
+              data: {
+                idproject: params.id,
+                month: ("0" + tdate.getMonth() + 1).slice(-2),
+                year: tdate.getFullYear(),
+              },
+              iddivision: 19,
+              keyword: meta.keywordSearch,
+            })
+              .then((e) => {
+                console.log("year ==> " + tdate.getFullYear());
+                console.log("month ==> " + ("0" + tdate.getMonth()).slice(-2));
+                console.log(meta.iddivision);
                 console.log(e);
+                if (e.status == true) {
+                  e.data_act.timeline.map((e) => {
+                    // console.log(e);
+                    console.log(
+                      e.startdate.split("-")[0] +
+                        "-" +
+                        e.startdate.split("-")[1]
+                    );
+                    var startDateku = new Date(
+                      e.startdate.split("-")[0],
+                      parseInt(e.startdate.split("-")[1]) - 1
+                    );
+                    var dueDateku = new Date(
+                      e.duedate.split("-")[0],
+                      parseInt(e.duedate.split("-")[1]) - 1
+                    );
+                    var dateku = new Date(
+                      meta.time.year,
+                      parseInt(meta.time.month) - 1
+                    );
+                    console.log("tanggal mulai " + startDateku);
+                    console.log("tanggal akhir " + dueDateku);
+                    console.log("waktu yang dipilih " + dateku);
+                    var label = [];
+                    if (dateku < dueDateku) {
+                      for (let i = 1; i <= 4; i++) {
+                        label[i] =
+                          "flex-grow bg-blue-300 border border-coolGray-300";
+                      }
+                    } else {
+                      var startWeek = parseInt(e.startweeks);
+                      var dueWeek = parseInt(e.dueweeks);
+                      console.log(startWeek + " and " + dueWeek);
+                      for (let i = 1; i <= 4; i++) {
+                        console.log(i);
+                        var tes = true;
+                        if (i >= startWeek && i <= dueWeek) {
+                          label[i] =
+                            "flex-grow bg-blue-300 border border-coolGray-300";
+                        } else {
+                          tes = false;
+                          label[i] = "flex-grow border border-coolGray-300";
+                        }
+                        console.log(tes);
+                      }
+                    }
+                    e.labelTime = label;
+                    console.log(label);
+                    console.log(e);
+                  });
+                  meta.isLoading = true;
+                  // document.getElementById("loading").remove();
+                  meta.data_timeline = e.data_act.timeline;
+                  console.log(meta.data_timeline.length);
+                  // console.log(e);
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+
+            // All Project
+            api("/api/project/show/" + params.id).then((e) => {
+              // console.log(e);
+              if (e.status == true) {
+                meta.division = e.data_act.project_division;
+                meta.state.judul = e.data_act.project.name;
+                meta.state.deskripsi = e.data_act.project.desc;
+                meta.state.label = e.data_act.project.label;
+                meta.state.startdate = dateFormat(
+                  e.data_act.project.startdate,
+                  "dd MMMM YYY"
+                );
+                meta.state.duedate = dateFormat(
+                  e.data_act.project.duedate,
+                  "dd MMMM YYY"
+                );
+                meta.state.taskComplete = e.data_act.resultTask.taskComplete;
+                meta.state.proggres = e.data_act.resultTask.completed;
+                meta.link.team =
+                  "/pm/projects/" + e.data_act.project.id + "/team";
+                meta.link.task =
+                  "/pm/projects/" + e.data_act.project.id + "/task";
+                meta.link.timeline =
+                  "/pm/projects/" + e.data_act.project.id + "/timeline";
+                meta.link.planning =
+                  "/pm/projects/" + e.data_act.project.id + "/planning";
+                meta.link.file =
+                  "/pm/projects/" + e.data_act.project.id + "/file-management";
               }
             });
-            meta.isLoading = true;
-            // document.getElementById("loading").remove();
-            meta.data_timeline = e.data_act.timeline;
-            console.log(meta.data_timeline.length);
-            // console.log(e);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+          });
+        }
+      });
 
+      console.log("Mendapatkan data timeline : loading");
+      meta.actiondivision = {
+        onChange: (e) => {
+          runInAction(() => {
+            console.clear();
+            console.log("ID DIVISION " + e.target.value);
+            meta.iddivision = e.target.value;
+            console.log("ID DIVISION " + meta.state.iddivision);
+            meta.isLoading = false;
+            meta.reloadData(meta.timeSet);
+            // console.log();
+            // console.log("VALUE : " + e.target.value);
+          });
+        },
+      };
+      meta.actionsearch = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.isLoading = false;
+            meta.keywordSearch = e.target.value;
+            meta.reloadData(meta.timeSet);
+            // meta.search(e.target.value);
+          });
+        },
+      };
       console.log("Akhir:");
     }}
   />
@@ -276,7 +368,7 @@
       <div class="flex space-x-8 items-center justify-start">
         <a
           href={meta.link.detail}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Project Detail
@@ -284,7 +376,7 @@
         </a>
         <a
           href={meta.link.task}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Task
@@ -292,7 +384,7 @@
         </a>
         <a
           href={meta.link.planning}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Planning
@@ -300,7 +392,7 @@
         </a>
         <a
           href={meta.link.timeline}
-          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded border  border-indigo-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
             Timeline
@@ -308,7 +400,7 @@
         </a>
         <a
           href={meta.link.file}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             File Management
@@ -316,7 +408,7 @@
         </a>
         <a
           href={meta.link.team}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Team
@@ -337,10 +429,16 @@
             id="employee"
             name="employee"
             class="text-sm bg-white rounded-l py-3 outline-none"
+            onChange={(e) => {
+              meta.actiondivision.onChange(e);
+            }}
           >
-            <option value="volvo">UI/UX Designer</option>
-            <option value="saab">Business Analyst</option>
-            <option value="fiat">Full Stack Developer</option>
+            {meta.division.map((e) => {
+              meta.state.iddivision = meta.division[0].id;
+              if (e.division.toLowerCase() != "project manager") {
+                return <option value={e.id}>{e.division}</option>;
+              }
+            })}
           </select>
         </div>
         <div class="flex space-x-2 items-center justify-center">
@@ -375,6 +473,9 @@
             <input
               placeholder="Search Task"
               class="text-xs tracking-wide leading-none text-coolGray-500 w-full bg-coolGray-50 placeholder-gray-400 focus:outline-none"
+              onChange={(e) => {
+                meta.actionsearch.onChange(e);
+              }}
             />
           </div>
           <img

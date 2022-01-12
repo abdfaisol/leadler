@@ -1,0 +1,1524 @@
+<>
+  <effect
+    meta={{
+      // DATA DIVISION
+      user: [],
+      // DATA PRIMARY
+      state: {
+        name: "",
+        startdate: "",
+        duedate: "",
+        labelstartdate: "",
+        labelduedate: "",
+        status: [],
+        cstatus: "",
+        effort: "",
+        priority: "",
+        iddivision: "",
+        idtask: "",
+        description: "",
+        cost: "0",
+        taskname: "",
+        proggres: "0",
+        taskComplete: "0",
+        isSubtask: false,
+      },
+      // DATA LINK
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      stylesx: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "4px",
+          paddingBottom: "4px",
+          border: "none",
+          boxShadow: "none",
+          backgroundColor: "transparent",
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      // DATA TASK PER PROGRESS
+      data_task: [],
+      dataSubTask: [],
+      dataSubTaskProgress: [],
+      dataSubTaskSubmit: [],
+      dataSubTaskComplete: [],
+      // DATA LOADING
+      isLoading: false,
+      loading: {
+        all: [],
+        progress: [],
+        submit: [],
+        complete: [],
+      },
+      // EXPAND DATA
+      dataExpand: {
+        all: [],
+        progress: [],
+        submit: [],
+        complete: [],
+      },
+      // LOAD EXPAND
+      expandSubtask: {
+        all: [],
+        progress: [],
+        submit: [],
+        complete: [],
+      },
+      expand(id, statusku) {
+        console.clear();
+        // console.log
+        console.log(statusku);
+        var vv = [];
+        if (statusku == "all") {
+          if (!this.expandSubtask.all[id]) {
+            vv[id] = true;
+          }
+          this.loading.all = false;
+          this.expandSubtask.all = vv;
+        } else if (statusku == "progress") {
+          if (!this.expandSubtask.progress[id]) {
+            vv[id] = true;
+          }
+          this.loading.progress = false;
+          this.expandSubtask.progress = vv;
+        } else if (statusku == "submit") {
+          if (!this.expandSubtask.submit[id]) {
+            vv[id] = true;
+          }
+          this.loading.submit = false;
+          this.expandSubtask.submit = vv;
+        } else if (statusku == "complete") {
+          if (!this.expandSubtask.complete[id]) {
+            vv[id] = true;
+          }
+          this.loading.complete = false;
+          this.expandSubtask.complete = vv;
+        }
+        console.log("TES");
+        this.expandData(id, statusku);
+      },
+      // EXPAND API
+      expandData(id, statusku) {
+        // console.log("ID PROJECT : " + params.id);
+        api("/api/project/task/subtask/show", {
+          data: {
+            idproject: params.id,
+            idparent: id,
+          },
+        }).then((e) => {
+          // console.clear();
+          console.log(e);
+          if (e.status == true) {
+            e.data_act.map((idx) => {
+              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+            });
+            if (statusku) {
+              if (statusku == "all") {
+                this.loading.all = true;
+                this.dataExpand.all = e.data_act;
+              } else if (statusku == "progress") {
+                this.loading.progress = true;
+                this.dataExpand.progress = e.data_act;
+              } else if (statusku == "submit") {
+                this.loading.submit = true;
+                this.dataExpand.submit = e.data_act;
+              } else if (statusku == "complete") {
+                this.loading.complete = true;
+                this.dataExpand.complete = e.data_act;
+              }
+            }
+          }
+        });
+        // return printout;
+      },
+      // END EXPAND DATA
+      // ID DIVISI
+      iddivision: "",
+      // MODAL EDIT
+      modalEdit: false,
+      idtask: 0,
+      showModalEdit(id, name) {
+        if (this.state.iddivision == this.muser.muser_detail.mdivision.id) {
+          this.deleteTeam.name = name;
+          this.deleteTeam.idteam = id;
+          this.modalEdit = !this.modalEdit;
+          window.user.idtask = id;
+        }
+      },
+      closeModalEdit() {
+        this.modalEdit = false;
+      },
+      // DELETE
+      deleteTeam: {
+        name: "asdasd",
+        idteam: 0,
+      },
+      confirmDelete: false,
+      modalDelete(id, name) {
+        this.deleteTeam.idteam = id;
+        this.deleteTeam.name = name;
+        // console.log("hapus tim " + name);
+        this.confirmDelete = true;
+        this.modalEdit = false;
+      },
+      closeDelete() {
+        console.log("CLOSE");
+        this.confirmDelete = false;
+      },
+      actionDelete(id, divisi) {
+        console.clear();
+        console.log(id);
+        api("/api/project/task/remove", {
+          idtask: id,
+        }).then((e) => {
+          console.log(e);
+          this.confirmDelete = false;
+          if (e.status == true) {
+            this.isLoading = false;
+            this.reloadProject(divisi);
+          }
+        });
+      },
+      // RELOAD PROJECT
+      reloadProject(divisi) {
+        this.state.iddivision = divisi;
+        // All Project
+        window.user.mobile.project.data.iddivision = divisi;
+        api("/api/project/show/" + params.id, {
+          data: {
+            iddivision: divisi,
+          },
+        }).then((e) => {
+          if (e.status == true) {
+            this.state.judul = e.data_act.project.name;
+            this.data_task = [];
+            e.data_act.project_task.map((idx) => {
+              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+              idx.subtask = false;
+              api("/api/project/task/subtask/show", {
+                data: {
+                  idproject: params.id,
+                  idparent: idx.id,
+                },
+              }).then((e) => {
+                // console.log(e);
+                if (e.status == true) {
+                  if (e.data_act.length > 0) {
+                    idx.subtask = true;
+                  }
+                }
+                this.data_task.push(idx);
+              });
+            });
+          }
+          // In proggress
+          api("/api/project/show/" + params.id, {
+            data: {
+              idstatus: 2,
+              iddivision: this.state.iddivision,
+            },
+          }).then((e) => {
+            // console.log(e.data_act.project_task);
+            if (e.status == true) {
+              // console.log(e);
+              this.dataSubTaskProgress = [];
+              e.data_act.project_task.map((idx) => {
+                idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                idx.subtask = false;
+                api("/api/project/task/subtask/show", {
+                  data: {
+                    idproject: params.id,
+                    idparent: idx.id,
+                  },
+                }).then((e) => {
+                  // console.log(e);
+                  if (e.status == true) {
+                    if (e.data_act.length > 0) {
+                      idx.subtask = true;
+                    }
+                  }
+                  this.dataSubTaskProgress.push(idx);
+                });
+              });
+            }
+            // Submitted
+            api("/api/project/show/" + params.id, {
+              data: {
+                idstatus: 6,
+                iddivision: this.state.iddivision,
+              },
+            }).then((e) => {
+              if (e.status == true) {
+                // console.log(e);
+                this.dataSubTaskSubmit = [];
+                e.data_act.project_task.map((idx) => {
+                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  api("/api/project/task/subtask/show", {
+                    data: {
+                      idproject: params.id,
+                      idparent: idx.id,
+                    },
+                  }).then((e) => {
+                    // console.log(e);
+                    if (e.status == true) {
+                      if (e.data_act.length > 0) {
+                        idx.subtask = true;
+                      }
+                    }
+                    this.dataSubTaskSubmit.push(idx);
+                  });
+                });
+                // meta.dataSubTaskSubmit = e.data_act.project_task;
+              }
+              // Complete
+              api("/api/project/show/" + params.id, {
+                data: {
+                  idstatus: 1,
+                  iddivision: this.state.iddivision,
+                },
+              }).then((e) => {
+                this.dataSubTaskComplete = [];
+                if (e.status == true) {
+                  // console.log(e);
+                  e.data_act.project_task.map((idx) => {
+                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                    api("/api/project/task/subtask/show", {
+                      data: {
+                        idproject: params.id,
+                        idparent: idx.id,
+                      },
+                    }).then((e) => {
+                      // console.log(e);
+                      if (e.status == true) {
+                        if (e.data_act.length > 0) {
+                          idx.subtask = true;
+                        }
+                      }
+                      this.dataSubTaskComplete.push(idx);
+                    });
+                  });
+                  // meta.dataSubTaskComplete = e.data_act.project_task;
+                  this.isLoading = true;
+                }
+              });
+            });
+          });
+        });
+      },
+      // DIVISI SELECTED
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value == value) {
+            out = idx;
+          }
+        });
+        return out;
+      },
+      muser: [],
+      addTombol: true,
+      checkDivisi() {
+        if (this.state.iddivision == this.muser.muser_detail.mdivision.id) {
+          this.addTombol = true;
+        } else {
+          this.addTombol = false;
+        }
+      },
+    }}
+    run={async () => {
+      // WINDOW USER
+      // Mendapatkan data projek
+      api("/api/session").then((e) => {
+        // console.log(e);
+        if (e.status == true || e.status == "true") {
+          meta.muser = e.data_act;
+          api("/api/project/show/" + params.id).then((e0) => {
+            if (
+              e.data_act.muser_role.name.toLowerCase() == "project manager" ||
+              e.data_act.muser_role.name.toLowerCase() == "admin"
+            ) {
+              if (e0.data_act.project_division.length) {
+                meta.state.iddivision = e0.data_act.project_division[0].id;
+              }
+            } else {
+              meta.state.iddivision = e.data_act.muser_detail.iddivision;
+            }
+            console.log(meta.state.iddivision);
+            window.user.idtask = false;
+            window.user.mobile = {
+              project: {
+                data: {
+                  desc: "",
+                  estimated_cost: 0,
+                  idproject: params.id,
+                  name: "",
+                  startdate: new Date(),
+                  duedate: "",
+                  status: 3,
+                  effort: 1,
+                  priority: 1,
+                  iddivision: meta.state.iddivision,
+                },
+              },
+              subtask: {
+                data: [],
+              },
+            };
+            // All Project
+            console.log("ID DIVISI +> " + meta.state.iddivision);
+            api("/api/project/show/" + params.id, {
+              data: {
+                iddivision: meta.state.iddivision,
+              },
+            }).then((e) => {
+              console.log(e);
+              if (e.status == true) {
+                meta.state.judul = e.data_act.project.name;
+                e.data_act.project_task.map((idx) => {
+                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  idx.subtask = false;
+                  api("/api/project/task/subtask/show", {
+                    data: {
+                      idproject: params.id,
+                      idparent: idx.id,
+                    },
+                  }).then((e) => {
+                    console.log(e);
+                    if (e.status == true) {
+                      if (e.data_act.length > 0) {
+                        idx.subtask = true;
+                      }
+                    }
+                    meta.data_task.push(idx);
+                  });
+                });
+                var ttempDivision = [];
+                // console.log(e);
+                e.data_act.project_division.map((e) => {
+                  // console.log(e);
+                  ttempDivision.push({ value: e.id, label: e.division });
+                });
+                meta.user = ttempDivision;
+                // META LINK
+                meta.link.detail =
+                  "/m/user/projects/" + e.data_act.project.id + "/detail";
+                meta.link.team =
+                  "/m/user/projects/" + e.data_act.project.id + "/team";
+                meta.link.task =
+                  "/m/user/projects/" + e.data_act.project.id + "/task";
+                meta.link.timeline =
+                  "/m/user/projects/" + e.data_act.project.id + "/timeline";
+                meta.link.planning =
+                  "/m/user/projects/" + e.data_act.project.id + "/planning";
+                meta.link.file =
+                  "/m/user/projects/" +
+                  e.data_act.project.id +
+                  "/file-management";
+                // console.log(e);
+              }
+              // In proggress
+              api("/api/project/show/" + params.id, {
+                data: {
+                  idstatus: 2,
+                  iddivision: meta.state.iddivision,
+                },
+              }).then((e) => {
+                // console.log(e.data_act.project_task);
+                if (e.status == true) {
+                  // console.log(e);
+                  e.data_act.project_task.map((idx) => {
+                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                    idx.subtask = false;
+                    api("/api/project/task/subtask/show", {
+                      data: {
+                        idproject: params.id,
+                        idparent: idx.id,
+                      },
+                    }).then((e) => {
+                      // console.log(e);
+                      if (e.status == true) {
+                        if (e.data_act.length > 0) {
+                          idx.subtask = true;
+                        }
+                      }
+                      meta.dataSubTaskProgress.push(idx);
+                    });
+                  });
+                }
+                // Submitted
+                api("/api/project/show/" + params.id, {
+                  data: {
+                    idstatus: 6,
+                    iddivision: meta.state.iddivision,
+                  },
+                }).then((e) => {
+                  if (e.status == true) {
+                    // console.log(e);
+                    e.data_act.project_task.map((idx) => {
+                      idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                      idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                      api("/api/project/task/subtask/show", {
+                        data: {
+                          idproject: params.id,
+                          idparent: idx.id,
+                        },
+                      }).then((e) => {
+                        // console.log(e);
+                        if (e.status == true) {
+                          if (e.data_act.length > 0) {
+                            idx.subtask = true;
+                          }
+                        }
+                        meta.dataSubTaskSubmit.push(idx);
+                      });
+                    });
+                    // meta.dataSubTaskSubmit = e.data_act.project_task;
+                  }
+                  // Complete
+                  api("/api/project/show/" + params.id, {
+                    data: {
+                      idstatus: 1,
+                      iddivision: meta.state.iddivision,
+                    },
+                  }).then((e) => {
+                    if (e.status == true) {
+                      // console.log(e);
+                      e.data_act.project_task.map((idx) => {
+                        idx.startdate = dateFormat(
+                          idx.startdate,
+                          "MMM dd, YYY"
+                        );
+                        idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                        api("/api/project/task/subtask/show", {
+                          data: {
+                            idproject: params.id,
+                            idparent: idx.id,
+                          },
+                        }).then((e) => {
+                          // console.log(e);
+                          if (e.status == true) {
+                            if (e.data_act.length > 0) {
+                              idx.subtask = true;
+                            }
+                          }
+                          meta.dataSubTaskComplete.push(idx);
+                        });
+                      });
+                      // meta.dataSubTaskComplete = e.data_act.project_task;
+                      meta.isLoading = true;
+                    }
+                  });
+                });
+              });
+            });
+          });
+        }
+      });
+      // SELECTED TASK BY DIVISION
+      meta.actiondivision = {
+        onChange: (e) => {
+          runInAction(() => {
+            console.clear();
+            console.log(e);
+            // console.log("ID DIVISION " + e.value);
+            // meta.state.iddivision = e.value;
+            // meta.iddivision = e.value;
+            // console.log("ID DIVISION " + meta.iddivision);
+            // meta.isLoading = false;
+            // meta.reloadProject(e.value);
+            // // console.log();
+            // // console.log("VALUE : " + e.target.value);
+          });
+        },
+      };
+    }}
+  />
+  <div class="flex flex-col min-h-screen min-w-screen">
+    <div class="flex flex-col items-start justify-start bg-coolGray-50 space-y-1 flex-grow">
+      <div class="flex w-full self-stretch items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+        <div class="flex w-full space-x-5 items-center justify-start">
+          <a href="/m/user/project" class="flex items-center justify-start">
+            <img
+              src="/fimgs/I727_1000_1575_5334.x3.png"
+              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+            />
+            <div class="text-base tracking-wide leading-tight text-indigo-500">
+              Back
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="overflow-x-auto w-full sticky top-0 z-50 bg-white">
+        <div class="flex flex-col self-stretch space-y-2 w-auto">
+          <div class="flex flex-col self-stretch items-start justify-start">
+            <div class="flex space-x-4 items-start justify-start px-5 py-4 ">
+              <a
+                href={meta.link.detail}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+                style="width: 132px; min-width: 132px; max-width: 132px;"
+              >
+                <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
+                  Projects Detail
+                </div>
+              </a>
+              <a
+                href={meta.link.task}
+                class="flex items-center justify-center px-4 py-2 border rounded border-indigo-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                  Task
+                </div>
+              </a>
+              <a
+                href={meta.link.planning}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                  Planning
+                </div>
+              </a>
+              <a
+                href={meta.link.timeline}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                  Timeline
+                </div>
+              </a>
+              <a
+                href={meta.link.file}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+                style="width: 151px; min-width: 151px; max-width: 151px;"
+              >
+                <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
+                  File Management
+                </div>
+              </a>
+              <a
+                href={meta.link.team}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                  Team
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex self-stretch w-full flex-col space-y-8 items-start justify-start bg-coolGray-50 flex-grow">
+        {meta.isLoading ? (
+          <>
+            <div class="flex flex-col w-full space-y-2 items-start justify-start flex-grow">
+              <div class="flex flex-col w-full items-start justify-start px-3 bg-white">
+                <div class="text-sm font-medium tracking-wide leading-tight text-start text-coolGray-900 border-coolGray-300">
+                  <div class="flex items-center justify-center">
+                    <multipleselect
+                      options={meta.user}
+                      defaultValue={
+                        meta.state.iddivision == 0 ||
+                        meta.state.iddivision == ""
+                          ? meta.user[-1]
+                          : meta.user[
+                              meta.searchIdx(meta.state.iddivision, meta.user)
+                            ]
+                      }
+                      theme={(theme) => ({
+                        ...theme,
+                        borderRadius: 0,
+                        colors: {
+                          ...theme.colors,
+                          primary25: "#F3F4F6",
+                          primary: "#6366F1",
+                        },
+                      })}
+                      onChange={(event) => {
+                        console.log(event.value);
+                        meta.iddivision = event.value;
+                        meta.state.iddivision = event.value;
+                        console.log("ID DIVISION " + meta.iddivision);
+                        meta.isLoading = false;
+                        meta.reloadProject(event.value);
+                      }}
+                      styles={meta.stylesx}
+                      className="w-48"
+                      classNamePrefix="select"
+                      name="status"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col w-full space-y-4 items-start justify-start relative overflow-y-auto">
+                <div class="flex self-stretch flex-col space-y-1 items-start justify-start relative overflow-y-auto">
+                  <div class="flex self-stretch flex-col items-start justify-start px-5 bg-white">
+                    <div class="flex self-stretch space-x-2 items-center justify-start">
+                      <div class="flex items-center justify-center px-3 py-2.5 bg-green-400">
+                        <div class="text-xs tracking-wide leading-none text-center text-white">
+                          TODO
+                        </div>
+                      </div>
+                      <div class="flex flex-1 items-start justify-start">
+                        <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                          {meta.data_task.length} Task
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch flex-col items-start justify-center space-y-1">
+                    {meta.data_task.map((e, idx) => {
+                      var statusku = "all";
+                      return (
+                        <>
+                          <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white px-5 py-4">
+                            <div class="flex self-stretch items-center justify-between">
+                              {e.subtask ? (
+                                <>
+                                  <div
+                                    class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row items-center"
+                                    onClick={(event) => {
+                                      meta.expand(e.id, statusku);
+                                    }}
+                                  >
+                                    {meta.expandSubtask.all[e.id] ? (
+                                      <>
+                                        <img
+                                          src="/fimgs/609_824.x3.png"
+                                          class="flex items-start justify-start rotate-90"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                        />
+                                      </>
+                                    ) : (
+                                      <>
+                                        <img
+                                          src="/fimgs/609_824.x3.png"
+                                          class="flex items-start justify-start"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px; transform: rotate(270deg);"
+                                        />
+                                      </>
+                                    )}
+                                    {e.name}
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row">
+                                    {e.name}
+                                  </div>
+                                </>
+                              )}
+
+                              <img
+                                src="/fimgs/I824_2343_1618_5994.x3.png"
+                                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px"
+                                onClick={(event) =>
+                                  meta.showModalEdit(e.id, e.name)
+                                }
+                              />
+                            </div>
+                            <div class="flex self-stretch flex-col space-y-2.5 items-start justify-start">
+                              <div class="flex self-stretch space-x-6 items-start justify-start">
+                                <div class="flex items-start justify-start">
+                                  <div class="text-xs tracking-wide leading-none text-green-500">
+                                    {e.startdate}
+                                  </div>
+                                </div>
+                                <div class="flex flex-1 items-start justify-start">
+                                  <div class="text-xs tracking-wide leading-none text-red-500">
+                                    {e.duedate}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="flex self-stretch space-x-9 items-center justify-start">
+                                <div class="flex items-center justify-center py-0.5 px-1 bg-indigo-500 rounded-full">
+                                  <div class="text-xs tracking-wide leading-none text-center text-white">
+                                    {e.mpriority.name}
+                                  </div>
+                                </div>
+                                <div class="flex items-start justify-start py-0.5 px-1 border rounded border-indigo-500">
+                                  <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                    {e.effort}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {meta.expandSubtask.all[e.id] ? (
+                            meta.loading.all ? (
+                              <>
+                                {meta.dataExpand.all.map((e, idx) => {
+                                  return (
+                                    <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white px-5 py-4">
+                                      <div class="flex self-stretch items-center justify-between">
+                                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row">
+                                          {e.name}
+                                        </div>
+                                        <img
+                                          src="/fimgs/I824_2343_1618_5994.x3.png"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px"
+                                          onClick={(event) =>
+                                            meta.showModalEdit(e.id, e.name)
+                                          }
+                                        />
+                                      </div>
+                                      <div class="flex self-stretch flex-col space-y-2.5 items-start justify-start">
+                                        <div class="flex self-stretch space-x-6 items-start justify-start">
+                                          <div class="flex items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none text-green-500">
+                                              {e.startdate}
+                                            </div>
+                                          </div>
+                                          <div class="flex flex-1 items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none text-red-500">
+                                              {e.duedate}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="flex self-stretch space-x-9 items-center justify-start">
+                                          <div class="flex items-center justify-center py-0.5 px-1 bg-indigo-500 rounded-full">
+                                            <div class="text-xs tracking-wide leading-none text-center text-white">
+                                              {e.mpriority.name}
+                                            </div>
+                                          </div>
+                                          <div class="flex items-start justify-start py-0.5 px-1 border rounded border-indigo-500">
+                                            <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                              {e.effort}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </>
+                            ) : (
+                              <div class="flex self-stretch flex-wrap items-center justify-center">
+                                <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                                  <div
+                                    class="loader-dots block relative w-22 h-6 mt-2"
+                                    style="width: 5rem;"
+                                  >
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          ) : null}
+                        </>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div class="flex self-stretch flex-col space-y-1 items-start justify-start relative overflow-y-auto">
+                  <div class="flex self-stretch flex-col items-start justify-start px-5 bg-white">
+                    <div class="flex self-stretch space-x-2 items-center justify-start">
+                      <div class="flex items-center justify-center px-3 py-2.5 bg-indigo-400">
+                        <div class="text-xs tracking-wide leading-none text-center text-white">
+                          IN PROGRESS
+                        </div>
+                      </div>
+                      <div class="flex flex-1 items-start justify-start">
+                        <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                          {meta.dataSubTaskProgress.length} Task
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch flex-col items-start justify-center space-y-1">
+                    {meta.dataSubTaskProgress.map((e, idx) => {
+                      var statusku = "progress";
+                      return (
+                        <>
+                          <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white px-5 py-4">
+                            <div class="flex self-stretch items-center justify-between">
+                              {e.subtask ? (
+                                <>
+                                  <div
+                                    class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row items-center"
+                                    onClick={(event) => {
+                                      meta.expand(e.id, statusku);
+                                    }}
+                                  >
+                                    {meta.expandSubtask.progress[e.id] ? (
+                                      <>
+                                        <img
+                                          src="/fimgs/609_824.x3.png"
+                                          class="flex items-start justify-start rotate-90"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                        />
+                                      </>
+                                    ) : (
+                                      <>
+                                        <img
+                                          src="/fimgs/609_824.x3.png"
+                                          class="flex items-start justify-start"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px; transform: rotate(270deg);"
+                                        />
+                                      </>
+                                    )}
+                                    {e.name}
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row">
+                                    {e.name}
+                                  </div>
+                                </>
+                              )}
+
+                              <img
+                                src="/fimgs/I824_2343_1618_5994.x3.png"
+                                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px"
+                                onClick={(event) =>
+                                  meta.showModalEdit(e.id, e.name)
+                                }
+                              />
+                            </div>
+                            <div class="flex self-stretch flex-col space-y-2.5 items-start justify-start">
+                              <div class="flex self-stretch space-x-6 items-start justify-start">
+                                <div class="flex items-start justify-start">
+                                  <div class="text-xs tracking-wide leading-none text-green-500">
+                                    {e.startdate}
+                                  </div>
+                                </div>
+                                <div class="flex flex-1 items-start justify-start">
+                                  <div class="text-xs tracking-wide leading-none text-red-500">
+                                    {e.duedate}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="flex self-stretch space-x-9 items-center justify-start">
+                                <div class="flex items-center justify-center py-0.5 px-1 bg-indigo-500 rounded-full">
+                                  <div class="text-xs tracking-wide leading-none text-center text-white">
+                                    {e.mpriority.name}
+                                  </div>
+                                </div>
+                                <div class="flex items-start justify-start py-0.5 px-1 border rounded border-indigo-500">
+                                  <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                    {e.effort}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {meta.expandSubtask.progress[e.id] ? (
+                            meta.loading.progress ? (
+                              <>
+                                {meta.dataExpand.progress.map((e, idx) => {
+                                  return (
+                                    <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white px-5 py-4">
+                                      <div class="flex self-stretch items-center justify-between">
+                                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row">
+                                          {e.name}
+                                        </div>
+                                        <img
+                                          src="/fimgs/I824_2343_1618_5994.x3.png"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px"
+                                          onClick={(event) =>
+                                            meta.showModalEdit(e.id, e.name)
+                                          }
+                                        />
+                                      </div>
+                                      <div class="flex self-stretch flex-col space-y-2.5 items-start justify-start">
+                                        <div class="flex self-stretch space-x-6 items-start justify-start">
+                                          <div class="flex items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none text-green-500">
+                                              {e.startdate}
+                                            </div>
+                                          </div>
+                                          <div class="flex flex-1 items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none text-red-500">
+                                              {e.duedate}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="flex self-stretch space-x-9 items-center justify-start">
+                                          <div class="flex items-center justify-center py-0.5 px-1 bg-indigo-500 rounded-full">
+                                            <div class="text-xs tracking-wide leading-none text-center text-white">
+                                              {e.mpriority.name}
+                                            </div>
+                                          </div>
+                                          <div class="flex items-start justify-start py-0.5 px-1 border rounded border-indigo-500">
+                                            <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                              {e.effort}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </>
+                            ) : (
+                              <div class="flex self-stretch flex-wrap items-center justify-center">
+                                <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                                  <div
+                                    class="loader-dots block relative w-22 h-6 mt-2"
+                                    style="width: 5rem;"
+                                  >
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          ) : null}
+                        </>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div class="flex self-stretch flex-col space-y-1 items-start justify-start relative overflow-y-auto">
+                  <div class="flex self-stretch flex-col items-start justify-start px-5 bg-white">
+                    <div class="flex self-stretch space-x-2 items-center justify-start">
+                      <div class="flex items-center justify-center px-3 py-2.5 bg-blue-700">
+                        <div class="text-xs tracking-wide leading-none text-center text-white">
+                          SUBMITTED
+                        </div>
+                      </div>
+                      <div class="flex flex-1 items-start justify-start">
+                        <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                          {meta.dataSubTaskSubmit.length} Task
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch flex-col items-start justify-center space-y-1">
+                    {meta.dataSubTaskSubmit.map((e, idx) => {
+                      var statusku = "submit";
+                      return (
+                        <>
+                          <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white px-5 py-4">
+                            <div class="flex self-stretch items-center justify-between">
+                              {e.subtask ? (
+                                <>
+                                  <div
+                                    class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row items-center"
+                                    onClick={(event) => {
+                                      meta.expand(e.id, statusku);
+                                    }}
+                                  >
+                                    {meta.expandSubtask.submit[e.id] ? (
+                                      <>
+                                        <img
+                                          src="/fimgs/609_824.x3.png"
+                                          class="flex items-start justify-start rotate-90"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                        />
+                                      </>
+                                    ) : (
+                                      <>
+                                        <img
+                                          src="/fimgs/609_824.x3.png"
+                                          class="flex items-start justify-start"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px; transform: rotate(270deg);"
+                                        />
+                                      </>
+                                    )}
+                                    {e.name}
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row">
+                                    {e.name}
+                                  </div>
+                                </>
+                              )}
+
+                              <img
+                                src="/fimgs/I824_2343_1618_5994.x3.png"
+                                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px"
+                                onClick={(event) =>
+                                  meta.showModalEdit(e.id, e.name)
+                                }
+                              />
+                            </div>
+                            <div class="flex self-stretch flex-col space-y-2.5 items-start justify-start">
+                              <div class="flex self-stretch space-x-6 items-start justify-start">
+                                <div class="flex items-start justify-start">
+                                  <div class="text-xs tracking-wide leading-none text-green-500">
+                                    {e.startdate}
+                                  </div>
+                                </div>
+                                <div class="flex flex-1 items-start justify-start">
+                                  <div class="text-xs tracking-wide leading-none text-red-500">
+                                    {e.duedate}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="flex self-stretch space-x-9 items-center justify-start">
+                                <div class="flex items-center justify-center py-0.5 px-1 bg-indigo-500 rounded-full">
+                                  <div class="text-xs tracking-wide leading-none text-center text-white">
+                                    {e.mpriority.name}
+                                  </div>
+                                </div>
+                                <div class="flex items-start justify-start py-0.5 px-1 border rounded border-indigo-500">
+                                  <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                    {e.effort}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {meta.expandSubtask.submit[e.id] ? (
+                            meta.loading.submit ? (
+                              <>
+                                {meta.dataExpand.submit.map((e, idx) => {
+                                  return (
+                                    <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white px-5 py-4">
+                                      <div class="flex self-stretch items-center justify-between">
+                                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row">
+                                          {e.name}
+                                        </div>
+                                        <img
+                                          src="/fimgs/I824_2343_1618_5994.x3.png"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px"
+                                          onClick={(event) =>
+                                            meta.showModalEdit(e.id, e.name)
+                                          }
+                                        />
+                                      </div>
+                                      <div class="flex self-stretch flex-col space-y-2.5 items-start justify-start">
+                                        <div class="flex self-stretch space-x-6 items-start justify-start">
+                                          <div class="flex items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none text-green-500">
+                                              {e.startdate}
+                                            </div>
+                                          </div>
+                                          <div class="flex flex-1 items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none text-red-500">
+                                              {e.duedate}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="flex self-stretch space-x-9 items-center justify-start">
+                                          <div class="flex items-center justify-center py-0.5 px-1 bg-indigo-500 rounded-full">
+                                            <div class="text-xs tracking-wide leading-none text-center text-white">
+                                              {e.mpriority.name}
+                                            </div>
+                                          </div>
+                                          <div class="flex items-start justify-start py-0.5 px-1 border rounded border-indigo-500">
+                                            <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                              {e.effort}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </>
+                            ) : (
+                              <div class="flex self-stretch flex-wrap items-center justify-center">
+                                <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                                  <div
+                                    class="loader-dots block relative w-22 h-6 mt-2"
+                                    style="width: 5rem;"
+                                  >
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          ) : null}
+                        </>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div class="flex self-stretch flex-col space-y-1 items-start justify-start relative overflow-y-auto">
+                  <div class="flex self-stretch flex-col items-start justify-start px-5 bg-white">
+                    <div class="flex self-stretch space-x-2 items-center justify-start">
+                      <div class="flex items-center justify-center px-3 py-2.5 bg-orange-300">
+                        <div class="text-xs tracking-wide leading-none text-center text-white">
+                          COMPLETE
+                        </div>
+                      </div>
+                      <div class="flex flex-1 items-start justify-start">
+                        <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                          {meta.dataSubTaskComplete.length} Task
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch flex-col items-start justify-center space-y-1">
+                    {meta.dataSubTaskComplete.map((e, idx) => {
+                      var statusku = "complete";
+                      return (
+                        <>
+                          <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white px-5 py-4">
+                            <div class="flex self-stretch items-center justify-between">
+                              {e.subtask ? (
+                                <>
+                                  <div
+                                    class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row items-center"
+                                    onClick={(event) => {
+                                      meta.expand(e.id, statusku);
+                                    }}
+                                  >
+                                    {meta.expandSubtask.complete[e.id] ? (
+                                      <>
+                                        <img
+                                          src="/fimgs/609_824.x3.png"
+                                          class="flex items-start justify-start rotate-90"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                        />
+                                      </>
+                                    ) : (
+                                      <>
+                                        <img
+                                          src="/fimgs/609_824.x3.png"
+                                          class="flex items-start justify-start"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px; transform: rotate(270deg);"
+                                        />
+                                      </>
+                                    )}
+                                    {e.name}
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row">
+                                    {e.name}
+                                  </div>
+                                </>
+                              )}
+
+                              <img
+                                src="/fimgs/I824_2343_1618_5994.x3.png"
+                                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px"
+                                onClick={(event) =>
+                                  meta.showModalEdit(e.id, e.name)
+                                }
+                              />
+                            </div>
+                            <div class="flex self-stretch flex-col space-y-2.5 items-start justify-start">
+                              <div class="flex self-stretch space-x-6 items-start justify-start">
+                                <div class="flex items-start justify-start">
+                                  <div class="text-xs tracking-wide leading-none text-green-500">
+                                    {e.startdate}
+                                  </div>
+                                </div>
+                                <div class="flex flex-1 items-start justify-start">
+                                  <div class="text-xs tracking-wide leading-none text-red-500">
+                                    {e.duedate}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="flex self-stretch space-x-9 items-center justify-start">
+                                <div class="flex items-center justify-center py-0.5 px-1 bg-indigo-500 rounded-full">
+                                  <div class="text-xs tracking-wide leading-none text-center text-white">
+                                    {e.mpriority.name}
+                                  </div>
+                                </div>
+                                <div class="flex items-start justify-start py-0.5 px-1 border rounded border-indigo-500">
+                                  <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                    {e.effort}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {meta.expandSubtask.complete[e.id] ? (
+                            meta.loading.complete ? (
+                              <>
+                                {meta.dataExpand.complete.map((e, idx) => {
+                                  return (
+                                    <div class="flex self-stretch flex-col space-y-4 items-start justify-start bg-white px-5 py-4">
+                                      <div class="flex self-stretch items-center justify-between">
+                                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 flex flex-row">
+                                          {e.name}
+                                        </div>
+                                        <img
+                                          src="/fimgs/I824_2343_1618_5994.x3.png"
+                                          style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px"
+                                          onClick={(event) =>
+                                            meta.showModalEdit(e.id, e.name)
+                                          }
+                                        />
+                                      </div>
+                                      <div class="flex self-stretch flex-col space-y-2.5 items-start justify-start">
+                                        <div class="flex self-stretch space-x-6 items-start justify-start">
+                                          <div class="flex items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none text-green-500">
+                                              {e.startdate}
+                                            </div>
+                                          </div>
+                                          <div class="flex flex-1 items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none text-red-500">
+                                              {e.duedate}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="flex self-stretch space-x-9 items-center justify-start">
+                                          <div class="flex items-center justify-center py-0.5 px-1 bg-indigo-500 rounded-full">
+                                            <div class="text-xs tracking-wide leading-none text-center text-white">
+                                              {e.mpriority.name}
+                                            </div>
+                                          </div>
+                                          <div class="flex items-start justify-start py-0.5 px-1 border rounded border-indigo-500">
+                                            <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                              {e.effort}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </>
+                            ) : (
+                              <div class="flex self-stretch flex-wrap items-center justify-center">
+                                <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                                  <div
+                                    class="loader-dots block relative w-22 h-6 mt-2"
+                                    style="width: 5rem;"
+                                  >
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          ) : null}
+                        </>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+              <div class="fixed right-4 bottom-12" style="">
+                <a
+                  href={"/m/user/projects/" + params.id + "/task/create"}
+                  class="flex space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+                >
+                  <img
+                    src="/fimgs/603_427.x3.png"
+                    style="width: 12px; min-width: 12px; max-width: 12px; height: 12px; min-height: 12px; max-height: 12px;"
+                  />
+                  <div class="text-sm font-medium tracking-wide leading-tight text-right text-white pl-1">
+                    Task
+                  </div>
+                </a>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div class="flex self-stretch flex-wrap items-center justify-center flex-grow">
+            <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+              <div
+                class="loader-dots block relative w-22 h-6 mt-2"
+                style="width: 5rem;"
+              >
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; width: 0.75rem; height: 0.75rem;"
+                ></div>
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                ></div>
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                ></div>
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                ></div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+  {meta.modalEdit ? (
+    <>
+      <div
+        class="flex flex-row items-start justify-start px-5 py-4 bg-white rounded-tl-lg rounded-tr-lg fixed bottom-0 w-screen"
+        style="z-index: 60"
+      >
+        <div class="flex flex-col space-y-5 flex-grow">
+          <div class="flex self-stretch items-start justify-between">
+            <div></div>
+            <div class="flex items-start justify-start">
+              <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                Select Menu
+              </div>
+            </div>
+            <img
+              src="/fimgs/677_1939.x1.svg"
+              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              onClick={meta.closeModalEdit}
+            />
+          </div>
+          <div class="flex flex-col space-y-4 items-start justify-start">
+            <a
+              class="flex items-center self-stretch justify-center px-4 py-2 border rounded border-coolGray-300"
+              href={"/m/user/projects/" + params.id + "/task/detail/edit"}
+            >
+              <div class="text-base tracking-wide leading-normal text-indigo-500">
+                Edit
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        className="opacity-25 fixed inset-0 z-40 bg-black"
+        style="z-index: 50"
+        onClick={meta.closeModalEdit}
+      ></div>
+    </>
+  ) : null}
+  {meta.confirmDelete ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 outline-none focus:outline-none z-50">
+        <div
+          className="opacity-25 fixed inset-0 z-50 bg-black w-screen h-screen"
+          onClick={meta.closeDelete}
+        ></div>
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 325px; width: 325px; z-index:60"
+        >
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            <div class="flex w-full flex-col items-start justify-start p-4 space-y-6 bg-white rounded">
+              <div class="flex w-full space-x-4 items-start justify-start">
+                <div>
+                  <img
+                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                    src="/fimgs/295_281.x3.png"
+                  />
+                </div>
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                      Delete Task
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight">
+                      Are you sure remove{" "}
+                      <small class="text-sm font-medium">
+                        "{meta.deleteTeam.name}"?
+                      </small>{" "}
+                      You can’t undo this action
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex w-full space-x-6 items-start justify-end">
+                <div class="flex items-start justify-end">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                      <button onClick={meta.closeDelete}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-start justify-end bg-red-500 rounded">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <button
+                      class="text-base font-medium tracking-wide leading-normal text-center text-white"
+                      onClick={(event) =>
+                        meta.actionDelete(
+                          meta.deleteTeam.idteam,
+                          meta.state.iddivision
+                        )
+                      }
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  ) : null}
+</>

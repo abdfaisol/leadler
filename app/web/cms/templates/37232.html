@@ -1,0 +1,360 @@
+<>
+  <effect
+    meta={{
+      state0: {
+        name: "",
+        division: "",
+        nik: "",
+        birthplace: "",
+        birthdate: "",
+        phone: "",
+        file: "",
+        iduser: "",
+        photo:
+          "https://images.pexels.com/photos/2589653/pexels-photo-2589653.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+      },
+      state: {
+        time: new Date(),
+        isOpen: false,
+      },
+      isLoading: false,
+      datePicker: new Date(),
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state0[name] = nilai;
+        // console.log(name);
+      },
+      setStartDate(newDate) {
+        this.datePicker = newDate;
+      },
+      isOpen: false,
+      setIsOpen(open) {
+        this.isOpen = open;
+      },
+
+      handleChange(e) {
+        document.getElementById("root").classList.add("z-0");
+        console.log("COBA DULU");
+      },
+      elmku: "",
+      handleClick(e) {
+        e.preventDefault();
+        this.setIsOpen(!this.isOpen);
+        // this.setIsOpen(!this.isOpen);
+      },
+      handleCancel() {
+        this.state.isOpen = false;
+      },
+      handleSelect(e) {
+        console.log(e);
+        // this.setState({ time, isOpen: false });
+      },
+      submitData(event) {
+        api("/api/users/update", {
+          data: {
+            fullname: this.state0.name,
+            nik: this.state0.nik.substring(0, 25),
+            birthplace: this.state0.birthplace,
+            birthdate: this.state0.birthdate,
+            phone: this.state0.phone.substring(0, 15),
+          },
+        }).then((e) => {
+          if (e.status == true) {
+            var host = window.location.origin;
+            window.location.replace(host + "/m/user/account");
+          }
+          console.log(e);
+        });
+        event.preventDefault();
+      },
+      // UPLOAD FILE
+      responseUpload: "",
+      upload: async (file, iduser) => {
+        const formData = _FormData();
+        formData.append("path", "users\\" + iduser);
+        formData.append("file", file);
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        return await response.json();
+      },
+      updatePhoto(e) {
+        this.isLoading = false;
+        console.log(e.path);
+        api("/api/users/profile/update", {
+          url: e.path,
+        }).then((e) => {
+          this.isLoading = true;
+          if (e.status == true) {
+            this.state0.photo = e.data_act.photo;
+          }
+          console.log(e);
+        });
+      },
+    }}
+    run={async () => {
+      api("/api/session").then((e) => {
+        console.clear();
+        meta.state0.name = e.data_act.muser_detail.fullname;
+        meta.state0.nik = e.data_act.muser_detail.nik
+          ? e.data_act.muser_detail.nik
+          : "";
+        meta.state0.iduser = e.data_act.muser_detail.id;
+        meta.state0.birthplace = e.data_act.muser_detail.birthplace
+          ? e.data_act.muser_detail.birthplace
+          : "";
+        meta.state0.birthdate = dateFormat(
+          e.data_act.muser_detail.birthdate,
+          "YYY-MM-dd"
+        );
+        meta.state0.phone = e.data_act.muser_detail.phone
+          ? e.data_act.muser_detail.phone
+          : "";
+        meta.state0.photo = e.data_act.muser_detail.photo
+          ? e.data_act.muser_detail.photo
+          : "";
+        if (e.data_act.muser_detail.mdivision) {
+          meta.state0.division = e.data_act.muser_detail.mdivision.name;
+        }
+        meta.isLoading = true;
+        console.log(e.data_act.muser_detail.fullname);
+        console.log(e.data_act.muser_detail.mdivision.name);
+      });
+    }}
+  />
+  <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50 flex-grow">
+    <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+      <div class="flex w-full space-x-5 items-center justify-start">
+        <a href="/m/user/account" class="flex items-center justify-start">
+          <img
+            src="/fimgs/I727_1000_1575_5334.x3.png"
+            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+          />
+          <div class="text-base tracking-wide leading-tight text-indigo-500">
+            Back
+          </div>
+        </a>
+        <div class="flex items-center justify-center">
+          <div class="text-base tracking-wide leading-normal text-coolGray-900">
+            Profile
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col w-full self-stretch w-auto flex-grow">
+      <div class="relative flex-grow flex flex-col overflow-y-auto">
+        <div class="absolute top-0 left-0 flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+          <div class="flex self-stretch items-start justify-center">
+            <div class="flex items-center justify-center z-0">
+              {meta.isLoading ? (
+                <>
+                  <img
+                    class="inline-block rounded-full ring-2 ring-white"
+                    src={"/upload/" + meta.state0.photo}
+                    alt="Profile image"
+                    style="width: 72px; min-width: 72px; max-width: 72px; height: 72px; min-height: 72px; max-height: 72px;"
+                  />
+                </>
+              ) : (
+                <div class="flex self-stretch flex-wrap items-center justify-center justify-center">
+                  <div
+                    class="flex items-center justify-center flex-row "
+                    style="width: 72px; min-width: 72px; max-width: 72px; height: 72px; min-height: 72px; max-height: 72px;"
+                  >
+                    <div
+                      class="loader-dots block relative w-22 h-6"
+                      style="width: 5rem;"
+                    >
+                      <div
+                        class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                        style="top: 0; width: 0.75rem; height: 0.75rem;"
+                      ></div>
+                      <div
+                        class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                        style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                      ></div>
+                      <div
+                        class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                        style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                      ></div>
+                      <div
+                        class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                        style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div
+              class="flex items-center justify-center z-10"
+              style="padding-top:2.7rem; margin-left:-1.5rem"
+            >
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png"
+                id="file"
+                style="height: 0; overflow: hidden; width: 0;"
+                onChange={(e) => {
+                  runInAction(async () => {
+                    console.log("upload file");
+                    console.log(e.target.files[0]);
+                    const upload = await meta.upload(
+                      e.target.files[0],
+                      meta.state0.iduser
+                    );
+                    meta.state0.file = upload;
+                    meta.updatePhoto(upload);
+                  });
+                }}
+              />
+              <label htmlFor="file">
+                <img
+                  src="/fimgs/727_1004.x3.png"
+                  style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                />
+              </label>
+            </div>
+          </div>
+          <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto">
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Full Name
+            </div>
+            <div class="flex self-stretch items-center justify-start pb-2">
+              <m-input
+                id="name"
+                name="name"
+                value={meta.state0.name}
+                onChange={meta.ubahNilai}
+                type="text"
+                placeholder=""
+                class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+              />
+            </div>
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              NIK
+            </div>
+            <div class="flex self-stretch items-center justify-start pb-2">
+              <m-input
+                id="name"
+                name="nik"
+                value={meta.state0.nik}
+                onChange={meta.ubahNilai}
+                type="text"
+                placeholder=""
+                class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+              />
+            </div>
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Phone Number
+            </div>
+            <div class="flex self-stretch items-center justify-start pb-2">
+              <m-input
+                id="name"
+                type="text"
+                name="phone"
+                value={meta.state0.phone}
+                onChange={meta.ubahNilai}
+                placeholder=""
+                class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+              />
+            </div>
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Place and Date of Birth
+            </div>
+            <div class="flex w-full flex-1 self-stretch space-x-4 items-center">
+              <div class="flex self-stretch w-full flex-col space-y-2.5 items-start justify-center">
+                <div class="flex self-stretch items-center justify-start pb-2">
+                  <div class="relative flex flex-1 items-center justify-start">
+                    <m-input
+                      id="name"
+                      name="birthplace"
+                      value={meta.state0.birthplace}
+                      onChange={meta.ubahNilai}
+                      type="text"
+                      placeholder=""
+                      class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div>,</div>
+              <div
+                class="flex self-stretch w-full flex-col items-start justify-center"
+                onClick={(e) => {
+                  meta.handleChange(e);
+                }}
+              >
+                <div class="flex self-stretch items-center justify-start ">
+                  <div class="relative flex flex-1 items-center justify-start">
+                    <div class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5">
+                      <datepicker
+                        disableFuture
+                        disableMaskedInput
+                        disableOpenPicker
+                        showToolbar
+                        openTo="year"
+                        views={["year", "month", "day"]}
+                        value={meta.state0.birthdate}
+                        onChange={(e) => {
+                          meta.state0.birthdate = e;
+                        }}
+                        OpenPickerIcon
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex self-stretch items-center justify-start pb-2">
+                  <div class="relative flex flex-1 items-center justify-start">
+                    <div></div>
+                  </div>
+                </div>
+              </div>
+              {/*{meta.isOpen && (*/}
+              {/*<div class="absolute right-0" style="top:34%">*/}
+              {/*<div class="flex flex-col items-start justify-start overflow-ellipsis z-50 relative">*/}
+              {/*<datepicker*/}
+              {/*selected={meta.datePicker}*/}
+              {/*onChange={meta.handleChange}*/}
+              {/*inline*/}
+              {/*/>*/}
+              {/*</div>*/}
+              {/*</div>*/}
+              {/*)}*/}
+              {/*<div class="flex self-stretch w-full flex-col space-y-2.5 items-start justify-center">*/}
+              {/*<div class="flex self-stretch items-center justify-start pb-2">*/}
+              {/*<div class="relative flex flex-1 items-center justify-start">*/}
+              {/*<m-input*/}
+              {/*id="name"*/}
+              {/*name="birthdate"*/}
+              {/*type="date"*/}
+              {/*placeholder=""*/}
+              {/*class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"*/}
+              {/*/>*/}
+              {/*</div>*/}
+              {/*</div>*/}
+              {/*</div>*/}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white shadow">
+        <form
+          class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+          onSubmit={meta.submitData}
+        >
+          <button
+            type="submit"
+            class="text-sm tracking-wide leading-tight text-center text-white"
+          >
+            Save Changes
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</>

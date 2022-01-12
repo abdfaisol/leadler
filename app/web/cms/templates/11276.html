@@ -1,101 +1,47 @@
 <>
   <effect
     meta={{
+      // status: [
+      //   { value: "1", label: "TODO", color: "#4ADE80" },
+      //   {
+      //     value: "2",
+      //     label: "IN PROGRESS",
+      //     color: "#888DF1",
+      //   },
+      //   { value: "3", label: "SUBMITTED", color: "#2D34E6" },
+      //   { value: "4", label: "REVIEW", color: "#F9A8D4" },
+      //   { value: "5", label: "REVISION", color: "#F87171" },
+      //   { value: "6", label: "COMPLETE", color: "#F1B459" },
+      // ],
       data_projek: "",
-      member: "",
-      name: "",
       state: {
-        name: "",
-        status: "",
-        cstatus: "",
+        judul: "Loading",
+        deskripsi: "Loading",
+        label: "Loading",
+        startdate: "26/09/2021",
+        duedate: "26/09/2021",
+        proggres: "0",
+        taskComplete: "0",
       },
+      link: {
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      time: {
+        year: "2021",
+        month: "11",
+      },
+      isLoading: false,
+      data_timeline: [],
+      selectedMonth: new Date(),
       show: {
         tim1: false,
         tim2: false,
       },
-      data_timeline: [],
-      selectedMonth: null,
       add: { tekan: true },
-      team: [
-        { value: "0", label: "All Team" },
-        { value: "1", label: "Team 1" },
-        { value: "2", label: "Team 2" },
-        { value: "3", label: "Team 3" },
-      ],
-      status: [
-        { value: "1", label: "TODO", color: "#4ADE80" },
-        {
-          value: "2",
-          label: "IN PROGRESS",
-          color: "#888DF1",
-        },
-        { value: "3", label: "SUBMITTED", color: "#2D34E6" },
-        { value: "4", label: "REVIEW", color: "#F9A8D4" },
-        { value: "5", label: "REVISION", color: "#F87171" },
-        { value: "6", label: "COMPLETE", color: "#F1B459" },
-      ],
-      styles: {
-        control: (base, state) => ({
-          ...base,
-          paddingTop: "2px",
-          paddingBottom: "2px",
-          border: "none",
-          boxShadow: "none",
-          backgroundColor: "transparent",
-        }),
-        input: (base) => ({
-          ...base,
-          color: "#fff",
-        }),
-        singleValue: (base) => ({
-          ...base,
-          color: "#fff",
-        }),
-        option: (styles, { data }) => {
-          return {
-            ...styles,
-            backgroundColor: data.color,
-            "&:hover": {
-              backgroundColor: data.isDisabled
-                ? "#F3F4F6"
-                : data.isSelected
-                ? null
-                : "#F3F4F6",
-            },
-          };
-        },
-      },
-      stylesx: {
-        control: (base, state) => ({
-          ...base,
-          paddingTop: "5px",
-          paddingBottom: "5px",
-          border: "none",
-          boxShadow: "none",
-          backgroundColor: "transparent",
-        }),
-        option: (styles, state) => ({
-          ...styles,
-          "&:hover": {
-            backgroundColor: state.isDisabled
-              ? "#F3F4F6"
-              : state.isSelected
-              ? null
-              : "#F3F4F6",
-          },
-        }),
-      },
-      toggleTooltip() {
-        this.showTooltip = !this.showTooltip;
-      },
-      showtooltipku(id) {
-        var elem = document.getElementById(id);
-        if (elem.classList.contains("hidden")) {
-          elem.classList.remove("hidden");
-        } else {
-          elem.classList.add("hidden");
-        }
-      },
       setMonth(newMonth) {
         if (this.selectedMonth == null) {
           this.selectedMonth = new Date();
@@ -143,10 +89,7 @@
         const previousMonthInMilli = currentMonthInMilli - oneMonth;
         const previousMonth = new Date(previousMonthInMilli);
         this.setMonth(previousMonth);
-        console.log("test1");
-        console.log(currentMonthInMilli);
-        console.log(previousMonthInMilli);
-        console.log(previousMonth);
+        this.reloadData(previousMonth);
       },
       getNextMonth() {
         const currentMonthInMilli = new Date(this.selectedMonth).getTime();
@@ -154,13 +97,154 @@
         const nextMonthInMilli = currentMonthInMilli + oneMonth;
         const nextMonth = new Date(nextMonthInMilli);
         this.setMonth(nextMonth);
-        console.log("test1");
-        console.log(currentMonthInMilli);
-        console.log(nextMonthInMilli);
-        console.log(nextMonth);
+        this.reloadData(nextMonth);
+      },
+      reloadData(month) {
+        this.isLoading = false;
+        var mmth = ("0" + (month.getMonth() + 1)).slice(-2);
+        console.log("year ==> " + mmth);
+        // console.log("month ==> " + xmonth);
+        api("/api/project/timeline", {
+          data: {
+            month: ("0" + (month.getMonth() + 1)).slice(-2),
+            year: month.getFullYear(),
+          },
+        })
+          .then((e) => {
+            console.log(e);
+            if (e.status == true) {
+              e.data_act.timeline.map((e) => {
+                // console.log(e);
+                console.log(
+                  e.startdate.split("-")[0] + "-" + e.startdate.split("-")[1]
+                );
+                var startDateku = new Date(
+                  e.startdate.split("-")[0],
+                  parseInt(e.startdate.split("-")[1]) - 1
+                );
+                var dueDateku = new Date(
+                  e.duedate.split("-")[0],
+                  parseInt(e.duedate.split("-")[1]) - 1
+                );
+                var dateku = new Date(
+                  this.time.year,
+                  parseInt(this.time.month) - 1
+                );
+                var label = [];
+                if (dateku >= startDateku) {
+                  if (dateku < dueDateku) {
+                    for (let i = 1; i <= 4; i++) {
+                      label[i] =
+                        "flex-grow bg-blue-300 border border-coolGray-300";
+                    }
+                  } else {
+                    var startWeek = parseInt(e.startweeks);
+                    var dueWeek = parseInt(e.dueweeks);
+                    console.log(startWeek + " and " + dueWeek);
+                    for (let i = 1; i <= 4; i++) {
+                      console.log(i);
+                      var tes = true;
+                      if (i >= startWeek && i <= dueWeek) {
+                        label[i] =
+                          "flex-grow bg-blue-300 border border-coolGray-300";
+                      } else {
+                        tes = false;
+                        label[i] = "flex-grow border border-coolGray-300";
+                      }
+                      console.log(tes);
+                    }
+                  }
+                  e.labelTime = label;
+                  console.log(label);
+                  console.log(e);
+                }
+              });
+              this.isLoading = true;
+              // document.getElementById("loading").remove();
+              this.data_timeline = e.data_act.timeline;
+              // console.log(this.data_timeline.length);
+              // console.log(e);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       },
     }}
     run={async () => {
+      var tdate = new Date();
+      meta.setMonth(meta.selectedMonth);
+      console.log("Mendapatkan data timeline : loading");
+      api("/api/project/timeline", {
+        data: {
+          month: ("0" + tdate.getMonth()).slice(-2),
+          year: tdate.getFullYear(),
+        },
+      })
+        .then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            e.data_act.timeline.map((e) => {
+              // console.log(e);
+              console.log(
+                e.startdate.split("-")[0] + "-" + e.startdate.split("-")[1]
+              );
+              var startDateku = new Date(
+                e.startdate.split("-")[0],
+                parseInt(e.startdate.split("-")[1]) - 1
+              );
+              var dueDateku = new Date(
+                e.duedate.split("-")[0],
+                parseInt(e.duedate.split("-")[1]) - 1
+              );
+              var dateku = new Date(
+                meta.time.year,
+                parseInt(meta.time.month) - 1
+              );
+              console.log("tanggal mulai " + startDateku);
+              console.log("tanggal akhir " + dueDateku);
+              console.log("waktu yang dipilih " + dateku);
+              var label = [];
+              if (dateku >= startDateku) {
+                if (dateku < dueDateku) {
+                  for (let i = 1; i <= 4; i++) {
+                    label[i] =
+                      "flex-grow bg-blue-300 border border-coolGray-300";
+                  }
+                } else {
+                  var startWeek = parseInt(e.startweeks);
+                  var dueWeek = parseInt(e.dueweeks);
+                  console.log(startWeek + " and " + dueWeek);
+                  for (let i = 1; i <= 4; i++) {
+                    console.log(i);
+                    var tes = true;
+                    if (i >= startWeek && i <= dueWeek) {
+                      label[i] =
+                        "flex-grow bg-blue-300 border border-coolGray-300";
+                    } else {
+                      tes = false;
+                      label[i] = "flex-grow border border-coolGray-300";
+                    }
+                    console.log(tes);
+                  }
+                }
+                e.labelTime = label;
+                console.log(label);
+                console.log(e);
+              }
+            });
+            meta.isLoading = true;
+            // document.getElementById("loading").remove();
+            meta.data_timeline = e.data_act.timeline;
+            console.log(meta.data_timeline.length);
+            // console.log(e);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
+      console.log("Akhir:");
       meta.actionstatus = {
         onChange: (e) => {
           runInAction(() => {
@@ -180,431 +264,136 @@
     }}
   />
   <div class="flex flex-col self-stretch space-y-6 p-10 w-auto">
-    <div class="flex items-center justify-center">
-      <multipleselect
-        options={meta.status}
-        defaultValue={meta.status[0]}
-        menuPortalTarget={document.body}
-        theme={(theme) => ({
-          ...theme,
-          borderRadius: 0,
-          colors: {
-            ...theme.colors,
-            primary25: "#F3F4F6",
-            primary: "#6366F1",
-          },
-        })}
-        styles={meta.styles}
-        style={
-          meta.state.status == 1
-            ? "background-color: #4ADE80;"
-            : meta.state.status == 2
-            ? "background-color: #888DF1;"
-            : meta.state.status == 3
-            ? "background-color: #2D34E6;"
-            : meta.state.status == 4
-            ? "background-color: #F9A8D4;"
-            : meta.state.status == 5
-            ? "background-color: #F87171;"
-            : meta.state.status == 6
-            ? "background-color: #F1B459;"
-            : "background-color: #4ADE80;"
-        }
-        className="w-40"
-        classNamePrefix="select"
-        name="status"
-        onChange={(e) => {
-          meta.actionstatus.onChange(e);
-        }}
-      />
-    </div>
     <div class="rounded">
       <div
-        class="flex self-stretch items-center justify-between bg-white rounded-t border-b border-coolGray-300 pr-8"
+        class="flex self-stretch items-center bg-white rounded-t border-b border-coolGray-300 px-8"
         style="height: 50px; min-height: 50px; max-height: 50px;"
       >
-        <div class="text-sm font-medium tracking-wide leading-tight text-center text-coolGray-900 rounded-l border-r border-coolGray-300">
+        <div class="flex space-x-2 items-center justify-center flex-grow">
           <div class="flex items-center justify-center">
-            <multipleselect
-              options={meta.team}
-              defaultValue={meta.team[0]}
-              menuPortalTarget={document.body}
-              theme={(theme) => ({
-                ...theme,
-                borderRadius: 0,
-                colors: {
-                  ...theme.colors,
-                  primary25: "#F3F4F6",
-                  primary: "#6366F1",
-                },
-              })}
-              styles={meta.stylesx}
-              className="w-52"
-              classNamePrefix="select"
-              name="status"
-            />
-          </div>
-        </div>
-        <div class="flex space-x-2 items-center justify-center">
-          <div id="prev" onClick={meta.getPreviousMonth}>
-            <img
-              class="cursor-pointer"
-              src="/fimgs/638_776.x3.png"
-              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-            />
-          </div>
-          <div class="flex flex-1 items-start justify-start">
-            <div
-              class="text-base font-medium tracking-wide leading-normal text-indigo-500"
-              id="date"
-            >
-              {meta.selectedMonth}
+            <div id="prev" onClick={meta.getPreviousMonth}>
+              <img
+                class="cursor-pointer"
+                src="/fimgs/638_776.x3.png"
+                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+              />
+            </div>
+            <div class="flex flex-1 items-start justify-start">
+              <div
+                class="text-base font-medium tracking-wide leading-normal text-indigo-500"
+                id="date"
+              >
+                {meta.selectedMonth}
+              </div>
+            </div>
+            <div id="next" onClick={meta.getNextMonth}>
+              <img
+                class="cursor-pointer"
+                src="/fimgs/638_779.x3.png"
+                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+              />
             </div>
           </div>
-          <div id="next" onClick={meta.getNextMonth}>
-            <img
-              class="cursor-pointer"
-              src="/fimgs/638_779.x3.png"
-              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-            />
-          </div>
-        </div>
-        <div
-          class="flex items-center justify-between px-4 py-2 bg-coolGray-50 rounded-full"
-          style="height: 32px; min-height: 32px; max-height: 32px;"
-        >
-          <div class="flex flex-1 items-start justify-start">
-            <input
-              placeholder="Search Task"
-              class="text-xs tracking-wide leading-none text-coolGray-500 w-full bg-coolGray-50 placeholder-gray-400 focus:outline-none"
-            />
-          </div>
-          <img
-            src="/fimgs/638_750.x3.png"
-            class="cursor-pointer flex items-start justify-start"
-            style="width: 14px; min-width: 14px; max-width: 14px; height: 14px; min-height: 14px; max-height: 14px;"
-          />
         </div>
       </div>
       <div class="overflow-x-auto">
         <div class="align-middle inline-block min-w-full">
           <div class="overflow-hidden">
             <table class="min-w-full bg-white">
-              <tr>
-                <td
-                  rowSpan="2"
-                  class="relative px-3 justify-center mr-auto border-r border-b border-coolGray-300"
-                >
-                  <div class=" text-sm font-medium text-gray-500 text-center">
-                    Project Name
-                  </div>
-                </td>
-                <td
-                  colSpan="4"
-                  class="relative px-6 py-1.5 justify-center border-b border-coolGray-300"
-                >
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    Week
-                  </div>
-                </td>
-              </tr>
-              <tr class="border-b border-coolGray-300">
-                <td class="relative px-6 py-1.5 text-sm justify-start border border-coolGray-300">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    1
-                  </div>
-                </td>
-                <td class="relative px-6 py-1.5 text-sm justify-start border border-coolGray-300">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    2
-                  </div>
-                </td>
-                <td class="relative px-6 py-1.5 text-sm justify-start border border-coolGray-300">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    3
-                  </div>
-                </td>
-                <td class="relative px-6 py-1.5 text-sm justify-start border border-coolGray-300">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    4
-                  </div>
-                </td>
-              </tr>
-              <tr class="border-b border-coolGray-300">
-                <td class="px-3 py-2 whitespace-normal text-left">
-                  <div class="text-sm text-gray-900">
-                    Pengembangan Aplikasi UMKM Kota Semarang
-                  </div>
-                </td>
-                <td
-                  class="flex-grow bg-white border border-coolGray-300"
-                  style="width: 18%; min-width: 18%; max-width: 18%;"
-                >
-                  <div
-                    onClick={(e) => {
-                      meta.showtooltipku(1);
-                    }}
-                    class="w-full h-8 cursor-pointer"
-                    style={
-                      meta.state.status == 1
-                        ? "background-color: #4ADE80;"
-                        : meta.state.status == 2
-                        ? "background-color: #888DF1;"
-                        : meta.state.status == 3
-                        ? "background-color: #2D34E6;"
-                        : meta.state.status == 4
-                        ? "background-color: #F9A8D4;"
-                        : meta.state.status == 5
-                        ? "background-color: #F87171;"
-                        : meta.state.status == 6
-                        ? "background-color: #F1B459;"
-                        : "background-color: #4ADE80;"
-                    }
+              <thead>
+                <tr>
+                  <td
+                    rowSpan="2"
+                    class="relative px-3 py-2 justify-center mr-auto border-r border-b border-coolGray-300"
                   >
-                    <div
-                      class="relative hidden"
-                      id="1"
-                      style="bottom:90%; left:50%"
+                    <div class=" text-sm font-medium text-gray-500 text-center">
+                      Project Name
+                    </div>
+                  </td>
+                  <td
+                    colSpan="4"
+                    class="relative px-6 py-2 justify-center border-b border-coolGray-300"
+                  >
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      Week
+                    </div>
+                  </td>
+                </tr>
+                <tr class="border-b border-coolGray-300">
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      1
+                    </div>
+                  </td>
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      2
+                    </div>
+                  </td>
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      3
+                    </div>
+                  </td>
+                  <td class="relative px-6 py-2 text-sm justify-start border border-coolGray-300">
+                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                      4
+                    </div>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                {meta.isLoading ? (
+                  <>
+                    {meta.data_timeline.map((e) => {
+                      return (
+                        <tr class="border-b border-coolGray-300">
+                          <td class="px-3 py-4 whitespace-normal text-left">
+                            <div class="text-sm text-gray-900">{e.name}</div>
+                          </td>
+                          <td class={e.labelTime[1]}></td>
+                          <td class={e.labelTime[2]}></td>
+                          <td class={e.labelTime[3]}></td>
+                          <td class={e.labelTime[4]}></td>
+                        </tr>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <tr class="border-b border-coolGray-300">
+                    <td
+                      class="px-3 py-4 whitespace-normal text-left"
+                      colSpan="5"
                     >
-                      <div
-                        class="flex relative items-center justify-center"
-                        style="width: 100px; min-width: 100px; max-width: 100px; height: 20px; min-height: 20px; max-height: 20px;"
-                      >
-                        <div
-                          class="flex items-center justify-center text-white text-xs text-center rounded py-1.5 px-2"
-                          style="bottom:100%; background-color:#0D116E;"
-                        >
-                          {meta.state.status == 1
-                            ? "Todo"
-                            : meta.state.status == 2
-                            ? "In Progress"
-                            : meta.state.status == 3
-                            ? "Submitted"
-                            : meta.state.status == 4
-                            ? "Review"
-                            : meta.state.status == 5
-                            ? "Revision"
-                            : meta.state.status == 6
-                            ? "Complete"
-                            : "Todo"}
-                          <svg
-                            class="flex absolute items-center justify-center"
-                            style="top:115%; width: 15px; min-width: 15px; max-width: 15px; height: 15px;min-height: 15px; max-height: 15px;"
-                            viewBox="0 0 255 255"
-                            xmlSpace="preserve"
+                      <div class="flex self-stretch flex-wrap items-center justify-center">
+                        <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                          <div
+                            class="loader-dots block relative w-22 h-6 mt-2"
+                            style="width: 5rem;"
                           >
-                            <polygon
-                              style="fill:#0D116E;"
-                              points="0,0 127.5,127.5 255,0"
-                            />
-                          </svg>
+                            <div
+                              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                              style="top: 0; width: 0.75rem; height: 0.75rem;"
+                            ></div>
+                            <div
+                              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                            ></div>
+                            <div
+                              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                            ></div>
+                            <div
+                              class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                              style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                            ></div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </td>
-                <td
-                  class="flex-grow bg-white border border-coolGray-300"
-                  style="width: 18%; min-width: 18%; max-width: 18%;"
-                >
-                  <div
-                    onClick={(e) => {
-                      meta.showtooltipku(2);
-                    }}
-                    class="w-full h-8 cursor-pointer"
-                    style={
-                      meta.state.status == 1
-                        ? "background-color: #4ADE80;"
-                        : meta.state.status == 2
-                        ? "background-color: #888DF1;"
-                        : meta.state.status == 3
-                        ? "background-color: #2D34E6;"
-                        : meta.state.status == 4
-                        ? "background-color: #F9A8D4;"
-                        : meta.state.status == 5
-                        ? "background-color: #F87171;"
-                        : meta.state.status == 6
-                        ? "background-color: #F1B459;"
-                        : "background-color: #4ADE80;"
-                    }
-                  >
-                    <div
-                      class="relative hidden"
-                      id="2"
-                      style="bottom:90%; left:50%"
-                    >
-                      <div
-                        class="flex relative items-center justify-center"
-                        style="width: 100px; min-width: 100px; max-width: 100px; height: 20px; min-height: 20px; max-height: 20px;"
-                      >
-                        <div
-                          class="flex items-center justify-center text-white text-xs text-center rounded py-1.5 px-2"
-                          style="bottom:100%; background-color:#0D116E;"
-                        >
-                          {meta.state.status == 1
-                            ? "Todo"
-                            : meta.state.status == 2
-                            ? "In Progress"
-                            : meta.state.status == 3
-                            ? "Submitted"
-                            : meta.state.status == 4
-                            ? "Review"
-                            : meta.state.status == 5
-                            ? "Revision"
-                            : meta.state.status == 6
-                            ? "Complete"
-                            : "Todo"}
-                          <svg
-                            class="flex absolute items-center justify-center"
-                            style="top:115%; width: 15px; min-width: 15px; max-width: 15px; height: 15px;min-height: 15px; max-height: 15px;"
-                            viewBox="0 0 255 255"
-                            xmlSpace="preserve"
-                          >
-                            <polygon
-                              style="fill:#0D116E;"
-                              points="0,0 127.5,127.5 255,0"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td
-                  class="flex-grow bg-white border border-coolGray-300"
-                  style="width: 18%; min-width: 18%; max-width: 18%;"
-                >
-                  <div
-                    onClick={(e) => {
-                      meta.showtooltipku(3);
-                    }}
-                    class="w-full h-8 cursor-pointer"
-                    style={
-                      meta.state.status == 1
-                        ? "background-color: #4ADE80;"
-                        : meta.state.status == 2
-                        ? "background-color: #888DF1;"
-                        : meta.state.status == 3
-                        ? "background-color: #2D34E6;"
-                        : meta.state.status == 4
-                        ? "background-color: #F9A8D4;"
-                        : meta.state.status == 5
-                        ? "background-color: #F87171;"
-                        : meta.state.status == 6
-                        ? "background-color: #F1B459;"
-                        : "background-color: #4ADE80;"
-                    }
-                  >
-                    <div
-                      class="relative hidden"
-                      id="3"
-                      style="bottom:90%; left:50%"
-                    >
-                      <div
-                        class="flex relative items-center justify-center"
-                        style="width: 100px; min-width: 100px; max-width: 100px; height: 20px; min-height: 20px; max-height: 20px;"
-                      >
-                        <div
-                          class="flex items-center justify-center text-white text-xs text-center rounded py-1.5 px-2"
-                          style="bottom:100%; background-color:#0D116E;"
-                        >
-                          {meta.state.status == 1
-                            ? "Todo"
-                            : meta.state.status == 2
-                            ? "In Progress"
-                            : meta.state.status == 3
-                            ? "Submitted"
-                            : meta.state.status == 4
-                            ? "Review"
-                            : meta.state.status == 5
-                            ? "Revision"
-                            : meta.state.status == 6
-                            ? "Complete"
-                            : "Todo"}
-                          <svg
-                            class="flex absolute items-center justify-center"
-                            style="top:115%; width: 15px; min-width: 15px; max-width: 15px; height: 15px;min-height: 15px; max-height: 15px;"
-                            viewBox="0 0 255 255"
-                            xmlSpace="preserve"
-                          >
-                            <polygon
-                              style="fill:#0D116E;"
-                              points="0,0 127.5,127.5 255,0"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td
-                  class="flex-grow bg-white border border-coolGray-300"
-                  style="width: 18%; min-width: 18%; max-width: 18%;"
-                >
-                  <div
-                    onClick={(e) => {
-                      meta.showtooltipku(4);
-                    }}
-                    class="w-full h-8 cursor-pointer"
-                    style={
-                      meta.state.status == 1
-                        ? "background-color: #4ADE80;"
-                        : meta.state.status == 2
-                        ? "background-color: #888DF1;"
-                        : meta.state.status == 3
-                        ? "background-color: #2D34E6;"
-                        : meta.state.status == 4
-                        ? "background-color: #F9A8D4;"
-                        : meta.state.status == 5
-                        ? "background-color: #F87171;"
-                        : meta.state.status == 6
-                        ? "background-color: #F1B459;"
-                        : "background-color: #4ADE80;"
-                    }
-                  >
-                    <div
-                      class="relative hidden"
-                      id="4"
-                      style="bottom:90%; left:50%"
-                    >
-                      <div
-                        class="flex relative items-center justify-center"
-                        style="width: 100px; min-width: 100px; max-width: 100px; height: 20px; min-height: 20px; max-height: 20px;"
-                      >
-                        <div
-                          class="flex items-center justify-center text-white text-xs text-center rounded py-1.5 px-2"
-                          style="bottom:100%; background-color:#0D116E;"
-                        >
-                          {meta.state.status == 1
-                            ? "Todo"
-                            : meta.state.status == 2
-                            ? "In Progress"
-                            : meta.state.status == 3
-                            ? "Submitted"
-                            : meta.state.status == 4
-                            ? "Review"
-                            : meta.state.status == 5
-                            ? "Revision"
-                            : meta.state.status == 6
-                            ? "Complete"
-                            : "Todo"}
-                          <svg
-                            class="flex absolute items-center justify-center"
-                            style="top:115%; width: 15px; min-width: 15px; max-width: 15px; height: 15px;min-height: 15px; max-height: 15px;"
-                            viewBox="0 0 255 255"
-                            xmlSpace="preserve"
-                          >
-                            <polygon
-                              style="fill:#0D116E;"
-                              points="0,0 127.5,127.5 255,0"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
             </table>
           </div>
         </div>

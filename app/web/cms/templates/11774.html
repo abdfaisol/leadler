@@ -1,71 +1,50 @@
 <>
   <effect
     meta={{
+      dashboard: {
+        nextproject: 0,
+        progress: 0,
+        complete: 0,
+        unfinish: 0,
+      },
       showPass: false,
       input: {},
       errors: {},
-      state: { token: params.token, password: "" },
-      datePicker: new Date(),
-      setStartDate(newDate) {
-        this.datePicker = newDate;
+      state0: {
+        name: "",
+        division: "",
+        nik: "",
+        birthplace: "",
+        birthdate: "",
+        phone: "",
+        photo:
+          "https://images.pexels.com/photos/2589653/pexels-photo-2589653.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
       },
-      isOpen: false,
-      setIsOpen(open) {
-        this.isOpen = open;
-      },
-      handleChange(e) {
-        this.setIsOpen(!this.isOpen);
-        this.setStartDate(e);
-      },
-      handleClick(e) {
-        e.preventDefault();
-        this.setIsOpen(!this.isOpen);
-      },
-      styles: {
-        control: (base, state) => ({
-          ...base,
-          paddingTop: "5px",
-          paddingBottom: "5px",
-          boxShadow: "none",
-          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
-          "&:hover": {
-            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
-          },
-        }),
-        option: (styles, state) => ({
-          ...styles,
-          "&:hover": {
-            backgroundColor: state.isDisabled
-              ? "#F3F4F6"
-              : state.isSelected
-              ? null
-              : "#F3F4F6",
-          },
-        }),
-      },
+      state: { token: params.token, password: "", passwordCurrent: "" },
       handleSubmit(event) {
         console.log(this.state);
-        const requestOptions = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(this.state),
-        };
-        fetch(
-          window.location.origin + "/api/reset-password",
-          requestOptions
-        ).then((response) => {
-          response.json().then((e) => {
-            console.log(e);
-          });
-        });
+        console.log(this.input["xpassword"]);
+        console.log(this.state.passwordCurrent);
         if (this.validate()) {
           console.log(this);
-          let input = {};
-          input["xpassword"] = "";
-          input["password"] = "";
-          input["cpassword"] = "";
-          this.input = input;
-          this.showModal = !this.showModal;
+          api("/api/password/update", {
+            password: this.input["password"],
+          }).then((e) => {
+            // console.log(e);
+            api("/api/session").then((e) => {
+              console.clear();
+              console.log(e.passwordDecrypt);
+              this.state.passwordCurrent = e.passwordDecrypt;
+              var host = window.location.origin;
+              window.location.replace(host + "/myaccount");
+            });
+            let input = {};
+            input["xpassword"] = "";
+            input["password"] = "";
+            input["cpassword"] = "";
+            this.input = input;
+            this.showModal = !this.showModal;
+          });
         }
         //window.location.replace(window.location.origin);
         event.preventDefault();
@@ -74,12 +53,14 @@
         let input = this.input;
         let errors = {};
         let isValid = true;
-
         if (!input["xpassword"]) {
           isValid = false;
           errors["xpassword"] = "This field is required.";
         }
-
+        if (input["xpassword"] !== this.state.passwordCurrent) {
+          isValid = false;
+          errors["xpassword"] = "Password doesn't match.";
+        }
         if (!input["password"]) {
           isValid = false;
           errors["password"] = "This field is required.";
@@ -131,334 +112,387 @@
         this.showPass2 = !this.showPass2;
         // console.log(this.showPass);
       },
+      mainLoading: true,
+      logout(e) {
+        this.mainLoading = true;
+        api("/api/logout").then((e) => {
+          console.log(e);
+          var host = window.location.origin;
+          window.location.replace(host);
+        });
+      },
     }}
-    run={async () => {}}
+    run={async () => {
+      meta.mainLoading = false;
+      api("/api/session").then((e) => {
+        console.clear();
+        // console.log(e.passwordDecrypt);
+        meta.state.passwordCurrent = e.passwordDecrypt;
+        meta.state0.name = e.data_act.muser_detail.fullname;
+        meta.state0.photo = e.data_act.muser_detail.photo
+          ? e.data_act.muser_detail.photo
+          : "";
+        meta.state0.division = e.data_act.muser_detail.mdivision.name
+          ? e.data_act.muser_detail.mdivision.name
+          : "";
+        api("/api/project").then((e) => {
+          console.clear();
+          if (e.dashboard) {
+            e.dashboard.map((idx) => {
+              if (idx.name == "next project") {
+                meta.dashboard.nextproject = idx.nproject;
+              }
+              if (idx.name == "progress") {
+                meta.dashboard.progress = idx.nproject;
+              }
+              if (idx.name == "uncompleted") {
+                meta.dashboard.unfinish = idx.nproject;
+              }
+              if (idx.name == "completed") {
+                meta.dashboard.complete = idx.nproject;
+              }
+            });
+          }
+        });
+      });
+    }}
   />
-  <div class="flex w-full space-x-6 items-start justify-start p-10">
-    <div class="flex w-1/3 flex-col space-y-6 items-start justify-start">
-      <div class="flex w-full space-x-6 items-start justify-start p-4 bg-white rounded">
-        <div class="flex items-start justify-start">
-          <img
-            src="/fimgs/727_1003.x3.png"
-            class="rounded-full"
-            style="width: 56px; min-width: 56px; max-width: 56px; height: 56px; min-height: 56px; max-height: 56px;"
-          />
-        </div>
-        <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
-          <div class="flex self-stretch items-start justify-start">
-            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-              Robert Andre
-            </div>
-          </div>
-          <div class="flex self-stretch items-start justify-start">
-            <div class="text-sm tracking-wide leading-tight text-coolGray-400">
-              Project Manager
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-col w-full space-y-4 items-start justify-start p-4 bg-white rounded">
-        <div class="flex items-start justify-start">
-          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-            Account
-          </div>
-        </div>
-        <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
-          <a
-            class="flex self-stretch space-x-3.5 items-start justify-start rounded pl-1.5 py-2 hover:bg-coolGray-100 hover:opacity-50"
-            href="/pm/myaccount"
-          >
-            <div class="flex flex-1 space-x-4 items-center justify-start">
-              <img
-                src="/fimgs/913_3611.x3.png"
-                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-              />
-              <div class="flex flex-1 items-start justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                  Profile
-                </div>
-              </div>
-            </div>
+  {meta.mainLoading ? (
+    <>
+      <loadku />
+    </>
+  ) : (
+    <>
+      <div class="flex w-full space-x-6 items-start justify-start p-10">
+        <div class="flex w-1/3 flex-col space-y-6 items-start justify-start">
+          <div class="flex w-full space-x-6 items-start justify-start p-4 bg-white rounded">
             <img
-              src="/fimgs/913_3614.x3.png"
-              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              class="inline-block rounded-full ring-2 ring-white"
+              src={"/upload/" + meta.state0.photo}
+              alt="Profile image"
+              style="width: 72px; min-width: 72px; max-width: 72px; height: 72px; min-height: 72px; max-height: 72px;"
             />
-          </a>
-          <a
-            class="flex self-stretch space-x-3.5 items-start justify-start bg-coolGray-50 rounded pl-1.5 py-2 hover:bg-coolGray-100 hover:opacity-50"
-            href="/pm/change-pass"
+            <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                  {meta.state0.name}
+                </div>
+              </div>
+              <div class="flex self-stretch items-start justify-start">
+                <div class="text-sm tracking-wide leading-tight text-coolGray-400">
+                  {meta.state0.division}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col w-full space-y-4 items-start justify-start p-4 bg-white rounded">
+            <div class="flex items-start justify-start">
+              <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                Account
+              </div>
+            </div>
+            <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
+              <a
+                class="flex self-stretch space-x-3.5 items-start justify-start rounded pl-1.5 py-2 hover:bg-coolGray-100 hover:opacity-50"
+                href="/pm/myaccount"
+              >
+                <div class="flex flex-1 space-x-4 items-center justify-start">
+                  <img
+                    src="/fimgs/913_3611.x3.png"
+                    style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                  />
+                  <div class="flex flex-1 items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                      Profile
+                    </div>
+                  </div>
+                </div>
+                <img
+                  src="/fimgs/913_3614.x3.png"
+                  style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                />
+              </a>
+              <a
+                class="flex self-stretch space-x-3.5 items-start justify-start bg-coolGray-50 rounded pl-1.5 py-2 hover:bg-coolGray-100 hover:opacity-50"
+                href="/pm/change-pass"
+              >
+                <div class="flex flex-1 space-x-4 items-center justify-start">
+                  <img
+                    src="/fimgs/913_3617.x3.png"
+                    style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                  />
+                  <div class="flex flex-1 items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                      Change Password
+                    </div>
+                  </div>
+                </div>
+                <img
+                  src="/fimgs/913_3614.x3.png"
+                  style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                />
+              </a>
+            </div>
+          </div>
+          <div class="flex flex-col w-full space-y-4 items-start justify-start p-4 bg-white rounded">
+            <div class="flex items-start justify-start">
+              <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                Projects
+              </div>
+            </div>
+            <div class="flex flex-col w-full space-y-6 items-start justify-start">
+              <div class="flex self-stretch items-center justify-between">
+                <div class="flex space-x-2 items-center justify-start">
+                  <img
+                    src="/fimgs/724_1762.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                  <div class="flex items-center justify-start">
+                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                      In Progress
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-orange-400 bg-opacity-40 border rounded-sm border-orange-400">
+                  <div class="text-xs tracking-wide leading-none text-orange-400">
+                    {meta.dashboard.progress}
+                  </div>
+                </div>
+              </div>
+              <div class="flex self-stretch items-center justify-between">
+                <div class="flex space-x-2 items-center justify-start">
+                  <img
+                    src="/fimgs/724_1769.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                  <div class="flex items-center justify-start">
+                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                      Complete
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-green-200 border rounded-sm border-green-500">
+                  <div class="text-xs tracking-wide leading-none text-green-500">
+                    {meta.dashboard.complete}
+                  </div>
+                </div>
+              </div>
+              <div class="flex self-stretch items-center justify-between">
+                <div class="flex space-x-2 items-center justify-start">
+                  <img
+                    src="/fimgs/724_1776.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                  <div class="flex items-center justify-start">
+                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                      Unfinish
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-red-200 border rounded-sm border-red-500">
+                  <div class="text-xs tracking-wide leading-none text-red-500">
+                    {meta.dashboard.unfinish}
+                  </div>
+                </div>
+              </div>
+              <div class="flex self-stretch items-center justify-between">
+                <div class="flex space-x-2 items-center justify-start">
+                  <img
+                    src="/fimgs/724_1783.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                  <div class="flex items-center justify-start">
+                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                      Next Project
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-violet-300 border rounded-sm border-blue-700">
+                  <div class="text-xs tracking-wide leading-none text-blue-700">
+                    {meta.dashboard.nextproject}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col w-full items-center justify-start p-4 bg-white rounded">
+            <button
+              onClick={meta.logout}
+              class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 border rounded border-indigo-500 hover:bg-coolGray-100 hover:opacity-50"
+            >
+              <div class="text-base tracking-wide leading-normal text-center text-indigo-500">
+                Sign Out
+              </div>
+              <img
+                src="/fimgs/I724_1789_724_1719.x3.png"
+                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-1 flex-col space-y-6 items-start justify-start p-6 bg-white rounded">
+          <div class="flex items-start justify-start">
+            <div class="text-base font-medium tracking-wide leading-none text-coolGray-900">
+              Change Password
+            </div>
+          </div>
+          <form
+            onSubmit={meta.handleSubmit}
+            class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto"
           >
-            <div class="flex flex-1 space-x-4 items-center justify-start">
-              <img
-                src="/fimgs/913_3617.x3.png"
-                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-              />
-              <div class="flex flex-1 items-start justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                  Change Password
-                </div>
-              </div>
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Current Password
             </div>
-            <img
-              src="/fimgs/913_3614.x3.png"
-              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-            />
-          </a>
-        </div>
-      </div>
-      <div class="flex flex-col w-full space-y-4 items-start justify-start p-4 bg-white rounded">
-        <div class="flex items-start justify-start">
-          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-            Projects
-          </div>
-        </div>
-        <div class="flex flex-col w-full space-y-6 items-start justify-start">
-          <div class="flex self-stretch items-center justify-between">
-            <div class="flex space-x-2 items-center justify-start">
-              <img
-                src="/fimgs/724_1762.x3.png"
-                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-              />
-              <div class="flex items-center justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                  In Progress
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-orange-400 bg-opacity-40 border rounded-sm border-orange-400">
-              <div class="text-xs tracking-wide leading-none text-orange-400">
-                1
-              </div>
-            </div>
-          </div>
-          <div class="flex self-stretch items-center justify-between">
-            <div class="flex space-x-2 items-center justify-start">
-              <img
-                src="/fimgs/724_1769.x3.png"
-                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-              />
-              <div class="flex items-center justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                  Complete
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-green-200 border rounded-sm border-green-500">
-              <div class="text-xs tracking-wide leading-none text-green-500">
-                22
-              </div>
-            </div>
-          </div>
-          <div class="flex self-stretch items-center justify-between">
-            <div class="flex space-x-2 items-center justify-start">
-              <img
-                src="/fimgs/724_1776.x3.png"
-                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-              />
-              <div class="flex items-center justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                  Unfinish
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-red-200 border rounded-sm border-red-500">
-              <div class="text-xs tracking-wide leading-none text-red-500">
-                3
-              </div>
-            </div>
-          </div>
-          <div class="flex self-stretch items-center justify-between">
-            <div class="flex space-x-2 items-center justify-start">
-              <img
-                src="/fimgs/724_1783.x3.png"
-                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-              />
-              <div class="flex items-center justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                  Next Project
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col items-center justify-start py-0.5 px-2 bg-violet-300 border rounded-sm border-blue-700">
-              <div class="text-xs tracking-wide leading-none text-blue-700">
-                2
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-col w-full items-center justify-start p-4 bg-white rounded">
-        <button class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 border rounded border-indigo-500 hover:bg-coolGray-100 hover:opacity-50">
-          <div class="text-base tracking-wide leading-normal text-center text-indigo-500">
-            Sign Out
-          </div>
-          <img
-            src="/fimgs/I724_1789_724_1719.x3.png"
-            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-          />
-        </button>
-      </div>
-    </div>
-    <div class="flex flex-1 flex-col space-y-6 items-start justify-start p-6 bg-white rounded">
-      <div class="flex items-start justify-start">
-        <div class="text-base font-medium tracking-wide leading-none text-coolGray-900">
-          Change Password
-        </div>
-      </div>
-      <form
-        onSubmit={meta.handleSubmit}
-        class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto"
-      >
-        <div class="text-sm tracking-wide leading-none text-gray-500">
-          Current Password
-        </div>
-        <div class="flex flex-col self-stretch items-start justify-start">
-          <div class="flex self-stretch items-center justify-start">
-            <div class="relative flex flex-1 items-center justify-start">
-              <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
-                <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
-                  <img
-                    src="/fimgs/I159_397_18_30.x3.png"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+            <div class="flex flex-col self-stretch items-start justify-start">
+              <div class="flex self-stretch items-center justify-start">
+                <div class="relative flex flex-1 items-center justify-start">
+                  <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                    <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                      <img
+                        src="/fimgs/I159_397_18_30.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+                      />
+                    </div>
+                  </div>
+                  <input
+                    type={meta.showXPass ? "text" : "password"}
+                    autoComplete="current-password"
+                    placeholder="Insert your current password"
+                    class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
+                    name="xpassword"
+                    value={meta.input.xpassword}
+                    onChange={meta.ubahNilai}
                   />
-                </div>
-              </div>
-              <input
-                type={meta.showXPass ? "text" : "password"}
-                autoComplete="current-password"
-                placeholder="Insert your current password"
-                class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
-                name="xpassword"
-                value={meta.input.xpassword}
-                onChange={meta.ubahNilai}
-              />
-              <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
-                <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
-                  <div onClick={meta.toggleXPass} class="cursor-pointer">
-                    {meta.showXPass ? (
-                      <img
-                        src="/fimgs/618_960.x3.png"
-                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                      />
-                    ) : (
-                      <img
-                        src="/fimgs/620_443.x3.png"
-                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                      />
-                    )}
+                  <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                    <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
+                      <div onClick={meta.toggleXPass} class="cursor-pointer">
+                        {meta.showXPass ? (
+                          <img
+                            src="/fimgs/618_960.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        ) : (
+                          <img
+                            src="/fimgs/620_443.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="text-xs font-normal py-1 tracking-wide leading-tight text-red-500">
-            {meta.errors.xpassword}
-          </div>
-        </div>
-        <hr class="border-gray-300 pb-2 my-auto w-full"></hr>
-        <div class="text-sm tracking-wide leading-none text-gray-500">
-          New Password
-        </div>
-        <div class="flex flex-col self-stretch items-start justify-start">
-          <div class="flex self-stretch items-center justify-start">
-            <div class="relative flex flex-1 items-center justify-start">
-              <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
-                <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
-                  <img
-                    src="/fimgs/I159_397_18_30.x3.png"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
-                  />
-                </div>
+              <div class="text-xs font-normal py-1 tracking-wide leading-tight text-red-500">
+                {meta.errors.xpassword}
               </div>
-              <input
-                type={meta.showPass ? "text" : "password"}
-                autoComplete="current-password"
-                placeholder="Insert your new password"
-                class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
-                name="password"
-                value={meta.input.password}
-                onChange={meta.ubahNilai}
-              />
-              <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
-                <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
-                  <div onClick={meta.togglePass} class="cursor-pointer">
-                    {meta.showPass ? (
+            </div>
+            <hr class="border-gray-300 pb-2 my-auto w-full"></hr>
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              New Password
+            </div>
+            <div class="flex flex-col self-stretch items-start justify-start">
+              <div class="flex self-stretch items-center justify-start">
+                <div class="relative flex flex-1 items-center justify-start">
+                  <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                    <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
                       <img
-                        src="/fimgs/618_960.x3.png"
-                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        src="/fimgs/I159_397_18_30.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
                       />
-                    ) : (
-                      <img
-                        src="/fimgs/620_443.x3.png"
-                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                      />
-                    )}
+                    </div>
+                  </div>
+                  <input
+                    type={meta.showPass ? "text" : "password"}
+                    autoComplete="current-password"
+                    placeholder="Insert your new password"
+                    class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
+                    name="password"
+                    value={meta.input.password}
+                    onChange={meta.ubahNilai}
+                  />
+                  <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                    <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
+                      <div onClick={meta.togglePass} class="cursor-pointer">
+                        {meta.showPass ? (
+                          <img
+                            src="/fimgs/618_960.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        ) : (
+                          <img
+                            src="/fimgs/620_443.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="text-xs py-1 font-normal tracking-wide leading-tight text-red-500">
-            {meta.errors.password}
-          </div>
-        </div>
-        <div class="text-sm tracking-wide leading-none text-gray-500">
-          Confirm Password
-        </div>
-        <div class="flex flex-col self-stretch items-start justify-start">
-          <div class="flex self-stretch items-center justify-start">
-            <div class="relative flex flex-1 items-center justify-start">
-              <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
-                <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
-                  <img
-                    src="/fimgs/I159_397_18_30.x3.png"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
-                  />
-                </div>
+              <div class="text-xs py-1 font-normal tracking-wide leading-tight text-red-500">
+                {meta.errors.password}
               </div>
-              <input
-                type={meta.showPass2 ? "text" : "password"}
-                autoComplete="current-password"
-                placeholder="Confirm your password"
-                class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
-                name="cpassword"
-                value={meta.input.cpassword}
-                onChange={meta.ubahNilai}
-              />
-              <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
-                <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
-                  <div onClick={meta.togglePass2} class="cursor-pointer">
-                    {meta.showPass2 ? (
+            </div>
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Confirm Password
+            </div>
+            <div class="flex flex-col self-stretch items-start justify-start">
+              <div class="flex self-stretch items-center justify-start">
+                <div class="relative flex flex-1 items-center justify-start">
+                  <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                    <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
                       <img
-                        src="/fimgs/618_960.x3.png"
-                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        src="/fimgs/I159_397_18_30.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
                       />
-                    ) : (
-                      <img
-                        src="/fimgs/620_443.x3.png"
-                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                      />
-                    )}
+                    </div>
+                  </div>
+                  <input
+                    type={meta.showPass2 ? "text" : "password"}
+                    autoComplete="current-password"
+                    placeholder="Confirm your password"
+                    class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
+                    name="cpassword"
+                    value={meta.input.cpassword}
+                    onChange={meta.ubahNilai}
+                  />
+                  <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                    <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
+                      <div onClick={meta.togglePass2} class="cursor-pointer">
+                        {meta.showPass2 ? (
+                          <img
+                            src="/fimgs/618_960.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        ) : (
+                          <img
+                            src="/fimgs/620_443.x3.png"
+                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                          />
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+              <div class="text-xs font-normal pt-1 tracking-wide leading-tight text-red-500">
+                {meta.errors.cpassword}
+              </div>
             </div>
-          </div>
-          <div class="text-xs font-normal pt-1 tracking-wide leading-tight text-red-500">
-            {meta.errors.cpassword}
-          </div>
+            <button
+              type="submit"
+              onClick={meta.handleSubmit}
+              class="flex flex-1 self-stretch flex-col items-start justify-start pt-4"
+            >
+              <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                  Save Change
+                </div>
+              </div>
+            </button>
+          </form>
         </div>
-        <button
-          type="submit"
-          class="flex flex-1 self-stretch flex-col items-start justify-start pt-4"
-        >
-          <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
-            <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
-              Save Change
-            </div>
-          </div>
-        </button>
-      </form>
-    </div>
-  </div>
+      </div>
+    </>
+  )}
 </>

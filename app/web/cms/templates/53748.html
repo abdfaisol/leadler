@@ -1,0 +1,116 @@
+<>
+  <effect
+    meta={{
+      isActive(route) {
+        console.log(window.location.pathname);
+        if (route == window.location.pathname) {
+          return "bg-violet-100";
+        } else {
+          return null;
+        }
+      },
+      titleNavA() {
+        var title = "Analytics";
+        title = title.replace("/m/user", "");
+        return title;
+      },
+      titleNav() {
+        var title = window.location.pathname;
+        title = title.replace("/m/user/", "");
+        return title;
+      },
+    }}
+    run={async () => {}}
+  />
+  <m-page class="w-screen pt-2 bg-coolGray-100 flex flex-row">
+    <div class="flex flex-col items-center justify-center flex-grow overflow-y-auto relative">
+      <div class="absolute top-0 left-0 w-full">{children}</div>
+    </div>
+    <div class="flex flex-col items-center justify-center">
+      <div class="flex flex-col items-center justify-between px-5 py-4 bg-white shadow w-full bottom-0 ">
+        <div class="flex space-x-10 items-center justify-center w-full">
+          <a
+            href="/m/user"
+            class="flex flex-col items-center justify-center cursor-pointer"
+          >
+            <img
+              src={
+                meta.isActive("/m/user")
+                  ? "/fimgs/612_2567.x3.png"
+                  : "/fimgs/612_2568.x3.png"
+              }
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+            <div class="flex items-start justify-start">
+              <div
+                class={
+                  meta.isActive("/m/user")
+                    ? "text-sm tracking-wide leading-tight text-indigo-500"
+                    : "text-sm tracking-wide leading-tight text-coolGray-400"
+                }
+              >
+                Home
+              </div>
+            </div>
+          </a>
+          <a
+            href="/m/user/project"
+            class="flex flex-col items-center justify-center"
+          >
+            <img
+              src={
+                meta.isActive("/m/user/project")
+                  ? "/fimgs/45_104.x3.png"
+                  : "/fimgs/45_103.x3.png"
+              }
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+            <div class="flex items-start justify-start">
+              <div
+                class={
+                  meta.isActive("/m/user/project")
+                    ? "text-sm tracking-wide leading-tight text-indigo-500"
+                    : "text-sm tracking-wide leading-tight text-coolGray-400"
+                }
+              >
+                Projects
+              </div>
+            </div>
+          </a>
+          <a
+            href="/m/user/timeline"
+            class="flex flex-col items-center justify-center"
+          >
+            <img
+              src={
+                meta.isActive("/m/user/timeline")
+                  ? "/fimgs/621_455.x3.png"
+                  : "/fimgs/621_453.x3.png"
+              }
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+            <div class="flex items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-coolGray-400">
+                Timeline
+              </div>
+            </div>
+          </a>
+          <a
+            href="/m/user/account"
+            class="flex flex-col items-center justify-center"
+          >
+            <img
+              src="/fimgs/612_2579.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+            <div class="flex items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-coolGray-400">
+                Account
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </m-page>
+</>

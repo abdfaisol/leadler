@@ -1,189 +1,838 @@
 <>
-  <effect meta={{}} run={async () => {}} />
-  <div class="flex flex-col items-start justify-start bg-coolGray-50">
-    <div class="flex w-full self-stretch items-start justify-center px-3 py-4 bg-white shadow shadow-b">
-      <div class="flex w-full space-x-5 items-center justify-start">
-        <a href="/m/pm/projects" class="flex items-center justify-start">
-          <img
-            src="/fimgs/I727_1000_1575_5334.x3.png"
-            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-          />
-          <div class="text-base tracking-wide leading-tight text-indigo-500">
-            Back
-          </div>
-        </a>
+  <effect
+    meta={{
+      // DATA DIVISION
+      user: [],
+      // DATA PRIMARY
+      state: {
+        iddivision: "",
+      },
+      // DATA LINK
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      // DATA TASK PER PROGRESS
+      data_task: [],
+      dataSubTaskProgress: [],
+      dataSubTaskSubmit: [],
+      dataSubTaskComplete: [],
+      // RELOAD PROJECT
+      reloadProject(divisi) {
+        this.state.iddivision = divisi;
+        // All Project
+        api("/api/project/show/" + params.id, {
+          data: {
+            iddivision: divisi,
+          },
+        }).then((e) => {
+          if (e.status == true) {
+            this.state.judul = e.data_act.project.name;
+            this.data_task = [];
+            e.data_act.project_task.map((idx) => {
+              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+              idx.subtask = false;
+              api("/api/project/task/subtask/show", {
+                data: {
+                  idproject: params.id,
+                  idparent: idx.id,
+                },
+              }).then((e) => {
+                // console.log(e);
+                if (e.status == true) {
+                  if (e.data_act.length > 0) {
+                    idx.subtask = true;
+                  }
+                }
+                this.data_task.push(idx);
+              });
+            });
+          }
+          // In proggress
+          api("/api/project/show/" + params.id, {
+            data: {
+              idstatus: 2,
+              iddivision: this.state.iddivision,
+            },
+          }).then((e) => {
+            // console.log(e.data_act.project_task);
+            if (e.status == true) {
+              // console.log(e);
+              this.dataSubTaskProgress = [];
+              e.data_act.project_task.map((idx) => {
+                idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                idx.subtask = false;
+                api("/api/project/task/subtask/show", {
+                  data: {
+                    idproject: params.id,
+                    idparent: idx.id,
+                  },
+                }).then((e) => {
+                  // console.log(e);
+                  if (e.status == true) {
+                    if (e.data_act.length > 0) {
+                      idx.subtask = true;
+                    }
+                  }
+                  this.dataSubTaskProgress.push(idx);
+                });
+              });
+            }
+            // Submitted
+            api("/api/project/show/" + params.id, {
+              data: {
+                idstatus: 6,
+                iddivision: this.state.iddivision,
+              },
+            }).then((e) => {
+              if (e.status == true) {
+                // console.log(e);
+                this.dataSubTaskSubmit = [];
+                e.data_act.project_task.map((idx) => {
+                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  api("/api/project/task/subtask/show", {
+                    data: {
+                      idproject: params.id,
+                      idparent: idx.id,
+                    },
+                  }).then((e) => {
+                    // console.log(e);
+                    if (e.status == true) {
+                      if (e.data_act.length > 0) {
+                        idx.subtask = true;
+                      }
+                    }
+                    this.dataSubTaskSubmit.push(idx);
+                  });
+                });
+                // meta.dataSubTaskSubmit = e.data_act.project_task;
+              }
+              // Complete
+              api("/api/project/show/" + params.id, {
+                data: {
+                  idstatus: 1,
+                  iddivision: this.state.iddivision,
+                },
+              }).then((e) => {
+                this.dataSubTaskComplete = [];
+                if (e.status == true) {
+                  // console.log(e);
+                  e.data_act.project_task.map((idx) => {
+                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                    api("/api/project/task/subtask/show", {
+                      data: {
+                        idproject: params.id,
+                        idparent: idx.id,
+                      },
+                    }).then((e) => {
+                      // console.log(e);
+                      if (e.status == true) {
+                        if (e.data_act.length > 0) {
+                          idx.subtask = true;
+                        }
+                      }
+                      this.dataSubTaskComplete.push(idx);
+                    });
+                  });
+                  // meta.dataSubTaskComplete = e.data_act.project_task;
+                  this.isLoading = true;
+                  this.isLoadingProject = true;
+                }
+              });
+            });
+          });
+        });
+      },
+      // DIVISI SELECTED
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value == value) {
+            out = idx;
+          }
+        });
+        return out;
+      },
+      isLoadingProject: true,
+    }}
+    run={async () => {
+      api("/api/session").then((e) => {
+        if (e.status == true || e.status == "true") {
+          api("/api/project/show/" + params.id).then((e0) => {
+            if (
+              e.data_act.muser_role.name.toLowerCase() == "project manager" ||
+              e.data_act.muser_role.name.toLowerCase() == "admin"
+            ) {
+              if (e0.data_act.project_division.length) {
+                meta.state.iddivision = e0.data_act.project_division[0].id;
+              }
+            } else {
+              meta.state.iddivision = e.data_act.muser_detail.iddivision;
+            }
+            // All Project
+            console.log("ID DIVISI +> " + meta.state.iddivision);
+            api("/api/project/show/" + params.id, {
+              data: {
+                iddivision: meta.state.iddivision,
+              },
+            }).then((e) => {
+              console.log(e);
+              if (e.status == true) {
+                meta.state.judul = e.data_act.project.name;
+                meta.link.detail =
+                  "/m/pm/projects/" + e.data_act.project.id + "/detail";
+                meta.link.team =
+                  "/m/pm/projects/" + e.data_act.project.id + "/team";
+                meta.link.task =
+                  "/m/pm/projects/" + e.data_act.project.id + "/task";
+                meta.link.timeline =
+                  "/m/pm/projects/" + e.data_act.project.id + "/timeline";
+                meta.link.planning =
+                  "/m/pm/projects/" + e.data_act.project.id + "/planning";
+                meta.link.file =
+                  "/m/pm/projects/" +
+                  e.data_act.project.id +
+                  "/file-management";
+                e.data_act.project_task.map((idx) => {
+                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  idx.subtask = false;
+                  api("/api/project/task/subtask/show", {
+                    data: {
+                      idproject: params.id,
+                      idparent: idx.id,
+                    },
+                  }).then((e) => {
+                    console.log(e);
+                    if (e.status == true) {
+                      if (e.data_act.length > 0) {
+                        idx.subtask = true;
+                      }
+                    }
+                    meta.data_task.push(idx);
+                  });
+                });
+                console.log(e);
+                var ttempDivision = [];
+                // console.log(e);
+                e.data_act.project_division.map((e) => {
+                  // console.log(e);
+                  ttempDivision.push({ value: e.id, label: e.division });
+                });
+                meta.user = ttempDivision;
+                // META LINK
+
+                // console.log(e);
+              }
+              // In proggress
+              api("/api/project/show/" + params.id, {
+                data: {
+                  idstatus: 2,
+                  iddivision: meta.state.iddivision,
+                },
+              }).then((e) => {
+                // console.log(e.data_act.project_task);
+                if (e.status == true) {
+                  // console.log(e);
+                  e.data_act.project_task.map((idx) => {
+                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                    idx.subtask = false;
+                    api("/api/project/task/subtask/show", {
+                      data: {
+                        idproject: params.id,
+                        idparent: idx.id,
+                      },
+                    }).then((e) => {
+                      // console.log(e);
+                      if (e.status == true) {
+                        if (e.data_act.length > 0) {
+                          idx.subtask = true;
+                        }
+                      }
+                      meta.dataSubTaskProgress.push(idx);
+                    });
+                  });
+                }
+                // Submitted
+                api("/api/project/show/" + params.id, {
+                  data: {
+                    idstatus: 6,
+                    iddivision: meta.state.iddivision,
+                  },
+                }).then((e) => {
+                  if (e.status == true) {
+                    // console.log(e);
+                    e.data_act.project_task.map((idx) => {
+                      idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                      idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                      api("/api/project/task/subtask/show", {
+                        data: {
+                          idproject: params.id,
+                          idparent: idx.id,
+                        },
+                      }).then((e) => {
+                        // console.log(e);
+                        if (e.status == true) {
+                          if (e.data_act.length > 0) {
+                            idx.subtask = true;
+                          }
+                        }
+                        meta.dataSubTaskSubmit.push(idx);
+                      });
+                    });
+                    // meta.dataSubTaskSubmit = e.data_act.project_task;
+                  }
+                  // Complete
+                  api("/api/project/show/" + params.id, {
+                    data: {
+                      idstatus: 1,
+                      iddivision: meta.state.iddivision,
+                    },
+                  }).then((e) => {
+                    if (e.status == true) {
+                      // console.log(e);
+                      e.data_act.project_task.map((idx) => {
+                        idx.startdate = dateFormat(
+                          idx.startdate,
+                          "MMM dd, YYY"
+                        );
+                        idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                        api("/api/project/task/subtask/show", {
+                          data: {
+                            idproject: params.id,
+                            idparent: idx.id,
+                          },
+                        }).then((e) => {
+                          // console.log(e);
+                          if (e.status == true) {
+                            if (e.data_act.length > 0) {
+                              idx.subtask = true;
+                            }
+                          }
+                          meta.dataSubTaskComplete.push(idx);
+                        });
+                      });
+                      // meta.dataSubTaskComplete = e.data_act.project_task;
+                      meta.isLoading = true;
+                    }
+                  });
+                });
+              });
+            });
+          });
+        }
+      });
+    }}
+  />
+  <div class="flex flex-col min-h-screen min-w-screen">
+    <div class="flex flex-col bg-coolGray-50 space-y-1 flex-grow">
+      <div class="flex w-full self-stretch items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+        <div class="flex w-full space-x-5 items-center justify-start">
+          <a href="/m/pm/projects" class="flex items-center justify-start">
+            <img
+              src="/fimgs/I727_1000_1575_5334.x3.png"
+              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+            />
+            <div class="text-base tracking-wide leading-tight text-indigo-500">
+              Back
+            </div>
+          </a>
+        </div>
       </div>
-    </div>
-    <div class="overflow-x-auto w-full">
-      <div class="flex flex-col self-stretch space-y-5 py-3 w-auto">
-        <div class="flex flex-col self-stretch items-start justify-start">
-          <div class="flex space-x-4 items-start justify-start px-5 py-4 bg-white">
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              style="width: 132px; min-width: 132px; max-width: 132px;"
-              href="/m/pm/projects/detail"
-            >
-              <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
-                Projects Detail
-              </div>
-            </a>
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-indigo-400"
-              href="/m/pm/projects/task"
-            >
-              <div class="text-sm tracking-wide leading-tight text-indigo-500">
-                Task
-              </div>
-            </a>
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/planning"
-            >
-              <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                Planning
-              </div>
-            </a>
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/timeline"
-            >
-              <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                Timeline
-              </div>
-            </a>
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              style="width: 151px; min-width: 151px; max-width: 151px;"
-              href="/m/pm/projects/filemanagement"
-            >
-              <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
-                File Management
-              </div>
-            </a>
-            <a
-              class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/team"
-            >
-              <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                Team
-              </div>
-            </a>
+      <div class="overflow-x-auto w-full sticky top-0 z-50 bg-white">
+        <div class="flex flex-col self-stretch space-y-2 w-auto">
+          <div class="flex flex-col self-stretch items-start justify-start">
+            <div class="flex space-x-4 items-start justify-start px-5 py-4 ">
+              <a
+                href={meta.link.detail}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+                style="width: 132px; min-width: 132px; max-width: 132px;"
+              >
+                <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
+                  Projects Detail
+                </div>
+              </a>
+              <a
+                href={meta.link.task}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                  Task
+                </div>
+              </a>
+              <a
+                href={meta.link.planning}
+                class="flex items-center justify-center px-4 py-2 border rounded border-indigo-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                  Planning
+                </div>
+              </a>
+              <a
+                href={meta.link.timeline}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                  Timeline
+                </div>
+              </a>
+              <a
+                href={meta.link.file}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+                style="width: 151px; min-width: 151px; max-width: 151px;"
+              >
+                <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
+                  File Management
+                </div>
+              </a>
+              <a
+                href={meta.link.team}
+                class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+              >
+                <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                  Team
+                </div>
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="flex flex-col self-stretch pb-3 w-auto">
-      <div class="flex items-start justify-start px-5 py-4 bg-white">
-        <div class="flex flex-col space-y-6 items-start justify-start relative">
-          <div class="flex flex-col space-y-4 items-start justify-start">
-            <div class="flex self-stretch flex-col space-y-1 items-start justify-start">
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
-                  Project Name
-                </div>
-              </div>
-              <div class="flex items-start justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                  Pengembangan Aplikasi UMKM Kota Semarang
-                </div>
-              </div>
-            </div>
-            <div class="flex self-stretch flex-col space-y-1 items-start justify-start">
-              <div class="flex items-start justify-start">
-                <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
-                  Project Description
-                </div>
-              </div>
-              <div class="flex items-start justify-start">
-                <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-                  Pengembangan Aplikasi UMKM Kota Semarang dibuat untuk
-                  memberikan kemudahan bagi masyarakat yang bergerak di bidang
-                  bisnis terutama pada UMKM. Hal ini didasarkan pada masih
-                  banyak masyarakat yang belum memanfaatkan teknologi pemasaran
-                  seperti E-commerce dan lainnya. Penelitian ini menggunakan
-                  model pengembangan SDLC. Model analisisnya menggunakan Use
-                  Case, Activity, Class Diagram, E-R Diagram dan kamus data.
-                  Manfaatnya dapat memberikan kemudahan dalam memasarkan produk
-                  UMKM kota semarang agar lebih dikenal oleh masyarakat lokal
-                  maupun luar daerah. Dalam Aplikasi ini masyarakat dapat
-                  menjual produk UMKM melalui bantuan teknologi.{" "}
-                </div>
-              </div>
-            </div>
-            <div class="flex self-stretch flex-col space-y-1 items-start justify-start">
-              <div class="flex items-start justify-start">
-                <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
-                  Progress Task
-                </div>
-              </div>
-              <div class="flex self-stretch flex-col space-y-1 items-start justify-start">
-                <bar />
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                    10 Task Done
-                  </div>
-                </div>
+      {meta.isLoading ? (
+        <>
+          <div class="flex flex-col w-full items-start justify-start px-3 bg-white">
+            <div class="text-sm font-medium tracking-wide leading-tight text-start text-coolGray-900 border-coolGray-300">
+              <div class="flex items-center justify-center">
+                <multipleselect
+                  options={meta.user}
+                  defaultValue={
+                    meta.state.iddivision == 0 || meta.state.iddivision == ""
+                      ? meta.user[-1]
+                      : meta.user[
+                          meta.searchIdx(meta.state.iddivision, meta.user)
+                        ]
+                  }
+                  theme={(theme) => ({
+                    ...theme,
+                    borderRadius: 0,
+                    colors: {
+                      ...theme.colors,
+                      primary25: "#F3F4F6",
+                      primary: "#6366F1",
+                    },
+                  })}
+                  onChange={(event) => {
+                    console.log(event.value);
+                    meta.iddivision = event.value;
+                    meta.state.iddivision = event.value;
+                    console.log("ID DIVISION " + meta.iddivision);
+                    meta.isLoadingProject = false;
+                    meta.reloadProject(event.value);
+                  }}
+                  styles={meta.stylesx}
+                  className="w-48"
+                  classNamePrefix="select"
+                  name="status"
+                />
               </div>
             </div>
           </div>
-          <div class="flex flex-col space-y-4 items-start justify-start">
-            <div class="flex self-stretch space-x-4 items-start justify-start">
-              <img
-                src="/fimgs/824_2235.x3.png"
-                style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
-              />
-              <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-xs tracking-wide leading-none text-justify text-coolGray-500">
-                    Project Create For
+          {meta.isLoadingProject ? (
+            <>
+              <div class="relative flex-grow overflow-x-auto w-full">
+                <>
+                  <div class="absolute top-0 left-0" style="width: 1000px">
+                    <div class="flex flex-col items-end justify-end p-6 w-full">
+                      <div class="grid grid-cols-4 gap-8 flex-grow w-full">
+                        <div class="space-y-4 items-start justify-start">
+                          <div class="flex space-x-3 items-center justify-start px-3 py-3 bg-green-400">
+                            <div class="flex items-start justify-start">
+                              <div class="text-base font-light tracking-wide leading-light text-center text-white">
+                                TODO
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start pl-2 border-l">
+                              <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
+                                {meta.data_task.length} Task
+                              </div>
+                            </div>
+                          </div>
+                          {meta.data_task.map((e) => {
+                            return (
+                              <>
+                                <div class="flex flex-col items-start justify-start">
+                                  <div class="flex flex-col w-full items-start justify-start p-4 bg-white rounded-sm">
+                                    <div class="flex self-stretch flex-col space-y-4 items-end justify-start">
+                                      <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                                          <div class="flex self-stretch space-x-2 items-center justify-start">
+                                            <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full" />
+                                            <div class="flex flex-1 items-start justify-start">
+                                              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                                {
+                                                  meta.user[
+                                                    meta.searchIdx(
+                                                      meta.state.iddivision,
+                                                      meta.user
+                                                    )
+                                                  ].label
+                                                }
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="flex self-stretch items-start justify-start">
+                                            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                                              {e.name}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                                          <div class="flex self-stretch items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none">
+                                              <span class="text-green-500">
+                                                {" "}
+                                                {e.startdate} -{" "}
+                                              </span>
+                                              <span class="text-red-500">
+                                                {" "}
+                                                {e.duedate}{" "}
+                                              </span>
+                                            </div>
+                                          </div>
+                                          <div class="flex self-stretch space-x-4 items-center justify-start">
+                                            <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full">
+                                              <div class="text-xs tracking-wide leading-none text-center text-white">
+                                                {e.mpriority.name}
+                                              </div>
+                                            </div>
+                                            <div class="flex items-start justify-start p-1 border rounded border-indigo-500">
+                                              <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                                {e.effort}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      {/*<img*/}
+                                      {/*src="/fimgs/457_1759.x3.png"*/}
+                                      {/*style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"*/}
+                                      {/*/>*/}
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                            );
+                          })}
+                        </div>
+                        <div class="space-y-4 items-start justify-start">
+                          <div class="flex space-x-3 items-center justify-start  px-3 py-3 bg-indigo-400">
+                            <div class="flex items-start justify-start">
+                              <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                                IN PROGRESS
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start pl-2 border-l">
+                              <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
+                                {meta.dataSubTaskProgress.length} Task
+                              </div>
+                            </div>
+                          </div>
+                          {meta.dataSubTaskProgress.map((e) => {
+                            return (
+                              <>
+                                <div class="flex flex-col items-start justify-start">
+                                  <div class="flex flex-col w-full items-start justify-start p-4 bg-white rounded-sm">
+                                    <div class="flex self-stretch flex-col space-y-4 items-end justify-start">
+                                      <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                                          <div class="flex self-stretch space-x-2 items-center justify-start">
+                                            <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full" />
+                                            <div class="flex flex-1 items-start justify-start">
+                                              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                                {
+                                                  meta.user[
+                                                    meta.searchIdx(
+                                                      meta.state.iddivision,
+                                                      meta.user
+                                                    )
+                                                  ].label
+                                                }
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="flex self-stretch items-start justify-start">
+                                            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                                              {e.name}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                                          <div class="flex self-stretch items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none">
+                                              <span class="text-green-500">
+                                                {" "}
+                                                {e.startdate} -{" "}
+                                              </span>
+                                              <span class="text-red-500">
+                                                {" "}
+                                                {e.duedate}{" "}
+                                              </span>
+                                            </div>
+                                          </div>
+                                          <div class="flex self-stretch space-x-4 items-center justify-start">
+                                            <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full">
+                                              <div class="text-xs tracking-wide leading-none text-center text-white">
+                                                {e.mpriority.name}
+                                              </div>
+                                            </div>
+                                            <div class="flex items-start justify-start p-1 border rounded border-indigo-500">
+                                              <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                                {e.effort}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      {/*<img*/}
+                                      {/*src="/fimgs/457_1759.x3.png"*/}
+                                      {/*style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"*/}
+                                      {/*/>*/}
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                            );
+                          })}
+                        </div>
+                        <div class="space-y-4 items-start justify-start">
+                          <div class="flex space-x-3 items-center justify-start  px-3 py-3 bg-blue-700">
+                            <div class="flex items-start justify-start">
+                              <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                                SUBMITTED
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start pl-2 border-l">
+                              <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
+                                {meta.dataSubTaskSubmit.length} Task
+                              </div>
+                            </div>
+                          </div>
+                          {meta.dataSubTaskSubmit.map((e) => {
+                            return (
+                              <>
+                                <div class="flex flex-col items-start justify-start">
+                                  <div class="flex flex-col w-full items-start justify-start p-4 bg-white rounded-sm">
+                                    <div class="flex self-stretch flex-col space-y-4 items-end justify-start">
+                                      <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                                          <div class="flex self-stretch space-x-2 items-center justify-start">
+                                            <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full" />
+                                            <div class="flex flex-1 items-start justify-start">
+                                              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                                {
+                                                  meta.user[
+                                                    meta.searchIdx(
+                                                      meta.state.iddivision,
+                                                      meta.user
+                                                    )
+                                                  ].label
+                                                }
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="flex self-stretch items-start justify-start">
+                                            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                                              {e.name}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                                          <div class="flex self-stretch items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none">
+                                              <span class="text-green-500">
+                                                {" "}
+                                                {e.startdate} -{" "}
+                                              </span>
+                                              <span class="text-red-500">
+                                                {" "}
+                                                {e.duedate}{" "}
+                                              </span>
+                                            </div>
+                                          </div>
+                                          <div class="flex self-stretch space-x-4 items-center justify-start">
+                                            <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full">
+                                              <div class="text-xs tracking-wide leading-none text-center text-white">
+                                                {e.mpriority.name}
+                                              </div>
+                                            </div>
+                                            <div class="flex items-start justify-start p-1 border rounded border-indigo-500">
+                                              <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                                {e.effort}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      {/*<img*/}
+                                      {/*src="/fimgs/457_1759.x3.png"*/}
+                                      {/*style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"*/}
+                                      {/*/>*/}
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                            );
+                          })}
+                        </div>
+                        <div class="space-y-4 items-start justify-start">
+                          <div class="flex space-x-3 items-center justify-start  px-3 py-3 bg-orange-300">
+                            <div class="flex items-start justify-start">
+                              <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                                COMPLETE
+                              </div>
+                            </div>
+                            <div class="flex items-start justify-start pl-2 border-l">
+                              <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
+                                {meta.dataSubTaskComplete.length} Task
+                              </div>
+                            </div>
+                          </div>
+                          {meta.dataSubTaskComplete.map((e) => {
+                            return (
+                              <>
+                                <div class="flex flex-col items-start justify-start">
+                                  <div class="flex flex-col w-full items-start justify-start p-4 bg-white rounded-sm">
+                                    <div class="flex self-stretch flex-col space-y-4 items-end justify-start">
+                                      <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                                          <div class="flex self-stretch space-x-2 items-center justify-start">
+                                            <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full" />
+                                            <div class="flex flex-1 items-start justify-start">
+                                              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                                {
+                                                  meta.user[
+                                                    meta.searchIdx(
+                                                      meta.state.iddivision,
+                                                      meta.user
+                                                    )
+                                                  ].label
+                                                }
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="flex self-stretch items-start justify-start">
+                                            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                                              {e.name}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                                          <div class="flex self-stretch items-start justify-start">
+                                            <div class="text-xs tracking-wide leading-none">
+                                              <span class="text-green-500">
+                                                {" "}
+                                                {e.startdate} -{" "}
+                                              </span>
+                                              <span class="text-red-500">
+                                                {" "}
+                                                {e.duedate}{" "}
+                                              </span>
+                                            </div>
+                                          </div>
+                                          <div class="flex self-stretch space-x-4 items-center justify-start">
+                                            <div class="flex items-center justify-center p-1 bg-indigo-500 rounded-full">
+                                              <div class="text-xs tracking-wide leading-none text-center text-white">
+                                                {e.mpriority.name}
+                                              </div>
+                                            </div>
+                                            <div class="flex items-start justify-start p-1 border rounded border-indigo-500">
+                                              <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                                {e.effort}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      {/*<img*/}
+                                      {/*src="/fimgs/457_1759.x3.png"*/}
+                                      {/*style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"*/}
+                                      {/*/>*/}
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm font-medium tracking-wide leading-tight text-justify text-coolGray-900">
-                    Pemkot Semarang
-                  </div>
+                </>
+              </div>
+            </>
+          ) : (
+            <div class="flex self-stretch flex-wrap items-center justify-center flex-grow">
+              <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                <div
+                  class="loader-dots block relative w-22 h-6 mt-2"
+                  style="width: 5rem;"
+                >
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
+                  <div
+                    class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                    style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                  ></div>
                 </div>
               </div>
             </div>
-            <div class="flex self-stretch space-x-4 items-start justify-start">
-              <img
-                src="/fimgs/824_2243.x3.png"
-                style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
-              />
-              <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-xs tracking-wide leading-none text-justify text-coolGray-500">
-                    Start Project
-                  </div>
-                </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm font-medium tracking-wide leading-tight text-justify text-coolGray-900">
-                    26/09/2021
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="flex self-stretch space-x-4 items-start justify-start">
-              <img
-                src="/fimgs/824_2251.x3.png"
-                style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
-              />
-              <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-xs tracking-wide leading-none text-justify text-coolGray-500">
-                    Due Date
-                  </div>
-                </div>
-                <div class="flex self-stretch items-start justify-start">
-                  <div class="text-sm font-medium tracking-wide leading-tight text-justify text-coolGray-900">
-                    26/11/2021
-                  </div>
-                </div>
-              </div>
+          )}
+        </>
+      ) : (
+        <div class="flex self-stretch flex-wrap items-center justify-center flex-grow">
+          <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+            <div
+              class="loader-dots block relative w-22 h-6 mt-2"
+              style="width: 5rem;"
+            >
+              <div
+                class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                style="top: 0; width: 0.75rem; height: 0.75rem;"
+              ></div>
+              <div
+                class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+              ></div>
+              <div
+                class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+              ></div>
+              <div
+                class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+              ></div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   </div>
 </>

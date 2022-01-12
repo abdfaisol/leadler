@@ -27,6 +27,18 @@
         phone: "",
         address: "",
       },
+      state0: {
+        email: "",
+        nik: "",
+        password: "",
+        userrole: "",
+        fullname: "",
+        birthplace: "",
+        birthdate: "",
+        division: "",
+        phone: "",
+        address: "",
+      },
       page: {
         next: 0,
         data: [],
@@ -84,6 +96,16 @@
       },
       toggleModalE() {
         this.showModalE = !this.showModalE;
+      },
+      showDetail(idemployee) {
+        api("/api/employee/show", {
+          id: idemployee,
+        }).then((e) => {
+          if (e.status == true) {
+            this.state0.email = e.data_act.muser.email;
+          }
+          console.log(e);
+        });
       },
       toggleModalD() {
         this.showModalD = !this.showModalD;
@@ -152,6 +174,7 @@
             iddepartment: event.value,
           },
         }).then((e) => {
+          console.log(e);
           if (e.status == true) {
             e.data_act.map((e1) => {
               this.dept2.push({ value: e1.id, label: e1.name });

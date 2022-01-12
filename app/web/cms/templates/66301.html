@@ -8,6 +8,10 @@
       state: {
         showSidebar: true,
       },
+      userDashboard: {
+        name: "",
+        division: "",
+      },
       toggleProfile() {
         this.showProfile = !this.showProfile;
       },
@@ -32,7 +36,20 @@
         return title;
       },
     }}
-    run={async () => {}}
+    run={async () => {
+      api("/api/session").then((e) => {
+        console.log(e);
+        if (e.status == true || e.status == "true") {
+          if (!e.data_act.muser_role.name) {
+            window.location.replace(window.location.origin);
+          } else {
+            meta.userDashboard.name = e.data_act.muser_detail.fullname;
+            meta.userDashboard.division =
+              e.data_act.muser_detail.mdivision.name;
+          }
+        }
+      });
+    }}
   />
   <div class="flex flex-1">
     <div class="flex flex-col h-full w-full items-start justify-start bg-coolGray-50">
@@ -183,13 +200,15 @@
                     />
                     <div class="flex flex-1 flex-col items-start justify-start">
                       <div class="flex self-stretch items-start justify-start">
-                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
-                          Gabriel Mikael
+                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900 capitalize ">
+                          <span>
+                            {meta.userDashboard.name.substring(0, 10)}
+                          </span>
                         </div>
                       </div>
                       <div class="flex self-stretch items-start justify-start">
                         <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                          User
+                          {meta.userDashboard.division}
                         </div>
                       </div>
                     </div>

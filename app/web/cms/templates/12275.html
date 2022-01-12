@@ -9,6 +9,7 @@
         duedate: "26/09/2021",
         proggres: "0",
         taskComplete: "0",
+        iddivision: 0,
       },
       link: {
         detail: "#",
@@ -22,87 +23,312 @@
       dataSubTaskProgress: [],
       dataSubTaskSubmit: [],
       dataSubTaskComplete: [],
-    }}
-    run={async () => {
-      console.log("mendapatkan data: loading");
-      api("/api/project/show/" + params.id).then((e) => {
-        // console.log(e);
-        if (e.status == true) {
-          // console.log(e.data_act.project_task);
-          meta.state.judul = e.data_act.project.name;
-          meta.state.deskripsi = e.data_act.project.desc;
-          meta.state.label = e.data_act.project.label;
-          meta.state.startdate = dateFormat(
-            e.data_act.project.startdate,
-            "dd MMMM YYY"
-          );
-          meta.state.duedate = dateFormat(
-            e.data_act.project.duedate,
-            "dd MMMM YYY"
-          );
-          e.data_act.project_task.map((idx) => {
-            idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-            idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-          });
-          meta.data_task = e.data_act.project_task;
-          meta.state.taskComplete = e.data_act.resultTask.taskComplete;
-          meta.state.proggres = e.data_act.resultTask.completed;
-          meta.link.team = "/pm/projects/" + e.data_act.project.id + "/team";
-          meta.link.task = "/pm/projects/" + e.data_act.project.id + "/task";
-          meta.link.timeline =
-            "/pm/projects/" + e.data_act.project.id + "/timeline";
-          meta.link.planning =
-            "/pm/projects/" + e.data_act.project.id + "/planning";
-          meta.link.file =
-            "/pm/projects/" + e.data_act.project.id + "/file-management";
-        }
-        // In proggress
+      // DATA DIVISION
+      user: [],
+      // DIVISI SELECTED
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value == value) {
+            out = idx;
+          }
+        });
+        return out;
+      },
+      // RELOAD PROJECT
+      reloadProject(divisi) {
+        this.state.iddivision = divisi;
+        // All Project
         api("/api/project/show/" + params.id, {
           data: {
-            idstatus: 2,
+            iddivision: divisi,
           },
         }).then((e) => {
-          // console.log(e.data_act.project_task);
           if (e.status == true) {
-            // console.log(e);
+            this.state.judul = e.data_act.project.name;
+            this.data_task = [];
             e.data_act.project_task.map((idx) => {
               idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
               idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+              idx.subtask = false;
+              api("/api/project/task/subtask/show", {
+                data: {
+                  idproject: params.id,
+                  idparent: idx.id,
+                },
+              }).then((e) => {
+                // console.log(e);
+                if (e.status == true) {
+                  if (e.data_act.length > 0) {
+                    idx.subtask = true;
+                  }
+                }
+                this.data_task.push(idx);
+              });
             });
-            meta.dataSubTaskProgress = e.data_act.project_task;
           }
-          // Submitted
+          // In proggress
           api("/api/project/show/" + params.id, {
             data: {
-              idstatus: 6,
+              idstatus: 2,
+              iddivision: this.state.iddivision,
             },
           }).then((e) => {
+            // console.log(e.data_act.project_task);
             if (e.status == true) {
               // console.log(e);
+              this.dataSubTaskProgress = [];
               e.data_act.project_task.map((idx) => {
                 idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
                 idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                idx.subtask = false;
+                api("/api/project/task/subtask/show", {
+                  data: {
+                    idproject: params.id,
+                    idparent: idx.id,
+                  },
+                }).then((e) => {
+                  // console.log(e);
+                  if (e.status == true) {
+                    if (e.data_act.length > 0) {
+                      idx.subtask = true;
+                    }
+                  }
+                  this.dataSubTaskProgress.push(idx);
+                });
               });
-              meta.dataSubTaskSubmit = e.data_act.project_task;
             }
-            // Complete
+            // Submitted
             api("/api/project/show/" + params.id, {
               data: {
-                idstatus: 1,
+                idstatus: 6,
+                iddivision: this.state.iddivision,
               },
             }).then((e) => {
               if (e.status == true) {
                 // console.log(e);
+                this.dataSubTaskSubmit = [];
                 e.data_act.project_task.map((idx) => {
                   idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
                   idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  api("/api/project/task/subtask/show", {
+                    data: {
+                      idproject: params.id,
+                      idparent: idx.id,
+                    },
+                  }).then((e) => {
+                    // console.log(e);
+                    if (e.status == true) {
+                      if (e.data_act.length > 0) {
+                        idx.subtask = true;
+                      }
+                    }
+                    this.dataSubTaskSubmit.push(idx);
+                  });
                 });
-                meta.dataSubTaskComplete = e.data_act.project_task;
-                meta.isLoading = true;
+                // meta.dataSubTaskSubmit = e.data_act.project_task;
               }
+              // Complete
+              api("/api/project/show/" + params.id, {
+                data: {
+                  idstatus: 1,
+                  iddivision: this.state.iddivision,
+                },
+              }).then((e) => {
+                this.dataSubTaskComplete = [];
+                if (e.status == true) {
+                  // console.log(e);
+                  e.data_act.project_task.map((idx) => {
+                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                    api("/api/project/task/subtask/show", {
+                      data: {
+                        idproject: params.id,
+                        idparent: idx.id,
+                      },
+                    }).then((e) => {
+                      // console.log(e);
+                      if (e.status == true) {
+                        if (e.data_act.length > 0) {
+                          idx.subtask = true;
+                        }
+                      }
+                      this.dataSubTaskComplete.push(idx);
+                    });
+                  });
+                  // meta.dataSubTaskComplete = e.data_act.project_task;
+                  this.isLoading = true;
+                  this.isLoadingProject = true;
+                }
+              });
             });
           });
         });
+      },
+      loadDivisi: true,
+    }}
+    run={async () => {
+      console.log("mendapatkan data: loading");
+      api("/api/session").then((e) => {
+        if (e.status == true || e.status == "true") {
+          api("/api/project/show/" + params.id).then((e0) => {
+            if (
+              e.data_act.muser_role.name.toLowerCase() == "project manager" ||
+              e.data_act.muser_role.name.toLowerCase() == "admin"
+            ) {
+              if (e0.data_act.project_division.length) {
+                meta.state.iddivision = e0.data_act.project_division[0].id;
+              }
+            } else {
+              meta.state.iddivision = e.data_act.muser_detail.iddivision;
+            }
+            // All Project
+            console.log("ID DIVISI +> " + meta.state.iddivision);
+            api("/api/project/show/" + params.id, {
+              data: {
+                iddivision: meta.state.iddivision,
+              },
+            }).then((e) => {
+              console.log(e);
+              if (e.status == true) {
+                meta.state.judul = e.data_act.project.name;
+                meta.link.detail = "/pm/projects/" + params.id + "/detail";
+                meta.link.team = "/pm/projects/" + params.id + "/team";
+                meta.link.task = "/pm/projects/" + params.id + "/task";
+                meta.link.timeline = "/pm/projects/" + params.id + "/timeline";
+                meta.link.planning = "/pm/projects/" + params.id + "/planning";
+                meta.link.file =
+                  "/pm/projects/" + params.id + "/file-management";
+                e.data_act.project_task.map((idx) => {
+                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  idx.subtask = false;
+                  api("/api/project/task/subtask/show", {
+                    data: {
+                      idproject: params.id,
+                      idparent: idx.id,
+                    },
+                  }).then((e) => {
+                    console.log(e);
+                    if (e.status == true) {
+                      if (e.data_act.length > 0) {
+                        idx.subtask = true;
+                      }
+                    }
+                    meta.data_task.push(idx);
+                  });
+                });
+                console.log(e);
+                var ttempDivision = [];
+                // console.log(e);
+                e.data_act.project_division.map((e) => {
+                  // console.log(e);
+                  ttempDivision.push({ value: e.id, label: e.division });
+                });
+                meta.user = ttempDivision;
+                meta.loadDivisi = false;
+                // META LINK
+
+                // console.log(e);
+              }
+              // In proggress
+              api("/api/project/show/" + params.id, {
+                data: {
+                  idstatus: 2,
+                  iddivision: meta.state.iddivision,
+                },
+              }).then((e) => {
+                // console.log(e.data_act.project_task);
+                if (e.status == true) {
+                  // console.log(e);
+                  e.data_act.project_task.map((idx) => {
+                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                    idx.subtask = false;
+                    api("/api/project/task/subtask/show", {
+                      data: {
+                        idproject: params.id,
+                        idparent: idx.id,
+                      },
+                    }).then((e) => {
+                      // console.log(e);
+                      if (e.status == true) {
+                        if (e.data_act.length > 0) {
+                          idx.subtask = true;
+                        }
+                      }
+                      meta.dataSubTaskProgress.push(idx);
+                    });
+                  });
+                }
+                // Submitted
+                api("/api/project/show/" + params.id, {
+                  data: {
+                    idstatus: 6,
+                    iddivision: meta.state.iddivision,
+                  },
+                }).then((e) => {
+                  if (e.status == true) {
+                    // console.log(e);
+                    e.data_act.project_task.map((idx) => {
+                      idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                      idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                      api("/api/project/task/subtask/show", {
+                        data: {
+                          idproject: params.id,
+                          idparent: idx.id,
+                        },
+                      }).then((e) => {
+                        // console.log(e);
+                        if (e.status == true) {
+                          if (e.data_act.length > 0) {
+                            idx.subtask = true;
+                          }
+                        }
+                        meta.dataSubTaskSubmit.push(idx);
+                      });
+                    });
+                    // meta.dataSubTaskSubmit = e.data_act.project_task;
+                  }
+                  // Complete
+                  api("/api/project/show/" + params.id, {
+                    data: {
+                      idstatus: 1,
+                      iddivision: meta.state.iddivision,
+                    },
+                  }).then((e) => {
+                    if (e.status == true) {
+                      // console.log(e);
+                      e.data_act.project_task.map((idx) => {
+                        idx.startdate = dateFormat(
+                          idx.startdate,
+                          "MMM dd, YYY"
+                        );
+                        idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                        api("/api/project/task/subtask/show", {
+                          data: {
+                            idproject: params.id,
+                            idparent: idx.id,
+                          },
+                        }).then((e) => {
+                          // console.log(e);
+                          if (e.status == true) {
+                            if (e.data_act.length > 0) {
+                              idx.subtask = true;
+                            }
+                          }
+                          meta.dataSubTaskComplete.push(idx);
+                        });
+                      });
+                      // meta.dataSubTaskComplete = e.data_act.project_task;
+                      meta.isLoading = true;
+                    }
+                  });
+                });
+              });
+            });
+          });
+        }
       });
     }}
   />
@@ -131,7 +357,7 @@
       <div class="flex space-x-8 items-center justify-start">
         <a
           href={meta.link.detail}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Project Detail
@@ -139,7 +365,7 @@
         </a>
         <a
           href={meta.link.task}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Task
@@ -147,7 +373,7 @@
         </a>
         <a
           href={meta.link.planning}
-          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded border  border-indigo-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
             Planning
@@ -155,7 +381,7 @@
         </a>
         <a
           href={meta.link.timeline}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Timeline
@@ -163,7 +389,7 @@
         </a>
         <a
           href={meta.link.file}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             File Management
@@ -171,7 +397,7 @@
         </a>
         <a
           href={meta.link.team}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Team
@@ -183,18 +409,54 @@
   <div class="flex flex-col self-stretch space-y-8 p-10 w-auto">
     <div class="border border-coolGray-300">
       <div class="flex self-stretch items-center justify-between px-6 py-2.5 bg-white rounded-t">
-        <div class="text-sm font-medium tracking-wide leading-tight text-center text-coolGray-900 rounded-l border-r border-coolGray-300 pr-3">
-          <label class="bg-white"></label>
-          <select
-            id="employee"
-            name="employee"
-            class="bg-white rounded-l outline-none"
-          >
-            <option value="1">UI/UX Designer</option>
-            <option value="2">Business Analyst</option>
-            <option value="3">Full Stack Developer</option>
-          </select>
-        </div>
+        {meta.loadDivisi ? (
+          <>
+            <div
+              class="flex items-center justify-center"
+              style="backdrop-filter: blur(20px); width: 150px; z-index: 100"
+              id="loading"
+            >
+              <div class="bg-gray-200 w-full h-8 animate-pulse rounded-2xl"></div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div class="text-sm font-medium tracking-wide leading-tight text-center text-coolGray-900 rounded-l border-r border-coolGray-300 pr-3">
+              <label class="bg-white"></label>
+              <multipleselect
+                options={meta.user}
+                defaultValue={
+                  meta.state.iddivision == 0 || meta.state.iddivision == ""
+                    ? meta.user[-1]
+                    : meta.user[
+                        meta.searchIdx(meta.state.iddivision, meta.user)
+                      ]
+                }
+                theme={(theme) => ({
+                  ...theme,
+                  borderRadius: 0,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#F3F4F6",
+                    primary: "#6366F1",
+                  },
+                })}
+                onChange={(event) => {
+                  console.log(event.value);
+                  meta.iddivision = event.value;
+                  meta.state.iddivision = event.value;
+                  console.log("ID DIVISION " + meta.iddivision);
+                  meta.isLoadingProject = false;
+                  meta.reloadProject(event.value);
+                }}
+                styles={meta.stylesx}
+                className="w-48"
+                classNamePrefix="select"
+                name="status"
+              />
+            </div>
+          </>
+        )}
         <div class="flex items-start justify-start">
           <div class="flex items-center justify-between px-4 py-2 bg-coolGray-100 rounded w-48">
             <div class="flex items-start justify-start">
@@ -226,7 +488,7 @@
                     </div>
                     <div class="flex items-start justify-start pl-2 border-l">
                       <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
-                        {/*0 Task*/}
+                        {meta.data_task.length} Task
                       </div>
                     </div>
                   </div>
@@ -299,7 +561,7 @@
                     </div>
                     <div class="flex items-start justify-start pl-2 border-l">
                       <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
-                        {/*2 Task*/}
+                        {meta.dataSubTaskProgress.length} Task
                       </div>
                     </div>
                   </div>
@@ -372,7 +634,7 @@
                     </div>
                     <div class="flex items-start justify-start pl-2 border-l">
                       <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
-                        {/*2 Task*/}
+                        {meta.dataSubTaskSubmit.length} Task
                       </div>
                     </div>
                   </div>
@@ -445,7 +707,7 @@
                     </div>
                     <div class="flex items-start justify-start pl-2 border-l">
                       <div class="text-sm tracking-wide leading-tight text-center text-coolGray-50">
-                        {/*2 Task*/}
+                        {meta.dataSubTaskComplete.length} Task
                       </div>
                     </div>
                   </div>

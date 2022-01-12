@@ -2,8 +2,6 @@
   <effect
     meta={{
       modalSubTask: false,
-
-      expandSubtask: [],
       state: {
         name: "",
         startdate: "",
@@ -21,6 +19,7 @@
         taskname: "",
         proggres: "0",
         taskComplete: "0",
+        isSubtask: false,
       },
       stateSubTask: {
         name: "",
@@ -69,13 +68,22 @@
           label: "IN PROGRESS",
           color: "#888DF1",
         },
+        { value: "6", label: "SUBMITED", color: "#F1B459" },
         { value: "1", label: "COMPLETE", color: "#F1B459" },
       ],
       searchIdx(value, arr) {
         var out = false;
         arr.map((e, idx) => {
-          if (e.value == value) {
+          if (e.value.toString() == value.toString()) {
             out = idx;
+            console.log(
+              "VALUE : " +
+                e.value.toString() +
+                " DITEMUKAN DI INDEX " +
+                idx +
+                " DENGAN LABEL " +
+                e.label
+            );
           }
         });
         return out;
@@ -154,27 +162,78 @@
         this.state[name] = nilai;
         // console.log(nilai);
       },
+      closeToggleModal() {
+        this.ttempHistorySubTask = [];
+        this.state.name = "";
+        this.state.description = "";
+        this.state.startdate = "";
+        this.state.duedate = "";
+        this.state.effort = "";
+        this.state.priority = "";
+        this.state.status = "";
+        this.dataSubTask = [];
+        this.ttempSubTask = [];
+        this.showModal = !this.showModal;
+      },
       toggleModal() {
         console.clear();
-        this.showModal = !this.showModal;
+        this.ttempSubTask = [];
+        this.statusModal = "create";
+        this.ttempHistorySubTask = [];
+        this.state.name = "";
+        this.state.description = "";
+        this.state.startdate = "";
+        this.state.duedate = "";
+        this.state.effort = "";
+        this.state.priority = "";
+        this.state.status = "";
         this.dataSubTask = [];
+        this.showModal = !this.showModal;
       },
       toggleModal2Close() {
         this.showModal2 = !this.showModal2;
+        this.statusModal = "create";
+        this.ttempSubTask = [];
+        this.ttempHistorySubTask = [];
       },
-      toggleModal2(event, id) {
-        console.log(id);
+      idtask: 0,
+      toggleModal2(event, idtask) {
+        console.clear();
+        console.log(idtask);
+        console.log("CHECK -1");
+        this.detailSub = [];
+        this.ttempSubTask = [];
+        this.modalTaskEdit = {
+          all: [],
+          progress: [],
+          submit: [],
+          complete: [],
+        };
+        // this.dataExpand = [];
+        this.statusModal = "update modal";
+        console.log("CHECK 0");
         this.showModal2 = !this.showModal2;
         api("/api/project/task/show", {
           data: {
-            idtask: id,
+            idtask: idtask,
             idproject: params.id,
           },
         }).then((e) => {
           console.log(e);
           if (e.status == true) {
+            this.loadingexpand = false;
             this.state.idtask = e.data_act.id;
+            console.log(this.state.idtask);
+            if (e.data_act.idparent) {
+              this.state.isSubtask = false;
+              this.loadingexpandSub = false;
+              console.log("MASUK EXPAND DATA");
+            } else {
+              this.state.isSubtask = true;
+            }
+            this.expandData(e.data_act.id, false);
             this.state.name = e.data_act.name;
+            console.log(this.state.name);
             this.state.labelstartdate = dateFormat(
               e.data_act.startdate,
               "MMM dd, YYY"
@@ -188,10 +247,17 @@
               "YYY-MM-dd"
             );
             this.state.duedate = dateFormat(e.data_act.duedate, "YYY-MM-dd");
+            console.log(
+              "START DATE : " +
+                this.state.startdate +
+                " DUE DATE : " +
+                this.state.duedate
+            );
             this.state.priority = e.data_act.priority;
             this.state.cstatus = e.data_act.mproject_status.name;
             this.state.status = e.data_act.idstatus;
             this.state.effort = e.data_act.effort;
+            console.log("CHECK 1");
           }
         });
       },
@@ -200,6 +266,31 @@
       },
       idsubtask: 0,
       // SUBTASK
+      detailSub: [],
+      showDetailEdit(id, idx, value) {
+        console.clear();
+        console.log(id);
+        console.log(idx);
+        console.log(value);
+        var vv = [];
+        vv[idx] = true;
+        var ttempDetail = [];
+        ttempDetail[idx] = value ? value : "";
+        this.detailData = ttempDetail;
+        this.detailSub = vv;
+      },
+      detailData: [],
+      updateDetailSub(e, id, idx) {
+        var vv = [];
+        vv[id] = false;
+        this.detailSub = vv;
+        this.subtaskDetail[idx].desc = this.detailData[idx];
+        this.updateDesc(id, this.detailData[idx]);
+        e.preventDefault(id);
+      },
+      ubahNilai3(e, id, idx) {
+        this.detailData[idx] = e.target.value;
+      },
       ubahNilai2(e) {
         let name = e.target.name;
         let nilai = e.target.value;
@@ -222,17 +313,31 @@
       },
       ttempSubTask: [],
       showModalSubTask(event, id) {
-        this.toggleModal();
+        // console.log("COOOOK");
         this.modalSubTask = true;
         this.idsubtask = id;
-        // this.stateSubTask.name = this.ttempSubTask[meta.idsubtask].name;
+        console.log(this.statusModal);
+        if (this.statusModal == "update modal") {
+          // console.log("JANCOOOk");
+          this.showModal2 = !this.showModal2;
+        } else {
+          this.showModal = !this.showModal;
+          // this.toggleModal();
+        }
       },
+      statusModal: "create",
       backTask(e) {
         this.modalSubTask = false;
-        this.toggleModal();
+
         this.ttempHistorySubTask[this.idsubtask] = this.ttempSubTask[
           this.idsubtask
         ];
+        console.log(this.statusModal);
+        if (this.statusModal == "update modal") {
+          this.showModal2 = !this.showModal2;
+        } else {
+          this.showModal = !this.showModal;
+        }
         e.preventDefault();
       },
       subtask(event) {
@@ -243,10 +348,10 @@
             name: this.state.taskname,
             startdate: "",
             duedate: "",
-            status: "",
+            status: this.statusRaw[0].value,
             cstatus: "",
-            effort: "",
-            priority: "",
+            effort: 1,
+            priority: 1,
             iddivision: "",
             idtask: "",
             description: "",
@@ -254,6 +359,7 @@
             taskname: "",
             index: 0,
           };
+          console.log(dataSub);
           var length = this.dataSubTask.push(dataSub);
           var idx = length - 1;
           dataSub.index = idx;
@@ -268,8 +374,12 @@
         this.ttempSubTask[this.idsubtask] = this.ttempHistorySubTask[
           this.idsubtask
         ];
+        if (this.statusModal == "update modal") {
+          this.showModal2 = !this.showModal2;
+        } else {
+          this.showModal = !this.showModal;
+        }
         this.modalSubTask = false;
-        this.toggleModal();
         event.preventDefault();
       },
       submitData(event) {
@@ -283,7 +393,7 @@
           idstatus: this.state.status,
           effort: this.state.effort,
           priority: this.state.priority,
-          iddivision: this.state.iddivision,
+          iddivision: this.iddivision,
         };
         console.log("mempersiapkan data");
         console.log(data);
@@ -317,13 +427,13 @@
                     idstatus: idx.status,
                     effort: idx.effort,
                     priority: idx.priority,
-                    iddivision: this.state.iddivision,
+                    iddivision: this.iddivision,
                   },
                 }).then((e) => {});
-                this.reloadProject();
               });
+              this.reloadProject(this.iddivision);
             } else {
-              this.reloadProject();
+              this.reloadProject(this.iddivision);
             }
             this.toggleModal();
             // location.reload();
@@ -334,28 +444,54 @@
       updateStatus(event, idtask, idx) {
         // meta.state.iddepartment = e.value;
         //     console.log(meta.state.iddepartment);
+
+        // /api/project/status/update
+        var status = 0;
+        if (this.statusModal == "update modal") {
+          status = event.target.value;
+        } else {
+          status = event.value;
+        }
         console.log(
           "task dengan id : " +
             idtask +
             "berhasil diupdate dengan value : " +
-            event.value
+            status
         );
-        // /api/project/status/update
         api("/api/project/task/status/update", {
           data: {
             id: idtask,
-            idstatus: event.value,
+            idstatus: status,
           },
         }).then((e) => {
           console.log(e);
           if (e.status == true) {
-            this.isLoading = false;
-            this.reloadProject();
+            if (this.statusModal == "update modal") {
+              this.loadingexpandSub = false;
+              this.expandData(this.state.idtask);
+            } else {
+              this.isLoading = false;
+              this.reloadProject(e.data_act.iddivision);
+            }
+
             console.log("reload");
           }
         });
       },
+      updateDesc(idtask, description) {
+        // /api/project/status/update
+        api("/api/project/task/desc/update", {
+          data: {
+            id: idtask,
+            desc: description,
+          },
+        }).then((e) => {
+          console.log(e);
+        });
+      },
       updateTask(event) {
+        console.clear();
+
         api("/api/project/task/update", {
           data: {
             desc: this.state.description,
@@ -373,7 +509,31 @@
           console.log(e);
           if (e.status == true) {
             this.isLoading = false;
-            this.reloadProject();
+            if (this.ttempSubTask.length > 0) {
+              this.ttempSubTask.map((idx) => {
+                this.iddivision = e.data_act.iddivision;
+                api("/api/project/subtask/create", {
+                  data: {
+                    idtask: this.state.idtask,
+                    idproject: params.id,
+                    name: idx.name,
+                    startdate: idx.startdate,
+                    duedate: idx.duedate,
+                    idstatus: idx.status,
+                    effort: idx.effort,
+                    priority: idx.priority,
+                    iddivision: this.state.iddivision,
+                  },
+                }).then((e) => {
+                  console.log("sub task");
+                  console.log(e);
+                  this.ttempSubTask = [];
+                });
+              });
+              this.reloadProject(this.state.iddivision);
+            } else {
+              this.reloadProject(this.state.iddivision);
+            }
             console.log("reload");
             this.toggleModal2Close();
           }
@@ -383,7 +543,52 @@
         // this.data_task[idx].idstatus = event.value;
       },
       // Subtask expand
-      expand(id) {
+      expandSubtask: {
+        all: [],
+        progress: [],
+        submit: [],
+        complete: [],
+      },
+      expand(id, statusku) {
+        console.clear();
+        // console.log
+        console.log(statusku);
+        var vv = [];
+        if (statusku == "all") {
+          if (!this.expandSubtask.all[id]) {
+            vv[id] = true;
+          }
+          this.loading.all = false;
+          this.expandSubtask.all = vv;
+        } else if (statusku == "progress") {
+          if (!this.expandSubtask.progress[id]) {
+            vv[id] = true;
+          }
+          this.loading.progress = false;
+          this.expandSubtask.progress = vv;
+        } else if (statusku == "submit") {
+          if (!this.expandSubtask.submit[id]) {
+            vv[id] = true;
+          }
+          this.loading.submit = false;
+          this.expandSubtask.submit = vv;
+        } else if (statusku == "complete") {
+          if (!this.expandSubtask.complete[id]) {
+            vv[id] = true;
+          }
+          this.loading.complete = false;
+          this.expandSubtask.complete = vv;
+        }
+        console.log("TES");
+        this.expandData(id, statusku);
+      },
+      loading: {
+        all: [],
+        progress: [],
+        submit: [],
+        complete: [],
+      },
+      expandProgress(id) {
         var vv = [];
         if (!this.expandSubtask[id]) {
           vv[id] = true;
@@ -394,82 +599,201 @@
         this.loadingexpand = false;
       },
       loadingexpand: false,
-      dataExpand: [],
-      expandData(id) {
+      dataExpand: {
+        all: [],
+        progress: [],
+        submit: [],
+        complete: [],
+      },
+      subtaskDetail: [],
+      expandData(id, statusku) {
+        console.log(statusku);
+        console.log("EXPAND DATA");
         console.log("EXPAND ID => " + id);
+        // console.log("ID PROJECT : " + params.id);
         api("/api/project/task/subtask/show", {
           data: {
             idproject: params.id,
             idparent: id,
           },
         }).then((e) => {
+          // console.clear();
           console.log(e);
           if (e.status == true) {
             e.data_act.map((idx) => {
               idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
               idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
             });
-            this.dataExpand = e.data_act;
-            console.log(this.dataExpand.length);
+            if (statusku) {
+              if (statusku == "all") {
+                this.loading.all = true;
+                this.dataExpand.all = e.data_act;
+              } else if (statusku == "progress") {
+                this.loading.progress = true;
+                this.dataExpand.progress = e.data_act;
+              } else if (statusku == "submit") {
+                this.loading.submit = true;
+                this.dataExpand.submit = e.data_act;
+              } else if (statusku == "complete") {
+                this.loading.complete = true;
+                this.dataExpand.complete = e.data_act;
+              }
+            } else {
+              this.subtaskDetail = e.data_act;
+            }
             this.loadingexpand = true;
+            this.loadingexpandSub = true;
           }
         });
         // return printout;
       },
-
-      reloadProject() {
-        // All Project
-        api("/api/project/show/" + params.id).then((e) => {
+      reloadProject(divisiku) {
+        var iddivision = this.iddivision;
+        this.data_task = [];
+        this.dataExpand = {
+          all: [],
+          progress: [],
+          submit: [],
+          complete: [],
+        };
+        console.log("TODO dengan id divisi " + divisiku);
+        api("/api/project/show/" + params.id, {
+          data: {
+            iddivision: divisiku,
+          },
+          keyword: this.keywordSearch,
+        }).then((e) => {
           // console.log(e);
+          console.log("ID DIVISION CHECK 1 => " + iddivision);
           if (e.status == true) {
             e.data_act.project_task.map((idx) => {
+              idx.subtask = false;
+              console.log("ID DIVISION CHECK 2 => " + iddivision);
               idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
               idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+              api("/api/project/task/subtask/show", {
+                data: {
+                  idproject: params.id,
+                  idparent: idx.id,
+                },
+                keyword: this.keywordSearch,
+              }).then((e) => {
+                console.log(e);
+                console.log("ID DIVISION CHECK 3 => " + iddivision);
+                if (e.status == true) {
+                  if (e.data_act.length > 0) {
+                    idx.subtask = true;
+                  }
+                  console.log("ID DIVISION CHECK 4 => " + iddivision);
+                }
+                console.log("ID DIVISION CHECK 5 => " + iddivision);
+                this.data_task.push(idx);
+              });
             });
-            this.data_task = e.data_act.project_task;
           }
+          console.log("ID DIVISION CHECK 6 => " + iddivision);
+          this.dataSubTaskProgress = [];
           // In proggress
           api("/api/project/show/" + params.id, {
             data: {
               idstatus: 2,
+              iddivision: divisiku,
             },
+            keyword: this.keywordSearch,
           }).then((e) => {
-            console.log(e.data_act.project_task);
+            console.log("IN PROGGRES dengan id divisi " + iddivision);
+            console.log(e);
             if (e.status == true) {
               // console.log(e);
               e.data_act.project_task.map((idx) => {
+                idx.subtask = false;
                 idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
                 idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                api("/api/project/task/subtask/show", {
+                  data: {
+                    idproject: params.id,
+                    idparent: idx.id,
+                  },
+                }).then((e) => {
+                  // console.log(e);
+
+                  if (e.status == true) {
+                    if (e.data_act.length > 0) {
+                      idx.subtask = true;
+                    }
+                  }
+                  this.dataSubTaskProgress.push(idx);
+                });
               });
-              this.dataSubTaskProgress = e.data_act.project_task;
             }
             // Submitted
+            this.dataSubTaskSubmit = [];
             api("/api/project/show/" + params.id, {
               data: {
                 idstatus: 6,
+                iddivision: divisiku,
               },
+              keyword: this.keywordSearch,
             }).then((e) => {
+              console.log("SUBMIT dengan id divisi " + iddivision);
               if (e.status == true) {
                 // console.log(e);
+
                 e.data_act.project_task.map((idx) => {
+                  idx.subtask = false;
                   idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
                   idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  // console.log("ID TASK => " + idx.id);
+                  // console.log(idx);
+                  api("/api/project/task/subtask/show", {
+                    data: {
+                      idproject: params.id,
+                      idparent: idx.id,
+                    },
+                  }).then((e) => {
+                    // console.log(e);
+                    if (e.status == true) {
+                      if (e.data_act.length > 0) {
+                        idx.subtask = true;
+                      }
+                    }
+                    this.dataSubTaskSubmit.push(idx);
+                  });
                 });
-                this.dataSubTaskSubmit = e.data_act.project_task;
               }
               // Complete
+              this.dataSubTaskComplete = [];
               api("/api/project/show/" + params.id, {
                 data: {
                   idstatus: 1,
+                  iddivision: divisiku,
                 },
+                keyword: this.keywordSearch,
               }).then((e) => {
+                console.log("COMPLETE dengan id divisi " + iddivision);
                 if (e.status == true) {
-                  // console.log(e);
                   e.data_act.project_task.map((idx) => {
+                    idx.subtask = false;
                     idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
                     idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                    // console.log("ID TASK => " + idx.id);
+                    // console.log(idx);
+                    api("/api/project/task/subtask/show", {
+                      data: {
+                        idproject: params.id,
+                        idparent: idx.id,
+                      },
+                    }).then((e) => {
+                      // console.log(e);
+
+                      if (e.status == true) {
+                        if (e.data_act.length > 0) {
+                          idx.subtask = true;
+                        }
+                      }
+                      this.dataSubTaskComplete.push(idx);
+                    });
                   });
-                  this.dataSubTaskComplete = e.data_act.project_task;
                   this.isLoading = true;
                 }
               });
@@ -482,11 +806,132 @@
         arr.splice(fromIndex, 1);
         arr.splice(toIndex, 0, element);
       },
+      modalDescription: [],
+      showModalDesc(id) {
+        var vv = [];
+        if (!this.expandSubtask[id]) {
+          vv[id] = true;
+        }
+        this.modalDescription = vv;
+      },
+      keywordSearch: "",
+      iddivision: 0,
+      modalTaskEdit: {
+        all: [],
+        progress: [],
+        submit: [],
+        complete: [],
+      },
+      showEditTask(id, statusku) {
+        console.clear();
+        var vv = [];
+        console.log(id);
+        console.log(statusku);
+        if (statusku == "all") {
+          console.log(this.modalTaskEdit.all[id]);
+          !this.modalTaskEdit.all[id] ? (vv[id] = true) : "";
+          this.modalTaskEdit = {
+            all: vv,
+            progress: [],
+            submit: [],
+            complete: [],
+          };
+        } else if (statusku == "progress") {
+          !this.modalTaskEdit.progress[id] ? (vv[id] = true) : "";
+          this.modalTaskEdit = {
+            all: [],
+            progress: vv,
+            submit: [],
+            complete: [],
+          };
+        } else if (statusku == "submit") {
+          !this.modalTaskEdit.submit[id] ? (vv[id] = true) : "";
+          this.modalTaskEdit = {
+            all: [],
+            progress: [],
+            submit: vv,
+            complete: [],
+          };
+        } else if (statusku == "complete") {
+          !this.modalTaskEdit.complete[id] ? (vv[id] = true) : "";
+          this.modalTaskEdit = {
+            all: [],
+            progress: [],
+            submit: [],
+            complete: vv,
+          };
+        }
+      },
+      showEditTaskProgress(id) {
+        var vv = [];
+        this.modalTaskEdit.all = [];
+        this.modalTaskEdit.progress = [];
+        this.modalTaskEdit.submit = [];
+        this.modalTaskEdit.complete = [];
+        if (!this.modalTaskEdit.progress[id]) {
+          vv[id] = true;
+        }
+        this.modalTaskEdit.progress = vv;
+      },
+      showEditTaskSubmit(id) {
+        var vv = [];
+        this.modalTaskEdit.all = [];
+        this.modalTaskEdit.progress = [];
+        this.modalTaskEdit.submit = [];
+        this.modalTaskEdit.complete = [];
+        if (!this.modalTaskEdit.submit[id]) {
+          vv[id] = true;
+        }
+        this.modalTaskEdit.submit = vv;
+      },
+      showEditTaskComplete(id) {
+        var vv = [];
+        this.modalTaskEdit.all = [];
+        this.modalTaskEdit.progress = [];
+        this.modalTaskEdit.submit = [];
+        this.modalTaskEdit.complete = [];
+        if (!this.modalTaskEdit.complete[id]) {
+          vv[id] = true;
+        }
+        this.modalTaskEdit.complete = vv;
+      },
+      deleteTeam: {
+        name: "asdasd",
+        idteam: 0,
+      },
+      modalDelete(id, name) {
+        this.deleteTeam.idteam = id;
+        this.deleteTeam.name = name;
+        console.log("hapus tim " + name);
+        this.modalTaskEdit.all = [];
+        this.modalTaskEdit.progress = [];
+        this.modalTaskEdit.submit = [];
+        this.modalTaskEdit.complete = [];
+        this.confirmDelete = true;
+      },
+      actionDelete(id, divisi) {
+        console.clear();
+        console.log(id);
+        api("/api/project/task/remove", {
+          idtask: id,
+        }).then((e) => {
+          console.log(e);
+          this.confirmDelete = false;
+          if (e.status == true) {
+            this.isLoading = false;
+            this.reloadProject(divisi);
+          }
+        });
+      },
+      closeDelete() {
+        this.confirmDelete = false;
+      },
     }}
     run={async () => {
       // Complete
       api("/api/status").then((e) => {
-        // console.log(e);
+        console.clear();
+        console.log(e);
         if (e.status == true) {
           meta.statusRaw = e.data_act;
           var ttemp_status = [];
@@ -498,96 +943,162 @@
         }
       });
       // Mendapatkan data projek
-      // All Project
-      api("/api/project/show/" + params.id).then((e) => {
+      api("/api/session").then((e) => {
         // console.log(e);
-        if (e.status == true) {
-          meta.state.judul = e.data_act.project.name;
-          e.data_act.project_task.map((idx) => {
-            idx.subtask = false;
-
-            idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-            idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-            console.log("ID TASK => " + idx.id);
-            console.log(idx);
-            api("/api/project/task/subtask/show", {
-              data: {
-                idproject: params.id,
-                idparent: idx.id,
-              },
-            }).then((e) => {
-              console.log(e);
-              if (e.status == true) {
-                if (e.data_act.length > 0) {
-                  idx.subtask = true;
-                }
+        if (e.status == true || e.status == "true") {
+          api("/api/project/show/" + params.id).then((e0) => {
+            if (
+              e.data_act.muser_role.name.toLowerCase() == "project manager" ||
+              e.data_act.muser_role.name.toLowerCase() == "admin"
+            ) {
+              if (e0.data_act.project_division.length) {
+                meta.state.iddivision = e0.data_act.project_division[0].id;
               }
-              meta.data_task.push(idx);
-            });
-          });
-          meta.division = e.data_act.project_division;
-
-          meta.link.detail = "/pm/projects/" + params.id + "/detail";
-          meta.link.team = "/pm/projects/" + params.id + "/team";
-          meta.link.task = "/pm/projects/" + params.id + "/task";
-          meta.link.timeline = "/pm/projects/" + params.id + "/timeline";
-          meta.link.planning = "/pm/projects/" + params.id + "/planning";
-          meta.link.file = "/pm/projects/" + params.id + "/file-management";
-          meta.state.taskComplete = e.data_act.resultTask.taskComplete;
-          meta.state.proggres = e.data_act.resultTask.completed;
-          console.log(e);
-        }
-
-        // In proggress
-        api("/api/project/show/" + params.id, {
-          data: {
-            idstatus: 2,
-          },
-        }).then((e) => {
-          // console.log(e.data_act.project_task);
-          if (e.status == true) {
-            // console.log(e);
-            e.data_act.project_task.map((idx) => {
-              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-            });
-            meta.dataSubTaskProgress = e.data_act.project_task;
-          }
-          // Submitted
-          api("/api/project/show/" + params.id, {
-            data: {
-              idstatus: 6,
-            },
-          }).then((e) => {
-            if (e.status == true) {
-              // console.log(e);
-              e.data_act.project_task.map((idx) => {
-                idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-              });
-              meta.dataSubTaskSubmit = e.data_act.project_task;
+            } else {
+              meta.state.iddivision = e.data_act.muser_detail.iddivision;
             }
-            // Complete
+            console.log(meta.state.iddivision);
+            // All Project
             api("/api/project/show/" + params.id, {
               data: {
-                idstatus: 1,
+                iddivision: meta.state.iddivision,
               },
             }).then((e) => {
               if (e.status == true) {
-                // console.log(e);
+                meta.state.judul = e.data_act.project.name;
                 e.data_act.project_task.map((idx) => {
                   idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
                   idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                  // console.log("ID TASK => " + idx.id);
+                  // console.log(idx);
+                  idx.subtask = false;
+                  api("/api/project/task/subtask/show", {
+                    data: {
+                      idproject: params.id,
+                      idparent: idx.id,
+                    },
+                  }).then((e) => {
+                    // console.log(e);
+                    if (e.status == true) {
+                      if (e.data_act.length > 0) {
+                        idx.subtask = true;
+                      }
+                    }
+                    meta.data_task.push(idx);
+                  });
                 });
-                meta.dataSubTaskComplete = e.data_act.project_task;
-                meta.isLoading = true;
+                meta.division = e.data_act.project_division;
+                // console.log("ID DIVISION" + meta.state.iddivision);
+                meta.link.detail = "/pm/projects/" + params.id + "/detail";
+                meta.link.team = "/pm/projects/" + params.id + "/team";
+                meta.link.task = "/pm/projects/" + params.id + "/task";
+                meta.link.timeline = "/pm/projects/" + params.id + "/timeline";
+                meta.link.planning = "/pm/projects/" + params.id + "/planning";
+                meta.link.file =
+                  "/pm/projects/" + params.id + "/file-management";
+                meta.state.taskComplete = e.data_act.resultTask.taskComplete;
+                meta.state.proggres = e.data_act.resultTask.completed;
+                // console.log(e);
               }
+              // In proggress
+              api("/api/project/show/" + params.id, {
+                data: {
+                  idstatus: 2,
+                  iddivision: meta.state.iddivision,
+                },
+              }).then((e) => {
+                // console.log(e.data_act.project_task);
+                if (e.status == true) {
+                  // console.log(e);
+                  e.data_act.project_task.map((idx) => {
+                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                    idx.subtask = false;
+                    api("/api/project/task/subtask/show", {
+                      data: {
+                        idproject: params.id,
+                        idparent: idx.id,
+                      },
+                    }).then((e) => {
+                      // console.log(e);
+                      if (e.status == true) {
+                        if (e.data_act.length > 0) {
+                          idx.subtask = true;
+                        }
+                      }
+                      meta.dataSubTaskProgress.push(idx);
+                    });
+                  });
+                }
+                // Submitted
+                api("/api/project/show/" + params.id, {
+                  data: {
+                    idstatus: 6,
+                    iddivision: meta.state.iddivision,
+                  },
+                }).then((e) => {
+                  if (e.status == true) {
+                    // console.log(e);
+                    e.data_act.project_task.map((idx) => {
+                      idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
+                      idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                      api("/api/project/task/subtask/show", {
+                        data: {
+                          idproject: params.id,
+                          idparent: idx.id,
+                        },
+                      }).then((e) => {
+                        // console.log(e);
+                        if (e.status == true) {
+                          if (e.data_act.length > 0) {
+                            idx.subtask = true;
+                          }
+                        }
+                        meta.dataSubTaskSubmit.push(idx);
+                      });
+                    });
+                    // meta.dataSubTaskSubmit = e.data_act.project_task;
+                  }
+                  // Complete
+                  api("/api/project/show/" + params.id, {
+                    data: {
+                      idstatus: 1,
+                      iddivision: meta.state.iddivision,
+                    },
+                  }).then((e) => {
+                    if (e.status == true) {
+                      // console.log(e);
+                      e.data_act.project_task.map((idx) => {
+                        idx.startdate = dateFormat(
+                          idx.startdate,
+                          "MMM dd, YYY"
+                        );
+                        idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
+                        api("/api/project/task/subtask/show", {
+                          data: {
+                            idproject: params.id,
+                            idparent: idx.id,
+                          },
+                        }).then((e) => {
+                          // console.log(e);
+                          if (e.status == true) {
+                            if (e.data_act.length > 0) {
+                              idx.subtask = true;
+                            }
+                          }
+                          meta.dataSubTaskComplete.push(idx);
+                        });
+                      });
+                      // meta.dataSubTaskComplete = e.data_act.project_task;
+                      meta.isLoading = true;
+                    }
+                  });
+                });
+              });
             });
           });
-        });
+        }
       });
-      // meta.state.iddivision = document.getElementById("employee").value;
-      // console.log("id division" + document.getElementById("employee").value);
       meta.actionstatus = {
         onChange: (e) => {
           runInAction(() => {
@@ -644,10 +1155,29 @@
       meta.actiondivision = {
         onChange: (e) => {
           runInAction(() => {
-            // console.log("ID DIVISION " + meta.state.iddivision);
+            console.clear();
+            console.log("ID DIVISION " + e.target.value);
             meta.state.iddivision = e.target.value;
+            meta.iddivision = e.target.value;
+            console.log("ID DIVISION " + meta.state.iddivision);
+            meta.isLoading = false;
+            meta.reloadProject(e.target.value);
             // console.log();
             // console.log("VALUE : " + e.target.value);
+          });
+        },
+      };
+      meta.actionsearch = {
+        onChange: (e) => {
+          runInAction(() => {
+            console.clear();
+            console.log("DIVISI" + meta.iddivision);
+            console.log(e.target.value);
+            // meta.state.iddivision =
+            meta.keywordSearch = e.target.value;
+            meta.isLoading = false;
+            meta.reloadProject(meta.state.iddivision);
+            // meta.search(e.target.value);
           });
         },
       };
@@ -678,7 +1208,7 @@
       <div class="flex space-x-8 items-center justify-start">
         <a
           href={meta.link.detail}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Project Detail
@@ -686,7 +1216,7 @@
         </a>
         <a
           href={meta.link.task}
-          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded border  border-indigo-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
             Task
@@ -694,7 +1224,7 @@
         </a>
         <a
           href={meta.link.planning}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Planning
@@ -702,7 +1232,7 @@
         </a>
         <a
           href={meta.link.timeline}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Timeline
@@ -710,7 +1240,7 @@
         </a>
         <a
           href={meta.link.file}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             File Management
@@ -718,7 +1248,7 @@
         </a>
         <a
           href={meta.link.team}
-          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded border border-coolGray-400"
         >
           <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
             Team
@@ -742,7 +1272,7 @@
           >
             {meta.division.map((e) => {
               meta.state.iddivision = meta.division[0].id;
-              if (e.division != "project manager") {
+              if (e.division.toLowerCase() != "project manager") {
                 return <option value={e.id}>{e.division}</option>;
               }
             })}
@@ -754,6 +1284,9 @@
               <input
                 placeholder="Search Task"
                 class="text-xs tracking-wide leading-none text-start bg-coolGray-100 text-coolGray-500 focus:outline-none"
+                onChange={(e) => {
+                  meta.actionsearch.onChange(e);
+                }}
               />
             </div>
             <div class="flex items-start justify-start">
@@ -857,6 +1390,7 @@
                     {meta.data_task.map((e, idx) => {
                       var statusColor = meta.status[e.idstatus];
                       var bgcolor = "background-color: " + statusColor.color;
+                      var statusku = "all";
                       return (
                         <>
                           <tr>
@@ -867,7 +1401,7 @@
                                   class="flex items-start justify-start"
                                   style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
                                   onClick={(event) => {
-                                    meta.expand(e.id);
+                                    meta.expand(e.id, statusku);
                                   }}
                                 />
                               ) : (
@@ -880,7 +1414,6 @@
                                   meta.toggleModal2(event, e.id);
                                 }}
                               >
-                                {/*{e.subtask ? "ADA SUB" : e.name}*/}
                                 {e.name}
                               </div>
                             </td>
@@ -942,14 +1475,72 @@
                                 <img
                                   style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
                                   src="/fimgs/5_48.x3.png"
+                                  onClick={(event) => {
+                                    meta.showEditTask(e.id, statusku);
+                                  }}
                                 />
+                                {meta.modalTaskEdit.all[e.id] && (
+                                  <>
+                                    <div class="absolute">
+                                      <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none z-40">
+                                        <div class="flex flex-col items-start justify-start bg-white">
+                                          <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                            <div class="flex self-stretch flex-col items-start justify-start">
+                                              <div
+                                                class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50"
+                                                onClick={(event) => {
+                                                  meta.toggleModal2(
+                                                    event,
+                                                    e.id
+                                                  );
+                                                }}
+                                              >
+                                                <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                  <img
+                                                    src="/fimgs/545_1540.x3.png"
+                                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                  />
+                                                  <div class="flex flex-1 items-start justify-start">
+                                                    <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                      Edit Project
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="flex self-stretch flex-col space-y-2 items-start justify-start border-t"
+                                              onClick={(event) =>
+                                                meta.modalDelete(e.id, e.name)
+                                              }
+                                            >
+                                              <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
+                                                <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                  <img
+                                                    src="/fimgs/545_1557.x3.png"
+                                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                  />
+                                                  <div class="flex flex-1 items-start justify-start">
+                                                    <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                      Delete
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
                               </div>
                             </td>
                           </tr>
-                          {meta.expandSubtask[e.id] ? (
-                            meta.loadingexpand ? (
+                          {meta.expandSubtask.all[e.id] ? (
+                            meta.loading.all ? (
                               <>
-                                {meta.dataExpand.map((e, idx) => {
+                                {meta.dataExpand.all.map((e, idx) => {
                                   var statusColor = meta.status[e.idstatus];
                                   var bgcolor =
                                     "background-color: " + statusColor.color;
@@ -1030,7 +1621,68 @@
                                           <img
                                             style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
                                             src="/fimgs/5_48.x3.png"
+                                            onClick={(event) => {
+                                              meta.showEditTask(e.id, statusku);
+                                            }}
                                           />
+                                          {meta.modalTaskEdit.all[e.id] && (
+                                            <>
+                                              <div class="absolute">
+                                                <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none z-40">
+                                                  <div class="flex flex-col items-start justify-start bg-white">
+                                                    <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                                      <div class="flex self-stretch flex-col items-start justify-start">
+                                                        <div
+                                                          class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50"
+                                                          onClick={(event) => {
+                                                            meta.toggleModal2(
+                                                              event,
+                                                              e.id
+                                                            );
+                                                          }}
+                                                        >
+                                                          <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                            <img
+                                                              src="/fimgs/545_1540.x3.png"
+                                                              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                            />
+                                                            <div class="flex flex-1 items-start justify-start">
+                                                              <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                                Edit Project
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                      <div
+                                                        class="flex self-stretch flex-col space-y-2 items-start justify-start border-t"
+                                                        onClick={(event) =>
+                                                          meta.modalDelete(
+                                                            e.id,
+                                                            e.name
+                                                          )
+                                                        }
+                                                      >
+                                                        <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
+                                                          <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                            <img
+                                                              src="/fimgs/545_1557.x3.png"
+                                                              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                            />
+                                                            <div class="flex flex-1 items-start justify-start">
+                                                              <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                                Delete
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </>
+                                          )}
                                         </div>
                                       </td>
                                     </tr>
@@ -1038,8 +1690,11 @@
                                 })}
                               </>
                             ) : (
-                              <div class="flex self-stretch flex-wrap items-center justify-center">
-                                <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                              <tr class="flex self-stretch flex-wrap items-center justify-center">
+                                <td
+                                  class="py-2 px-6 rounded-lg flex items-center flex-col"
+                                  colSpan={7}
+                                >
                                   <div
                                     class="loader-dots block relative w-22 h-6 mt-2"
                                     style="width: 5rem;"
@@ -1061,8 +1716,8 @@
                                       style="top: 0; 	width: 0.75rem; height: 0.75rem;"
                                     ></div>
                                   </div>
-                                </div>
-                              </div>
+                                </td>
+                              </tr>
                             )
                           ) : null}
                         </>
@@ -1140,86 +1795,341 @@
                   </thead>
                   <tbody class="bg-white divide-y-4 divide-gray-50">
                     {meta.dataSubTaskProgress.map((e, idx) => {
+                      var statusColor = meta.status[e.idstatus];
+                      var bgcolor = "background-color: " + statusColor.color;
+                      var statusku = "progress";
                       return (
-                        <tr>
-                          <td
-                            class="px-6 py-3 whitespace-nowrap text-start cursor-pointer"
-                            onClick={meta.toggleModal2}
-                          >
-                            <div class="text-sm text-gray-900">{e.name}</div>
-                          </td>
-                          <td class="px-6 py-3 whitespace-nowrap text-start">
-                            <div class="text-xs tracking-wide leading-none text-green-500">
-                              {e.startdate}
-                            </div>
-                          </td>
-                          <td class="px-6 py-3 whitespace-nowrap text-start">
-                            <div class="text-xs tracking-wide leading-none text-red-500">
-                              {e.duedate}
-                            </div>
-                          </td>
-                          <td class="text-center py-0">
-                            <div class="flex items-center justify-center">
-                              <multipleselect
-                                onChange={(event) => {
-                                  meta.updateStatus(event, e.id, idx);
+                        <>
+                          <tr>
+                            <td class="px-6 py-3 whitespace-nowrap text-start flex flex-row cursor-pointer relative">
+                              {e.subtask ? (
+                                <img
+                                  src="/fimgs/609_824.x3.png"
+                                  class="flex items-start justify-start"
+                                  style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                  onClick={(event) => {
+                                    meta.expand(e.id, statusku);
+                                  }}
+                                />
+                              ) : (
+                                ""
+                              )}
+
+                              <div
+                                class="text-sm text-gray-900 flex-grow"
+                                onClick={(event) => {
+                                  meta.toggleModal2(event, e.id);
                                 }}
-                                options={meta.statusRaw}
-                                defaultValue={meta.status[e.idstatus]}
-                                menuPortalTarget={document.body}
-                                theme={(theme) => ({
-                                  ...theme,
-                                  borderRadius: 0,
-                                  colors: {
-                                    ...theme.colors,
-                                    primary25: "#F3F4F6",
-                                    primary: "#6366F1",
-                                  },
+                              >
+                                {e.name}
+                              </div>
+                            </td>
+                            <td class="px-6 py-3 whitespace-nowrap text-start">
+                              <div class="text-xs tracking-wide leading-none text-green-500">
+                                {e.startdate}
+                              </div>
+                            </td>
+                            <td class="px-6 py-3 whitespace-nowrap text-start">
+                              <div class="text-xs tracking-wide leading-none text-red-500">
+                                {e.duedate}
+                              </div>
+                            </td>
+                            <td class="text-center py-0">
+                              <div class="flex items-center justify-center">
+                                <multipleselect
+                                  onChange={(event) => {
+                                    meta.updateStatus(event, e.id, idx);
+                                  }}
+                                  options={meta.statusRaw}
+                                  defaultValue={meta.status[e.idstatus]}
+                                  menuPortalTarget={document.body}
+                                  theme={(theme) => ({
+                                    ...theme,
+                                    borderRadius: 0,
+                                    colors: {
+                                      ...theme.colors,
+                                      primary25: "#F3F4F6",
+                                      primary: "#6366F1",
+                                    },
+                                  })}
+                                  styles={meta.stylesx}
+                                  style={bgcolor}
+                                  className="w-40"
+                                  classNamePrefix="select"
+                                  name="status"
+                                  // onChange={(e) => {
+                                  //   meta.actionstatus.onChange(e);
+                                  // }}
+                                />
+                              </div>
+                            </td>
+                            <td class="px-6 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                                <div class="text-xs tracking-wide leading-none text-center text-white">
+                                  {e.mpriority.name}
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-7 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                                <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                  {e.effort}
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-6 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-center justify-center">
+                                <img
+                                  style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                  src="/fimgs/5_48.x3.png"
+                                  onClick={(event) => {
+                                    meta.showEditTask(e.id, statusku);
+                                  }}
+                                />
+                                {meta.modalTaskEdit.progress[e.id] && (
+                                  <>
+                                    <div class="absolute">
+                                      <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none z-40">
+                                        <div class="flex flex-col items-start justify-start bg-white">
+                                          <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                            <div class="flex self-stretch flex-col items-start justify-start">
+                                              <div
+                                                class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50"
+                                                onClick={(event) => {
+                                                  meta.toggleModal2(
+                                                    event,
+                                                    e.id
+                                                  );
+                                                }}
+                                              >
+                                                <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                  <img
+                                                    src="/fimgs/545_1540.x3.png"
+                                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                  />
+                                                  <div class="flex flex-1 items-start justify-start">
+                                                    <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                      Edit Project
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="flex self-stretch flex-col space-y-2 items-start justify-start border-t"
+                                              onClick={(event) =>
+                                                meta.modalDelete(e.id, e.name)
+                                              }
+                                            >
+                                              <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
+                                                <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                  <img
+                                                    src="/fimgs/545_1557.x3.png"
+                                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                  />
+                                                  <div class="flex flex-1 items-start justify-start">
+                                                    <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                      Delete
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                          {meta.expandSubtask.progress[e.id] ? (
+                            meta.loading.progress ? (
+                              <>
+                                {meta.dataExpand.progress.map((e, idx) => {
+                                  var statusColor = meta.status[e.idstatus];
+                                  var bgcolor =
+                                    "background-color: " + statusColor.color;
+                                  return (
+                                    <tr>
+                                      <td
+                                        class="px-6 py-3 pr-6 whitespace-nowrap text-start flex flex-row cursor-pointer relative"
+                                        onClick={(event) => {
+                                          meta.toggleModal2(event, e.id);
+                                        }}
+                                      >
+                                        <div class="text-sm text-gray-900 flex-grow">
+                                          {/*{e.subtask ? "ADA SUB" : e.name}*/}
+                                          {e.name}
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-3 whitespace-nowrap text-start">
+                                        <div class="text-xs tracking-wide leading-none text-green-500">
+                                          {e.startdate}
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-3 whitespace-nowrap text-start">
+                                        <div class="text-xs tracking-wide leading-none text-red-500">
+                                          {e.duedate}
+                                        </div>
+                                      </td>
+                                      <td class="text-center py-0">
+                                        <div class="flex items-center justify-center">
+                                          <multipleselect
+                                            onChange={(event) => {
+                                              meta.updateStatus(
+                                                event,
+                                                e.id,
+                                                idx
+                                              );
+                                            }}
+                                            options={meta.statusRaw}
+                                            defaultValue={
+                                              meta.status[e.idstatus]
+                                            }
+                                            menuPortalTarget={document.body}
+                                            theme={(theme) => ({
+                                              ...theme,
+                                              borderRadius: 0,
+                                              colors: {
+                                                ...theme.colors,
+                                                primary25: "#F3F4F6",
+                                                primary: "#6366F1",
+                                              },
+                                            })}
+                                            styles={meta.stylesx}
+                                            style={bgcolor}
+                                            className="w-40"
+                                            classNamePrefix="select"
+                                            name="status"
+                                            // onChange={(e) => {
+                                            //   meta.actionstatus.onChange(e);
+                                            // }}
+                                          />
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                                          <div class="text-xs tracking-wide leading-none text-center text-white">
+                                            {e.mpriority.name}
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td class="px-7 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                                          <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                            {e.effort}
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-center justify-center">
+                                          <img
+                                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                            src="/fimgs/5_48.x3.png"
+                                            onClick={(event) => {
+                                              meta.showEditTask(e.id, statusku);
+                                            }}
+                                          />
+                                          {meta.modalTaskEdit.progress[
+                                            e.id
+                                          ] && (
+                                            <>
+                                              <div class="absolute">
+                                                <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none z-40">
+                                                  <div class="flex flex-col items-start justify-start bg-white">
+                                                    <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                                      <div class="flex self-stretch flex-col items-start justify-start">
+                                                        <div
+                                                          class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50"
+                                                          onClick={(event) => {
+                                                            meta.toggleModal2(
+                                                              event,
+                                                              e.id
+                                                            );
+                                                          }}
+                                                        >
+                                                          <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                            <img
+                                                              src="/fimgs/545_1540.x3.png"
+                                                              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                            />
+                                                            <div class="flex flex-1 items-start justify-start">
+                                                              <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                                Edit Project
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                      <div
+                                                        class="flex self-stretch flex-col space-y-2 items-start justify-start border-t"
+                                                        onClick={(event) =>
+                                                          meta.modalDelete(
+                                                            e.id,
+                                                            e.name
+                                                          )
+                                                        }
+                                                      >
+                                                        <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
+                                                          <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                            <img
+                                                              src="/fimgs/545_1557.x3.png"
+                                                              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                            />
+                                                            <div class="flex flex-1 items-start justify-start">
+                                                              <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                                Delete
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </>
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
                                 })}
-                                styles={meta.stylesx}
-                                style={
-                                  e.idstatus == 1
-                                    ? "background-color: #4ADE80;"
-                                    : e.idstatus == 2
-                                    ? "background-color: #888DF1;"
-                                    : e.idstatus == 3
-                                    ? "background-color: #2D34E6;"
-                                    : e.idstatus == 4
-                                    ? "background-color: #F1B459;"
-                                    : "background-color: #4ADE80;"
-                                }
-                                className="w-40"
-                                classNamePrefix="select"
-                                name="status"
-                                // onChange={(e) => {
-                                //   meta.actionstatus.onChange(e);
-                                // }}
-                              />
-                            </div>
-                          </td>
-                          <td class="px-6 py-2 whitespace-nowrap text-center">
-                            <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
-                              <div class="text-xs tracking-wide leading-none text-center text-white">
-                                {e.mpriority.name}
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-7 py-2 whitespace-nowrap text-center">
-                            <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
-                              <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
-                                {e.effort}
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-2 whitespace-nowrap text-center">
-                            <div class="flex items-center justify-center">
-                              <img
-                                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                                src="/fimgs/5_48.x3.png"
-                              />
-                            </div>
-                          </td>
-                        </tr>
+                              </>
+                            ) : (
+                              <tr class="flex self-stretch flex-wrap items-center justify-center">
+                                <td
+                                  class="py-2 px-6 rounded-lg flex items-center flex-col"
+                                  colSpan={7}
+                                >
+                                  <div
+                                    class="loader-dots block relative w-22 h-6 mt-2"
+                                    style="width: 5rem;"
+                                  >
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                  </div>
+                                </td>
+                              </tr>
+                            )
+                          ) : null}
+                        </>
                       );
                     })}
                   </tbody>
@@ -1296,77 +2206,337 @@
                     {meta.dataSubTaskSubmit.map((e, idx) => {
                       var statusColor = meta.status[e.idstatus];
                       var bgcolor = "background-color: " + statusColor.color;
+                      var statusku = "submit";
                       return (
-                        <tr>
-                          <td
-                            class="px-6 py-3 whitespace-nowrap text-start cursor-pointer"
-                            onClick={meta.toggleModal2}
-                          >
-                            <div class="text-sm text-gray-900">{e.name}</div>
-                          </td>
-                          <td class="px-6 py-3 whitespace-nowrap text-start">
-                            <div class="text-xs tracking-wide leading-none text-green-500">
-                              {e.startdate}
-                            </div>
-                          </td>
-                          <td class="px-6 py-3 whitespace-nowrap text-start">
-                            <div class="text-xs tracking-wide leading-none text-red-500">
-                              {e.duedate}
-                            </div>
-                          </td>
-                          <td class="text-center py-0">
-                            <div class="flex items-center justify-center">
-                              <multipleselect
-                                onChange={(event) => {
-                                  meta.updateStatus(event, e.id, idx);
+                        <>
+                          <tr>
+                            <td class="px-6 py-3 whitespace-nowrap text-start flex flex-row cursor-pointer relative">
+                              {e.subtask ? (
+                                <img
+                                  src="/fimgs/609_824.x3.png"
+                                  class="flex items-start justify-start"
+                                  style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                  onClick={(event) => {
+                                    meta.expand(e.id, statusku);
+                                  }}
+                                />
+                              ) : (
+                                ""
+                              )}
+
+                              <div
+                                class="text-sm text-gray-900 flex-grow"
+                                onClick={(event) => {
+                                  meta.toggleModal2(event, e.id);
                                 }}
-                                options={meta.statusRaw}
-                                defaultValue={meta.status[e.idstatus]}
-                                menuPortalTarget={document.body}
-                                theme={(theme) => ({
-                                  ...theme,
-                                  borderRadius: 0,
-                                  colors: {
-                                    ...theme.colors,
-                                    primary25: "#F3F4F6",
-                                    primary: "#6366F1",
-                                  },
+                              >
+                                {e.name}
+                              </div>
+                            </td>
+                            <td class="px-6 py-3 whitespace-nowrap text-start">
+                              <div class="text-xs tracking-wide leading-none text-green-500">
+                                {e.startdate}
+                              </div>
+                            </td>
+                            <td class="px-6 py-3 whitespace-nowrap text-start">
+                              <div class="text-xs tracking-wide leading-none text-red-500">
+                                {e.duedate}
+                              </div>
+                            </td>
+                            <td class="text-center py-0">
+                              <div class="flex items-center justify-center">
+                                <multipleselect
+                                  onChange={(event) => {
+                                    meta.updateStatus(event, e.id, idx);
+                                  }}
+                                  options={meta.statusRaw}
+                                  defaultValue={meta.status[e.idstatus]}
+                                  menuPortalTarget={document.body}
+                                  theme={(theme) => ({
+                                    ...theme,
+                                    borderRadius: 0,
+                                    colors: {
+                                      ...theme.colors,
+                                      primary25: "#F3F4F6",
+                                      primary: "#6366F1",
+                                    },
+                                  })}
+                                  styles={meta.stylesx}
+                                  style={bgcolor}
+                                  className="w-40"
+                                  classNamePrefix="select"
+                                  name="status"
+                                  // onChange={(e) => {
+                                  //   meta.actionstatus.onChange(e);
+                                  // }}
+                                />
+                              </div>
+                            </td>
+                            <td class="px-6 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                                <div class="text-xs tracking-wide leading-none text-center text-white">
+                                  {e.mpriority.name}
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-7 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                                <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                  {e.effort}
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-6 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-center justify-center">
+                                <img
+                                  style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                  src="/fimgs/5_48.x3.png"
+                                  onClick={(event) => {
+                                    meta.showEditTask(e.id, statusku);
+                                  }}
+                                />
+                                {meta.modalTaskEdit.submit[e.id] && (
+                                  <>
+                                    <div class="absolute">
+                                      <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none z-40">
+                                        <div class="flex flex-col items-start justify-start bg-white">
+                                          <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                            <div class="flex self-stretch flex-col items-start justify-start">
+                                              <div
+                                                class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50"
+                                                onClick={(event) => {
+                                                  meta.toggleModal2(
+                                                    event,
+                                                    e.id
+                                                  );
+                                                }}
+                                              >
+                                                <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                  <img
+                                                    src="/fimgs/545_1540.x3.png"
+                                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                  />
+                                                  <div class="flex flex-1 items-start justify-start">
+                                                    <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                      Edit Project
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="flex self-stretch flex-col space-y-2 items-start justify-start border-t"
+                                              onClick={(event) =>
+                                                meta.modalDelete(e.id, e.name)
+                                              }
+                                            >
+                                              <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
+                                                <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                  <img
+                                                    src="/fimgs/545_1557.x3.png"
+                                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                  />
+                                                  <div class="flex flex-1 items-start justify-start">
+                                                    <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                      Delete
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                          {meta.expandSubtask.submit[e.id] ? (
+                            meta.loading.submit ? (
+                              <>
+                                {meta.dataExpand.submit.map((e, idx) => {
+                                  var statusColor = meta.status[e.idstatus];
+                                  var bgcolor =
+                                    "background-color: " + statusColor.color;
+                                  return (
+                                    <tr>
+                                      <td
+                                        class="px-6 py-3 pr-6 whitespace-nowrap text-start flex flex-row cursor-pointer relative"
+                                        onClick={(event) => {
+                                          meta.toggleModal2(event, e.id);
+                                        }}
+                                      >
+                                        <div class="text-sm text-gray-900 flex-grow">
+                                          {/*{e.subtask ? "ADA SUB" : e.name}*/}
+                                          {e.name}
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-3 whitespace-nowrap text-start">
+                                        <div class="text-xs tracking-wide leading-none text-green-500">
+                                          {e.startdate}
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-3 whitespace-nowrap text-start">
+                                        <div class="text-xs tracking-wide leading-none text-red-500">
+                                          {e.duedate}
+                                        </div>
+                                      </td>
+                                      <td class="text-center py-0">
+                                        <div class="flex items-center justify-center">
+                                          <multipleselect
+                                            onChange={(event) => {
+                                              meta.updateStatus(
+                                                event,
+                                                e.id,
+                                                idx
+                                              );
+                                            }}
+                                            options={meta.statusRaw}
+                                            defaultValue={
+                                              meta.status[e.idstatus]
+                                            }
+                                            menuPortalTarget={document.body}
+                                            theme={(theme) => ({
+                                              ...theme,
+                                              borderRadius: 0,
+                                              colors: {
+                                                ...theme.colors,
+                                                primary25: "#F3F4F6",
+                                                primary: "#6366F1",
+                                              },
+                                            })}
+                                            styles={meta.stylesx}
+                                            style={bgcolor}
+                                            className="w-40"
+                                            classNamePrefix="select"
+                                            name="status"
+                                            // onChange={(e) => {
+                                            //   meta.actionstatus.onChange(e);
+                                            // }}
+                                          />
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                                          <div class="text-xs tracking-wide leading-none text-center text-white">
+                                            {e.mpriority.name}
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td class="px-7 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                                          <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                            {e.effort}
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-center justify-center">
+                                          <img
+                                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                            src="/fimgs/5_48.x3.png"
+                                            onClick={(event) => {
+                                              meta.showEditTask(e.id, statusku);
+                                            }}
+                                          />
+                                          {meta.modalTaskEdit.submit[e.id] && (
+                                            <>
+                                              <div class="absolute">
+                                                <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none z-40">
+                                                  <div class="flex flex-col items-start justify-start bg-white">
+                                                    <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                                      <div class="flex self-stretch flex-col items-start justify-start">
+                                                        <div
+                                                          class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50"
+                                                          onClick={(event) => {
+                                                            meta.toggleModal2(
+                                                              event,
+                                                              e.id
+                                                            );
+                                                          }}
+                                                        >
+                                                          <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                            <img
+                                                              src="/fimgs/545_1540.x3.png"
+                                                              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                            />
+                                                            <div class="flex flex-1 items-start justify-start">
+                                                              <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                                Edit Project
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                      <div
+                                                        class="flex self-stretch flex-col space-y-2 items-start justify-start border-t"
+                                                        onClick={(event) =>
+                                                          meta.modalDelete(
+                                                            e.id,
+                                                            e.name
+                                                          )
+                                                        }
+                                                      >
+                                                        <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
+                                                          <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                            <img
+                                                              src="/fimgs/545_1557.x3.png"
+                                                              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                            />
+                                                            <div class="flex flex-1 items-start justify-start">
+                                                              <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                                Delete
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </>
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
                                 })}
-                                styles={meta.stylesx}
-                                style={bgcolor}
-                                className="w-40"
-                                classNamePrefix="select"
-                                name="status"
-                                // onChange={(e) => {
-                                //   meta.actionstatus.onChange(e);
-                                // }}
-                              />
-                            </div>
-                          </td>
-                          <td class="px-6 py-2 whitespace-nowrap text-center">
-                            <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
-                              <div class="text-xs tracking-wide leading-none text-center text-white">
-                                {e.mpriority.name}
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-7 py-2 whitespace-nowrap text-center">
-                            <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
-                              <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
-                                {e.effort}
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-2 whitespace-nowrap text-center">
-                            <div class="flex items-center justify-center">
-                              <img
-                                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                                src="/fimgs/5_48.x3.png"
-                              />
-                            </div>
-                          </td>
-                          <td>lah kok</td>
-                        </tr>
+                              </>
+                            ) : (
+                              <tr class="flex self-stretch flex-wrap items-center justify-center">
+                                <td
+                                  class="py-2 px-6 rounded-lg flex items-center flex-col"
+                                  colSpan={7}
+                                >
+                                  <div
+                                    class="loader-dots block relative w-22 h-6 mt-2"
+                                    style="width: 5rem;"
+                                  >
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                  </div>
+                                </td>
+                              </tr>
+                            )
+                          ) : null}
+                        </>
                       );
                     })}
                   </tbody>
@@ -1443,76 +2613,339 @@
                     {meta.dataSubTaskComplete.map((e, idx) => {
                       var statusColor = meta.status[e.idstatus];
                       var bgcolor = "background-color: " + statusColor.color;
+                      var statusku = "complete";
                       return (
-                        <tr>
-                          <td
-                            class="px-6 py-3 whitespace-nowrap text-start cursor-pointer"
-                            onClick={meta.toggleModal2}
-                          >
-                            <div class="text-sm text-gray-900">{e.name}</div>
-                          </td>
-                          <td class="px-6 py-3 whitespace-nowrap text-start">
-                            <div class="text-xs tracking-wide leading-none text-green-500">
-                              {e.startdate}
-                            </div>
-                          </td>
-                          <td class="px-6 py-3 whitespace-nowrap text-start">
-                            <div class="text-xs tracking-wide leading-none text-red-500">
-                              {e.duedate}
-                            </div>
-                          </td>
-                          <td class="text-center py-0">
-                            <div class="flex items-center justify-center">
-                              <multipleselect
-                                onChange={(event) => {
-                                  meta.updateStatus(event, e.id, idx);
+                        <>
+                          <tr>
+                            <td class="px-6 py-3 whitespace-nowrap text-start flex flex-row cursor-pointer relative">
+                              {e.subtask ? (
+                                <img
+                                  src="/fimgs/609_824.x3.png"
+                                  class="flex items-start justify-start"
+                                  style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                  onClick={(event) => {
+                                    meta.expand(e.id, statusku);
+                                  }}
+                                />
+                              ) : (
+                                ""
+                              )}
+
+                              <div
+                                class="text-sm text-gray-900 flex-grow"
+                                onClick={(event) => {
+                                  meta.toggleModal2(event, e.id);
                                 }}
-                                options={meta.statusRaw}
-                                defaultValue={meta.status[e.idstatus]}
-                                menuPortalTarget={document.body}
-                                theme={(theme) => ({
-                                  ...theme,
-                                  borderRadius: 0,
-                                  colors: {
-                                    ...theme.colors,
-                                    primary25: "#F3F4F6",
-                                    primary: "#6366F1",
-                                  },
+                              >
+                                {e.name}
+                              </div>
+                            </td>
+                            <td class="px-6 py-3 whitespace-nowrap text-start">
+                              <div class="text-xs tracking-wide leading-none text-green-500">
+                                {e.startdate}
+                              </div>
+                            </td>
+                            <td class="px-6 py-3 whitespace-nowrap text-start">
+                              <div class="text-xs tracking-wide leading-none text-red-500">
+                                {e.duedate}
+                              </div>
+                            </td>
+                            <td class="text-center py-0">
+                              <div class="flex items-center justify-center">
+                                <multipleselect
+                                  onChange={(event) => {
+                                    meta.updateStatus(event, e.id, idx);
+                                  }}
+                                  options={meta.statusRaw}
+                                  defaultValue={meta.status[e.idstatus]}
+                                  menuPortalTarget={document.body}
+                                  theme={(theme) => ({
+                                    ...theme,
+                                    borderRadius: 0,
+                                    colors: {
+                                      ...theme.colors,
+                                      primary25: "#F3F4F6",
+                                      primary: "#6366F1",
+                                    },
+                                  })}
+                                  styles={meta.stylesx}
+                                  style={bgcolor}
+                                  className="w-40"
+                                  classNamePrefix="select"
+                                  name="status"
+                                  // onChange={(e) => {
+                                  //   meta.actionstatus.onChange(e);
+                                  // }}
+                                />
+                              </div>
+                            </td>
+                            <td class="px-6 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                                <div class="text-xs tracking-wide leading-none text-center text-white">
+                                  {e.mpriority.name}
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-7 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                                <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                  {e.effort}
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-6 py-2 whitespace-nowrap text-center">
+                              <div class="flex items-center justify-center">
+                                <img
+                                  style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                  src="/fimgs/5_48.x3.png"
+                                  onClick={(event) => {
+                                    meta.showEditTask(e.id, statusku);
+                                  }}
+                                />
+                                {meta.modalTaskEdit.complete[e.id] && (
+                                  <>
+                                    <div class="absolute">
+                                      <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none z-40">
+                                        <div class="flex flex-col items-start justify-start bg-white">
+                                          <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                            <div class="flex self-stretch flex-col items-start justify-start">
+                                              <div
+                                                class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50"
+                                                onClick={(event) => {
+                                                  meta.toggleModal2(
+                                                    event,
+                                                    e.id
+                                                  );
+                                                }}
+                                              >
+                                                <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                  <img
+                                                    src="/fimgs/545_1540.x3.png"
+                                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                  />
+                                                  <div class="flex flex-1 items-start justify-start">
+                                                    <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                      Edit Project
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="flex self-stretch flex-col space-y-2 items-start justify-start border-t"
+                                              onClick={(event) =>
+                                                meta.modalDelete(e.id, e.name)
+                                              }
+                                            >
+                                              <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
+                                                <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                  <img
+                                                    src="/fimgs/545_1557.x3.png"
+                                                    style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                  />
+                                                  <div class="flex flex-1 items-start justify-start">
+                                                    <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                      Delete
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                          {meta.expandSubtask.complete[e.id] ? (
+                            meta.loading.complete ? (
+                              <>
+                                {meta.dataExpand.complete.map((e, idx) => {
+                                  var statusColor = meta.status[e.idstatus];
+                                  var bgcolor =
+                                    "background-color: " + statusColor.color;
+                                  return (
+                                    <tr>
+                                      <td
+                                        class="px-6 py-3 pr-6 whitespace-nowrap text-start flex flex-row cursor-pointer relative"
+                                        onClick={(event) => {
+                                          meta.toggleModal2(event, e.id);
+                                        }}
+                                      >
+                                        <div class="text-sm text-gray-900 flex-grow">
+                                          {/*{e.subtask ? "ADA SUB" : e.name}*/}
+                                          {e.name}
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-3 whitespace-nowrap text-start">
+                                        <div class="text-xs tracking-wide leading-none text-green-500">
+                                          {e.startdate}
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-3 whitespace-nowrap text-start">
+                                        <div class="text-xs tracking-wide leading-none text-red-500">
+                                          {e.duedate}
+                                        </div>
+                                      </td>
+                                      <td class="text-center py-0">
+                                        <div class="flex items-center justify-center">
+                                          <multipleselect
+                                            onChange={(event) => {
+                                              meta.updateStatus(
+                                                event,
+                                                e.id,
+                                                idx
+                                              );
+                                            }}
+                                            options={meta.statusRaw}
+                                            defaultValue={
+                                              meta.status[e.idstatus]
+                                            }
+                                            menuPortalTarget={document.body}
+                                            theme={(theme) => ({
+                                              ...theme,
+                                              borderRadius: 0,
+                                              colors: {
+                                                ...theme.colors,
+                                                primary25: "#F3F4F6",
+                                                primary: "#6366F1",
+                                              },
+                                            })}
+                                            styles={meta.stylesx}
+                                            style={bgcolor}
+                                            className="w-40"
+                                            classNamePrefix="select"
+                                            name="status"
+                                            // onChange={(e) => {
+                                            //   meta.actionstatus.onChange(e);
+                                            // }}
+                                          />
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
+                                          <div class="text-xs tracking-wide leading-none text-center text-white">
+                                            {e.mpriority.name}
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td class="px-7 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
+                                          <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
+                                            {e.effort}
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                                        <div class="flex items-center justify-center">
+                                          <img
+                                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+                                            src="/fimgs/5_48.x3.png"
+                                            onClick={(event) => {
+                                              meta.showEditTask(e.id, statusku);
+                                            }}
+                                          />
+                                          {meta.modalTaskEdit.complete[
+                                            e.id
+                                          ] && (
+                                            <>
+                                              <div class="absolute">
+                                                <div class="origin-top-right absolute w-48 right-0 rounded-md shadow-lg py-1 bg-white focus:outline-none z-40">
+                                                  <div class="flex flex-col items-start justify-start bg-white">
+                                                    <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                                                      <div class="flex self-stretch flex-col items-start justify-start">
+                                                        <div
+                                                          class="flex self-stretch items-center justify-start py-2 pl-4 rounded-tl rounded-tr cursor-pointer hover:bg-violet-50"
+                                                          onClick={(event) => {
+                                                            meta.toggleModal2(
+                                                              event,
+                                                              e.id
+                                                            );
+                                                          }}
+                                                        >
+                                                          <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                            <img
+                                                              src="/fimgs/545_1540.x3.png"
+                                                              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                            />
+                                                            <div class="flex flex-1 items-start justify-start">
+                                                              <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                                Edit Project
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                      <div
+                                                        class="flex self-stretch flex-col space-y-2 items-start justify-start border-t"
+                                                        onClick={(event) =>
+                                                          meta.modalDelete(
+                                                            e.id,
+                                                            e.name
+                                                          )
+                                                        }
+                                                      >
+                                                        <div class="flex self-stretch flex-col items-start justify-start py-2 pl-4 rounded-bl rounded-br cursor-pointer hover:bg-violet-50">
+                                                          <div class="flex flex-1 space-x-2 items-center justify-start">
+                                                            <img
+                                                              src="/fimgs/545_1557.x3.png"
+                                                              style="width: 16px; min-width: 16px; max-width: 16px; height: 16px; min-height: 16px; max-height: 16px;"
+                                                            />
+                                                            <div class="flex flex-1 items-start justify-start">
+                                                              <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                                                                Delete
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </>
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
                                 })}
-                                styles={meta.stylesx}
-                                style={bgcolor}
-                                className="w-40"
-                                classNamePrefix="select"
-                                name="status"
-                                // onChange={(e) => {
-                                //   meta.actionstatus.onChange(e);
-                                // }}
-                              />
-                            </div>
-                          </td>
-                          <td class="px-6 py-2 whitespace-nowrap text-center">
-                            <div class="flex items-center justify-center px-2 py-1 bg-indigo-500 rounded-full">
-                              <div class="text-xs tracking-wide leading-none text-center text-white">
-                                {e.mpriority.name}
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-7 py-2 whitespace-nowrap text-center">
-                            <div class="flex items-start justify-center px-1 py-1 border rounded border-indigo-500">
-                              <div class="text-xs tracking-wide leading-none text-center text-coolGray-500">
-                                {e.effort}
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-2 whitespace-nowrap text-center">
-                            <div class="flex items-center justify-center">
-                              <img
-                                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                                src="/fimgs/5_48.x3.png"
-                              />
-                            </div>
-                          </td>
-                        </tr>
+                              </>
+                            ) : (
+                              <tr class="flex self-stretch flex-wrap items-center justify-center">
+                                <td
+                                  class="py-2 px-6 rounded-lg flex items-center flex-col"
+                                  colSpan={7}
+                                >
+                                  <div
+                                    class="loader-dots block relative w-22 h-6 mt-2"
+                                    style="width: 5rem;"
+                                  >
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                    <div
+                                      class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                      style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                    ></div>
+                                  </div>
+                                </td>
+                              </tr>
+                            )
+                          ) : null}
+                        </>
                       );
                     })}
                   </tbody>
@@ -1570,7 +3003,7 @@
                           Create Task
                         </div>
                       </div>
-                      <form onSubmit={meta.toggleModal}>
+                      <form onSubmit={meta.closeToggleModal}>
                         <button class="flex flex-col items-start justify-start">
                           <img
                             src="/fimgs/517_574.x1.svg"
@@ -1942,6 +3375,7 @@
                           name="name"
                           onChange={meta.ubahNilai}
                           type="text"
+                          value={meta.state.name}
                           placeholder={meta.state.name}
                           class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
                         />
@@ -1955,7 +3389,16 @@
                       <div class="relative flex flex-1 items-center justify-start">
                         <multipleselect
                           options={meta.statusx}
-                          defaultValue={meta.statusx[0]}
+                          defaultValue={
+                            meta.state.status
+                              ? meta.statusx[
+                                  meta.searchIdx(
+                                    meta.state.status,
+                                    meta.statusx
+                                  )
+                                ]
+                              : meta.statusx[-1]
+                          }
                           theme={(theme) => ({
                             ...theme,
                             colors: {
@@ -2021,7 +3464,17 @@
                           <div class="relative flex flex-1 items-center justify-start">
                             <multipleselect
                               options={meta.priority}
-                              defaultValue={meta.priority[0]}
+                              defaultValue={
+                                meta.state.priority == 0 ||
+                                meta.state.priority == ""
+                                  ? meta.priority[-1]
+                                  : meta.priority[
+                                      meta.searchIdx(
+                                        meta.state.priority,
+                                        meta.priority
+                                      )
+                                    ]
+                              }
                               theme={(theme) => ({
                                 ...theme,
                                 colors: {
@@ -2049,7 +3502,17 @@
                           <div class="relative flex flex-1 items-center justify-start">
                             <multipleselect
                               options={meta.taskv}
-                              defaultValue={meta.taskv[0]}
+                              defaultValue={
+                                meta.state.effort == 0 ||
+                                meta.state.effort == ""
+                                  ? meta.taskv[-1]
+                                  : meta.taskv[
+                                      meta.searchIdx(
+                                        meta.state.effort,
+                                        meta.taskv
+                                      )
+                                    ]
+                              }
                               theme={(theme) => ({
                                 ...theme,
                                 colors: {
@@ -2070,217 +3533,272 @@
                         </div>
                       </div>
                     </div>
+                    {/*meta.state.isSubtask*/}
                     {/*start comment*/}
-                    <div class="flex flex-1 w-full items-center justify-between">
-                      <div class="flex flex-col items-center">
-                        <div class="text-sm tracking-wide leading-none text-coolGray-500">
-                          Subtask
-                        </div>
-                      </div>
-                      <div
-                        class="cursor-pointer flex flex-col items-center"
-                        onClick={meta.toggleAdd}
-                      >
-                        {meta.showAdd ? (
-                          <img
-                            src="/fimgs/649_493.x3.png"
-                            class="flex flex-col items-start"
-                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                          />
-                        ) : (
-                          <img
-                            src="/fimgs/645_539.x3.png"
-                            class="flex flex-col items-start justify-start"
-                            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
-                      <div
-                        id="listSubtask"
-                        class="flex self-stretch flex-col space-y-3 items-start justify-start"
-                      >
-                        <div class="flex self-stretch flex-col items-center justify-start py-3.5 px-3.5 rounded">
-                          <div class="flex w-full space-x-6 items-center justify-between">
-                            <div class="flex flex-1 items-start justify-start">
-                              <div class="text-sm tracking-wide leading-tight">
-                                Landing Page
-                              </div>
-                            </div>
-                            <div class="flex space-x-5 items-start justify-start">
-                              <div class="flex items-start justify-start">
-                                <div class="text-xs tracking-wide leading-none text-green-400">
-                                  14/09/2021
-                                </div>
-                              </div>
-                              <div class="flex items-start justify-start">
-                                <div class="text-xs tracking-wide leading-none text-red-400">
-                                  15/09/2021
-                                </div>
-                              </div>
-                              <div class="flex items-start justify-start">
-                                <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                  IN PROGRESS
-                                </div>
-                              </div>
-                              <div class="flex items-start justify-start">
-                                <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                  Medium
-                                </div>
-                              </div>
-                              <div class="flex items-start justify-start">
-                                <div class="text-xs tracking-wide leading-none text-indigo-500">
-                                  5
-                                </div>
-                              </div>
+                    {meta.state.isSubtask ? (
+                      <>
+                        <div class="flex flex-1 w-full items-center justify-between">
+                          <div class="flex flex-col items-center">
+                            <div class="text-sm tracking-wide leading-none text-coolGray-500">
+                              Subtask
                             </div>
                           </div>
                         </div>
-                        <div class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded">
-                          <div class="flex w-full space-x-6 items-center justify-start">
-                            <div class="flex flex-1 items-start justify-start">
-                              <div class="text-sm tracking-wide leading-tight">
-                                Landing Page
-                              </div>
-                            </div>
-                            <div class="flex space-x-5 items-start justify-start">
-                              <img
-                                src="/fimgs/656_779.x3.png"
-                                class="flex items-start justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
+                          <div
+                            id="listSubTask"
+                            class="flex self-stretch flex-col space-y-3 items-start justify-start"
+                          >
+                            {meta.ttempSubTask.map((e) => {
+                              var idsubtask = "subtask-" + e.index;
+                              return (
+                                <div
+                                  id={idsubtask}
+                                  class="flex self-stretch flex-col items-center justify-start px-3.5 py-3.5 bg-white rounded"
+                                >
+                                  <div class="flex w-full space-x-6 items-center justify-start">
+                                    <div class="flex flex-1 items-start justify-start">
+                                      <div class="text-sm tracking-wide leading-tight">
+                                        {e.name}
+                                      </div>
+                                    </div>
+                                    <div class="flex space-x-5 items-start justify-start">
+                                      <div
+                                        class="cursor-pointer"
+                                        onClick={(event) => {
+                                          meta.showModalSubTask(event, e.index);
+                                        }}
+                                      >
+                                        <img
+                                          src="/fimgs/295_279.x3.png"
+                                          class="flex items-start justify-start"
+                                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                                        />
+                                      </div>
+                                      <div
+                                        class="cursor-pointer"
+                                        onClick={(event) => {
+                                          meta.removeSubtask(event, e.index);
+                                        }}
+                                      >
+                                        <img
+                                          src="/fimgs/656_794.x3.png"
+                                          class="flex items-center justify-start"
+                                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          <div class="flex self-stretch items-center justify-start">
+                            <form
+                              onSubmit={meta.subtask}
+                              class="relative flex flex-1 items-center justify-start"
+                            >
+                              <input
+                                id="name"
+                                name="taskname"
+                                type="text"
+                                onSubmit={meta.subtask}
+                                placeholder="Create Subtask"
+                                onChange={meta.ubahNilai}
+                                class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
                               />
-                              <img
-                                src="/fimgs/656_782.x3.png"
-                                class="flex items-start justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                              />
-                              <img
-                                src="/fimgs/656_785.x3.png"
-                                class="flex items-start justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                              />
-                              <img
-                                src="/fimgs/656_788.x3.png"
-                                class="flex items-start justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                              />
-                              <img
-                                src="/fimgs/656_791.x3.png"
-                                class="flex items-start justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                              />
-                              <img
-                                src="/fimgs/656_794.x3.png"
-                                class="flex items-center justify-start"
-                                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                              />
-                            </div>
+                            </form>
                           </div>
                         </div>
-                      </div>
-                      <div class="flex self-stretch items-center justify-start pb-6">
-                        <form
-                          onSubmit={meta.subtask}
-                          class="relative flex flex-1 items-center justify-start"
-                        >
-                          <input
-                            id="subtask"
-                            name="taskname"
-                            type="text"
-                            placeholder="Create Subtask"
-                            onChange={meta.ubahNilai}
-                            class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
-                          />
-                        </form>
-                      </div>
-                    </div>
-                    <div class="w-full flex flex-col space-y-6 items-start justify-start">
-                      <div class="flex items-start justify-start">
-                        <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
-                          Progress Task
-                        </div>
-                      </div>
-                      <div class="align-middle inline-block w-full truncate">
-                        <table class="w-full divide-y-4 divide-gray-50">
-                          <thead class="bg-white">
-                            <tr>
-                              <th
-                                scope="col"
-                                class="pr-6 tracking-wider text-center justify-center mr-auto"
-                              >
-                                <div class="flex items-center justify-start ">
-                                  <div class="text-sm tracking-wide px-6 py-3 bg-green-400 leading-tight text-center text-white">
-                                    TODO
-                                  </div>
-                                  <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
-                                    2 Task
-                                  </div>
-                                </div>
-                              </th>
-                              <th
-                                scope="col"
-                                class="relative px-6 py-3 text-sm text-left justify-start"
-                              >
-                                <div class="text-sm font-medium text-coolGray-500 text-center">
-                                  Status
-                                </div>
-                              </th>
-                              <th
-                                scope="col"
-                                class="relative px-6 py-3 text-sm text-left justify-start"
-                              >
-                                <div class="text-sm font-medium text-coolGray-500 text-start">
-                                  Information
-                                </div>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody class="w-full bg-white divide-y-4 divide-gray-50">
-                            <tr>
-                              <td class="px-6 py-3 text-start cursor-pointer">
-                                <div class="text-sm text-gray-900">
-                                  Register Page
-                                </div>
-                              </td>
-                              <td class="text-start py-0">
-                                <div class="flex items-center justify-center px-2 py-3 bg-orange-300">
-                                  <select
-                                    id="employee"
-                                    name="employee"
-                                    class="bg-orange-300 text-white rounded-l outline-none"
+                        <div class="w-full flex flex-col space-y-6 items-start justify-start">
+                          <div class="flex items-start justify-start">
+                            <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
+                              Progress Task
+                            </div>
+                          </div>
+                          <div class="align-middle inline-block w-full truncate">
+                            <table class="w-full divide-y-4 divide-gray-50">
+                              <thead class="bg-white">
+                                <tr>
+                                  <th
+                                    scope="col"
+                                    class="pr-6 tracking-wider text-center justify-center mr-auto"
                                   >
-                                    <option
-                                      class="bg-white text-coolGray-500"
-                                      value="saab"
+                                    <div class="flex items-center justify-start ">
+                                      <div class="text-sm tracking-wide px-6 py-3 bg-green-400 leading-tight text-center text-white">
+                                        TODO
+                                      </div>
+                                      <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
+                                        {meta.subtaskDetail.length} Task
+                                      </div>
+                                    </div>
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    class="relative px-6 py-3 text-sm text-left justify-start"
+                                  >
+                                    <div class="text-sm font-medium text-coolGray-500 text-center">
+                                      Status
+                                    </div>
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    class="relative px-6 py-3 text-sm text-left justify-start"
+                                  >
+                                    <div class="text-sm font-medium text-coolGray-500 text-start">
+                                      Information
+                                    </div>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody class="w-full bg-white divide-y-4 divide-gray-50">
+                                {/*Content sub task*/}
+                                {meta.loadingexpandSub ? (
+                                  <>
+                                    {meta.subtaskDetail.map((e, idx) => {
+                                      var statusColor = meta.status[e.idstatus];
+                                      var bgcolor =
+                                        "background-color: " +
+                                        statusColor.color;
+                                      return (
+                                        <tr>
+                                          <td class="px-6 py-3 text-start cursor-pointer">
+                                            <div class="text-sm text-gray-900">
+                                              {e.name}
+                                            </div>
+                                          </td>
+                                          <td class="text-center py-0">
+                                            <div
+                                              class="flex items-center justify-center px-2 py-3 "
+                                              style={bgcolor}
+                                            >
+                                              <select
+                                                id="employee"
+                                                name="employee"
+                                                class="text-white rounded-l outline-none"
+                                                style={bgcolor}
+                                                onChange={(event) => {
+                                                  meta.updateStatus(
+                                                    event,
+                                                    e.id,
+                                                    idx
+                                                  );
+                                                }}
+                                                defaultValue={e.idstatus}
+                                              >
+                                                {meta.statusRaw.map((e1) => {
+                                                  if (e.idstatus == e1.value) {
+                                                    return (
+                                                      <option
+                                                        class="bg-white text-coolGray-500"
+                                                        value={e1.value}
+                                                        selected
+                                                      >
+                                                        {e1.label}
+                                                      </option>
+                                                    );
+                                                  } else {
+                                                    return (
+                                                      <option
+                                                        class="bg-white text-coolGray-500"
+                                                        value={e1.value}
+                                                      >
+                                                        {e1.label}
+                                                      </option>
+                                                    );
+                                                  }
+                                                })}
+                                              </select>
+                                            </div>
+                                          </td>
+                                          {meta.detailSub[idx] ? (
+                                            <>
+                                              <td class="px-6 py-3 text-start cursor-pointer">
+                                                <form
+                                                  onSubmit={(event) => {
+                                                    meta.updateDetailSub(
+                                                      event,
+                                                      e.id,
+                                                      idx
+                                                    );
+                                                  }}
+                                                >
+                                                  <input
+                                                    id="name"
+                                                    name="name"
+                                                    onChange={(event) => {
+                                                      meta.ubahNilai3(
+                                                        event,
+                                                        e.id,
+                                                        idx
+                                                      );
+                                                    }}
+                                                    type="text"
+                                                    value={meta.detailData[idx]}
+                                                    class="text-base relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                                                  />
+                                                </form>
+                                              </td>
+                                            </>
+                                          ) : (
+                                            <td
+                                              class="px-6 py-3 text-start cursor-pointer"
+                                              onClick={(event) => {
+                                                meta.showDetailEdit(
+                                                  e.id,
+                                                  idx,
+                                                  e.desc
+                                                );
+                                              }}
+                                            >
+                                              <div class="truncate text-sm text-gray-900">
+                                                {e.desc}
+                                              </div>
+                                            </td>
+                                          )}
+                                        </tr>
+                                      );
+                                    })}
+                                  </>
+                                ) : (
+                                  <tr class="flex self-stretch flex-wrap items-center justify-center">
+                                    <td
+                                      class="py-2 px-6 rounded-lg flex items-center flex-col"
+                                      colSpan={3}
                                     >
-                                      COMPLETE
-                                    </option>
-                                    <option
-                                      class="bg-white text-coolGray-500"
-                                      value="fiat"
-                                    >
-                                      TODO
-                                    </option>
-                                    <option
-                                      class="bg-white text-coolGray-500"
-                                      value="audi"
-                                    >
-                                      IN PROGRESS
-                                    </option>
-                                  </select>
-                                </div>
-                              </td>
-                              <td class="px-6 py-3 text-start cursor-pointer">
-                                <div class="truncate text-sm text-gray-900">
-                                  -
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
+                                      <div
+                                        class="loader-dots block relative w-22 h-6 mt-2"
+                                        style="width: 5rem;"
+                                      >
+                                        <div
+                                          class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                          style="top: 0; width: 0.75rem; height: 0.75rem;"
+                                        ></div>
+                                        <div
+                                          class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                          style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                        ></div>
+                                        <div
+                                          class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                          style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                        ></div>
+                                        <div
+                                          class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                          style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                        ></div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )}
+                                {/*End content sub task*/}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </>
+                    ) : null}
+
                     {/*end comment*/}
                   </div>
                   <form
@@ -2543,6 +4061,70 @@
         </div>
         <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
       </div>
+    </>
+  ) : null}
+  {meta.confirmDelete ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 325px; width: 325px;"
+        >
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            <div class="flex w-full flex-col items-start justify-start p-4 space-y-6 bg-white rounded">
+              <div class="flex w-full space-x-4 items-start justify-start">
+                <div>
+                  <img
+                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                    src="/fimgs/295_281.x3.png"
+                  />
+                </div>
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                      Remove Member
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight">
+                      Are you sure remove{" "}
+                      <small class="text-sm font-medium">
+                        "{meta.deleteTeam.name}"?
+                      </small>{" "}
+                      You can’t undo this action
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex w-full space-x-6 items-start justify-end">
+                <div class="flex items-start justify-end">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                      <button onClick={meta.closeDelete}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-start justify-end bg-red-500 rounded">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <button
+                      class="text-base font-medium tracking-wide leading-normal text-center text-white"
+                      onClick={(event) =>
+                        meta.actionDelete(
+                          meta.deleteTeam.idteam,
+                          meta.state.iddivision
+                        )
+                      }
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
     </>
   ) : null}
 </>

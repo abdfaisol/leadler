@@ -1,0 +1,205 @@
+<>
+  <effect
+    meta={{
+      state: {
+        judul: "Loading",
+        deskripsi: "Loading",
+        label: "Loading",
+        startdate: "26/09/2021",
+        duedate: "26/09/2021",
+        proggres: "0",
+        taskComplete: "0",
+      },
+      link: {
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+    }}
+    run={async () => {
+      console.log("mendapatkan data: loading");
+      api("/api/project/show/" + params.id).then((e) => {
+        console.log(e);
+        if (e.status == true) {
+          meta.state.judul = e.data_act.project.name;
+          meta.state.deskripsi = e.data_act.project.desc;
+          meta.state.label = e.data_act.project.label;
+          meta.state.startdate = dateFormat(
+            e.data_act.project.startdate,
+            "dd MMMM YYY"
+          );
+          meta.state.duedate = dateFormat(
+            e.data_act.project.duedate,
+            "dd MMMM YYY"
+          );
+          meta.state.taskComplete = e.data_act.resultTask.taskComplete;
+          meta.state.proggres = e.data_act.resultTask.completed;
+          meta.link.team = "/user/projects/" + e.data_act.project.id + "/team";
+          meta.link.task = "/user/projects/" + e.data_act.project.id + "/task";
+          meta.link.timeline =
+            "/user/projects/" + e.data_act.project.id + "/timeline";
+          meta.link.planning =
+            "/user/projects/" + e.data_act.project.id + "/planning";
+          meta.link.file =
+            "/user/projects/" + e.data_act.project.id + "/file-management";
+        }
+      });
+    }}
+  />
+  <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-10 pt-10">
+    <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
+      <div class="flex self-stretch space-x-72 items-start justify-between">
+        <div class="flex items-start justify-start">
+          <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+            {meta.state.judul}
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2 items-start justify-start">
+          <div
+            class="flex flex-col items-start justify-start"
+            style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
+          >
+            <bar percent={meta.state.proggres} />
+          </div>
+          <div class="flex items-start justify-start">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+              {meta.state.taskComplete} Task Done
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex space-x-8 items-center justify-start">
+        <a
+          href={meta.link.detail}
+          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+            Project Detail
+          </div>
+        </a>
+        <a
+          href={meta.link.task}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500 ">
+            Task
+          </div>
+        </a>
+        <a
+          href={meta.link.planning}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Planning
+          </div>
+        </a>
+        <a
+          href={meta.link.timeline}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Timeline
+          </div>
+        </a>
+        <a
+          href={meta.link.file}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            File Management
+          </div>
+        </a>
+        <a
+          href={meta.link.team}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Team
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="flex self-stretch w-full flex-col space-y-8 items-start justify-start p-10">
+    <div class="flex self-stretch w-full flex-col space-y-8 items-start justify-start p-6 rounded bg-white">
+      <div class="flex self-stretch flex-col space-y-6 items-start justify-start pb-4 border-b">
+        <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+          <div class="flex self-stretch items-start justify-start">
+            <div class="text-xl font-medium tracking-wide leading-none text-coolGray-900">
+              Project Description
+            </div>
+          </div>
+          <div class="flex self-stretch items-start justify-start">
+            <div class="text-base tracking-wide leading-normal text-coolGray-500">
+              {meta.state.deskripsi}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex w-full self-stretch space-x-8 items-start justify-start">
+        <div class="flex space-x-4 items-start justify-start">
+          <div class="flex items-start justify-start p-2.5 bg-violet-100 rounded-full">
+            <img
+              src="/fimgs/306_403.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
+          <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-justify text-coolGray-500">
+                Project Create For
+              </div>
+            </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
+                {meta.state.label}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex space-x-4 items-start justify-start">
+          <div class="flex items-start justify-start p-2.5 bg-violet-100 rounded-full">
+            <img
+              src="/fimgs/306_411.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
+          <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-justify text-coolGray-500">
+                Start Project
+              </div>
+            </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
+                {meta.state.startdate}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex space-x-4 items-start justify-start">
+          <div class="flex items-start justify-start p-2.5 bg-violet-100 rounded-full">
+            <img
+              src="/fimgs/306_419.x3.png"
+              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+            />
+          </div>
+          <div class="flex flex-1 flex-col space-y-0.5 items-start justify-start">
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-sm tracking-wide leading-tight text-justify text-coolGray-500">
+                Due Date
+              </div>
+            </div>
+            <div class="flex self-stretch items-start justify-start">
+              <div class="text-base font-medium tracking-wide leading-normal text-justify text-coolGray-900">
+                {meta.state.duedate}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

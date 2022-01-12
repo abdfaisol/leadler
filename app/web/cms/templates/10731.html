@@ -2,7 +2,6 @@
   <effect
     meta={{
       modalSubTask: false,
-
       expandSubtask: [],
       state: {
         name: "",
@@ -11,27 +10,11 @@
         labelstartdate: "",
         labelduedate: "",
         status: [],
-        cstatus: "",
         effort: "",
         priority: "",
         iddivision: "",
-        idtask: "",
         description: "",
         cost: "0",
-        taskname: "",
-        proggres: "0",
-        taskComplete: "0",
-      },
-      stateSubTask: {
-        name: "",
-        startdate: "",
-        duedate: "",
-        status: [],
-        cstatus: "",
-        effort: "",
-        priority: "",
-        iddivision: "",
-        idtask: "",
       },
       division: [],
       isLoading: false,
@@ -101,6 +84,7 @@
           label: "IN PROGRESS",
           color: "#888DF1",
         },
+        { value: "6", label: "SUBMITED", color: "#F1B459" },
         { value: "1", label: "COMPLETE", color: "#F1B459" },
       ],
       searchIdx(value, arr) {
@@ -150,68 +134,28 @@
         let name = e.target.name;
         let nilai = e.target.value;
         this.state[name] = nilai;
+        window.user.mobile.project.data[name] = nilai;
+        console.log(window.user.mobile.project.data[name]);
         // console.log(nilai);
       },
-      toggleModal() {
-        console.clear();
-        this.showModal = !this.showModal;
-        this.dataSubTask = [];
-      },
-      toggleModal2Close() {
-        this.showModal2 = !this.showModal2;
-      },
-      toggleModal2(event, id) {
-        console.log(id);
-        this.showModal2 = !this.showModal2;
-        api("/api/project/task/show", {
-          data: {
-            idtask: id,
-            idproject: params.id,
-          },
-        }).then((e) => {
-          console.log(e);
-          if (e.status == true) {
-            this.state.idtask = e.data_act.id;
-            this.state.name = e.data_act.name;
-            this.state.labelstartdate = dateFormat(
-              e.data_act.startdate,
-              "MMM dd, YYY"
-            );
-            this.state.labelduedate = dateFormat(
-              e.data_act.duedate,
-              "MMM dd, YYY"
-            );
-            this.state.startdate = dateFormat(
-              e.data_act.startdate,
-              "YYY-MM-dd"
-            );
-            this.state.duedate = dateFormat(e.data_act.duedate, "YYY-MM-dd");
-            this.state.priority = e.data_act.priority;
-            this.state.cstatus = e.data_act.mproject_status.name;
-            this.state.status = e.data_act.idstatus;
-            this.state.effort = e.data_act.effort;
-          }
-        });
-      },
-      toggleAdd() {
-        this.showAdd = !this.showAdd;
-      },
-      idsubtask: 0,
-      // SUBTASK
-      ubahNilai2(e) {
-        let name = e.target.name;
-        let nilai = e.target.value;
-        this.ttempHistorySubTask[this.idsubtask][name] = nilai;
-        // this.dataSubTask[this.idsubtask][name] = nilai;
-        console.log("name => " + nilai);
-      },
+      // SUBTASK,
       removeSubtask(event, id) {
         console.log(event);
-        var list = document.getElementById("subtask-" + id);
+        console.log("INDEX YANG DIHAPUS " + id);
+        // var list = document.getElementById("subtask-" + id);
         // console.log(list);
-        list.remove();
-        delete this.ttempSubTask[id];
-        console.log(this.dataSubTask.length);
+        // list.remove();
+        this.ttempSubTask[id] = null;
+        var ttempSub = this.ttempSubTask;
+        this.ttempSubTask = [];
+        window.user.mobile.subtask.data = [];
+        ttempSub.map((e, idx) => {
+          if (e) {
+            this.ttempSubTask.push(e);
+            window.user.mobile.subtask.data.push(e);
+          }
+        });
+        console.log(window.user.mobile.subtask.data);
       },
       delete(id) {
         this.setState((prevState) => ({
@@ -234,17 +178,18 @@
         e.preventDefault();
       },
       subtask(event) {
+        event.preventDefault();
         if (this.state.taskname == "") {
           console.log("tidak boleh kosong");
         } else {
           var dataSub = {
             name: this.state.taskname,
-            startdate: "",
+            startdate: this.state.startdate,
             duedate: "",
-            status: "",
+            status: 3,
             cstatus: "",
-            effort: "",
-            priority: "",
+            effort: 1,
+            priority: 1,
             iddivision: "",
             idtask: "",
             description: "",
@@ -252,14 +197,14 @@
             taskname: "",
             index: 0,
           };
-          var length = this.dataSubTask.push(dataSub);
-          var idx = length - 1;
-          dataSub.index = idx;
-          this.ttempSubTask[idx] = dataSub;
-          this.ttempHistorySubTask[idx] = dataSub;
-          this.cobaElement.push({ index: idx, name: this.state.taskname });
+          console.log(dataSub);
+          var length = this.ttempSubTask.push(dataSub);
+          console.log(this.ttempSubTask.length);
+          var idx = this.ttempSubTask.length - 1;
+          window.user.mobile.subtask.data[idx] = dataSub;
+          // console.log(window.user);
+          // this.cobaElement.push({ index: idx, name: this.state.taskname });
         }
-        event.preventDefault();
       },
       ttempHistorySubTask: [],
       saveSubtask(event) {
@@ -270,7 +215,10 @@
         this.toggleModal();
         event.preventDefault();
       },
+      mainLoading: false,
       submitData(event) {
+        this.mainLoading = true;
+        console.clear();
         let data = {
           desc: this.state.description,
           estimated_cost: parseInt(this.state.cost),
@@ -283,8 +231,15 @@
           priority: this.state.priority,
           iddivision: this.state.iddivision,
         };
+        console.log("DATA TASK PARENT");
+        console.log(data);
+        console.log(
+          "BERAPA SUBTASK YANG TELAH DIBUAT ? JUMLAHNYA " +
+            this.ttempSubTask.length
+        );
         console.log("mempersiapkan data");
         console.log(data);
+        var nSubtask = this.ttempSubTask.length;
         console.log("memasukkan data");
         api("/api/project/task/create", {
           data: data,
@@ -294,14 +249,12 @@
             console.log(e);
             console.log("gagal masuk");
             console.log(data);
-            // this.isFilled = this.isFilled;
-            // this.showModal = !this.showModal;
           } else {
             // console.log(e);
             // console.log("berhasil masuk");
             // console.log(data);
-            this.isLoading = false;
-            if (this.ttempSubTask.length > 0) {
+            if (nSubtask > 0) {
+              var now = 0;
               this.ttempSubTask.map((idx) => {
                 // console.log("memasukkan subtask : ");
                 // console.log(idx);
@@ -317,309 +270,79 @@
                     priority: idx.priority,
                     iddivision: this.state.iddivision,
                   },
-                }).then((e) => {});
-                this.reloadProject();
+                }).then((e) => {
+                  now++;
+                  console.log(now);
+                  console.log(e);
+                  if (now == nSubtask) {
+                    console.log("KEMBALI KE HALAMAN TASK");
+                    this.mainLoading = false;
+                    var host = window.location.origin;
+                    window.location.replace(
+                      host + "/m/pm/projects/" + params.id + "/task"
+                    );
+                  }
+                });
               });
             } else {
-              this.reloadProject();
+              var host = window.location.origin;
+              window.location.replace(
+                host + "/m/pm/projects/" + params.id + "/task"
+              );
             }
-            this.toggleModal();
-            // location.reload();
           }
         });
         event.preventDefault();
-      },
-      updateStatus(event, idtask, idx) {
-        // meta.state.iddepartment = e.value;
-        //     console.log(meta.state.iddepartment);
-        console.log(
-          "task dengan id : " +
-            idtask +
-            "berhasil diupdate dengan value : " +
-            event.value
-        );
-        // /api/project/status/update
-        api("/api/project/task/status/update", {
-          data: {
-            id: idtask,
-            idstatus: event.value,
-          },
-        }).then((e) => {
-          console.log(e);
-          if (e.status == true) {
-            this.isLoading = false;
-            this.reloadProject();
-            console.log("reload");
-          }
-        });
-      },
-      updateTask(event) {
-        api("/api/project/task/update", {
-          data: {
-            desc: this.state.description,
-            idproject: params.id,
-            name: this.state.name,
-            startdate: this.state.startdate,
-            duedate: this.state.duedate,
-            idstatus: this.state.status,
-            effort: this.state.effort,
-            priority: this.state.priority,
-            iddivision: this.state.iddivision,
-            idtask: this.state.idtask,
-          },
-        }).then((e) => {
-          console.log(e);
-          if (e.status == true) {
-            this.isLoading = false;
-            this.reloadProject();
-            console.log("reload");
-            this.toggleModal2Close();
-          }
-        });
-        event.preventDefault();
-        // console.log(this.data_task[idx].idstatus);
-        // this.data_task[idx].idstatus = event.value;
-      },
-      // Subtask expand
-      expand(id) {
-        var vv = [];
-        if (!this.expandSubtask[id]) {
-          vv[id] = true;
-        }
-        this.expandSubtask = vv;
-
-        this.expandData(id);
-        this.loadingexpand = false;
-      },
-      loadingexpand: false,
-      dataExpand: [],
-      expandData(id) {
-        console.log("EXPAND ID => " + id);
-        api("/api/project/task/subtask/show", {
-          data: {
-            idproject: params.id,
-            idparent: id,
-          },
-        }).then((e) => {
-          console.log(e);
-          if (e.status == true) {
-            e.data_act.map((idx) => {
-              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-            });
-            this.dataExpand = e.data_act;
-            console.log(this.dataExpand.length);
-            this.loadingexpand = true;
-          }
-        });
-        // return printout;
-      },
-
-      reloadProject() {
-        // All Project
-        api("/api/project/show/" + params.id).then((e) => {
-          // console.log(e);
-          if (e.status == true) {
-            e.data_act.project_task.map((idx) => {
-              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-            });
-            this.data_task = e.data_act.project_task;
-          }
-          // In proggress
-          api("/api/project/show/" + params.id, {
-            data: {
-              idstatus: 2,
-            },
-          }).then((e) => {
-            console.log(e.data_act.project_task);
-            if (e.status == true) {
-              // console.log(e);
-              e.data_act.project_task.map((idx) => {
-                idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-              });
-              this.dataSubTaskProgress = e.data_act.project_task;
-            }
-            // Submitted
-            api("/api/project/show/" + params.id, {
-              data: {
-                idstatus: 6,
-              },
-            }).then((e) => {
-              if (e.status == true) {
-                // console.log(e);
-                e.data_act.project_task.map((idx) => {
-                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-                });
-                this.dataSubTaskSubmit = e.data_act.project_task;
-              }
-              // Complete
-              api("/api/project/show/" + params.id, {
-                data: {
-                  idstatus: 1,
-                },
-              }).then((e) => {
-                if (e.status == true) {
-                  // console.log(e);
-                  e.data_act.project_task.map((idx) => {
-                    idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-                    idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-                  });
-                  this.dataSubTaskComplete = e.data_act.project_task;
-                  this.isLoading = true;
-                }
-              });
-            });
-          });
-        });
       },
       arrayMove(arr, fromIndex, toIndex) {
         var element = arr[fromIndex];
         arr.splice(fromIndex, 1);
         arr.splice(toIndex, 0, element);
       },
+      saveTaskData() {
+        window.user.mobile.project.data = this.state;
+      },
+      showDatePicker(e) {
+        document.getElementById("root").classList.add("z-0");
+        var dd = document.getElementsByClassName("css-k008qs")[0];
+        var cc = document.getElementsByClassName("css-18puooo")[0];
+        if (dd) {
+          console.log("ada");
+          dd.style =
+            "display:grid;		grid-template-columns: repeat(3, minmax(0, 1fr));";
+        } else {
+          console.log("TIDAK ADA");
+        }
+        console.log(dd);
+        console.log("COBA DULU");
+        console.log("");
+      },
     }}
     run={async () => {
-      // Complete
-      api("/api/status").then((e) => {
-        // console.log(e);
-        if (e.status == true) {
-          meta.statusRaw = e.data_act;
-          var ttemp_status = [];
-          e.data_act.map((idx) => {
-            ttemp_status[idx.value] = idx;
-            // console.log(ttemp_status);
-          });
-          meta.status = ttemp_status;
-        }
-      });
-      // Mendapatkan data projek
-      // All Project
-      api("/api/project/show/" + params.id).then((e) => {
-        // console.log(e);
-        if (e.status == true) {
-          meta.state.judul = e.data_act.project.name;
-          e.data_act.project_task.map((idx) => {
-            idx.subtask = false;
-
-            idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-            idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-            console.log("ID TASK => " + idx.id);
-            console.log(idx);
-            api("/api/project/task/subtask/show", {
-              data: {
-                idproject: params.id,
-                idparent: idx.id,
-              },
-            }).then((e) => {
-              console.log(e);
-              if (e.status == true) {
-                if (e.data_act.length > 0) {
-                  idx.subtask = true;
-                }
-              }
-              meta.data_task.push(idx);
-            });
-          });
-          meta.division = e.data_act.project_division;
-
-          meta.link.detail = "/pm/projects/" + params.id + "/detail";
-          meta.link.team = "/pm/projects/" + params.id + "/team";
-          meta.link.task = "/pm/projects/" + params.id + "/task";
-          meta.link.timeline = "/pm/projects/" + params.id + "/timeline";
-          meta.link.planning = "/pm/projects/" + params.id + "/planning";
-          meta.link.file = "/pm/projects/" + params.id + "/file-management";
-          meta.state.taskComplete = e.data_act.resultTask.taskComplete;
-          meta.state.proggres = e.data_act.resultTask.completed;
-          console.log(e);
-        }
-
-        // In proggress
-        api("/api/project/show/" + params.id, {
-          data: {
-            idstatus: 2,
-          },
-        }).then((e) => {
-          // console.log(e.data_act.project_task);
-          if (e.status == true) {
-            // console.log(e);
-            e.data_act.project_task.map((idx) => {
-              idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-              idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-            });
-            meta.dataSubTaskProgress = e.data_act.project_task;
-          }
-          // Submitted
-          api("/api/project/show/" + params.id, {
-            data: {
-              idstatus: 6,
-            },
-          }).then((e) => {
-            if (e.status == true) {
-              // console.log(e);
-              e.data_act.project_task.map((idx) => {
-                idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-                idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-              });
-              meta.dataSubTaskSubmit = e.data_act.project_task;
-            }
-            // Complete
-            api("/api/project/show/" + params.id, {
-              data: {
-                idstatus: 1,
-              },
-            }).then((e) => {
-              if (e.status == true) {
-                // console.log(e);
-                e.data_act.project_task.map((idx) => {
-                  idx.startdate = dateFormat(idx.startdate, "MMM dd, YYY");
-                  idx.duedate = dateFormat(idx.duedate, "MMM dd, YYY");
-                });
-                meta.dataSubTaskComplete = e.data_act.project_task;
-                meta.isLoading = true;
-              }
-            });
-          });
-        });
-      });
-      // meta.state.iddivision = document.getElementById("employee").value;
-      // console.log("id division" + document.getElementById("employee").value);
+      console.clear();
+      if (window.user.mobile) {
+        var ttempProject = window.user.mobile.project.data;
+        meta.state.name = ttempProject.name;
+        meta.state.startdate = ttempProject.startdate;
+        meta.state.duedate = ttempProject.duedate;
+        meta.state.status = ttempProject.status;
+        meta.state.effort = ttempProject.effort;
+        meta.state.priority = ttempProject.priority;
+        meta.state.iddivision = ttempProject.iddivision;
+        meta.ttempSubTask = window.user.mobile.subtask.data;
+        console.log(meta.state.name);
+        console.log(meta.state.status);
+        // console.log("ada");
+      } else {
+        console.log("gk ada");
+      }
+      console.log(window.user);
       meta.actionstatus = {
         onChange: (e) => {
           runInAction(() => {
             meta.state.status = e.value;
+            window.user.mobile.project.data.status = e.value;
             console.log(meta.state.status);
-          });
-        },
-      };
-      meta.actionstatus2 = {
-        onChange: (e, idx) => {
-          runInAction(() => {
-            meta.ttempHistorySubTask[idx].status = e.value;
-          });
-        },
-      };
-      meta.actioneffort2 = {
-        onChange: (e, idx) => {
-          runInAction(() => {
-            meta.ttempHistorySubTask[idx].effort = e.value;
-          });
-        },
-      };
-      meta.actionpriority2 = {
-        onChange: (e, idx) => {
-          runInAction(() => {
-            meta.ttempHistorySubTask[idx].priority = e.value;
-          });
-        },
-      };
-      meta.actioncstatus = {
-        onChange: (e) => {
-          runInAction(() => {
-            meta.state.cstatus = e.color;
-            console.log(meta.state.cstatus);
           });
         },
       };
@@ -627,6 +350,7 @@
         onChange: (e) => {
           runInAction(() => {
             meta.state.effort = e.value;
+            window.user.mobile.project.data.effort = e.value;
             console.log(meta.state.effort);
           });
         },
@@ -635,26 +359,25 @@
         onChange: (e) => {
           runInAction(() => {
             meta.state.priority = e.value;
+            window.user.mobile.project.data.priority = e.value;
             console.log(meta.state.priority);
-          });
-        },
-      };
-      meta.actiondivision = {
-        onChange: (e) => {
-          runInAction(() => {
-            // console.log("ID DIVISION " + meta.state.iddivision);
-            meta.state.iddivision = e.target.value;
-            // console.log();
-            // console.log("VALUE : " + e.target.value);
           });
         },
       };
     }}
   />
-  <div class="flex flex-col items-start justify-start bg-coolGray-50">
-    <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+  {meta.mainLoading ? (
+    <>
+      <loadku />
+    </>
+  ) : null}
+  <div class="flex flex-col items-start justify-start bg-coolGray-50 h-screen">
+    <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b sticky top-0 z-50">
       <div class="flex w-full space-x-5 items-center justify-start">
-        <a href="/m/pm/projects/task" class="flex items-center justify-start">
+        <a
+          href={"/m/pm/projects/" + params.id + "/task"}
+          class="flex items-center justify-start"
+        >
           <img
             src="/fimgs/I727_1000_1575_5334.x3.png"
             style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
@@ -670,237 +393,267 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col w-full self-stretch space-y-5 py-3 w-auto">
-      <div class="flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
-        <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative">
-          <div class="text-sm tracking-wide leading-none text-gray-500">
-            Task Name
-          </div>
-          <div class="flex self-stretch items-center justify-start pb-2">
-            <m-input
-              id="name"
-              name="taskname"
-              type="text"
-              placeholder=""
-              class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
-            />
-          </div>
-          <div class="text-sm tracking-wide leading-none text-gray-500">
-            Task Status
-          </div>
-          <div class="flex self-stretch items-center justify-start pb-2">
-            <div class="relative flex flex-1 items-center justify-start">
-              <multipleselect
-                options={meta.statusx}
-                defaultValue={meta.statusx[0]}
-                theme={(theme) => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    primary25: "#F3F4F6",
-                    primary: "#6366F1",
-                  },
-                })}
-                styles={meta.styles}
-                className="w-full text-sm border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none z-50"
-                classNamePrefix="select"
-                name="status"
+    <div class="flex flex-col w-full self-stretch w-auto flex-grow">
+      <div class="relative flex-grow flex flex-col overflow-y-auto space-y-5 ">
+        <div class="absolute top-0 left-0 flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+          <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative">
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Task Name
+            </div>
+            <div class="flex self-stretch items-center justify-start pb-2">
+              <m-input
+                id="name"
+                name="name"
+                onChange={meta.ubahNilai}
+                value={meta.state.name}
+                type="text"
+                placeholder=""
+                class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
               />
             </div>
-          </div>
-          <div class="text-sm tracking-wide leading-none text-gray-500">
-            Start Date
-          </div>
-          <div class="flex self-stretch items-center justify-start pb-2">
-            <div class="text-sm relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5">
-              <datepicker
-                selected={meta.datePicker}
-                dateFormat="MMMM d, yyyy"
-                onChange={meta.handleChange}
-                disabled
-              />
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Task Status
+            </div>
+            <div class="flex self-stretch items-center justify-start pb-2">
+              <div class="relative flex flex-1 items-center justify-start">
+                <multipleselect
+                  options={meta.statusx}
+                  defaultValue={
+                    meta.state.status == 0 || meta.state.status == ""
+                      ? meta.statusx[-1]
+                      : meta.statusx[
+                          meta.searchIdx(meta.state.status, meta.statusx)
+                        ]
+                  }
+                  theme={(theme) => ({
+                    ...theme,
+                    colors: {
+                      ...theme.colors,
+                      primary25: "#F3F4F6",
+                      primary: "#6366F1",
+                    },
+                  })}
+                  styles={meta.styles}
+                  className="w-full text-sm border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none z-50"
+                  classNamePrefix="select"
+                  name="status"
+                  onChange={(e) => {
+                    meta.actionstatus.onChange(e);
+                  }}
+                />
+              </div>
+            </div>
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Start Date
+            </div>
+            <div class="flex self-stretch items-center justify-start pb-2">
               <div
-                class="absolute flex border border-transparent right-0 top-0 h-full"
-                style="width: 2.3rem; min-width: 2.3rem; max-width: 2.3rem;"
+                class="text-sm relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                onClick={(e) => {
+                  meta.showDatePicker(e);
+                }}
               >
-                <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
-                  <div class="cursor-pointer" onClick={meta.handleClick}>
-                    <ai-calendar style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" />
+                <datepicker
+                  disableMaskedInput
+                  disableOpenPicker
+                  showToolbar={false}
+                  value={meta.state.startdate}
+                  label="Start Date"
+                  onChange={(e) => {
+                    meta.state.startdate = e;
+                    window.user.mobile.project.data.startdate = e;
+                  }}
+                  onClick={(e) => {
+                    meta.showDatePicker(e);
+                  }}
+                />
+              </div>
+            </div>
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Due Date
+            </div>
+            <div class="flex self-stretch items-center justify-start pb-2">
+              <div
+                class="text-sm relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                onClick={(e) => {
+                  meta.showDatePicker(e);
+                }}
+              >
+                <datepicker
+                  disableMaskedInput
+                  disableOpenPicker
+                  showToolbar={false}
+                  value={meta.state.duedate}
+                  minDate={meta.state.startdate}
+                  label="Due Date"
+                  onChange={(e) => {
+                    meta.state.duedate = e;
+                    window.user.mobile.project.data.duedate = e;
+                  }}
+                  OpenPickerIcon
+                />
+              </div>
+            </div>
+            <div class="flex flex-1 w-full space-x-6 items-center">
+              <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Priority
+                </div>
+                <div class="flex self-stretch items-center justify-start pb-4">
+                  <div class="relative flex flex-1 items-center justify-start">
+                    <multipleselect
+                      options={meta.priority}
+                      defaultValue={
+                        meta.state.priority == 0 || meta.state.priority == ""
+                          ? meta.priority[-1]
+                          : meta.priority[
+                              meta.searchIdx(meta.state.priority, meta.priority)
+                            ]
+                      }
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary25: "#F3F4F6",
+                          primary: "#6366F1",
+                        },
+                      })}
+                      styles={meta.styles}
+                      className="w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none"
+                      classNamePrefix="select"
+                      name="status"
+                      onChange={(e) => {
+                        meta.actionpriority.onChange(e);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Task Value
+                </div>
+                <div class="flex self-stretch items-center justify-start pb-4">
+                  <div class="relative flex flex-1 items-center justify-start">
+                    <multipleselect
+                      options={meta.taskv}
+                      defaultValue={
+                        meta.state.effort == 0 || meta.state.effort == ""
+                          ? meta.taskv[-1]
+                          : meta.taskv[
+                              meta.searchIdx(meta.state.effort, meta.taskv)
+                            ]
+                      }
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary25: "#F3F4F6",
+                          primary: "#6366F1",
+                        },
+                      })}
+                      styles={meta.styles}
+                      className="w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none"
+                      classNamePrefix="select"
+                      name="status"
+                      onChange={(e) => {
+                        meta.actioneffort.onChange(e);
+                      }}
+                    />
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          {meta.isOpen && (
-            <div class="absolute right-0" style="top:14.1rem">
-              <div class="flex flex-col items-start justify-start overflow-ellipsis z-50 relative">
-                <datepicker
-                  selected={meta.datePicker}
-                  onChange={meta.handleChange}
-                  inline
-                />
+            <div class="flex flex-1 w-full items-center justify-between">
+              <div class="flex flex-col items-center">
+                <div class="text-sm tracking-wide leading-none text-coolGray-500">
+                  Subtask
+                </div>
               </div>
             </div>
-          )}
-          <div class="text-sm tracking-wide leading-none text-gray-500">
-            Due Date
-          </div>
-          <div class="flex self-stretch items-center justify-start pb-2">
-            <div class="text-sm relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5">
-              <datepicker
-                selected={meta.datePicker2}
-                dateFormat="MMMM d, yyyy"
-                onChange={meta.handleChange2}
-                disabled
-              />
+            <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
               <div
-                class="absolute flex border border-transparent right-0 top-0 h-full"
-                style="width: 2.3rem; min-width: 2.3rem; max-width: 2.3rem;"
+                id="listSubTask"
+                class="flex self-stretch flex-col space-y-3 items-start justify-start"
               >
-                <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full">
-                  <div class="cursor-pointer" onClick={meta.handleClick2}>
-                    <ai-calendar style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {meta.isOpen2 && (
-            <div class="absolute right-0" style="top:19.35rem">
-              <div class="flex flex-col items-start justify-start overflow-ellipsis z-50 relative">
-                <datepicker
-                  selected={meta.datePicker2}
-                  onChange={meta.handleChange2}
-                  inline
-                />
-              </div>
-            </div>
-          )}
-          <div class="flex flex-1 w-full space-x-6 items-center">
-            <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
-              <div class="text-sm tracking-wide leading-none text-gray-500">
-                Priority
-              </div>
-              <div class="flex self-stretch items-center justify-start pb-4">
-                <div class="relative flex flex-1 items-center justify-start">
-                  <multipleselect
-                    options={meta.priority}
-                    defaultValue={meta.priority[0]}
-                    theme={(theme) => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary25: "#F3F4F6",
-                        primary: "#6366F1",
-                      },
-                    })}
-                    styles={meta.styles}
-                    className="w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none"
-                    classNamePrefix="select"
-                    name="status"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
-              <div class="text-sm tracking-wide leading-none text-gray-500">
-                Task Value
-              </div>
-              <div class="flex self-stretch items-center justify-start pb-4">
-                <div class="relative flex flex-1 items-center justify-start">
-                  <multipleselect
-                    options={meta.taskv}
-                    defaultValue={meta.taskv[0]}
-                    theme={(theme) => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary25: "#F3F4F6",
-                        primary: "#6366F1",
-                      },
-                    })}
-                    styles={meta.styles}
-                    className="w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none"
-                    classNamePrefix="select"
-                    name="status"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-1 w-full items-center justify-between">
-            <div class="flex flex-col items-center">
-              <div class="text-sm tracking-wide leading-none text-coolGray-500">
-                Subtask
-              </div>
-            </div>
-          </div>
-          <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
-            <div
-              id="listSubTask"
-              class="flex self-stretch flex-col space-y-3 items-start justify-start"
-            >
-              {meta.ttempSubTask.map((e) => {
-                var idsubtask = "subtask-" + e.index;
-                return (
-                  <div
-                    id={idsubtask}
-                    class="flex self-stretch flex-col items-center justify-start px-2.5 py-2.5 bg-gray-100 border border-gray-100 rounded"
-                  >
-                    <div class="flex w-full space-x-6 items-center justify-start">
-                      <div class="flex flex-1 items-start justify-start">
-                        <div class="text-sm tracking-wide leading-tight">
-                          {e.name}
+                {meta.ttempSubTask.map((e, idx) => {
+                  return (
+                    <div
+                      id={"subtask-" + idx}
+                      class="flex self-stretch flex-col items-center justify-start px-2.5 py-2.5 bg-gray-100 border border-gray-100 rounded"
+                    >
+                      <div class="flex w-full space-x-6 items-center justify-start">
+                        <div class="flex flex-1 items-start justify-start">
+                          <div class="text-sm tracking-wide leading-tight">
+                            {e.name}
+                          </div>
                         </div>
-                      </div>
-                      <div class="flex space-x-3 items-start justify-start">
-                        <a
-                          class="cursor-pointer"
-                          href="/m/pm/projects/task/subtask"
-                          // onClick={(event) => {
-                          //   meta.showModalSubTask(event, e.index);
-                          // }}
-                        >
-                          <img
-                            src="/fimgs/842_3221.x3.png"
-                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                          />
-                        </a>
-                        <div
-                          class="cursor-pointer"
-                          onClick={(event) => {
-                            meta.removeSubtask(event, e.index);
-                          }}
-                        >
-                          <img
-                            src="/fimgs/842_3223.x3.png"
-                            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                          />
+                        <div class="flex space-x-3 items-start justify-start z-0">
+                          <a
+                            class="cursor-pointer"
+                            href={
+                              "/m/pm/projects/" +
+                              params.id +
+                              "/task/create/" +
+                              idx +
+                              "/update"
+                            }
+                            onClick={meta.saveTaskData}
+                          >
+                            <img
+                              src="/fimgs/842_3221.x3.png"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                          </a>
+                          <div
+                            class="cursor-pointer"
+                            onClick={(event) => {
+                              meta.removeSubtask(event, idx);
+                            }}
+                          >
+                            <img
+                              src="/fimgs/842_3223.x3.png"
+                              style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div class="flex self-stretch items-center justify-start">
-              <form
-                onSubmit={meta.subtask}
-                class="relative flex flex-1 items-center justify-start"
-              >
-                <m-input
-                  id="name"
-                  name="taskname"
-                  type="text"
+                  );
+                })}
+              </div>
+              <div class="flex self-stretch items-center justify-start">
+                <form
                   onSubmit={meta.subtask}
-                  placeholder="Create Subtask"
-                  onChange={meta.ubahNilai}
-                  class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
-                />
-              </form>
+                  class="relative flex flex-1 items-center justify-start"
+                >
+                  <m-input
+                    id="name"
+                    name="taskname"
+                    type="text"
+                    onSubmit={meta.subtask}
+                    placeholder="Create Subtask"
+                    onChange={meta.ubahNilai}
+                    class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                  />
+                </form>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+      <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white shadow">
+        <form
+          class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+          onSubmit={meta.submitData}
+        >
+          <button
+            type="submit"
+            class="text-sm tracking-wide leading-tight text-center text-white"
+          >
+            Create Task
+          </button>
+        </form>
       </div>
     </div>
   </div>

@@ -2,9 +2,12 @@
   <effect
     meta={{
       data_projek: "",
-      member: "",
-      name: "",
-      team: "",
+      dashboard: {
+        nextproject: 0,
+        progress: 0,
+        complete: 0,
+        unfinish: 0,
+      },
       state: {
         name: "",
         startdate: "",
@@ -20,14 +23,13 @@
         taskname: "",
       },
       statusx: [
-        { value: "1", label: "TODO", color: "#4ADE80" },
+        { value: "3", label: "TODO", color: "#4ADE80" },
         {
           value: "2",
           label: "IN PROGRESS",
           color: "#888DF1",
         },
-        { value: "3", label: "SUBMITTED", color: "#2D34E6" },
-        { value: "4", label: "COMPLETE", color: "#F1B459" },
+        { value: "6", label: "SUBMITED", color: "#F1B459" },
       ],
       stylesx: {
         control: (base, state) => ({
@@ -73,8 +75,66 @@
         });
         event.preventDefault();
       },
+      task: [],
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value.toString() == value.toString()) {
+            out = idx;
+            console.log(
+              "VALUE : " +
+                e.value.toString() +
+                " DITEMUKAN DI INDEX " +
+                idx +
+                " DENGAN LABEL " +
+                e.label
+            );
+          }
+        });
+        return out;
+      },
+      updateStatus(idtask, status) {
+        api("/api/project/task/status/update", {
+          data: {
+            id: idtask,
+            idstatus: status,
+          },
+        }).then((e) => {
+          console.log(e);
+        });
+      },
+      historyProject: [],
     }}
     run={async () => {
+      // DATA PROJECT
+      console.clear();
+      api("/api/project/complete").then((e) => {
+        meta.historyProject = e.data_act;
+      });
+      api("/api/task").then((e) => {
+        console.log(e);
+        meta.task = e.data_act;
+      });
+      api("/api/project").then((e) => {
+        // console.clear();
+        // console.log(e);
+        if (e.dashboard) {
+          e.dashboard.map((idx) => {
+            if (idx.name == "next project") {
+              meta.dashboard.nextproject = idx.nproject;
+            }
+            if (idx.name == "progress") {
+              meta.dashboard.progress = idx.nproject;
+            }
+            if (idx.name == "uncompleted") {
+              meta.dashboard.unfinish = idx.nproject;
+            }
+            if (idx.name == "completed") {
+              meta.dashboard.complete = idx.nproject;
+            }
+          });
+        }
+      });
       meta.actionstatus = {
         onChange: (e) => {
           runInAction(() => {
@@ -107,12 +167,12 @@
         <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
           <div class="flex self-stretch items-start justify-start mr-6">
             <div class="text-sm tracking-wide leading-tight text-coolGray-500">
-              New Project
+              Next Project
             </div>
           </div>
           <div class="flex self-stretch flex-col items-start justify-start">
             <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
-              25
+              {meta.dashboard.nextproject}
             </div>
           </div>
         </div>
@@ -134,7 +194,7 @@
           </div>
           <div class="flex self-stretch flex-col items-start justify-start">
             <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
-              25
+              {meta.dashboard.progress}
             </div>
           </div>
         </div>
@@ -156,7 +216,7 @@
           </div>
           <div class="flex self-stretch flex-col items-start justify-start">
             <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
-              25
+              {meta.dashboard.complete}
             </div>
           </div>
         </div>
@@ -178,7 +238,7 @@
           </div>
           <div class="flex self-stretch flex-col items-start justify-start">
             <div class="text-4xl font-semibold tracking-wide leading-10 text-coolGray-900">
-              25
+              {meta.dashboard.unfinish}
             </div>
           </div>
         </div>
@@ -203,7 +263,7 @@
                         TODO
                       </div>
                       <div class="pl-4 text-sm font-medium text-gray-500 text-center ">
-                        4 Task
+                        {meta.task.length} Task
                       </div>
                     </div>
                   </th>
@@ -232,64 +292,74 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y-4 divide-gray-50">
-                <tr>
-                  <td class="px-6 py-2 whitespace-nowrap text-start cursor-pointer">
-                    <div class="text-sm text-gray-900">Analisa Data</div>
-                  </td>
-                  <td class="text-center py-0">
-                    <div class="flex items-center justify-center">
-                      <multipleselect
-                        options={meta.statusx}
-                        defaultValue={meta.statusx[0]}
-                        menuPortalTarget={document.body}
-                        theme={(theme) => ({
-                          ...theme,
-                          borderRadius: 0,
-                          colors: {
-                            ...theme.colors,
-                            primary25: "#F3F4F6",
-                            primary: "#6366F1",
-                          },
-                        })}
-                        styles={meta.stylesx}
-                        style={
-                          meta.state.status == 1
-                            ? "background-color: #4ADE80;"
-                            : meta.state.status == 2
-                            ? "background-color: #888DF1;"
-                            : meta.state.status == 3
-                            ? "background-color: #2D34E6;"
-                            : meta.state.status == 4
-                            ? "background-color: #F1B459;"
-                            : "background-color: #4ADE80;"
-                        }
-                        className="w-40"
-                        classNamePrefix="select"
-                        name="status"
-                        onChange={(e) => {
-                          meta.actionstatus.onChange(e);
-                        }}
-                      />
-                    </div>
-                  </td>
-                  <td class="px-6 py-2 whitespace-nowrap items-center">
-                    <div class="flex items-center justify-center">
-                      <div class="flex items-center justify-center px-1 py-0.5 bg-indigo-500 rounded-full">
-                        <div class="text-xs tracking-wide leading-none text-center text-white">
-                          Medium
+                {meta.task.map((e) => {
+                  return (
+                    <tr>
+                      <td class="px-6 py-2 whitespace-nowrap text-start cursor-pointer">
+                        <div class="text-sm text-gray-900">{e.name}</div>
+                      </td>
+                      <td class="text-center py-0">
+                        <div class="flex items-center justify-center">
+                          <multipleselect
+                            options={meta.statusx}
+                            defaultValue={
+                              e.idstatus == 0 || e.idstatus == ""
+                                ? meta.statusx[-1]
+                                : meta.statusx[
+                                    meta.searchIdx(e.idstatus, meta.statusx)
+                                  ]
+                            }
+                            menuPortalTarget={document.body}
+                            theme={(theme) => ({
+                              ...theme,
+                              borderRadius: 0,
+                              colors: {
+                                ...theme.colors,
+                                primary25: "#F3F4F6",
+                                primary: "#6366F1",
+                              },
+                            })}
+                            styles={meta.stylesx}
+                            style={
+                              e.idstatus == 3
+                                ? "background-color: #4ADE80;"
+                                : e.idstatus == 2
+                                ? "background-color: #888DF1;"
+                                : e.idstatus == 6
+                                ? "background-color: #2D34E6;"
+                                : "background-color: #4ADE80;"
+                            }
+                            className="w-40"
+                            classNamePrefix="select"
+                            name="status"
+                            onChange={(event) => {
+                              // meta.actionstatus.onChange(e);
+                              // console.log(e.value);
+                              meta.updateStatus(e.id, event.value);
+                            }}
+                          />
                         </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-2 whitespace-nowrap text-center">
-                    <div class="flex items-center justify-center">
-                      <img
-                        style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
-                        src="/fimgs/5_48.x3.png"
-                      />
-                    </div>
-                  </td>
-                </tr>
+                      </td>
+                      <td class="px-6 py-2 whitespace-nowrap items-center">
+                        <div class="flex items-center justify-center">
+                          <div class="flex items-center justify-center px-1 py-0.5 bg-indigo-500 rounded-full">
+                            <div class="text-xs tracking-wide leading-none text-center text-white">
+                              {e.namepriority}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-2 whitespace-nowrap text-center">
+                        <div class="flex items-center justify-center">
+                          {/*<img*/}
+                          {/*style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"*/}
+                          {/*src="/fimgs/5_48.x3.png"*/}
+                          {/*/>*/}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -299,66 +369,24 @@
             Complete Projects
           </div>
           <div class="flex flex-col w-full space-y-4 px-4 pb-4 pt-2 items-start justify-start bg-white">
-            <div class="flex flex-col space-y-3 items-start justify-center bg-white">
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-base tracking-wide leading-snug text-coolGray-900">
-                  Pengembangan Website Company Profile PT. Menara Indonesia
-                </div>
-              </div>
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                  Finished On: 23/10/2021
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col space-y-2 items-start justify-center bg-white">
-              <div class="flex items-start justify-start">
-                <div class="text-base tracking-wide leading-snug text-coolGray-900">
-                  Pengembangan Aplikasi Ojek Online Pemkot Magelang
-                </div>
-              </div>
-              <div class="flex items-start justify-start">
-                <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                  Finished On: 23/10/2021
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col space-y-2 items-start justify-center bg-white">
-              <div class="flex items-start justify-start">
-                <div class="text-base tracking-wide leading-snug text-coolGray-900">
-                  Pengembangan Website Akutansi PT> Sido Maju
-                </div>
-              </div>
-              <div class="flex items-start justify-start">
-                <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                  Finished On: 23/10/2021
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col space-y-2 items-start justify-center bg-white">
-              <div class="flex items-start justify-start">
-                <div class="text-base tracking-wide leading-snug text-coolGray-900">
-                  Pengembangan Website Akutansi PT> Sido Maju
-                </div>
-              </div>
-              <div class="flex items-start justify-start">
-                <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                  Finished On: 23/10/2021
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col space-y-2 items-start justify-center bg-white">
-              <div class="flex items-start justify-start">
-                <div class="text-base tracking-wide leading-snug text-coolGray-900">
-                  Pengembangan Website Akutansi PT> Sido Maju
-                </div>
-              </div>
-              <div class="flex items-start justify-start">
-                <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                  Finished On: 23/10/2021
-                </div>
-              </div>
-            </div>
+            {meta.historyProject.map((e) => {
+              return (
+                <>
+                  <div class="flex flex-col space-y-3 items-start justify-center bg-white">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-base tracking-wide leading-snug text-coolGray-900">
+                        {e.name}
+                      </div>
+                    </div>
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                        Finished On: {dateFormat(e.finished, "MMM dd, YYY")}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              );
+            })}
           </div>
         </div>
       </div>

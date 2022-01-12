@@ -1,0 +1,694 @@
+<>
+  <effect
+    meta={{
+      // DATA PRIMARY
+      state: {
+        judul: "Loading",
+        name: "#",
+        file: {
+          status: false,
+          path: "#",
+        },
+        iddivision: 0,
+      },
+      // DATA LINK
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      // STYLE
+      stylesx: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "0px",
+          paddingBottom: "0px",
+          border: "none",
+          boxShadow: "none",
+          backgroundColor: "transparent",
+        }),
+      },
+      listFile: [],
+      // UPLOAD
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        // console.log(nilai);
+      },
+      responseUpload: "",
+      upload: async (file) => {
+        const formData = _FormData();
+        formData.append("path", "users\\" + params.id);
+        formData.append("file", file);
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        return await response.json();
+      },
+      validasiUpload() {
+        this.state.file.status = true;
+      },
+      toggleModal() {
+        this.showModal = !this.showModal;
+        this.state.file.status = false;
+      },
+      toggleModal1() {
+        this.showModal1 = !this.showModal1;
+      },
+      submitData(event) {
+        if (
+          this.state.file.status == false ||
+          this.state.file.status == "false"
+        ) {
+          console.log("upload gagal, silahkan upload ulang");
+        } else {
+          console.log("Upload berhasil");
+          let data = {
+            name: this.state.name,
+            url: this.state.file.path,
+            idproject: params.id,
+          };
+          console.log("bersiap upload data");
+          console.log(data);
+          console.log("upload data");
+          api("/api/project/upload/create", {
+            data: data,
+          }).then((e) => {
+            if (e.status == true) {
+              console.log("Success");
+              console.log(e);
+              console.log(data);
+              this.isFilled = this.isFilled;
+              this.showModal = !this.showModal;
+              this.isLoading = true;
+              this.reloadData();
+            } else {
+              console.log("failed");
+              console.log(e);
+              console.log(data);
+            }
+          });
+        }
+        this.state.file.status = false;
+        event.preventDefault();
+      },
+      reloadData() {
+        api("/api/project/upload", {
+          data: {
+            idproject: params.id,
+            iddivision: this.state.iddivision,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.listFile = e.data_act;
+            this.isLoading = true;
+          }
+        });
+      },
+      statusModal: [],
+      modalEdit: false,
+      detailFile: { iduser: 0 },
+      showModalEdit(id, name, urlfile, iduser) {
+        window.user.idfile = id;
+        this.detailFile.iduser = iduser;
+        this.deleteTeam.name = name;
+        this.deleteTeam.idteam = id;
+        this.urlFile = "/upload/" + urlfile;
+        this.modalEdit = !this.modalEdit;
+      },
+      closeModalEdit() {
+        this.modalEdit = false;
+      },
+      showmodalku(id) {
+        var vv = [];
+        if (!this.statusModal[id]) {
+          console.log("ID FILE " + id);
+          vv[id] = true;
+        }
+        this.statusModal = vv;
+      },
+      showDetail: false,
+      idfile: 0,
+      deleteTeam: {
+        name: "asdasd",
+        idteam: 0,
+      },
+      confirmDelete: false,
+      delTeam(id) {
+        console.log("HAPUS DATA ID : " + id);
+        api("/api/project/file/delete", {
+          idfile: id,
+        }).then((e) => {
+          console.log(e);
+          this.confirmDelete = false;
+          if (e.status == true) {
+            this.isLoading = false;
+            this.reloadData(this.state.iddivision);
+          }
+        });
+      },
+      urlFile: "",
+      modalDelete(id, name) {
+        this.deleteTeam.idteam = id;
+        this.deleteTeam.name = name;
+        // console.log("hapus tim " + name);
+        this.confirmDelete = true;
+        this.modalEdit = false;
+        this.showmodalku(id);
+      },
+      closeDelete() {
+        this.confirmDelete = false;
+      },
+      // DIVISI SELECTED
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value == value) {
+            out = idx;
+          }
+        });
+        return out;
+      },
+      user: [],
+      isLoading: false,
+      showModal: false,
+      downloadku(fileUrl) {
+        var a = document.createElement("a");
+        a.href = fileUrl;
+        a.setAttribute("download", this.deleteTeam.name);
+        a.click();
+      },
+      downloadfile() {
+        var host = window.location.origin;
+        var urlku = host + this.urlFile;
+        this.downloadku(urlku);
+        // window.open(host + this.urlFile);
+      },
+      mainLoading: true,
+      reloadProject(divisi) {
+        api("/api/project/upload", {
+          data: {
+            idproject: params.id,
+            iddivision: this.state.iddivision,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.listFile = e.data_act;
+            this.isLoading = true;
+          }
+        });
+      },
+
+      iduser: 0,
+    }}
+    run={async () => {
+      meta.mainLoading = true;
+      api("/api/session").then((e) => {
+        console.log(e);
+        if (e.status == true || e.status == "true") {
+          api("/api/project/show/" + params.id).then((e0) => {
+            console.log(e.data_act.muser_detail.iddivision);
+            meta.iduser = e.data_act.muser_detail.id;
+            meta.state.iddivision = e.data_act.muser_detail.iddivision;
+            meta.link.detail =
+              "/m/user/projects/" + e0.data_act.project.id + "/detail";
+            meta.link.team =
+              "/m/user/projects/" + e0.data_act.project.id + "/team";
+            meta.link.task =
+              "/m/user/projects/" + e0.data_act.project.id + "/task";
+            meta.link.timeline =
+              "/m/user/projects/" + e0.data_act.project.id + "/timeline";
+            meta.link.planning =
+              "/m/user/projects/" + e0.data_act.project.id + "/planning";
+            meta.link.file =
+              "/m/user/projects/" + e0.data_act.project.id + "/file-management";
+            var ttempDivision = [];
+            e0.data_act.project_division.map((e) => {
+              ttempDivision.push({ value: e.id, label: e.division });
+            });
+            meta.user = ttempDivision;
+            // All Project
+            api("/api/project/upload", {
+              data: {
+                idproject: params.id,
+                iddivision: meta.state.iddivision,
+              },
+            }).then((e) => {
+              console.log(e);
+              if (e.status == true) {
+                meta.listFile = e.data_act;
+                meta.isLoading = true;
+                meta.mainLoading = false;
+                window.user.idfile = false;
+              }
+            });
+          });
+        }
+      });
+    }}
+  />
+  {meta.mainLoading ? (
+    <>
+      <loadku />
+    </>
+  ) : (
+    <>
+      <div class="flex flex-col items-start justify-start bg-coolGray-50">
+        <div class="flex w-full self-stretch items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+          <div class="flex w-full space-x-5 items-center justify-start">
+            <a href="/m/user/project" class="flex items-center justify-start">
+              <img
+                src="/fimgs/I727_1000_1575_5334.x3.png"
+                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              />
+              <div class="text-base tracking-wide leading-tight text-indigo-500">
+                Back
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="overflow-x-auto w-full sticky top-0 z-50 bg-white">
+          <div class="flex flex-col self-stretch space-y-2 w-auto">
+            <div class="flex flex-col self-stretch items-start justify-start">
+              <div class="flex space-x-4 items-start justify-start px-5 py-4 ">
+                <a
+                  href={meta.link.detail}
+                  class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+                  style="width: 132px; min-width: 132px; max-width: 132px;"
+                >
+                  <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
+                    Projects Detail
+                  </div>
+                </a>
+                <a
+                  href={meta.link.task}
+                  class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+                >
+                  <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                    Task
+                  </div>
+                </a>
+                <a
+                  href={meta.link.planning}
+                  class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+                >
+                  <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                    Planning
+                  </div>
+                </a>
+                <a
+                  href={meta.link.timeline}
+                  class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+                >
+                  <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                    Timeline
+                  </div>
+                </a>
+                <a
+                  href={meta.link.file}
+                  class="flex items-center justify-center px-4 py-2 border rounded border-indigo-400"
+                  style="width: 151px; min-width: 151px; max-width: 151px;"
+                >
+                  <div class="text-sm tracking-wide leading-tight text-indigo-500">
+                    File Management
+                  </div>
+                </a>
+                <a
+                  href={meta.link.team}
+                  class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
+                >
+                  <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+                    Team
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-row justify-between self-stretch max-w-full bg-white p-2">
+          <div class="flex flex-col w-full items-start justify-start">
+            <div class="text-sm font-medium tracking-wide leading-tight text-start text-coolGray-900 border-coolGray-300">
+              <div class="flex items-center justify-center">
+                <multipleselect
+                  options={meta.user}
+                  defaultValue={
+                    meta.state.iddivision == 0 || meta.state.iddivision == ""
+                      ? meta.user[-1]
+                      : meta.user[
+                          meta.searchIdx(meta.state.iddivision, meta.user)
+                        ]
+                  }
+                  theme={(theme) => ({
+                    ...theme,
+                    borderRadius: 0,
+                    colors: {
+                      ...theme.colors,
+                      primary25: "#F3F4F6",
+                      primary: "#6366F1",
+                    },
+                  })}
+                  onChange={(event) => {
+                    console.log(event.value);
+                    meta.iddivision = event.value;
+                    meta.state.iddivision = event.value;
+                    console.log("ID DIVISION " + meta.iddivision);
+                    meta.isLoading = false;
+                    meta.reloadProject(event.value);
+                  }}
+                  styles={meta.stylesx}
+                  className="w-48"
+                  classNamePrefix="select"
+                  name="status"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="ml-2">
+            <button
+              class="flex space-x-2 items-center justify-center px-2 py-2 bg-indigo-500 hover:bg-indigo-700 rounded"
+              style="min-width: 150px;"
+              onClick={meta.toggleModal}
+            >
+              <img
+                src="/fimgs/5_50.x3.png"
+                style="width: 15px; min-width: 15px; max-width: 15px; height: 15px; min-height: 15px; max-height: 15px;"
+              />
+              <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                Upload
+              </div>
+            </button>
+          </div>
+        </div>
+        {meta.isLoading ? (
+          <>
+            <div class="grid grid-cols-2 gap-4 flex-grow px-2">
+              {meta.listFile.map((e) => {
+                var fileUrl = "/upload/" + e.url;
+                return (
+                  <div class="flex flex-wrap content-between border rounded border-coolGray-300">
+                    <img src={fileUrl} />
+                    <div class="flex self-stretch w-full space-x-2.5 items-center justify-center p-4 bg-white shadow-inner rounded-bl rounded-br">
+                      <div class="flex flex-1 space-x-2.5 items-center justify-start">
+                        <div class="flex flex-1 items-start justify-start">
+                          <div class="text-xs tracking-wide leading-none text-coolGray-900">
+                            {e.name}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex items-start">
+                        <img
+                          src="/fimgs/398_736.x3.png"
+                          onClick={(event) =>
+                            meta.showModalEdit(e.id, e.name, e.url, e.iduser)
+                          }
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <div class="flex self-stretch flex-wrap items-center justify-center flex-grow">
+            <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+              <div
+                class="loader-dots block relative w-22 h-6 mt-2"
+                style="width: 5rem;"
+              >
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; width: 0.75rem; height: 0.75rem;"
+                ></div>
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                ></div>
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                ></div>
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                ></div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  )}
+
+  {meta.showModal ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 z-50 outline-none focus:outline-none">
+        <div
+          className="opacity-25 fixed inset-0 z-50 bg-black w-screen h-screen"
+          onClick={meta.toggleModal}
+        ></div>
+        <div class="relative w-full mx-auto max-w-3xl px-2" style=" z-index:60">
+          {/*content*/}
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*body*/}
+            <div class="border-0 rounded flex flex-col items-start justify-start relative overflow-ellipsis bg-gray-50">
+              <div class="border-0 rounded-t flex self-stretch flex-col px-7 py-4 items-start justify-start bg-white shadow">
+                <div class="flex self-stretch flex-col items-start justify-start">
+                  <div class="flex self-stretch items-center justify-between">
+                    <div></div>
+                    <div class="flex items-start justify-start">
+                      <div class="text-xl font-medium tracking-wide leading-loose text-center text-coolGray-900">
+                        Upload File
+                      </div>
+                    </div>
+                    <form onSubmit={meta.toggleModal}>
+                      <button class="flex flex-col items-center justify-end">
+                        <img
+                          src="/fimgs/517_574.x1.svg"
+                          style="width: 24px; min-width: 24px; max-width: 24px; height: 30px; min-height: 30px; max-height: 30px;"
+                        />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <form
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+                onSubmit={meta.submitData}
+              >
+                <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-8">
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        File Name
+                      </div>
+                    </div>
+
+                    <div class="flex self-stretch items-center justify-start">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <m-input
+                          id="name"
+                          name="name"
+                          type="text"
+                          onChange={meta.ubahNilai}
+                          placeholder="Landing Page"
+                          class="text-base relative w-full border rounded placeholder-coolGray-900 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch flex-col space-y-2.5 items-start justify-center">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm tracking-wide leading-none text-center text-gray-500">
+                        Choose File
+                      </div>
+                    </div>
+
+                    <div
+                      class="flex self-stretch items-center justify-start py-3 bg-white border rounded border-indigo-500"
+                      style="border-style: dashed;"
+                    >
+                      <div class="flex flex-1 items-center justify-center">
+                        <input
+                          type="file"
+                          accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+                          id="file"
+                          style="height: 0; overflow: hidden; width: 0;"
+                          onChange={(e) => {
+                            runInAction(async () => {
+                              console.log("upload file");
+                              console.log(e.target.files[0]);
+                              const upload = await meta.upload(
+                                e.target.files[0]
+                              );
+                              meta.validasiUpload();
+                              meta.state.file = upload;
+                            });
+                          }}
+                        />
+                        <label
+                          htmlFor="file"
+                          class="w-full text-base tracking-wide leading-normal text-center text-indigo-500"
+                        >
+                          Choose File
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="flex flex-1 self-stretch flex-col items-start justify-start"
+                  >
+                    <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                      <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                        Upload Now
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
+  ) : null}
+  {meta.modalEdit ? (
+    <>
+      <div
+        class="flex flex-row items-start justify-start px-5 py-4 bg-white rounded-tl-lg rounded-tr-lg fixed bottom-0 w-screen"
+        style="z-index: 60"
+      >
+        <div class="flex flex-col space-y-5 flex-grow">
+          <div class="flex self-stretch items-start justify-between">
+            <div></div>
+            <div class="flex items-start justify-start">
+              <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                Select Menu
+              </div>
+            </div>
+            <img
+              src="/fimgs/677_1939.x1.svg"
+              style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              onClick={meta.closeModalEdit}
+            />
+          </div>
+          <div class="flex flex-col space-y-4 items-start justify-start">
+            <div
+              class="flex items-center self-stretch justify-center px-4 py-2 border rounded border-coolGray-300"
+              onClick={meta.downloadfile}
+            >
+              <div class="text-base tracking-wide leading-normal text-indigo-500">
+                Download
+              </div>
+            </div>
+            {meta.detailFile.iduser == meta.iduser ? (
+              <>
+                <a
+                  class="flex items-center self-stretch justify-center px-4 py-2 border rounded border-coolGray-300"
+                  href={
+                    "/m/user/projects/" + params.id + "/file-management/edit"
+                  }
+                >
+                  <div class="text-base tracking-wide leading-normal text-indigo-500">
+                    Edit
+                  </div>
+                </a>
+                <div
+                  class="flex items-center self-stretch justify-center px-4 py-2 border rounded bg-red-500  border-red-500"
+                  onClick={(event) =>
+                    meta.modalDelete(
+                      meta.deleteTeam.idteam,
+                      meta.deleteTeam.name
+                    )
+                  }
+                >
+                  <div class="text-base tracking-wide leading-normal  text-white">
+                    Delete
+                  </div>
+                </div>
+              </>
+            ) : null}
+          </div>
+        </div>
+      </div>
+      <div
+        className="opacity-25 fixed inset-0 z-40 bg-black"
+        style="z-index: 50"
+        onClick={meta.closeModalEdit}
+      ></div>
+    </>
+  ) : null}
+  {meta.confirmDelete ? (
+    <>
+      <div class="flex justify-center items-center overflow-ellipsis fixed inset-0 outline-none focus:outline-none z-50">
+        <div
+          className="opacity-25 fixed inset-0 z-50 bg-black w-screen h-screen"
+          onClick={meta.closeDelete}
+        ></div>
+        <div
+          class="relative w-auto mx-auto max-w-3xl"
+          style="min-width: 325px; width: 325px; z-index:60"
+        >
+          <div class="border-0 rounded shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            <div class="flex w-full flex-col items-start justify-start p-4 space-y-6 bg-white rounded">
+              <div class="flex w-full space-x-4 items-start justify-start">
+                <div>
+                  <img
+                    style="width: 30px; min-width: 30px; max-width: 30px; height: 30px; min-height: 30px; max-height: 30px;"
+                    src="/fimgs/295_281.x3.png"
+                  />
+                </div>
+                <div class="flex flex-1 flex-col space-y-1 items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                      Delete Task
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-sm tracking-wide leading-tight">
+                      Are you sure remove{" "}
+                      <small class="text-sm font-medium">
+                        "{meta.deleteTeam.name}"?
+                      </small>{" "}
+                      You can’t undo this action
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex w-full space-x-6 items-start justify-end">
+                <div class="flex items-start justify-end">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <div class="text-base font-medium tracking-wide leading-normal text-center text-coolGray-500">
+                      <button onClick={meta.closeDelete}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-start justify-end bg-red-500 rounded">
+                  <div class="flex items-start justify-end px-4 py-2 rounded">
+                    <button
+                      class="text-base font-medium tracking-wide leading-normal text-center text-white"
+                      onClick={(event) => meta.delTeam(meta.deleteTeam.idteam)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  ) : null}
+</>

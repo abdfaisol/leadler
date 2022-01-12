@@ -1,0 +1,194 @@
+<>
+  <effect
+    meta={{
+      // Primary Data
+      state: {
+        name: "",
+        team: [],
+        member: [],
+      },
+      // STYLE MULTIPLE SELECT
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      ttempValue: 0,
+      ttempNow: 0,
+      // SUBMIT DATA NEW MEMBER
+      addMember(event) {
+        console.clear();
+        if (this.state.member.length > 0) {
+          this.ttempValue = this.state.member.length;
+          this.state.member.map((e) => {
+            // console.log(e);
+            this.runAddMember(e);
+            // console.log(sql);
+          });
+          // this.loading.member = false;
+          // this.reloadData();
+        } else {
+          console.log("MINIMAL 1 MEMBER");
+        }
+        event.preventDefault();
+      },
+      // ACTION PROSES ADD NEW MEMBER API
+      runAddMember(user) {
+        api("/api/teams/member/add", {
+          iduser: user,
+          idteam: params.id,
+        }).then((e) => {
+          if (e.status == true) {
+            console.log(this.ttempNow);
+            this.ttempNow++;
+            if (this.ttempNow == this.ttempValue) {
+              var host = window.location.origin;
+              window.location.replace(
+                host + "/m/pm/account/team/edit/" + params.id
+              );
+            }
+          }
+          console.log(e);
+        });
+      },
+      // DATA USER
+      dataUser(e) {
+        let userDetail = [];
+        api("/api/user").then((i) => {
+          if (i.status == true) {
+            // console.log(i.data_act);
+            i.data_act.map((res, index) => {
+              if (res.muser_detail) {
+                api("/api/team/member/search", {
+                  iduser: res.muser_detail.id,
+                }).then((e1) => {
+                  // console.log("iduser yang dicari => " + res.muser_detail.id);
+                  // console.log("hasil pencarian => ");
+                  // console.log(e1);
+                  if (e1.status == true) {
+                    if (e1.data_act.length == 0) {
+                      userDetail.push({
+                        value: res.muser_detail.id,
+                        label: res.email,
+                      });
+                    }
+                  }
+                });
+              }
+            });
+          }
+        });
+        return userDetail;
+      },
+    }}
+    run={async () => {
+      api("/api/team/show", {
+        data: {
+          idteam: params.id,
+        },
+      }).then((i) => {
+        console.log(i);
+        if (i.status == true) {
+          // meta.member = [];
+          // console.log(i.data_team);
+          meta.state.name = i.data_act.name;
+        }
+      });
+      meta.actionmember = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.member = e.map((x) => x.value);
+            meta.team = 0;
+          });
+        },
+      };
+    }}
+  />
+  <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50 flex-grow">
+    <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+      <div class="flex w-full space-x-5 items-center justify-start">
+        <a
+          href={"/m/pm/account/team/edit/" + params.id}
+          class="flex items-center justify-start"
+        >
+          <img
+            src="/fimgs/I727_1000_1575_5334.x3.png"
+            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+          />
+          <div class="text-base tracking-wide leading-tight text-indigo-500">
+            Back
+          </div>
+        </a>
+        <div class="flex items-center justify-center">
+          <div class="text-base tracking-wide leading-normal text-coolGray-900">
+            Add Member
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col w-full self-stretch w-auto flex-grow">
+      <div class="relative flex-grow flex flex-col overflow-y-auto">
+        <div class="absolute top-0 left-0 flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+          <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto">
+            <div class="text-sm tracking-wide leading-none text-gray-500">
+              Add Member
+            </div>
+            <div class="flex self-stretch items-center justify-start pb-2">
+              <multipleselect
+                options={meta.dataUser()}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#F3F4F6",
+                    primary: "#6366F1",
+                  },
+                })}
+                styles={meta.styles}
+                className="w-full"
+                classNamePrefix="select"
+                isMulti
+                name="member"
+                onChange={(e) => {
+                  meta.actionmember.onChange(e);
+                }}
+              />
+            </div>
+            <form
+              onSubmit={meta.addMember}
+              class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto"
+            >
+              <button
+                type="submit"
+                class="flex flex-1 self-stretch flex-col items-start justify-start"
+              >
+                <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                  <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                    Add Member
+                  </div>
+                </div>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

@@ -1,0 +1,500 @@
+<>
+  <effect
+    meta={{
+      member: [],
+      state: {
+        judul: "Loading",
+        proggres: "0",
+        taskComplete: "0",
+        detailTeam: {
+          name: "",
+          idteam: 0,
+        },
+        member: [],
+        idAuthor: 0,
+      },
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      team: "",
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          boxShadow: "none",
+          border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          "&:hover": {
+            border: state.isFocused ? "1px solid #818CF8" : "1px solid #D1D5DB",
+          },
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      state2: { title: "" },
+      modalku: [],
+      dataku: [],
+      dataUser(e) {
+        let userDetail = [];
+        api("/api/user").then((i) => {
+          i.data_act.map((res, index) => {
+            if (res.muser_detail) {
+              // var validasi = true;
+              // if(res.iduser )
+              var validasi = this.member.find(
+                ({ iduser }) => iduser === res.muser_detail.id
+              );
+              if (!validasi) {
+                i.data_act[index] = {
+                  value: res.muser_detail.id,
+                  label: res.email,
+                };
+                userDetail.push(i.data_act[index]);
+              }
+            }
+          });
+        });
+        return userDetail;
+      },
+      dataTeam(e) {
+        let result = [];
+        api("/api/team").then((i) => {
+          i.data_act.map((res, index) => {
+            i.data_act[index] = { value: res.id, label: res.name };
+            result.push(i.data_act[index]);
+          });
+        });
+        return result;
+      },
+      modalChangeTeam() {
+        this.validasiChangeTeam = false;
+        this.showModalChangeTeam = !this.showModalChangeTeam;
+      },
+      modalAddMember() {
+        this.showModalAddMember = !this.showModalAddMember;
+      },
+      showmodalku(id) {
+        var vv = [];
+        if (!this.modalku[id]) {
+          vv[id] = true;
+        }
+        this.modalku = vv;
+        var dataku = [];
+        if (!this.dataku[id]) {
+          dataku[id] = true;
+        }
+        this.dataku = dataku;
+        // this.modalku = !this.modalku;
+        var elem = document.getElementById(id);
+        if (elem.classList.contains("hidden")) {
+          elem.classList.remove("hidden");
+        } else {
+          elem.classList.add("hidden");
+        }
+      },
+      // Script Delete Member
+      deleteTeam: {
+        name: "asdasd",
+        idteam: 0,
+      },
+      confirmDelete: false,
+      delTeam(id) {
+        console.log("HAPUS DATA ID : " + id);
+        api("/api/project/team/remove", {
+          idmember: id,
+        }).then((e) => {
+          console.log(e);
+          this.confirmDelete = false;
+        });
+      },
+      modalDelete(id, name) {
+        this.deleteTeam.idteam = id;
+        this.deleteTeam.name = name;
+        // console.log("hapus tim " + name);
+        this.confirmDelete = true;
+      },
+      closeDelete() {
+        this.confirmDelete = false;
+      },
+      // Script add member
+      addMember(event) {
+        if (this.state.member.length > 0) {
+          this.state.member.map((e) => {
+            console.log(e);
+            this.runAddMember(e, this.state.detailTeam.idteam, params.id);
+            // console.log(sql);
+          });
+          this.modalAddMember();
+          this.loading.member = false;
+          this.reloadData();
+        } else {
+          console.log("MINIMAL 1 MEMBER");
+        }
+        event.preventDefault();
+      },
+      runAddMember(user, team, project) {
+        api("/api/project/team/member/add", {
+          iduser: user,
+          idteam: team,
+          idproject: project,
+        }).then((e) => {
+          console.log(e);
+        });
+      },
+      // Script Change Team
+      validasiChangeTeam: false,
+      changeTeam(event) {
+        if (this.validasiChangeTeam == true) {
+          var dd = this.runChangeTeam(this.team, params.id);
+
+          this.modalChangeTeam();
+        } else {
+          console.log("Kamu belum memilih tim");
+        }
+        event.preventDefault();
+      },
+      runChangeTeam(team, project) {
+        api("/api/project/team/change", {
+          idteam: team,
+          idproject: project,
+        }).then((e) => {
+          if (e.status == true) {
+            this.loading.member = false;
+            this.reloadData();
+          }
+          console.log(e);
+        });
+      },
+      // Script reload data
+      loading: { member: false },
+      reloadData() {
+        api("/api/project/team/show", {
+          data: {
+            idproject: params.id,
+          },
+        }).then((i) => {
+          console.log(i);
+          if (i.status == true) {
+            // meta.member = [];
+            // console.log(i.data_team);
+            this.member = i.data_act;
+            this.loading.member = true;
+          }
+        });
+      },
+    }}
+    run={async () => {
+      api("/api/project/show/" + params.id).then((e) => {
+        // console.log(e);
+        if (e.status == true) {
+          meta.state.judul = e.data_act.project.name;
+          meta.state.taskComplete = e.data_act.resultTask.taskComplete;
+          meta.state.proggres = e.data_act.resultTask.completed;
+          meta.state.idAuthor = e.data_act.project.iduserproject;
+          meta.link.detail =
+            "/user/projects/" + e.data_act.project.id + "/detail";
+          meta.link.team = "/user/projects/" + e.data_act.project.id + "/team";
+          meta.link.task = "/user/projects/" + e.data_act.project.id + "/task";
+          meta.link.timeline =
+            "/user/projects/" + e.data_act.project.id + "/timeline";
+          meta.link.planning =
+            "/user/projects/" + e.data_act.project.id + "/planning";
+          meta.link.file =
+            "/user/projects/" + e.data_act.project.id + "/file-management";
+          var detailTeam = {
+            idteam: 0,
+            nameTeam: "",
+          };
+          detailTeam.nameTeam = "PERSONAL";
+          api("/api/project/team/show", {
+            data: {
+              idproject: e.data_act.project.id,
+            },
+          }).then((i) => {
+            // console.log(i);
+            if (i.status == true) {
+              if (i.data_act.length > 0) {
+                i.data_act.map((idx) => {
+                  // console.log(e);
+                  if (idx.idteam) {
+                    api("/api/team/show", {
+                      data: {
+                        idteam: idx.idteam,
+                      },
+                    }).then((i) => {
+                      console.log(i);
+                      if ((i.status = true)) {
+                        detailTeam.idteam = idx.team;
+                        detailTeam.nameTeam = i.data_act.name;
+                      }
+                    });
+                  }
+                });
+              }
+            }
+          });
+          meta.state.detailTeam = detailTeam;
+          console.log(detailTeam);
+        }
+        console.log(e);
+        // document.getElementById("loading").remove();
+      });
+      api("/api/project/team/show", {
+        data: {
+          idproject: params.id,
+        },
+      }).then((i) => {
+        // console.log(i);
+        if (i.status == true) {
+          // meta.member = [];
+          // console.log(i.data_team);
+          meta.member = i.data_act;
+          meta.loading.member = true;
+          // i.data_team.map((idx) => {
+          //   meta.member.push(i.data_team);
+          // });
+          // meta.state.name = i.data_act.name;
+        }
+      });
+      meta.actionteam = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.team = e.value;
+            meta.validasiChangeTeam = true;
+          });
+        },
+      };
+      meta.actionmember = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.member = e.map((x) => x.value);
+            meta.team = 0;
+          });
+        },
+      };
+    }}
+  />
+  <div class="flex w-full self-stretch flex-col space-y-9 items-start justify-start px-10 pt-10">
+    <div class="flex self-stretch flex-col space-y-9 items-start justify-start px-6 py-4 bg-white rounded">
+      <div class="flex w-full items-start justify-between">
+        <div class="flex items-start justify-start">
+          <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+            {meta.state.judul}
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2 items-start justify-start">
+          <div
+            class="flex flex-col items-start justify-start"
+            style="width: 304px; min-width: 304px; max-width: 304px; height: 10px; min-height: 10px; max-height: 10px;"
+          >
+            <bar percent={meta.state.proggres} />
+          </div>
+          <div class="flex items-start justify-start">
+            <div class="text-sm tracking-wide leading-tight text-coolGray-500">
+              {meta.state.taskComplete} Task Done
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex space-x-8 items-center justify-start">
+        <a
+          href={meta.link.detail}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Project Detail
+          </div>
+        </a>
+        <a
+          href={meta.link.task}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Task
+          </div>
+        </a>
+        <a
+          href={meta.link.planning}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Planning
+          </div>
+        </a>
+        <a
+          href={meta.link.timeline}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            Timeline
+          </div>
+        </a>
+        <a
+          href={meta.link.file}
+          class="flex flex-grow items-center justify-center py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+            File Management
+          </div>
+        </a>
+        <a
+          href={meta.link.team}
+          class="flex flex-grow items-center justify-center bg-coolGray-50 py-2 px-4 rounded"
+        >
+          <div class="text-base font-medium tracking-wide leading-normal text-indigo-500">
+            Team
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-10">
+    <div class="flex self-stretch flex-col space-y-8 items-start justify-start p-6 bg-white rounded">
+      <div class="flex self-stretch space-x-2 items-start justify-start">
+        <div class="flex flex-1 flex-col space-y-2 items-start justify-start">
+          <div class="flex self-stretch items-start justify-start">
+            <div class="text-base font-medium tracking-wide leading-normal text-coolGray-500">
+              This project will be carried out by:
+            </div>
+          </div>
+          <div class="flex self-stretch items-start justify-start">
+            <div class="text-xl font-medium tracking-wide leading-loose text-coolGray-900">
+              {/*Team 1*/}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex self-stretch flex-col items-start justify-start">
+        <div class="flex self-stretch flex-col items-start justify-start p-6 bg-coolGray-50 border rounded border-coolGray-300">
+          <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+            <div class="flex self-stretch space-x-2.5 items-center justify-start">
+              <div class="flex flex-1 items-start justify-start">
+                <div class="text-base tracking-wide leading-normal text-coolGray-500">
+                  List Member
+                </div>
+              </div>
+            </div>
+            <div class="flex self-stretch flex-col items-start justify-start py-6 pl-6 bg-coolGray-50 rounded">
+              <div class="flex self-stretch flex-col items-start justify-start">
+                {meta.loading.member ? (
+                  <>
+                    <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                      {meta.member.map((e, idx) => {
+                        if (e.id == meta.state.idAuthor) {
+                          return (
+                            <div class="flex self-stretch flex-col">
+                              {!meta.dataku[e.id] && (
+                                <div class="flex self-stretch items-center justify-start py-2 pr-4 rounded">
+                                  <div class="flex space-x-4 items-start justify-start w-full cursor-pointer">
+                                    <div class="flex items-start justify-start">
+                                      <img
+                                        src="/fimgs/I448_1610_1448_4295.x3.png"
+                                        class="rounded-full"
+                                        style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                                      />
+                                    </div>
+                                    <div class="flex flex-col items-start justify-start">
+                                      <div class="flex self-stretch items-start justify-start">
+                                        <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                          {e.muser_detail.fullname}
+                                        </div>
+                                      </div>
+                                      <div class="flex self-stretch items-start justify-start">
+                                        <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                                          Project Manager
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div class="flex self-stretch flex-col">
+                              {!meta.dataku[e.id] && (
+                                <div
+                                  class="flex self-stretch items-center justify-start py-2 pr-4 rounded"
+                                  id={e.id}
+                                >
+                                  <div class="flex space-x-4 items-start justify-start w-full cursor-pointer">
+                                    <div class="flex items-start justify-start">
+                                      <img
+                                        src="/fimgs/I448_1610_1448_4295.x3.png"
+                                        class="rounded-full"
+                                        style="width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; max-height: 32px;"
+                                      />
+                                    </div>
+                                    <div class="flex flex-col items-start justify-start">
+                                      <div class="flex self-stretch items-start justify-start">
+                                        <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                                          {e.muser_detail.fullname}
+                                        </div>
+                                      </div>
+                                      <div class="flex self-stretch items-start justify-start">
+                                        <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                                          {e.muser_detail.mdivision.name}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        }
+                      })}
+                    </div>
+                  </>
+                ) : (
+                  <div class="px-3 py-4 whitespace-normal text-left">
+                    <div class="flex self-stretch flex-wrap items-center justify-center">
+                      <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                        <div
+                          class="loader-dots block relative w-22 h-6 mt-2"
+                          style="width: 5rem;"
+                        >
+                          <div
+                            class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                            style="top: 0; width: 0.75rem; height: 0.75rem;"
+                          ></div>
+                          <div
+                            class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                            style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                          ></div>
+                          <div
+                            class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                            style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                          ></div>
+                          <div
+                            class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                            style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

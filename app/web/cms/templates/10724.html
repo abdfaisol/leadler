@@ -9,18 +9,28 @@
         status: "",
         cstatus: "",
       },
+      time: {
+        year: "2021",
+        month: "11",
+      },
       show: {
         tim1: false,
         tim2: false,
       },
+      keywordSearch: "",
+      // DATA LINK
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
       data_timeline: [],
-      selectedMonth: new Date(),
+      selectedMonth: null,
       add: { tekan: true },
-      user: [
-        { value: "0", label: "UI/UX Designer" },
-        { value: "1", label: "Business Analyst" },
-        { value: "2", label: "Full Stack Developer" },
-      ],
+      user: [],
       status: [
         { value: "1", label: "TODO", color: "#4ADE80" },
         {
@@ -122,54 +132,263 @@
             months[this.selectedMonth.getMonth()] + " " + yyyy;
         }
       },
+      timeSet: "0",
       getPreviousMonth() {
         const currentMonthInMilli = new Date(this.selectedMonth).getTime();
-        const oneMonth = 1000 * 60 * 60 * 24 * 28;
+        const oneMonth = 1000 * 60 * 60 * 24 * 30;
         const previousMonthInMilli = currentMonthInMilli - oneMonth;
         const previousMonth = new Date(previousMonthInMilli);
+        this.timeSet = previousMonth;
         this.setMonth(previousMonth);
-        console.log("test1");
-        console.log(currentMonthInMilli);
-        console.log(previousMonthInMilli);
-        console.log(previousMonth);
+        this.reloadData(previousMonth);
       },
       getNextMonth() {
         const currentMonthInMilli = new Date(this.selectedMonth).getTime();
         const oneMonth = 1000 * 60 * 60 * 24 * 31;
         const nextMonthInMilli = currentMonthInMilli + oneMonth;
         const nextMonth = new Date(nextMonthInMilli);
+        this.timeSet = nextMonth;
         this.setMonth(nextMonth);
-        console.log("test1");
-        console.log(currentMonthInMilli);
-        console.log(nextMonthInMilli);
-        console.log(nextMonth);
+        this.reloadData(nextMonth);
+      },
+      isLoading: true,
+      reloadData(month) {
+        console.clear();
+        // console.log(month);
+        this.isLoading = false;
+        var mmth = ("0" + (month.getMonth() + 1)).slice(-2);
+        console.log("year ==> " + month.getFullYear());
+        console.log("month ==> " + mmth);
+        console.log("division ==> " + this.iddivision);
+        api("/api/project/task/timeline", {
+          data: {
+            idproject: params.id,
+            month: ("0" + (month.getMonth() + 1)).slice(-2),
+            year: month.getFullYear(),
+          },
+          keyword: this.keywordSearch,
+          iddivision: this.iddivision,
+        })
+          .then((e) => {
+            // console.log(e);
+            if (e.status == true) {
+              this.data_timeline = [];
+              if (e.data_act.timeline) {
+                e.data_act.timeline.map((e) => {
+                  // console.log("CHECK 1");
+                  // console.log(e);
+                  // console.log(
+                  //   e.startdate.split("-")[0] + "-" + e.startdate.split("-")[1]
+                  // );
+                  // console.log("CHECK 1");
+                  var startDateku = new Date(
+                    e.startdate.split("-")[0],
+                    parseInt(e.startdate.split("-")[1]) - 1
+                  );
+                  var dueDateku = new Date(
+                    e.duedate.split("-")[0],
+                    parseInt(e.duedate.split("-")[1]) - 1
+                  );
+                  var dateku = new Date(
+                    this.time.year,
+                    parseInt(this.time.month) - 1
+                  );
+                  var label = [];
+                  // console.log("CHECK 2");
+                  // console.log(dateku);
+                  // console.log(startDateku);
+                  // console.log("CHECK 3");
+                  if (dateku < dueDateku) {
+                    for (let i = 1; i <= 4; i++) {
+                      label[i] =
+                        "flex-grow bg-blue-300 border border-coolGray-300";
+                    }
+                  } else {
+                    var startWeek = parseInt(e.startweeks);
+                    var dueWeek = parseInt(e.dueweeks);
+                    // console.log(startWeek + " and " + dueWeek);
+                    for (let i = 1; i <= 4; i++) {
+                      console.log(i);
+                      var tes = true;
+                      if (i >= startWeek && i <= dueWeek) {
+                        label[i] =
+                          "flex-grow bg-blue-300 border border-coolGray-300";
+                      } else {
+                        tes = false;
+                        label[i] = "flex-grow border border-coolGray-300";
+                      }
+                      // console.log(tes);
+                    }
+                  }
+
+                  e.labelTime = label;
+                  // console.log(label);
+                  // console.log(e);
+                });
+                // console.log(e);
+                this.data_timeline = e.data_act.timeline;
+              }
+              this.isLoading = true;
+              // document.getElementById("loading").remove();
+
+              // console.log(this.data_timeline.length);
+              // console.log(e);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      },
+      mainLoading: false,
+      // loading
+      // DIVISI SELECTED
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value == value) {
+            out = idx;
+          }
+        });
+        return out;
       },
     }}
     run={async () => {
       var tdate = new Date();
       meta.setMonth(meta.selectedMonth);
-      meta.actionstatus = {
-        onChange: (e) => {
-          runInAction(() => {
-            meta.state.status = e.value;
-            console.log(meta.state.status);
+      console.log(tdate);
+      console.log("month XIXIXI==> " + ("0" + tdate.getMonth() + 1).slice(-2));
+      console.log("month XIXIXI==> " + tdate.getMonth());
+      meta.timeSet = tdate;
+      api("/api/session").then((e) => {
+        // console.log(e);
+        if (e.status == true || e.status == "true") {
+          api("/api/project/show/" + params.id).then((e0) => {
+            var iddivisi = 0;
+            if (
+              e.data_act.muser_role.name.toLowerCase() == "project manager" ||
+              e.data_act.muser_role.name.toLowerCase() == "admin"
+            ) {
+              if (e0.data_act.project_division.length) {
+                iddivisi = e0.data_act.project_division[0].id;
+              }
+            } else {
+              iddivisi = e.data_act.muser_detail.iddivision;
+            }
+            meta.iddivision = iddivisi;
+            var ttempDivision = [];
+            // console.log(e);
+            e0.data_act.project_division.map((e) => {
+              // console.log(e);
+              ttempDivision.push({ value: e.id, label: e.division });
+            });
+            meta.user = ttempDivision;
+            console.log(iddivisi);
+            api("/api/project/task/timeline", {
+              data: {
+                idproject: params.id,
+                month: ("0" + tdate.getMonth() + 1).slice(-2),
+                year: tdate.getFullYear(),
+              },
+              iddivision: 19,
+              keyword: meta.keywordSearch,
+            })
+              .then((e) => {
+                console.log("year ==> " + tdate.getFullYear());
+                console.log("month ==> " + ("0" + tdate.getMonth()).slice(-2));
+                console.log(meta.iddivision);
+                console.log(e);
+                if (e.status == true) {
+                  e.data_act.timeline.map((e) => {
+                    console.log(e);
+                    console.log(
+                      e.startdate.split("-")[0] +
+                        "-" +
+                        e.startdate.split("-")[1]
+                    );
+                    var startDateku = new Date(
+                      e.startdate.split("-")[0],
+                      parseInt(e.startdate.split("-")[1]) - 1
+                    );
+                    var dueDateku = new Date(
+                      e.duedate.split("-")[0],
+                      parseInt(e.duedate.split("-")[1]) - 1
+                    );
+                    var dateku = new Date(
+                      meta.time.year,
+                      parseInt(meta.time.month) - 1
+                    );
+                    console.log("tanggal mulai " + startDateku);
+                    console.log("tanggal akhir " + dueDateku);
+                    console.log("waktu yang dipilih " + dateku);
+                    var label = [];
+                    if (dateku < dueDateku) {
+                      for (let i = 1; i <= 4; i++) {
+                        label[i] =
+                          "flex-grow bg-blue-300 border border-coolGray-300";
+                      }
+                    } else {
+                      var startWeek = parseInt(e.startweeks);
+                      var dueWeek = parseInt(e.dueweeks);
+                      console.log(startWeek + " and " + dueWeek);
+                      for (let i = 1; i <= 4; i++) {
+                        console.log(i);
+                        var tes = true;
+                        if (i >= startWeek && i <= dueWeek) {
+                          label[i] =
+                            "flex-grow bg-blue-300 border border-coolGray-300";
+                        } else {
+                          tes = false;
+                          label[i] = "flex-grow border border-coolGray-300";
+                        }
+                        console.log(tes);
+                      }
+                    }
+                    e.labelTime = label;
+                    console.log(label);
+                    console.log(e);
+                  });
+                  meta.isLoading = true;
+                  // document.getElementById("loading").remove();
+                  meta.data_timeline = e.data_act.timeline;
+                  console.log(meta.data_timeline.length);
+                  // console.log(e);
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+
+            // All Project
+            api("/api/project/show/" + params.id).then((e) => {
+              // console.log(e);
+              if (e.status == true) {
+                // META LINK
+                meta.link.detail =
+                  "/m/pm/projects/" + e.data_act.project.id + "/detail";
+                meta.link.team =
+                  "/m/pm/projects/" + e.data_act.project.id + "/team";
+                meta.link.task =
+                  "/m/pm/projects/" + e.data_act.project.id + "/task";
+                meta.link.timeline =
+                  "/m/pm/projects/" + e.data_act.project.id + "/timeline";
+                meta.link.planning =
+                  "/m/pm/projects/" + e.data_act.project.id + "/planning";
+                meta.link.file =
+                  "/m/pm/projects/" +
+                  e.data_act.project.id +
+                  "/file-management";
+                meta.mainLoading = true;
+              }
+            });
           });
-        },
-      };
-      meta.actioncstatus = {
-        onChange: (e) => {
-          runInAction(() => {
-            meta.state.cstatus = e.color;
-            console.log(meta.state.cstatus);
-          });
-        },
-      };
+        }
+      });
     }}
   />
-  <div class="flex flex-col items-start justify-start bg-coolGray-50">
+  <div class="flex flex-col bg-coolGray-50">
     <div class="flex w-full self-stretch items-start justify-center px-3 py-4 bg-white shadow shadow-b">
       <div class="flex w-full space-x-5 items-center justify-start">
-        <a href="/m/pm/projects" class="flex items-center justify-start">
+        <a href="" class="flex items-center justify-start">
           <img
             src="/fimgs/I727_1000_1575_5334.x3.png"
             style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
@@ -185,50 +404,50 @@
         <div class="flex flex-col self-stretch items-start justify-start">
           <div class="flex space-x-4 items-start justify-start px-5 py-4 bg-white">
             <a
+              href={meta.link.detail}
               class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
               style="width: 132px; min-width: 132px; max-width: 132px;"
-              href="/m/pm/projects/detail"
             >
               <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
                 Projects Detail
               </div>
             </a>
             <a
+              href={meta.link.task}
               class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/task"
             >
               <div class="text-sm tracking-wide leading-tight text-coolGray-500">
                 Task
               </div>
             </a>
             <a
+              href={meta.link.planning}
               class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/planning"
             >
               <div class="text-sm tracking-wide leading-tight text-coolGray-500">
                 Planning
               </div>
             </a>
             <a
+              href={meta.link.timeline}
               class="flex items-center justify-center px-4 py-2 border rounded border-indigo-400"
-              href="/m/pm/projects/timeline"
             >
               <div class="text-sm tracking-wide leading-tight text-indigo-500">
                 Timeline
               </div>
             </a>
             <a
+              href={meta.link.file}
               class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
               style="width: 151px; min-width: 151px; max-width: 151px;"
-              href="/m/pm/projects/filemanagement"
             >
               <div class="text-sm tracking-wide leading-tight text-center text-coolGray-500">
                 File Management
               </div>
             </a>
             <a
+              href={meta.link.team}
               class="flex items-center justify-center px-4 py-2 border rounded border-coolGray-400"
-              href="/m/pm/projects/team"
             >
               <div class="text-sm tracking-wide leading-tight text-coolGray-500">
                 Team
@@ -238,201 +457,196 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col self-stretch space-y-6 px-5 w-auto">
-      <div class="items-center justify-between">
-        <div
-          class="flex self-stretch items-center justify-between bg-white border-b border-coolGray-300 pr-2"
-          style="height: 40px; min-height: 40px; max-height: 40px;"
-        >
-          <div class="text-sm font-medium tracking-wide leading-tight text-start text-coolGray-900 border-coolGray-300">
-            <div class="flex items-center justify-center">
-              <multipleselect
-                options={meta.user}
-                defaultValue={meta.user[0]}
-                theme={(theme) => ({
-                  ...theme,
-                  borderRadius: 0,
-                  colors: {
-                    ...theme.colors,
-                    primary25: "#F3F4F6",
-                    primary: "#6366F1",
-                  },
-                })}
-                styles={meta.stylesx}
-                className="w-40"
-                classNamePrefix="select"
-                name="status"
-              />
-            </div>
-          </div>
-          <div class="flex space-x-2 items-center justify-center">
-            <div id="prev" onClick={meta.getPreviousMonth}>
-              <img
-                class="cursor-pointer"
-                src="/fimgs/638_776.x3.png"
-                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-              />
-            </div>
-            <div class="flex flex-1 items-start justify-start">
-              <div
-                class="text-sm font-medium tracking-wide leading-normal text-center text-indigo-500"
-                id="date"
-              >
-                {meta.selectedMonth}
+    <div class="flex flex-col self-stretch space-y-6 w-auto flex-grow">
+      <div class="flex-col flex items-center justify-between flex-grow">
+        {meta.mainLoading ? (
+          <>
+            <div class="flex self-stretch flex-wrap justify-between bg-white border-b border-coolGray-300 pr-2 flex-grow">
+              <div class="text-sm font-medium tracking-wide leading-tight text-start text-coolGray-900 border-coolGray-300">
+                <div class="flex items-center justify-center">
+                  <multipleselect
+                    options={meta.user}
+                    defaultValue={
+                      meta.iddivision == 0 || meta.iddivision == ""
+                        ? meta.user[-1]
+                        : meta.user[meta.searchIdx(meta.iddivision, meta.user)]
+                    }
+                    theme={(theme) => ({
+                      ...theme,
+                      borderRadius: 0,
+                      colors: {
+                        ...theme.colors,
+                        primary25: "#F3F4F6",
+                        primary: "#6366F1",
+                      },
+                    })}
+                    styles={meta.stylesx}
+                    className="w-40"
+                    classNamePrefix="select"
+                    name="status"
+                    onChange={(e) => {
+                      meta.iddivision = e.value;
+                      meta.reloadData(meta.timeSet);
+                    }}
+                  />
+                </div>
+              </div>
+              <div class="flex space-x-2 items-center justify-center">
+                <div id="prev" onClick={meta.getPreviousMonth}>
+                  <img
+                    class="cursor-pointer"
+                    src="/fimgs/638_776.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                </div>
+                <div class="flex flex-1 items-start justify-start">
+                  <div
+                    class="text-sm font-medium tracking-wide leading-normal text-center text-indigo-500"
+                    id="date"
+                  >
+                    {meta.selectedMonth}
+                  </div>
+                </div>
+                <div id="next" onClick={meta.getNextMonth}>
+                  <img
+                    class="cursor-pointer"
+                    src="/fimgs/638_779.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                </div>
               </div>
             </div>
-            <div id="next" onClick={meta.getNextMonth}>
-              <img
-                class="cursor-pointer"
-                src="/fimgs/638_779.x3.png"
-                style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-              />
+            <div class="align-middle inline-block min-w-full">
+              <div class="overflow-hidden">
+                <table class="min-w-full bg-white">
+                  <thead>
+                    <tr>
+                      <td
+                        rowSpan="2"
+                        class="relative px-3 justify-center mr-auto border-r border-b border-coolGray-300"
+                      >
+                        <div class=" text-sm font-medium text-gray-500 text-center">
+                          Task Name
+                        </div>
+                      </td>
+                      <td
+                        colSpan="4"
+                        class="relative px-4 py-1 justify-center border-b border-coolGray-300"
+                      >
+                        <div class="text-sm font-medium text-coolGray-500 text-center">
+                          Week
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr class="border-b border-coolGray-300">
+                      <td class="relative px-4 py-1 text-sm justify-start border border-coolGray-300">
+                        <div class="text-sm font-medium text-coolGray-500 text-center">
+                          1
+                        </div>
+                      </td>
+                      <td class="relative px-4 py-1 text-sm justify-start border border-coolGray-300">
+                        <div class="text-sm font-medium text-coolGray-500 text-center">
+                          2
+                        </div>
+                      </td>
+                      <td class="relative px-4 py-1 text-sm justify-start border border-coolGray-300">
+                        <div class="text-sm font-medium text-coolGray-500 text-center">
+                          3
+                        </div>
+                      </td>
+                      <td class="relative px-4 py-1 text-sm justify-start">
+                        <div class="text-sm font-medium text-coolGray-500 text-center">
+                          4
+                        </div>
+                      </td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {meta.isLoading ? (
+                      <>
+                        {meta.data_timeline.map((e) => {
+                          return (
+                            <tr class="border-b border-coolGray-300">
+                              <td class="px-3 py-4 whitespace-normal text-left">
+                                <div class="text-sm text-gray-900">
+                                  {e.name}
+                                </div>
+                              </td>
+                              <td class={e.labelTime[1]}></td>
+                              <td class={e.labelTime[2]}></td>
+                              <td class={e.labelTime[3]}></td>
+                              <td class={e.labelTime[4]}></td>
+                            </tr>
+                          );
+                        })}
+                      </>
+                    ) : (
+                      <tr class="border-b border-coolGray-300">
+                        <td
+                          class="px-3 py-4 whitespace-normal text-left"
+                          colSpan="5"
+                        >
+                          <div class="flex self-stretch flex-wrap items-center justify-center">
+                            <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+                              <div
+                                class="loader-dots block relative w-22 h-6 mt-2"
+                                style="width: 5rem;"
+                              >
+                                <div
+                                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                  style="top: 0; width: 0.75rem; height: 0.75rem;"
+                                ></div>
+                                <div
+                                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                ></div>
+                                <div
+                                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                ></div>
+                                <div
+                                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div class="flex self-stretch flex-wrap items-center justify-center flex-grow">
+            <div class="py-2 px-6 rounded-lg flex items-center flex-col">
+              <div
+                class="loader-dots block relative w-22 h-6 mt-2"
+                style="width: 5rem;"
+              >
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; width: 0.75rem; height: 0.75rem;"
+                ></div>
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                ></div>
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                ></div>
+                <div
+                  class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                  style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                ></div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="align-middle inline-block min-w-full">
-          <div class="overflow-hidden">
-            <table class="min-w-full bg-white">
-              <tr>
-                <td
-                  rowSpan="2"
-                  class="relative px-3 justify-center mr-auto border-r border-b border-coolGray-300"
-                >
-                  <div class=" text-sm font-medium text-gray-500 text-center">
-                    Task Name
-                  </div>
-                </td>
-                <td
-                  colSpan="4"
-                  class="relative px-4 py-1 justify-center border-b border-coolGray-300"
-                >
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    Week
-                  </div>
-                </td>
-              </tr>
-              <tr class="border-b border-coolGray-300">
-                <td class="relative px-4 py-1 text-sm justify-start border border-coolGray-300">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    1
-                  </div>
-                </td>
-                <td class="relative px-4 py-1 text-sm justify-start border border-coolGray-300">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    2
-                  </div>
-                </td>
-                <td class="relative px-4 py-1 text-sm justify-start border border-coolGray-300">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    3
-                  </div>
-                </td>
-                <td class="relative px-4 py-1 text-sm justify-start">
-                  <div class="text-sm font-medium text-coolGray-500 text-center">
-                    4
-                  </div>
-                </td>
-              </tr>
-              <tr class="border-b border-coolGray-300">
-                <td class="px-3 py-2 whitespace-normal text-left">
-                  <div class="text-sm text-gray-900">Wireframe</div>
-                </td>
-                <td
-                  class="flex-grow bg-white border border-coolGray-300"
-                  style="width: 12%; min-width: 12%; max-width: 12%;"
-                >
-                  <div
-                    class="w-full h-8 cursor-pointer"
-                    style={
-                      meta.state.status == 1
-                        ? "background-color: #4ADE80;"
-                        : meta.state.status == 2
-                        ? "background-color: #888DF1;"
-                        : meta.state.status == 3
-                        ? "background-color: #2D34E6;"
-                        : meta.state.status == 4
-                        ? "background-color: #F9A8D4;"
-                        : meta.state.status == 5
-                        ? "background-color: #F87171;"
-                        : meta.state.status == 6
-                        ? "background-color: #F1B459;"
-                        : "background-color: #4ADE80;"
-                    }
-                  ></div>
-                </td>
-                <td
-                  class="flex-grow bg-white border border-coolGray-300"
-                  style="width: 12%; min-width: 12%; max-width: 12%;"
-                >
-                  <div
-                    class="w-full h-8 cursor-pointer"
-                    style={
-                      meta.state.status == 1
-                        ? "background-color: #4ADE80;"
-                        : meta.state.status == 2
-                        ? "background-color: #888DF1;"
-                        : meta.state.status == 3
-                        ? "background-color: #2D34E6;"
-                        : meta.state.status == 4
-                        ? "background-color: #F9A8D4;"
-                        : meta.state.status == 5
-                        ? "background-color: #F87171;"
-                        : meta.state.status == 6
-                        ? "background-color: #F1B459;"
-                        : "background-color: #4ADE80;"
-                    }
-                  ></div>
-                </td>
-                <td
-                  class="flex-grow bg-white border border-coolGray-300"
-                  style="width: 12%; min-width: 12%; max-width: 12%;"
-                >
-                  <div
-                    class="w-full h-8 cursor-pointer"
-                    style={
-                      meta.state.status == 1
-                        ? "background-color: #4ADE80;"
-                        : meta.state.status == 2
-                        ? "background-color: #888DF1;"
-                        : meta.state.status == 3
-                        ? "background-color: #2D34E6;"
-                        : meta.state.status == 4
-                        ? "background-color: #F9A8D4;"
-                        : meta.state.status == 5
-                        ? "background-color: #F87171;"
-                        : meta.state.status == 6
-                        ? "background-color: #F1B459;"
-                        : "background-color: #4ADE80;"
-                    }
-                  ></div>
-                </td>
-                <td
-                  class="flex-grow bg-white border border-coolGray-300"
-                  style="width: 12%; min-width: 12%; max-width: 12%;"
-                >
-                  <div
-                    class="w-full h-8 cursor-pointer"
-                    style={
-                      meta.state.status == 1
-                        ? "background-color: #4ADE80;"
-                        : meta.state.status == 2
-                        ? "background-color: #888DF1;"
-                        : meta.state.status == 3
-                        ? "background-color: #2D34E6;"
-                        : meta.state.status == 4
-                        ? "background-color: #F9A8D4;"
-                        : meta.state.status == 5
-                        ? "background-color: #F87171;"
-                        : meta.state.status == 6
-                        ? "background-color: #F1B459;"
-                        : "background-color: #4ADE80;"
-                    }
-                  ></div>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   </div>

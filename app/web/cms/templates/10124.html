@@ -1,225 +1,368 @@
 <>
-  <effect meta={{}} run={async () => {}} />
-  <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50">
-    <div class="flex self-stretch flex-col items-start justify-center px-5 py-4 bg-white shadow shadow-b">
-      <div class="flex self-stretch items-center justify-between">
-        <div class="flex items-start justify-start">
-          <div class="text-base tracking-wide leading-normal text-coolGray-900">
-            My Account
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="flex flex-col self-stretch space-y-5 pt-3 w-auto"
-      style="padding-bottom:5.5rem"
-    >
-      <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
-        <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white">
-          <div class="flex self-stretch space-x-4 items-center justify-start">
-            <img
-              src="/fimgs/724_1731.x3.png"
-              class="flex items-start justify-start"
-              style="width: 40px; min-width: 40px; max-width: 40px; height: 40px; min-height: 40px; max-height: 40px;"
-            />
-            <div class="flex flex-1 flex-col items-start justify-start">
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-base tracking-wide leading-normal text-coolGray-900">
-                  Otto Gukguk
-                </div>
-              </div>
-              <div class="flex self-stretch items-start justify-start">
-                <div class="text-xs tracking-wide leading-none text-coolGray-500">
-                  Project Manager
-                </div>
+  <effect
+    meta={{
+      state0: {
+        name: "",
+        division: "",
+        photo:
+          "https://images.pexels.com/photos/2589653/pexels-photo-2589653.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+      },
+
+      isLoading: false,
+      dashboard: {
+        nextproject: 0,
+        progress: 0,
+        complete: 0,
+        unfinish: 0,
+      },
+      data_team: [],
+      reloadData() {
+        api("/api/team")
+          .then((e) => {
+            console.log(e);
+            if (e.status == true) {
+              this.data_team = e.data_act;
+              this.isLoading = true;
+            } else {
+              console.log(e);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      },
+      mainLoading: true,
+      logout(e) {
+        this.mainLoading = true;
+        api("/api/logout").then((e) => {
+          console.log(e);
+          var host = window.location.origin;
+          window.location.replace(host + "/m");
+        });
+      },
+    }}
+    run={async () => {
+      api("/api/team").then((e) => {
+        // console.log(e);
+        if (e.status == true) {
+          meta.data_team = [];
+          e.data_act.map((e) => {
+            meta.data_team.push(e);
+          });
+          meta.isLoading = true;
+          meta.mainLoading = false;
+          // this.data_team = e.data_act;
+        } else {
+          // console.log(e);
+        }
+      });
+      api("/api/project").then((e) => {
+        console.clear();
+        // console.log(e);
+        if (e.dashboard) {
+          e.dashboard.map((idx) => {
+            if (idx.name == "next project") {
+              meta.dashboard.nextproject = idx.nproject;
+            }
+            if (idx.name == "progress") {
+              meta.dashboard.progress = idx.nproject;
+            }
+            if (idx.name == "uncompleted") {
+              meta.dashboard.unfinish = idx.nproject;
+            }
+            if (idx.name == "completed") {
+              meta.dashboard.complete = idx.nproject;
+            }
+          });
+        }
+      });
+      api("/api/session").then((e) => {
+        console.clear();
+        meta.state0.name = e.data_act.muser_detail.fullname;
+        if (e.data_act.muser_detail.mdivision) {
+          meta.state0.division = e.data_act.muser_detail.mdivision.name;
+        }
+        console.log(e.data_act.muser_detail.fullname);
+        console.log(e.data_act.muser_detail.mdivision.name);
+        meta.state0.photo = e.data_act.muser_detail.photo
+          ? e.data_act.muser_detail.photo
+          : "";
+        meta.isLoading = true;
+      });
+    }}
+  />
+  {meta.mainLoading ? (
+    <>
+      <loadku />
+    </>
+  ) : (
+    <>
+      <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50">
+        <div class="flex self-stretch flex-col items-start justify-center px-5 py-4 bg-white shadow shadow-b">
+          <div class="flex self-stretch items-center justify-between">
+            <div class="flex items-start justify-start">
+              <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                My Account
               </div>
             </div>
           </div>
         </div>
-        <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white">
-          <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                Account
-              </div>
-            </div>
-            <div class="flex w-full flex-col space-y-4 items-start justify-start">
-              <a
-                href="/m/pm/account/profile"
-                class="flex self-stretch items-center justify-between cursor-pointer"
-              >
-                <div class="flex space-x-2 items-start justify-start">
-                  <img
-                    src="/fimgs/724_1745.x3.png"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex items-start justify-start">
-                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                      Profile
-                    </div>
-                  </div>
-                </div>
-                <img
-                  src="/fimgs/724_1748.x3.png"
-                  style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                />
-              </a>
-              <a
-                href="/m/pm/account/change-pass"
-                class="flex self-stretch items-center justify-between cursor-pointer"
-              >
-                <div class="flex space-x-2 items-start justify-start">
-                  <img
-                    src="/fimgs/724_1751.x3.png"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex items-start justify-start">
-                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                      Change Password
-                    </div>
-                  </div>
-                </div>
-                <img
-                  src="/fimgs/724_1748.x3.png"
-                  style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                />
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="flex w-full self-stretch flex-col space-y-4 items-start justify-start px-5 py-4 bg-white">
-          <div class="flex w-full self-stretch flex-col space-y-3 items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                Team
-              </div>
-            </div>
-            <div class="flex w-full flex-col space-y-4 items-start justify-between">
-              <a
-                href="/m/pm/account/team"
-                class="flex self-stretch items-center justify-between cursor-pointer"
-              >
+        <div class="flex flex-col self-stretch space-y-5 pt-3 pb-5 w-auto">
+          <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+            <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white">
+              <div class="flex self-stretch space-x-4 items-center justify-start">
                 <div class="flex items-start justify-start">
-                  <div class="flex items-start justify-start">
-                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                      Team 1
+                  {meta.isLoading ? (
+                    <>
+                      <img
+                        class="inline-block rounded-full ring-2 ring-white"
+                        src={"/upload/" + meta.state0.photo}
+                        alt="Profile image"
+                        style="width: 40px; min-width: 40px; max-width: 40px; height: 40px; min-height: 40px; max-height: 40px;"
+                      />
+                    </>
+                  ) : (
+                    <div class="flex self-stretch flex-wrap items-center justify-center justify-center">
+                      <div
+                        class="flex items-center justify-center flex-row "
+                        style="width: 72px; min-width: 72px; max-width: 72px; height: 72px; min-height: 72px; max-height: 72px;"
+                      >
+                        <div
+                          class="loader-dots block relative w-22 h-6"
+                          style="width: 5rem;"
+                        >
+                          <div
+                            class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                            style="top: 0; width: 0.75rem; height: 0.75rem;"
+                          ></div>
+                          <div
+                            class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                            style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                          ></div>
+                          <div
+                            class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                            style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                          ></div>
+                          <div
+                            class="absolute top-0 mt-1 w-4 h-4 rounded-full bg-blue-700"
+                            style="top: 0; 	width: 0.75rem; height: 0.75rem;"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div class="flex flex-1 flex-col items-start justify-start">
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                      {meta.state0.name}
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-start justify-start">
+                    <div class="text-xs tracking-wide leading-none text-coolGray-500 capitalize">
+                      {meta.state0.division}
                     </div>
                   </div>
                 </div>
-                <img
-                  src="/fimgs/724_1748.x3.png"
-                  style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                />
+              </div>
+            </div>
+            <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white">
+              <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
+                <div class="flex self-stretch items-start justify-start">
+                  <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                    Account
+                  </div>
+                </div>
+                <div class="flex w-full flex-col space-y-4 items-start justify-start">
+                  <a
+                    href="/m/pm/account/profile"
+                    class="flex self-stretch items-center justify-between cursor-pointer"
+                  >
+                    <div class="flex space-x-2 items-start justify-start">
+                      <img
+                        src="/fimgs/724_1745.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                      />
+                      <div class="flex items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                          Profile
+                        </div>
+                      </div>
+                    </div>
+                    <img
+                      src="/fimgs/724_1748.x3.png"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                    />
+                  </a>
+                  <a
+                    href="/m/pm/account/change-pass"
+                    class="flex self-stretch items-center justify-between cursor-pointer"
+                  >
+                    <div class="flex space-x-2 items-start justify-start">
+                      <img
+                        src="/fimgs/724_1751.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                      />
+                      <div class="flex items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                          Change Password
+                        </div>
+                      </div>
+                    </div>
+                    <img
+                      src="/fimgs/724_1748.x3.png"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="flex w-full self-stretch flex-col space-y-4 items-start justify-start px-5 py-4 bg-white">
+              <div class="flex w-full self-stretch flex-col space-y-3 items-start justify-start">
+                <div class="flex self-stretch items-start justify-start">
+                  <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                    Team
+                  </div>
+                </div>
+                <div class="flex w-full flex-col space-y-4 items-start justify-between">
+                  {meta.data_team.map((e) => {
+                    var urlteam = "/m/pm/account/team/detail/" + e.id;
+                    return (
+                      <a
+                        href={urlteam}
+                        class="flex self-stretch items-center justify-between cursor-pointer"
+                      >
+                        <div class="flex items-start justify-start">
+                          <div class="flex items-start justify-start">
+                            <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                              {e.name}
+                            </div>
+                          </div>
+                        </div>
+                        <img
+                          src="/fimgs/724_1748.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+              <a
+                href="/m/pm/account/team/create"
+                class="flex w-full items-center justify-between px-6 py-3 bg-white border rounded border-coolGray-300 cursor-pointer"
+              >
+                <div class="flex flex-1 space-x-3 items-center justify-between">
+                  <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                    Create New Team
+                  </div>
+                  <img
+                    src="/fimgs/I738_2203_18_27.x3.png"
+                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                  />
+                </div>
               </a>
             </div>
+            <div class="flex w-full self-stretch flex-col items-start justify-start px-5 py-4 bg-white">
+              <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
+                <div class="flex self-stretch items-start justify-start">
+                  <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
+                    Projects
+                  </div>
+                </div>
+                <div class="flex w-full flex-col space-y-4 items-start justify-start">
+                  <div class="flex self-stretch items-center justify-between">
+                    <div class="flex space-x-2 items-start justify-start">
+                      <img
+                        src="/fimgs/724_1762.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                      />
+                      <div class="flex items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                          In Progress
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col items-start justify-start py-0.5 px-2 bg-orange-400 bg-opacity-40 border rounded-sm border-orange-400">
+                      <div class="text-xs tracking-wide leading-none text-orange-400">
+                        {meta.dashboard.progress}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-center justify-between">
+                    <div class="flex space-x-2 items-start justify-start">
+                      <img
+                        src="/fimgs/724_1769.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                      />
+                      <div class="flex items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                          Complete
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col items-start justify-start py-0.5 px-2 bg-green-200 border rounded-sm border-green-500">
+                      <div class="text-xs tracking-wide leading-none text-green-500">
+                        {meta.dashboard.complete}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-center justify-between">
+                    <div class="flex space-x-2 items-start justify-start">
+                      <img
+                        src="/fimgs/724_1776.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                      />
+                      <div class="flex items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                          Unfinish
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col items-start justify-start py-0.5 px-2 bg-red-200 border rounded-sm border-red-500">
+                      <div class="text-xs tracking-wide leading-none text-red-500">
+                        {meta.dashboard.unfinish}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch items-center justify-between">
+                    <div class="flex space-x-2 items-start justify-start">
+                      <img
+                        src="/fimgs/724_1783.x3.png"
+                        style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                      />
+                      <div class="flex items-start justify-start">
+                        <div class="text-sm tracking-wide leading-tight text-coolGray-900">
+                          Next Project
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col items-start justify-start py-0.5 px-2 bg-violet-300 border rounded-sm border-blue-700">
+                      <div class="text-xs tracking-wide leading-none text-blue-700">
+                        {meta.dashboard.nextproject}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="flex w-full items-center justify-between px-6 py-3 bg-white border rounded border-coolGray-300 cursor-pointer">
-            <div class="flex flex-1 space-x-3 items-center justify-between">
-              <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                Create New Team
+          <div class="flex self-stretch flex-col items-start justify-start px-5">
+            <div
+              class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 border rounded border-indigo-500 cursor-pointer"
+              onClick={meta.logout}
+            >
+              <div class="text-base tracking-wide leading-normal text-center text-indigo-500">
+                Sign Out
               </div>
               <img
-                src="/fimgs/I738_2203_18_27.x3.png"
+                src="/fimgs/I724_1789_724_1719.x3.png"
                 style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
               />
             </div>
           </div>
         </div>
-        <div class="flex w-full self-stretch flex-col items-start justify-start px-5 py-4 bg-white">
-          <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
-            <div class="flex self-stretch items-start justify-start">
-              <div class="text-base font-medium tracking-wide leading-normal text-coolGray-900">
-                Projects
-              </div>
-            </div>
-            <div class="flex w-full flex-col space-y-4 items-start justify-start">
-              <div class="flex self-stretch items-center justify-between">
-                <div class="flex space-x-2 items-start justify-start">
-                  <img
-                    src="/fimgs/724_1762.x3.png"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex items-start justify-start">
-                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                      In Progress
-                    </div>
-                  </div>
-                </div>
-                <div class="flex flex-col items-start justify-start py-0.5 px-2 bg-orange-400 bg-opacity-40 border rounded-sm border-orange-400">
-                  <div class="text-xs tracking-wide leading-none text-orange-400">
-                    1
-                  </div>
-                </div>
-              </div>
-              <div class="flex self-stretch items-center justify-between">
-                <div class="flex space-x-2 items-start justify-start">
-                  <img
-                    src="/fimgs/724_1769.x3.png"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex items-start justify-start">
-                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                      Complete
-                    </div>
-                  </div>
-                </div>
-                <div class="flex flex-col items-start justify-start py-0.5 px-2 bg-green-200 border rounded-sm border-green-500">
-                  <div class="text-xs tracking-wide leading-none text-green-500">
-                    22
-                  </div>
-                </div>
-              </div>
-              <div class="flex self-stretch items-center justify-between">
-                <div class="flex space-x-2 items-start justify-start">
-                  <img
-                    src="/fimgs/724_1776.x3.png"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex items-start justify-start">
-                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                      Unfinish
-                    </div>
-                  </div>
-                </div>
-                <div class="flex flex-col items-start justify-start py-0.5 px-2 bg-red-200 border rounded-sm border-red-500">
-                  <div class="text-xs tracking-wide leading-none text-red-500">
-                    3
-                  </div>
-                </div>
-              </div>
-              <div class="flex self-stretch items-center justify-between">
-                <div class="flex space-x-2 items-start justify-start">
-                  <img
-                    src="/fimgs/724_1783.x3.png"
-                    style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-                  />
-                  <div class="flex items-start justify-start">
-                    <div class="text-sm tracking-wide leading-tight text-coolGray-900">
-                      Next Project
-                    </div>
-                  </div>
-                </div>
-                <div class="flex flex-col items-start justify-start py-0.5 px-2 bg-violet-300 border rounded-sm border-blue-700">
-                  <div class="text-xs tracking-wide leading-none text-blue-700">
-                    2
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
-      <div class="flex self-stretch flex-col items-start justify-start px-5">
-        <div class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 border rounded border-indigo-500 cursor-pointer">
-          <div class="text-base tracking-wide leading-normal text-center text-indigo-500">
-            Sign Out
-          </div>
-          <img
-            src="/fimgs/I724_1789_724_1719.x3.png"
-            style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
+    </>
+  )}
 </>

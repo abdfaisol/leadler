@@ -1,0 +1,298 @@
+<>
+  <effect
+    meta={{
+      showPass: false,
+      input: {},
+      errors: {},
+      state: { token: params.token, password: "", passwordCurrent: "" },
+      handleSubmit(event) {
+        console.log(this.state);
+        // /api/password/update
+        // api("/api/password/update", {
+        //   password : this.input["xpassword"]
+        // }).then((e) => {
+        //   // if (e.status == true) {
+        //   //   var host = window.location.origin;
+        //   //   window.location.replace(host + "/m/user/account");
+        //   // }
+        //   console.log(e);
+        // });
+        console.log(this.input["xpassword"]);
+        console.log(this.state.passwordCurrent);
+        if (this.validate()) {
+          console.log(this);
+          api("/api/password/update", {
+            password: this.input["password"],
+          }).then((e) => {
+            // console.log(e);
+            api("/api/session").then((e) => {
+              console.clear();
+              console.log(e.passwordDecrypt);
+              this.state.passwordCurrent = e.passwordDecrypt;
+              var host = window.location.origin;
+              window.location.replace(host + "/m/user/account");
+            });
+            let input = {};
+            input["xpassword"] = "";
+            input["password"] = "";
+            input["cpassword"] = "";
+            this.input = input;
+            this.showModal = !this.showModal;
+          });
+        }
+        //window.location.replace(window.location.origin);
+        event.preventDefault();
+      },
+      validate() {
+        let input = this.input;
+        let errors = {};
+        let isValid = true;
+        if (!input["xpassword"]) {
+          isValid = false;
+          errors["xpassword"] = "This field is required.";
+        }
+        if (input["xpassword"] !== this.state.passwordCurrent) {
+          isValid = false;
+          errors["xpassword"] = "Password doesn't match.";
+        }
+        if (!input["password"]) {
+          isValid = false;
+          errors["password"] = "This field is required.";
+        }
+
+        if (!input["cpassword"]) {
+          isValid = false;
+          errors["cpassword"] = "This field is required.";
+        }
+
+        if (input["password"] !== input["cpassword"]) {
+          isValid = false;
+          errors["cpassword"] = "Password doesn't match.";
+        }
+
+        this.errors = errors;
+        return isValid;
+      },
+      handleSubmit1(event) {
+        window.location.replace(window.location.origin + "/lupa-pass");
+        event.preventDefault();
+      },
+      ubahNilai(e) {
+        let input = this.input;
+        input[e.target.name] = e.target.value;
+        this.input = input;
+
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        console.log(name);
+      },
+      handleInputChange(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        console.log(name + "   " + e.target.value);
+        this.state[name] = nilai;
+        // console.log(this.state.username);
+      },
+      toggleXPass() {
+        this.showXPass = !this.showXPass;
+        // console.log(this.showPass);
+      },
+      togglePass() {
+        this.showPass = !this.showPass;
+        // console.log(this.showPass);
+      },
+      togglePass2() {
+        this.showPass2 = !this.showPass2;
+        // console.log(this.showPass);
+      },
+    }}
+    run={async () => {
+      api("/api/session").then((e) => {
+        console.clear();
+        // console.log(e.passwordDecrypt);
+        meta.state.passwordCurrent = e.passwordDecrypt;
+      });
+    }}
+  />
+  <div class="flex self-stretch flex-col items-start justify-start bg-coolGray-50">
+    <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b">
+      <div class="flex w-full space-x-5 items-center justify-start">
+        <a href="/m/user/account" class="flex items-center justify-start">
+          <img
+            src="/fimgs/I727_1000_1575_5334.x3.png"
+            style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+          />
+          <div class="text-base tracking-wide leading-tight text-indigo-500">
+            Back
+          </div>
+        </a>
+        <div class="flex items-center justify-center">
+          <div class="text-base tracking-wide leading-normal text-coolGray-900">
+            Change Password
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col w-full self-stretch space-y-5 py-3 w-auto">
+      <div class="flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+        <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto">
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Current Password
+          </div>
+          <div class="flex flex-col self-stretch items-start justify-start">
+            <div class="flex self-stretch items-center justify-start">
+              <div class="relative flex flex-1 items-center justify-start">
+                <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                  <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                    <img
+                      src="/fimgs/I159_397_18_30.x3.png"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+                    />
+                  </div>
+                </div>
+                <m-input
+                  type={meta.showXPass ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="Insert your current password"
+                  class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
+                  name="xpassword"
+                  value={meta.input.xpassword}
+                  onChange={meta.ubahNilai}
+                />
+                <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                  <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
+                    <div onClick={meta.toggleXPass} class="cursor-pointer">
+                      {meta.showXPass ? (
+                        <img
+                          src="/fimgs/618_960.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      ) : (
+                        <img
+                          src="/fimgs/620_443.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-xs font-normal py-1 tracking-wide leading-tight text-red-500">
+              {meta.errors.xpassword}
+            </div>
+          </div>
+          <hr class="border-gray-300 pb-2 my-auto w-full"></hr>
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            New Password
+          </div>
+          <div class="flex flex-col self-stretch items-start justify-start">
+            <div class="flex self-stretch items-center justify-start">
+              <div class="relative flex flex-1 items-center justify-start">
+                <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                  <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                    <img
+                      src="/fimgs/I159_397_18_30.x3.png"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+                    />
+                  </div>
+                </div>
+                <m-input
+                  type={meta.showPass ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="Insert your new password"
+                  class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
+                  name="password"
+                  value={meta.input.password}
+                  onChange={meta.ubahNilai}
+                />
+                <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                  <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
+                    <div onClick={meta.togglePass} class="cursor-pointer">
+                      {meta.showPass ? (
+                        <img
+                          src="/fimgs/618_960.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      ) : (
+                        <img
+                          src="/fimgs/620_443.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-xs py-1 font-normal tracking-wide leading-tight text-red-500">
+              {meta.errors.password}
+            </div>
+          </div>
+          <div class="text-sm tracking-wide leading-none text-gray-500">
+            Confirm Password
+          </div>
+          <div class="flex flex-col self-stretch items-start justify-start">
+            <div class="flex self-stretch items-center justify-start">
+              <div class="relative flex flex-1 items-center justify-start">
+                <div class="absolute flex border border-transparent left-0 top-0 h-full w-12">
+                  <div class="flex items-center justify-center rounded-tl rounded-bl z-10 text-lg h-full w-full">
+                    <img
+                      src="/fimgs/I159_397_18_30.x3.png"
+                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;background-image: url('/fimgs/bg-f279adea3b6c9025da363a2edf97ad97bcededaa');background-size:100% 100%;background-repeat:no-repeat;"
+                    />
+                  </div>
+                </div>
+                <m-input
+                  type={meta.showPass2 ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="Confirm your password"
+                  class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 pl-12"
+                  name="cpassword"
+                  value={meta.input.cpassword}
+                  onChange={meta.ubahNilai}
+                />
+                <div class="absolute flex border border-transparent right-0 top-0 h-full w-12">
+                  <div class="flex items-center justify-center rounded-tr rounded-br z-10 text-lg h-full w-full bg-white">
+                    <div onClick={meta.togglePass2} class="cursor-pointer">
+                      {meta.showPass2 ? (
+                        <img
+                          src="/fimgs/618_960.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      ) : (
+                        <img
+                          src="/fimgs/620_443.x3.png"
+                          style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-xs font-normal pt-1 tracking-wide leading-tight text-red-500">
+              {meta.errors.cpassword}
+            </div>
+          </div>
+          <form
+            onSubmit={meta.handleSubmit}
+            class="flex flex-col w-full space-y-2.5 items-start justify-start relative overflow-y-auto"
+          >
+            <button
+              type="submit"
+              class="flex flex-1 self-stretch flex-col items-start justify-start"
+            >
+              <div class="flex self-stretch items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded">
+                <div class="text-base font-medium tracking-wide leading-normal text-center text-white">
+                  Change Password
+                </div>
+              </div>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</>

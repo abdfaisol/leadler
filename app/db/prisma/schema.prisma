@@ -66,6 +66,7 @@ model mproject {
   label                                                     String?              @db.VarChar(100)
   iddepartment                                              Int?
   idstatus                                                  Int?
+  finished                                                  DateTime?            @db.Date
   mproject_detail                                           mproject_detail[]
   mproject_upload                                           mproject_upload[]
   muser_has_mproject_mprojectTomuser_has_mproject_idproject muser_has_mproject[] @relation("mprojectTomuser_has_mproject_idproject")
@@ -75,7 +76,7 @@ model mproject_detail {
   id                    Int                  @id @default(autoincrement())
   idproject             Int
   name                  String               @db.VarChar(45)
-  idstatus              Int
+  idstatus              Int?                 @default(3)
   startdate             DateTime?            @db.Timestamp(6)
   duedate               DateTime?            @db.Timestamp(6)
   desc                  String?              @db.VarChar(255)
@@ -86,7 +87,7 @@ model mproject_detail {
   priority              Int?                 @default(1)
   mproject_detail       mproject_detail?     @relation("mproject_detailTomproject_detail_idparent", fields: [idparent], references: [id])
   mproject              mproject             @relation(fields: [idproject], references: [id])
-  mproject_status       mproject_status      @relation(fields: [idstatus], references: [id])
+  mproject_status       mproject_status?     @relation(fields: [idstatus], references: [id])
   mpriority             mpriority?           @relation(fields: [priority], references: [id])
   other_mproject_detail mproject_detail[]    @relation("mproject_detailTomproject_detail_idparent")
   mproject_task_user    mproject_task_user[]
@@ -116,6 +117,7 @@ model mproject_upload {
   idproject    Int?
   iduser       Int?
   iddivision   Int?
+  desc         String?       @db.VarChar(255)
   mdivision    mdivision?    @relation(fields: [iddivision], references: [id])
   mproject     mproject?     @relation(fields: [idproject], references: [id])
   muser_detail muser_detail? @relation(fields: [iduser], references: [id])
@@ -144,6 +146,7 @@ model muser_detail {
   address            String?              @db.VarChar(100)
   iddivision         Int?
   birthplace         String?              @db.VarChar(100)
+  photo              String?              @db.VarChar(250)
   mdivision          mdivision?           @relation(fields: [iddivision], references: [id])
   mdepartment        mdepartment?         @relation(fields: [idepartment], references: [id])
   muser              muser?               @relation(fields: [iduser], references: [id])

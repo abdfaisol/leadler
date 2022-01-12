@@ -1,0 +1,912 @@
+<>
+  <effect
+    meta={{
+      modalSubTask: false,
+      expandSubtask: [],
+      state: {
+        name: "",
+        startdate: "",
+        duedate: "",
+        labelstartdate: "",
+        labelduedate: "",
+        status: [],
+        idx: {
+          status: 0,
+          effort: 0,
+          priority: 0,
+        },
+        effort: "",
+        priority: "",
+        iddivision: "",
+        description: "",
+        cost: "0",
+      },
+      division: [],
+      isLoading: false,
+      dataSubTask: [],
+      dataSubTaskProgress: [],
+      dataSubTaskSubmit: [],
+      dataSubTaskComplete: [],
+      link: {
+        detail: "#",
+        team: "#",
+        task: "#",
+        timeline: "#",
+        planning: "#",
+        file: "#",
+      },
+      cobaElement: [],
+      print: true,
+      data_task: [],
+      status: [
+        { value: "3", label: "TODO", color: "#4ADE80" },
+        { value: "2", label: "IN PROGRESS", color: "#888DF1" },
+        { value: "6", label: "SUBMITTED", color: "#2D34E6" },
+        { value: "4", label: "REVIEW", color: "#CFE100" },
+        { value: "5", label: "REVISION", color: "#EF4444" },
+        { value: "1", label: "COMPLETE", color: "#F1B459" },
+      ],
+      statusRaw: [],
+      datePicker: new Date(),
+      datePicker2: new Date(),
+      setStartDate(newDate) {
+        this.datePicker = newDate;
+      },
+      setStartDate2(newDate) {
+        this.datePicker2 = newDate;
+      },
+      isOpen: false,
+      isOpen2: false,
+      setIsOpen(open) {
+        this.isOpen = open;
+      },
+      setIsOpen2(open) {
+        this.isOpen2 = open;
+      },
+      handleChange(e) {
+        this.setIsOpen(!this.isOpen);
+        this.setStartDate(e);
+      },
+      handleChange2(e) {
+        this.setIsOpen2(!this.isOpen2);
+        this.setStartDate2(e);
+      },
+      handleClick(e) {
+        e.preventDefault();
+        this.setIsOpen(!this.isOpen);
+      },
+      handleClick2(e) {
+        e.preventDefault();
+        this.setIsOpen2(!this.isOpen2);
+      },
+      priority: [
+        { value: "1", label: "Low" },
+        { value: "2", label: "Medium" },
+        { value: "3", label: "High" },
+      ],
+      taskv: [
+        { value: "1", label: "1 (Easy)" },
+        { value: "2", label: "2 (Intermediate)" },
+        { value: "3", label: "3 (Hard)" },
+      ],
+
+      statusx: [
+        { value: "3", label: "TODO", color: "#4ADE80" },
+        {
+          value: "2",
+          label: "IN PROGRESS",
+          color: "#888DF1",
+        },
+        { value: "6", label: "SUBMITED", color: "#F1B459" },
+      ],
+
+      isStatus() {
+        if (this.statusx[0]) {
+          console.log("tes");
+          return "w-40 bg-blue-300";
+        } else if (this.statusx[1]) {
+          console.log("tes2");
+          return "w-40 bg-orange-300";
+        } else if (this.statusx[2]) {
+          console.log("tes3");
+          return "w-40 bg-red-300";
+        } else {
+          console.log("tes4");
+          return "w-40 bg-green-300";
+        }
+      },
+      styles: {
+        control: (base, state) => ({
+          ...base,
+          paddingTop: "2.5px",
+          paddingBottom: "2.5px",
+          boxShadow: "none",
+          border: "none",
+        }),
+        option: (styles, state) => ({
+          ...styles,
+          "&:hover": {
+            backgroundColor: state.isDisabled
+              ? "#F3F4F6"
+              : state.isSelected
+              ? null
+              : "#F3F4F6",
+          },
+        }),
+      },
+      stylesx: {
+        control: (base, state) => ({
+          ...base,
+          border: "none",
+          boxShadow: "none",
+          backgroundColor: "transparent",
+        }),
+        option: (styles, { data }) => {
+          return {
+            ...styles,
+            color: "#000000",
+          };
+        },
+      },
+      ubahNilai(e) {
+        let name = e.target.name;
+        let nilai = e.target.value;
+        this.state[name] = nilai;
+        window.user.mobile.project.data[name] = nilai;
+        console.log(window.user.mobile.project.data[name]);
+        // console.log(nilai);
+      },
+      // SUBTASK,
+      removeSubtask(event, id) {
+        console.log(event);
+        console.log("INDEX YANG DIHAPUS " + id);
+        // var list = document.getElementById("subtask-" + id);
+        // console.log(list);
+        // list.remove();
+        this.ttempSubTask[id] = null;
+        var ttempSub = this.ttempSubTask;
+        this.ttempSubTask = [];
+        window.user.mobile.subtask.data = [];
+        ttempSub.map((e, idx) => {
+          if (e) {
+            this.ttempSubTask.push(e);
+            window.user.mobile.subtask.data.push(e);
+          }
+        });
+        console.log(window.user.mobile.subtask.data);
+      },
+      delete(id) {
+        this.setState((prevState) => ({
+          data: prevState.data.filter((el) => el != id),
+        }));
+      },
+      ttempSubTask: [],
+      showModalSubTask(event, id) {
+        this.toggleModal();
+        this.modalSubTask = true;
+        this.idsubtask = id;
+        // this.stateSubTask.name = this.ttempSubTask[meta.idsubtask].name;
+      },
+      backTask(e) {
+        this.modalSubTask = false;
+        this.toggleModal();
+        this.ttempHistorySubTask[this.idsubtask] = this.ttempSubTask[
+          this.idsubtask
+        ];
+        e.preventDefault();
+      },
+      subtask(event) {
+        event.preventDefault();
+        if (this.state.taskname == "") {
+          console.log("tidak boleh kosong");
+        } else {
+          var dataSub = {
+            name: this.state.taskname,
+            startdate: this.state.startdate,
+            duedate: "",
+            status: 3,
+            cstatus: "",
+            effort: 1,
+            priority: 1,
+            iddivision: "",
+            idtask: "",
+            description: "",
+            cost: "0",
+            taskname: "",
+            index: 0,
+          };
+          console.log(dataSub);
+          var length = this.ttempSubTask.push(dataSub);
+          console.log(this.ttempSubTask.length);
+          var idx = this.ttempSubTask.length - 1;
+          window.user.mobile.subtask.data[idx] = dataSub;
+          // console.log(window.user);
+          // this.cobaElement.push({ index: idx, name: this.state.taskname });
+        }
+      },
+      ttempHistorySubTask: [],
+      saveSubtask(event) {
+        this.ttempSubTask[this.idsubtask] = this.ttempHistorySubTask[
+          this.idsubtask
+        ];
+        this.modalSubTask = false;
+        this.toggleModal();
+        event.preventDefault();
+      },
+      mainLoading: false,
+      submitData(event) {
+        event.preventDefault();
+        this.mainLoading = true;
+        console.clear();
+        var nSubtask = this.ttempSubTask.length;
+        api("/api/project/task/update", {
+          data: {
+            desc: this.state.description,
+            idproject: params.id,
+            name: this.state.name,
+            startdate: this.state.startdate,
+            duedate: this.state.duedate,
+            idstatus: this.state.status,
+            effort: this.state.effort,
+            priority: this.state.priority,
+            iddivision: this.state.iddivision,
+            idtask: this.idtask,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            this.isLoading = false;
+            if (nSubtask > 0) {
+              var now = 0;
+              this.ttempSubTask.map((idx) => {
+                // console.log("memasukkan subtask : ");
+                // console.log(idx);
+                api("/api/project/subtask/create", {
+                  data: {
+                    idtask: e.data_act.id,
+                    idproject: params.id,
+                    name: idx.name,
+                    startdate: idx.startdate,
+                    duedate: idx.duedate,
+                    idstatus: idx.status,
+                    effort: idx.effort,
+                    priority: idx.priority,
+                    iddivision: e.data_act.iddivision,
+                  },
+                }).then((e) => {
+                  now++;
+                  console.log(now);
+                  console.log(e);
+                  if (now == nSubtask) {
+                    console.log("KEMBALI KE HALAMAN TASK");
+                    this.mainLoading = false;
+                    var host = window.location.origin;
+                    window.location.replace(
+                      host + "/m/user/projects/" + params.id + "/task"
+                    );
+                  }
+                });
+              });
+            } else {
+              var host = window.location.origin;
+              window.location.replace(
+                host + "/m/user/projects/" + params.id + "/task"
+              );
+            }
+          }
+        });
+      },
+      arrayMove(arr, fromIndex, toIndex) {
+        var element = arr[fromIndex];
+        arr.splice(fromIndex, 1);
+        arr.splice(toIndex, 0, element);
+      },
+      saveTaskData() {
+        window.user.mobile.project.data = this.state;
+      },
+      showDatePicker(e) {
+        document.getElementById("root").classList.add("z-0");
+        var dd = document.getElementsByClassName("css-k008qs")[0];
+        var cc = document.getElementsByClassName("css-18puooo")[0];
+        if (dd) {
+          console.log("ada");
+          dd.style =
+            "display:grid;		grid-template-columns: repeat(3, minmax(0, 1fr));";
+        } else {
+          console.log("TIDAK ADA");
+        }
+        console.log(dd);
+        console.log("COBA DULU");
+        console.log("");
+      },
+      backNav() {
+        window.location.pathname = "/m/user/projects/" + params.id + "/task";
+      },
+      // SEARCH INDEX
+      searchIdx(value, arr) {
+        var out = false;
+        arr.map((e, idx) => {
+          if (e.value == value) {
+            out = idx;
+          }
+        });
+        return out;
+      },
+      // DATA SUB TASK
+      isSubtask: false,
+      // EXPAND DATA
+      subtaskDetail: [],
+      // EXPAND API
+      expandData(id) {
+        // console.log("ID PROJECT : " + params.id);
+        api("/api/project/task/subtask/show", {
+          data: {
+            idproject: params.id,
+            idparent: id,
+          },
+        }).then((e) => {
+          // console.clear();
+          console.log(e);
+          api("/api/status").then((e) => {
+            this.statusAll = e.data_act;
+          });
+          if (e.status == true) {
+            this.subtaskDetail = e.data_act;
+            this.mainLoading = false;
+          }
+        });
+        // return printout;
+      },
+      // All Data Status
+      statusAll: [],
+      // EDIT DETAIL SUBTASK
+      detailSub: [],
+      detailData: [],
+      showDetailEdit(id, idx, value) {
+        console.clear();
+        console.log(id);
+        console.log(idx);
+        console.log(value);
+        var vv = [];
+        vv[idx] = true;
+        var ttempDetail = [];
+        ttempDetail[idx] = value ? value : "";
+        this.detailData = ttempDetail;
+        this.detailSub = vv;
+      },
+      updateDetailSub(e, id, idx) {
+        var vv = [];
+        vv[id] = false;
+        this.detailSub = vv;
+        this.subtaskDetail[idx].desc = this.detailData[idx];
+        this.updateDesc(id, this.detailData[idx]);
+        e.preventDefault(id);
+      },
+      updateDesc(idtask, description) {
+        // /api/project/status/update
+        api("/api/project/task/desc/update", {
+          data: {
+            id: idtask,
+            desc: description,
+          },
+        }).then((e) => {
+          console.log(e);
+        });
+      },
+      ubahNilai3(e, id, idx) {
+        this.detailData[idx] = e.target.value;
+      },
+      updateStatus(event, idtask) {
+        // meta.state.iddepartment = e.value;
+        //     console.log(meta.state.iddepartment);
+
+        // /api/project/status/update
+        console.log(event.value);
+        var status = event.value;
+        console.log(
+          "task dengan id : " +
+            idtask +
+            "berhasil diupdate dengan value : " +
+            status
+        );
+        api("/api/project/task/status/update", {
+          data: {
+            id: idtask,
+            idstatus: status,
+          },
+        }).then((e) => {
+          console.log(e);
+          if (e.status == true) {
+            api("/api/project/task/show", {
+              data: {
+                idtask: this.idtask,
+                idproject: params.id,
+              },
+            }).then((e) => {
+              this.expandData(e.data_act.id);
+            });
+            console.log("reload");
+          }
+        });
+      },
+      idtask: 0,
+    }}
+    run={async () => {
+      console.clear();
+      console.log(window.user);
+      if (window.user.idtask) {
+        var idtask = window.user.idtask;
+        meta.idtask = idtask;
+        meta.mainLoading = true;
+        api("/api/project/task/show", {
+          data: {
+            idtask: idtask,
+            idproject: params.id,
+          },
+        }).then((e) => {
+          meta.state.name = e.data_act.name;
+          meta.state.startdate = e.data_act.startdate;
+          meta.state.duedate = e.data_act.duedate;
+          meta.state.status = e.data_act.idstatus;
+          meta.state.idx.status = meta.searchIdx(
+            meta.state.status,
+            meta.statusx
+          );
+          if (e.data_act.idparent) {
+            meta.isSubtask = false;
+          } else {
+            meta.isSubtask = true;
+          }
+          meta.state.effort = e.data_act.effort;
+          meta.state.idx.effort = meta.searchIdx(meta.state.status, meta.taskv);
+          meta.state.priority = e.data_act.priority;
+          meta.state.idx.priority = meta.searchIdx(
+            meta.state.status,
+            meta.priority
+          );
+          meta.state.iddivision = e.data_act.iddivision;
+          if (window.user.mobile.subtask.data) {
+            meta.ttempSubTask = window.user.mobile.subtask.data;
+          }
+          // meta.mainLoading = false;
+          // console.log(meta.state.idx.status);
+          // console.log(meta.statusx[meta.state.idx.status].label);
+          api("/api/status").then((e) => {
+            meta.statusAll = e.data_act;
+            console.log(e);
+          });
+          console.log(e);
+          meta.expandData(e.data_act.id);
+        });
+        // console.log("ada");
+      } else {
+        console.log("gk ada");
+      }
+      meta.actionstatus = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.status = e.value;
+            window.user.mobile.project.data.status = e.value;
+            console.log(meta.state.status);
+          });
+        },
+      };
+      meta.actioneffort = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.effort = e.value;
+            window.user.mobile.project.data.effort = e.value;
+            console.log(meta.state.effort);
+          });
+        },
+      };
+      meta.actionpriority = {
+        onChange: (e) => {
+          runInAction(() => {
+            meta.state.priority = e.value;
+            window.user.mobile.project.data.priority = e.value;
+            console.log(meta.state.priority);
+          });
+        },
+      };
+    }}
+  />
+  {meta.mainLoading ? (
+    <>
+      <loadku />
+    </>
+  ) : (
+    <>
+      <div class="flex flex-col items-start justify-start bg-coolGray-50 h-screen">
+        <div class="flex w-full self-stretch flex-col items-start justify-center px-3 py-4 bg-white shadow shadow-b sticky top-0 z-50">
+          <div class="flex w-full space-x-5 items-center justify-start">
+            <a
+              href={"/m/user/projects/" + params.id + "/task"}
+              class="flex items-center justify-start"
+            >
+              <img
+                src="/fimgs/I727_1000_1575_5334.x3.png"
+                style="width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px;"
+              />
+              <div class="text-base tracking-wide leading-tight text-indigo-500">
+                Back
+              </div>
+            </a>
+            <div class="flex items-center justify-center">
+              <div class="text-base tracking-wide leading-normal text-coolGray-900">
+                Task
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col w-full self-stretch w-auto flex-grow">
+          <div class="relative flex-grow flex flex-col overflow-y-auto space-y-5 ">
+            <div class="absolute top-0 left-0 flex self-stretch w-full flex-col space-y-5 items-center justify-start px-5 py-6 bg-white">
+              <div class="flex flex-col w-full space-y-2.5 items-start justify-start relative">
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Task Name
+                </div>
+                <div class="flex self-stretch items-center justify-start pb-2">
+                  <m-input
+                    id="name"
+                    name="name"
+                    onChange={meta.ubahNilai}
+                    value={meta.state.name}
+                    type="text"
+                    placeholder=""
+                    class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                  />
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Task Status
+                </div>
+                <div class="flex self-stretch items-center justify-start pb-2">
+                  <div class="relative flex flex-1 items-center justify-start">
+                    <multipleselect
+                      options={meta.statusx}
+                      defaultValue={
+                        meta.state.status == 0 || meta.state.status == ""
+                          ? meta.status[-1]
+                          : meta.status[
+                              meta.searchIdx(meta.state.status, meta.status)
+                            ]
+                      }
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary25: "#F3F4F6",
+                          primary: "#6366F1",
+                        },
+                      })}
+                      styles={meta.styles}
+                      className="w-full text-sm border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none z-50"
+                      classNamePrefix="select"
+                      name="status"
+                      onChange={(e) => {
+                        meta.actionstatus.onChange(e);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Start Date
+                </div>
+                <div class="flex self-stretch items-center justify-start pb-2">
+                  <div
+                    class="text-sm relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                    onClick={(e) => {
+                      meta.showDatePicker(e);
+                    }}
+                  >
+                    <datepicker
+                      disableMaskedInput
+                      disableOpenPicker
+                      showToolbar={false}
+                      value={meta.state.startdate}
+                      label="Start Date"
+                      onChange={(e) => {
+                        meta.state.startdate = e;
+                        window.user.mobile.project.data.startdate = e;
+                      }}
+                      onClick={(e) => {
+                        meta.showDatePicker(e);
+                      }}
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div class="text-sm tracking-wide leading-none text-gray-500">
+                  Due Date
+                </div>
+                <div class="flex self-stretch items-center justify-start pb-2">
+                  <div
+                    class="text-sm relative w-full bg-white border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                    onClick={(e) => {
+                      meta.showDatePicker(e);
+                    }}
+                  >
+                    <datepicker
+                      disableMaskedInput
+                      disableOpenPicker
+                      showToolbar={false}
+                      value={meta.state.duedate}
+                      minDate={meta.state.startdate}
+                      label="Due Date"
+                      onChange={(e) => {
+                        meta.state.duedate = e;
+                        window.user.mobile.project.data.duedate = e;
+                      }}
+                      OpenPickerIcon
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div class="flex flex-1 w-full space-x-6 items-center">
+                  <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Priority
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-4">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.priority}
+                          defaultValue={
+                            meta.state.priority == 0 ||
+                            meta.state.priority == ""
+                              ? meta.priority[-1]
+                              : meta.priority[
+                                  meta.searchIdx(
+                                    meta.state.priority,
+                                    meta.priority
+                                  )
+                                ]
+                          }
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none"
+                          classNamePrefix="select"
+                          name="status"
+                          onChange={(e) => {
+                            meta.actionpriority.onChange(e);
+                          }}
+                          isDisabled
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex self-stretch w-1/2 flex-col space-y-2.5 items-start justify-center">
+                    <div class="text-sm tracking-wide leading-none text-gray-500">
+                      Task Value
+                    </div>
+                    <div class="flex self-stretch items-center justify-start pb-4">
+                      <div class="relative flex flex-1 items-center justify-start">
+                        <multipleselect
+                          options={meta.taskv}
+                          defaultValue={
+                            meta.state.effort == 0 || meta.state.effort == ""
+                              ? meta.taskv[-1]
+                              : meta.taskv[
+                                  meta.searchIdx(meta.state.effort, meta.taskv)
+                                ]
+                          }
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#F3F4F6",
+                              primary: "#6366F1",
+                            },
+                          })}
+                          styles={meta.styles}
+                          className="w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none"
+                          classNamePrefix="select"
+                          name="status"
+                          onChange={(e) => {
+                            meta.actioneffort.onChange(e);
+                          }}
+                          isDisabled
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {meta.isSubtask ? (
+                  <>
+                    <div class="flex flex-1 w-full items-center justify-between">
+                      <div class="flex flex-col items-center">
+                        <div class="text-sm tracking-wide leading-none text-coolGray-500">
+                          Subtask
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex self-stretch flex-col space-y-3 items-start justify-start">
+                      <div
+                        id="listSubTask"
+                        class="flex self-stretch flex-col space-y-3 items-start justify-start"
+                      >
+                        {meta.ttempSubTask.map((e, idx) => {
+                          return (
+                            <div
+                              id={"subtask-" + idx}
+                              class="flex self-stretch flex-col items-center justify-start px-2.5 py-2.5 bg-gray-100 border border-gray-100 rounded"
+                            >
+                              <div class="flex w-full space-x-6 items-center justify-start">
+                                <div class="flex flex-1 items-start justify-start">
+                                  <div class="text-sm tracking-wide leading-tight">
+                                    {e.name}
+                                  </div>
+                                </div>
+                                <div class="flex space-x-3 items-start justify-start z-0">
+                                  <a
+                                    class="cursor-pointer"
+                                    href={
+                                      "/m/user/projects/" +
+                                      params.id +
+                                      "/task/create/" +
+                                      idx +
+                                      "/update"
+                                    }
+                                    onClick={meta.saveTaskData}
+                                  >
+                                    <img
+                                      src="/fimgs/842_3221.x3.png"
+                                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                                    />
+                                  </a>
+                                  <div
+                                    class="cursor-pointer"
+                                    onClick={(event) => {
+                                      meta.removeSubtask(event, idx);
+                                    }}
+                                  >
+                                    <img
+                                      src="/fimgs/842_3223.x3.png"
+                                      style="width: 20px; min-width: 20px; max-width: 20px; height: 20px; min-height: 20px; max-height: 20px;"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <div class="flex self-stretch items-center justify-start">
+                        <form
+                          onSubmit={meta.subtask}
+                          class="relative flex flex-1 items-center justify-start"
+                        >
+                          <m-input
+                            id="name"
+                            name="taskname"
+                            type="text"
+                            onSubmit={meta.subtask}
+                            placeholder="Create Subtask"
+                            onChange={meta.ubahNilai}
+                            class="text-sm relative w-full border rounded placeholder-gray-400 border-gray-300 focus:border-indigo-400 focus:outline-none py-2.5 px-2.5"
+                          />
+                        </form>
+                      </div>
+                    </div>
+                  </>
+                ) : null}
+              </div>
+              {meta.isSubtask ? (
+                <>
+                  <div class="flex self-stretch flex-col space-y-2 items-start justify-start">
+                    <div class="flex self-stretch items-start justify-start">
+                      <div class="text-sm font-medium tracking-wide leading-tight text-coolGray-900">
+                        Progress Task
+                      </div>
+                    </div>
+                    <div class="flex self-stretch flex-col space-y-4 items-start justify-start">
+                      {meta.subtaskDetail.map((e, idx) => {
+                        return (
+                          <div class="flex self-stretch flex-col space-y-4 items-start justify-start  border-0 border-b-4 border-gray-100">
+                            <div class="flex self-stretch items-start justify-between">
+                              <div class="flex items-start justify-start">
+                                <div class="text-sm tracking-wide leading-tight">
+                                  {e.name}
+                                </div>
+                              </div>
+                              <div
+                                class="flex flex-col items-center justify-center"
+                                style={
+                                  e.idstatus
+                                    ? meta.status[
+                                        meta.searchIdx(e.idstatus, meta.status)
+                                      ].color
+                                      ? "background-color:" +
+                                        meta.status[
+                                          meta.searchIdx(
+                                            e.idstatus,
+                                            meta.status
+                                          )
+                                        ].color
+                                      : ""
+                                    : ""
+                                }
+                              >
+                                <div class="flex items-start justify-start">
+                                  <div class="flex items-start justify-start">
+                                    <div class="text-sm tracking-wide leading-tight text-center text-white">
+                                      <multipleselect
+                                        options={meta.statusAll}
+                                        onChange={(event) => {
+                                          meta.updateStatus(event, e.id);
+                                        }}
+                                        defaultValue={
+                                          e.idstatus
+                                            ? meta.status[
+                                                meta.searchIdx(
+                                                  e.idstatus,
+                                                  meta.status
+                                                )
+                                              ]
+                                            : meta.statusAll[-1]
+                                        }
+                                        theme={(theme) => ({
+                                          ...theme,
+                                          borderRadius: 0,
+                                          colors: {
+                                            ...theme.colors,
+                                            primary25: "#F3F4F6",
+                                            primary: "#6366F1",
+                                          },
+                                        })}
+                                        styles={meta.stylesx}
+                                        className="w-full"
+                                        classNamePrefix="select"
+                                        name="status"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="flex self-stretch flex-col">
+                              <div class="flex items-start justify-start">
+                                <div class="text-xs tracking-wide leading-none text-coolGray-500">
+                                  Information
+                                </div>
+                              </div>
+                              <div class="flex items-start justify-start flex-grow">
+                                <div class="truncate text-sm text-gray-900 flex-grow">
+                                  {e.desc ? e.desc : "-"}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
+          <div class="flex self-stretch flex-col items-start justify-start px-5 py-4 bg-white shadow">
+            <form
+              class="flex self-stretch space-x-1 items-center justify-center px-4 py-2 bg-indigo-500 rounded"
+              onSubmit={meta.submitData}
+            >
+              <button
+                type="submit"
+                class="text-sm tracking-wide leading-tight text-center text-white"
+              >
+                Save
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </>
+  )}
+</>
